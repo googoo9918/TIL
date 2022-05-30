@@ -26,9 +26,7 @@ This is a normal paragraph:
 
 end code block.
 
-들여쓰기 하는법:
+들여쓰기 하는 법
 
-  이렇게?
-  하면되나
-  
-확인
+    한 줄 띄워주고 tab 2번 누른다음 입력. 마무리도 한 줄 띄우기.
+끝.
