@@ -30,3 +30,14 @@ end code block.
 
     한 줄 띄워주고 tab 2번 누른다음 입력. 마무리도 한 줄 띄우기.
 끝.
+<pre>
+<code>
+public class BootSpringBootApplication {
+  public static void main(String[] args) {
+    System.out.println("Hello, Honeymon");
+  // 결국 핵심은 <pre> <code>로 시작해서 </code> </pre>로 끝내주기.
+  }
+
+}
+</code>
+</pre>
