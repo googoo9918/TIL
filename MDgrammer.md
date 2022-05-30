@@ -35,9 +35,18 @@ end code block.
 public class BootSpringBootApplication {
   public static void main(String[] args) {
     System.out.println("Hello, Honeymon");
-  // 결국 핵심은 <pre> <code>로 시작해서 </code> </pre>로 끝내주기.
+  // 결국 핵심은 pre, code로 시작해서 /code /pre로 끝내주기.
+  // 혹은 ```(물결표시)로 ``` 마무리 해줄 수 있다.
+  // + ```로 코드블럭코드 사용시, ```java라고 입력하주면 문법강조가 가능하다!!
+  ```java
+public class BootSpringBootApplication {
+  public static void main(String[] args) {
+    System.out.println("Hello, Honeymon");
   }
+}
+```
 
+  }
 }
 </code>
 </pre>
