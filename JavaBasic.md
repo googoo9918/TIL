@@ -91,7 +91,7 @@ Two Demension Array
 		array5[1] = new int[2];
 		array5[2] = new int[3]; 
 
-		// 열 개수가 다른 2차원 배열 생성됨.... 
+		// 열 개수가 다른 2차원 배열 생성됨...
         // 1행 열개수 1개 , 2행 2개, 3행 3개!
 	
 		int [][] array6 = {{1},{1,2},{1,2,3}}; // 이렇게도 가능함! 
@@ -104,16 +104,48 @@ Class
 	Car c2 = new Car(); 
 	    /*
 		 * new 연산자는 new연산자 뒤에 나오는 생성자를 이용하여
-         * 메모리에 객체를 만들라는 명령.
+            * 메모리에 객체를 만들라는 명령.
 		 * 이때 기본형 타입은 stack에 저장
-         * 참조형 타입은 heap 메모리에 저장된다. 
+            * 참조형 타입은 heap 메모리에 저장된다. 
 		  
 		 * 메모리에 만들어진 객체를 인스턴스(instance)라고도 한다.
-         * -> car이 객체가 되겠지?
+            * -> car이 객체가 되겠지?
 
 		 * 이렇게 만들어진 객체를 참조하는 변수가 c1 , c2 이다.
-         * -> instance를 가리키는(참조하는) 변수!
+            * -> instance를 가리키는(참조하는) 변수!
 
 		 * 위의 코드가 실행되면 Car라는 객체가
 		 * 2개가 만들어지고 각각의 객체를 참조하는 c1과 c2변수 선언.
 		 */
+```
+
+Enum
+---------------------
+```java
+
+public class Enumeration {
+	public static final String MALE = "MALE";
+    public static final String FEMALE = "FEMALE";
+    // 상수 사용시 전체 변수명 대문자 관례!
+    
+    enum Gender {
+    	MALE,FEMALE //세미콜론 X, 열거형 선언.
+    	};
+    
+	public static void main(String[] args) {
+		 String gender1;
+
+         gender1 = Enumeration.MALE;
+         gender1 = Enumeration.FEMALE;            	
+         gender1 = "boy"; // 그냥 다른 값 넣어도 가능함.
+         
+         Gender gender2;
+         gender2 = Gender.MALE;
+         gender2 = Gender.FEMALE;
+         // gender2 = "boy"; //오류 발생
+         // 특정 값만 사용한다면, 열거형을 사용하는 것이 좋다.
+         
+	}
+```
+
+
