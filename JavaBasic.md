@@ -148,4 +148,53 @@ public class Enumeration {
 	}
 ```
 
+String Class
+---------------
+```java
+    String str1 = "hello"; 
+        //"hello"라는 문자열이 메모리 중에서 상수가 저장되는 영역에 저장된다. 상수는 변하지 않는 값을 의미.
+		String str2 = "hello"; 
+        // 이 문장이 실행될 때에 hello 라는 문자열 상수는 이미 만들어져 있으므로 str1이 참조하는 인스턴스를 str2도 참조한다.
+		
+		String str3 = new String("hello");
+         //new연산자를 이용하여 인스턴스를 만들면 인스턴스는 무조건 새롭게 만들어진다.
+		// -> heap에 새로운 "hello"를 만들고 참조하게 된다.
+		
+		String str4 = new String("hello"); 
+        // 이 문장이 실행될때도 새롭게 만들게 되므로, str3 과 str4는 서로 다른 인스턴스를 참조한다
+		
+		if(str1 == str2) {
+			System.out.println("같은 곳을 가리키고 있습니다.");
+		}
+		// 참조형의 경우, 값끼리 서로 비교 연산을 하는 것이 아니라 가리키는 주소값이 같은지 비교한다.
+		// 값을 비교하려면 if(str1.equals(str2)) 이용.
+		if(str3 == str4) {
+			System.out.println("같은 곳을 가리키고 있습니다.");
+		}
+		// 주소값이 다르기 때문에, 당연히 실행 안되겠지? new로 진행했으니 새로 만든 것임!
+		
+		String str5 = "hello world";
+		String str6 = str5.substring(3);
+		//substring은 문자열을 자른 결과를 반환하는 메소드이다. 해당 코드가 실행되어도 str5는 변하지 않는다.
+		//str6은 str5가 가지고 있는 문자열 중 3번째 위치부터 자른 결과 즉 새로운 String을 참조하게 된다.
+```
 
+```java
+	String str = "hello";
+		
+		System.out.println(str.length());
+		
+		System.out.println(str.concat(" world"));
+		
+		System.out.println(str);  
+        //위에서 concat을 통해 hello world를 만들어 줬지만 string 객체는 불변 클래스 이기 때문에, 
+		// str이 hello를 가리킨다는 사실은 변하지 않는다.
+		
+		str = str.concat(" world"); 
+        //reference를 바꾸고 싶은 경우, 이와 같이 사용해줘야 한다.
+				
+		System.out.println(str.substring(3)); 
+        // 3번째 index ~ 끝까지 출력
+		System.out.println(str.substring(3,5)); 
+        // start ~ end 까지 출력.
+```
