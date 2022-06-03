@@ -198,3 +198,94 @@ String Class
 		System.out.println(str.substring(3,5)); 
         // start ~ end 까지 출력.
 ```
+Variable Scope
+-----------------
+
+```java
+      int globalScope = 10;   // 인스턴스 변수 
+	  static int a=5;
+	  
+      public void scopeTest(int value){   
+          int localScope = 10;
+          System.out.println(globalScope); 
+          System.out.println(localScope);
+          System.out.println(value);
+      } // static(정적) 하지 않은 method 에서는 그냥 전역변수 사용 가능. 
+      
+      
+      public static void main(String[] args) {
+          //System.out.println(globalScope);  //오류
+          //System.out.println(localScope);   //오류
+          //System.out.println(value);        //오류  
+    	  
+    	  VariableScopeExam v1 = new VariableScopeExam();
+    	  System.out.println(v1.globalScope);
+    	  System.out.println(a);
+
+      // static 한 method 에서는 static하지 않은 변수 사용 불가능.
+      // static 한 method 에서 static 한 변수를 사용하려면, 객체를 생성하고 사용해 줘야됨. 상위 두 줄
+      // static 한 field나, static 한 method는 class가 인스턴스화 되어 있지 않아도 사용할 수 있다! 하위 한 줄 
+      
+     
+      VariableScopeExam v2 = new VariableScopeExam();
+      v1.globalScope = 20;
+      v2.globalScope = 30; 
+
+      System.out.println(v1.globalScope);  //20 이 출력된다. 
+      System.out.println(v2.globalScope);  //30이 출력된다. 
+      //globalscope 같은 경우, 인스턴스가 생성될 때 생성되기 때문에 인스턴스 변수라 지칭한다.
+      
+      v1.a = 10;
+      v2.a = 20; 
+      
+      System.out.println(v1.a);  //20 이 출력된다. 
+      System.out.println(v2.a);  //20 이 출력된다. 
+      }
+      // a와 같은 static한 필드를 클래스 변수라 한다.
+      // static하게 선언된 변수는 값을 저장할 수 있는 공간이 하나만 생성된다. 
+      // 그러므로, 인스턴스가 여러개 생성되도 static한 변수는 하나다.
+      // 클래스 변수는 레퍼런스.변수명 하고 사용하기 보다는 클래스명.변수명 으로 사용하는것이 더 바람직하다고 하다.
+      // VariableScopeExam.a
+```
+
+Constructor
+--------------
+```java
+        String name;
+		int number; 
+		
+		// 이렇게까지만 만들면 (생성자를 만들지 않으면) 매개변수가 없는 생성자가 컴파일 할 때 자동으로 만들어진다.
+		// 매개변수가 없는 생성자를 기본 생성자라 칭한다.
+		// 생성자를 하나라도 만들었다면, 기본생성자는 만들어지지 않는다.
+		
+		public Car(String name) {
+			//this.name = name;
+			this(name,0);
+		}
+		// 이처럼 만들면, Car이 객체가 될 때 반드시 이름을 가질 것이다.
+		// 생성자는 객체가 될 때 field를 초기화 할 수 있다. 
+		// 이제는 Car c1 = new car(); 하면 오류 발생. Car c1 = new car("소방차"); 와 같이 명명해 줘야함.
+		// name = name 이라고 사용하게 되면, 가깝게 선언된 변수를 우선 사용하기 때문에 
+		// 매개변수 name에 매개변수 name의 값을 입력하게 된다.
+		// 이 경우, field 라는 것을 컴파일러와 JVM에게 알려주기 위해 this키워드를 사용해야 한다.
+		// 앞의 this.name은 필드 name을 의미하고, 뒤의 name은 매개변수를 의미하게 된다.
+		// 클래스 안에서 자기 자신이 갖고 있는 메소드를 사용할 때에도, this.메소드명()으로 호출할 수 있다.
+		// 맨 밑에 있는 생성자를 참고하면, this(name, 0)으로 초기화도 가능하다 
+		
+		public Car() {
+			// this.name = "이름없음";
+			// this.number = 0;
+			this("이름없음, 0");
+		}
+		// 그렇다면 기본생성자는 앞으로 쓸 수 없는 것일까? 그렇지 않다. 위 처럼 표기하면 기본 생성자를 만들 수 있다. (매개변수가 없다)
+		// 또한 , this를 이용하여 초기화를 시킬 수도 있지만, 밑에 생성자와 코드의 중복이 일어난다.
+		// 따라서, 밑에 있는 Car 생성자를 이용하여 this("이름없음, 0")처럼 초기화도 가능하다.
+		// 	자기 자신의 생성자를 호출하여, 비슷한 코드의 중복을 방지할 수 있다.
+	
+		public Car(String name, int number) {
+			this.name = name;
+			this.number = number;
+		}
+		// 생성자의 매개변수의 유형과 개수를 다르게 하여 오버로딩을 할 수 있다.
+		
+```
