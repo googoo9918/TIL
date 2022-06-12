@@ -172,7 +172,7 @@ import java.lang.String;
 int cnt =0;
 
 for(int i=0; i < dataset.length; i++){
-    if(dataset[i].indexOf("M")==-1){ //M에 큰따옴표 잊지말것
+    if(dataset[i].indexOf("M")==-1){ //M에 큰따옴표 잊지말것.
     ;
     }
     else{
