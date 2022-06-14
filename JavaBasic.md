@@ -931,6 +931,7 @@ Custom Exception
   + javaStudy.BizException: 매개변수 i는 0이상이어야 합니다.
   + at javaStudy.BizService.bizMethod(BizService.java:7)
   + at javaStudy.BizExam.main(BizExam.java:9)
+  <br><br>
 
 Generic Type
 ------------------------
@@ -943,4 +944,79 @@ Generic Type
   - 2. 클래스 외부에서 타입을 지정해주기 때문에 따로 타입을 체크하고 변환해줄 필요가 없다. 즉, 관리하기가 편하다.
   - 3. 비슷한 기능을 지원하는 경우 코드의 재사용성이 높아진다.
 - 범용적 규칙
-	- 
+	- ![image](https://user-images.githubusercontent.com/102513932/173493996-d695ac84-2eb8-418b-8a89-7129419d2523.png)
+- 클래스 및 인터페이스 선언
+```java
+public class ClassName <T> { ... }
+public Interface InterfaceName <T> { ... }
+//T 타입은 해당 블럭 { ... } 안에서까지 유효하다.
+```
+```java
+public class ClassName <T, K> { ... }
+ 
+public class Main {
+	public static void main(String[] args) {
+		ClassName<String, Integer> a = new ClassName<String, Integer>();
+	}
+}
+//  타입 파라미터로 명시할 수 있는 것은 참조 타입(Reference Type)밖에 올 수 없다.
+// int, double, char 같은 primitive type은 올 수 없다는 것
+// int형 double형 등 primitive Type의 경우 Integer, Double 같은 Wrapper Type으로 쓰는 이유이다.
+```
+```java
+ublic class ClassName <T> { ... }
+ 
+public class Student { ... }
+ 
+public class Main {
+	public static void main(String[] args) {
+		ClassName<Student> a = new ClassName<Student>();
+	}
+}
+ // 사용자 정의 클래스도 당연히 사용 가능하다.
+```
+- 활용 예시
+```java
+class ClassName<E> {
+	
+	private E element;	// 제네릭 타입 변수
+	
+	void set(E element) {	// 제네릭 파라미터 메소드
+		this.element = element;
+	}
+	
+	E get() {	// 제네릭 타입 반환 메소드
+		return element;
+	}
+	
+}
+ 
+class Main {
+	public static void main(String[] args) {
+		
+		ClassName<String> a = new ClassName<String>();
+		ClassName<Integer> b = new ClassName<Integer>();
+		
+		a.set("10");
+		b.set(10);
+	
+		System.out.println("a data : " + a.get());
+		// 반환된 변수의 타입 출력 
+		System.out.println("a E Type : " + a.get().getClass().getName());
+		
+		System.out.println();
+		System.out.println("b data : " + b.get());
+		// 반환된 변수의 타입 출력 
+		System.out.println("b E Type : " + b.get().getClass().getName());
+		
+	}
+}
+// ClassName이란 객체를 생성할 때 <> 안에 타입 파라미터(Type parameter)를 지정
+//  a객체의 ClassName의 E 제네릭 타입은 String으로 모두 변환
+// b객체의 ClassName의 E 제네릭 타입은 Integer으로 모두 변환
+```
+- 실행 결과
+  - ![image](https://user-images.githubusercontent.com/102513932/173494890-4274c0ab-c4ff-45d9-8531-9bd09ca5b0fe.png)
+
+
+ 
