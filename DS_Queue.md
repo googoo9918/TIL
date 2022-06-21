@@ -28,7 +28,7 @@ import java.util.LinkedList;
 import java.util.Queue; 
 
 // 자료형 매개변수를 넣어서, 큐에 들어갈 데이터의 타입을 지정해야 함
-Queue<Integer> queue_int = new LinkedList<Integer>(); // Integer 형 queue 선언
+Queue<Integer> queue_int = new LinkedList<Integer>(); // Integer 형 queue 선언, 링크드리스트로  생성해야됨 주의.
 Queue<String> queue_str = new LinkedList<String>(); // String 형 queue 선언
 
 // 데이터 추가는 add(value) 또는 offer(value) 를 사용함
@@ -43,7 +43,21 @@ queue_int.poll();
 
 // poll() 과 마찬가지로, 첫 번째 값 반환하고, 해당 값은 큐에서 삭제
 queue_int.remove();
+
+// 요소 개수 출력 
+queue_int.size(); 
+
+// 맨 처음 넣은 값 출력
+queue_int.peek()
+
+// 큐 비어있는지 확인
+queue_int.isEmpty();
+
+// 큐 비우기
+queue_int.clear();
+
 ```
+
 
 ### 4. 프로그래밍 연습 
 - JAVA ArrayList 클래스를 활용해서 큐를 다루는 enqueue, dequeue 기능 구현해보기 <br>
