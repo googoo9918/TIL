@@ -83,16 +83,32 @@ ArrayList<Integer> list1 = new ArrayList<Integer>();
 list1.add(1); 
 // 배열에 아이템 추가 시 add(아이템) 메서드 사용
 list1.add(2);
-list1.get(0) 
+list1.get(0) //1
 // 배열에 특정 아이템을 읽을 시 get(인덱스번호) 메서드 사용 (굳이 System.out.println() 을 사용하지 않아도 됨)
 list1.set(0, 5); 
 // 특정 인덱스에 해당하는 아이템 변경 시, set(인덱스번호, 변경할값) 메서드 사용
-list1.get(0)
+list1.get(0) //5
 list1.remove(0); 
 // 특정 인덱스에 해당하는 아이템 삭제 시, remove(인덱스번호) 메서드 사용
-list1.get(0)
+list1.get(0); //2
+list1.size();
 // 배열 길이 확인하기
-list1.size()
+list1.contains(2); // true
+// 해당 값이 배열에 있는지 확인
+list1.containsAll(2,0,3);
+// 인자로 제공한 값이 모두 들어 있는지 확인
+list1.clear();
+// 값 모두 삭제
+list1.isEmpty();
+// 비었으면 true, 하나라도 있으면 fals
+list1.addAll(lisT1);
+// 리스트 합침
+list1.retainAll(list1)
+// 인자로 제공한 컬렉션 내에 들어있는 값 제외하고 모두 지움
+list1.removeAll(list1)
+// 인자로 제공한 컬렉션과 중복하는 값 모두 지움.
+
+ 
 ```
 
 ##### JAVA 에서는 기본 문법으로 다차원 배열도 작성 가능 (2차원 배열)
