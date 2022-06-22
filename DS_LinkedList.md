@@ -210,3 +210,109 @@ MyLinkedList.printAll(); // 2 4
 ```java
 MyLinkedList.delNode(20); // false
 ```
+
+### 링크드리스트 전체 코드
+```java
+public class SingleLinkedList<T> {
+    public Node<T> head = null; 
+    //가장 앞 부분을 가르킬 head 
+    
+    public class Node<T> {
+        T data;
+        Node<T> next = null; 
+        
+        public Node(T data) {
+            this.data = data;  
+            // 생성자!
+        }
+    }
+    
+    public void addNode(T data) { //노드 추가 메소드
+        if (head == null) {
+            head = new Node<T>(data); 
+            // 처음 추가하는 거라면, 인스턴스 생성하여 head에 넣어주기.
+        } else {
+            Node<T> node = this.head; 
+            // 리스트를 쭉 돌아야 하기 때문에 변수 node 생성해줌.
+            while (node.next != null) {
+                node = node.next;     
+                // 마지막 전까지 node 넘겨주기.
+            }
+            node.next = new Node<T>(data);
+             // 마지막에 새 노드 추가해주기!
+        }
+    }
+    
+    public void printAll() { //값 출력 메소드
+        if (head != null) {
+            Node<T> node = this.head;  
+            //head가 비어있지 않으면, node변수 만들고 거기에 head(현재상황) 넣어주기.
+            System.out.println(node.data); 
+            while (node.next != null) {
+                node = node.next;   
+                // 끝까지 넘겨주기.
+                System.out.println(node.data);
+            }
+        }
+    }
+    
+    public Node<T> search(T data) { //값 검색 메소드, addNodeInside에서 사용.
+        if (this.head == null) {
+            return null;
+        } else {
+            Node<T> node = this.head; //똑같이 계속 반복됨.
+            while (node != null) { 
+                if (node.data == data) {
+                    return node;  //data 일치시 node 리턴
+                } else {
+                    node = node.next; //아니면 끝까지 넘겨주기.
+                }
+            }
+            return null; //찾는 값 없으면 null 리턴.
+        }
+    }
+    
+    public void addNodeInside(T data, T isData) { 
+        //중간에 node 삽입하는 메소드, isData를 통해 어떤 노드 뒤에 값 넣을지 설정.
+        Node<T> searchedNode = this.search(isData); 
+        // isdata를 찾는다면 searchednode에 삽입.
+        
+        if (searchedNode == null) {
+            this.addNode(data); 
+            // searchednode가 null 이면 중간에 삽입할 필요가 없으니, 마지막에 추가.
+        } else {   
+            Node<T> nextNode = searchedNode.next;  
+            //swap을 생각해주면 편할 것 같음. 작동 원리를 머리속으로 그림 그리며 잘 생각해보자.   
+            searchedNode.next = new Node<T>(data); 
+            searchedNode.next.next = nextNode;
+        }
+    }
+    
+    public boolean delNode(T isData) { //노드 삭제 메소드.
+        if (this.head == null) { 
+            return false;  // 들어있는게 없을 때.
+        } else {
+            Node<T> node = this.head; // 위와 같은 양식 ㅇㅇ
+            if (node.data == isData) { 
+                // 첫 번째 노드가 내가 삭제하고 싶은 데이터 일때 (예외 케이스) 
+                this.head = this.head.next; // head 넘겨버리기
+                return true;
+            } else {
+                while (node.next != null) { 
+                    if (node.next.data == isData) { 
+                        node.next = node.next.next; 
+                        //값 일치시 중간 값 재껴버리기. 
+                        return true;
+                    }
+                    node = node.next; 
+                    //넘기면서 찾아줘야겠지? , 증감식 같은 느낌.
+                }
+                return false; 
+                // 찾는 값 없을 때.
+            }
+        }
+    }
+}
+```
+
+
