@@ -385,6 +385,10 @@ map.put(3,"포도");
 map.put(3,"수박"); //같은 키의 새로운 value 들어가면 대치됨.
 map.remove(1); //key값 1 제거
 map.clear(); //모든 값 제거
+
+if(!map.containsKey(2))	
+//키가 들어있는지 확인. 있으면 덮어쓰지 않는다.
+		map.put(2, "참외"); 
 ```
 
 #### 값 출력
