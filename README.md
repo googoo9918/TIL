@@ -29,3 +29,6 @@
 - [동적 계획법과 분할 정복](AL_DP,DC.md) <br><br>
 - [병합 정렬](AL_MergeSort.md) <br><br>
 - [퀵 정렬](AL_QuickSort.md) <br><br>
+
+- [순차 탐색](Algorithm/AL_SequentialSearch.md) <br><br>
+- [이진 탐색](Algorithm/AL_BinarySearch.md) <br><br>
