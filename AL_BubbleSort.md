@@ -26,51 +26,121 @@
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/9/9c/Insertion-sort-example.gif" />
 
-### 2. 어떻게 코드로 만들까? (결국 프로그래밍으로 일반화할 수 있도록 만드는 것)
+### 3. 어떻게 코드로 만들까?
 
 > 알고리즘 연습 방법에 기반해서 단계별로 생각해봅니다.
-> * 데이터가 네 개 일때 (데이터 갯수에 따라 복잡도가 떨어지는 것은 아니므로, 네 개로 바로 로직을 이해해보자.)
-  - 예: dataList = [9, 3, 2, 5]
-    - 처음 한번 실행하면, key값은 9, 인덱스(0) - 1 은 0보다 작으므로 끝: [9, 3, 2, 5]
-    - 두 번째 실행하면, key값은 3, 9보다 3이 작으므로 자리 바꾸고, 끝: [3, 9, 2, 5]
-    - 세 번째 실행하면, key값은 2, 9보다 2가 작으므로 자리 바꾸고, 다시 3보다 2가 작으므로 끝: [2, 3, 9, 5]
-    - 네 번째 실행하면, key값은 5, 9보다 5이 작으므로 자리 바꾸고, 3보다는 5가 크므로 끝: [2, 3, 5, 9]        
 
-### 3. 알고리즘 구현 
-1. for (int index = 0; index < dataList.size() - 1; index++) 로 반복
-2. 반복문 안에서, for (int index2 = index + 1; index2 > 0; index2--) 으로 반복
-   - 내부 반복문 안에서 if (dataList.get(index2) < dataList.get(index2 - 1)) 이면, 스왑
+- 데이터가 두 개일 때 버블 정렬 알고리즘
+  
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+
+ArrayList<Integer> dataList = new ArrayList<Integer>();
+dataList.add(4);
+dataList.add(2);
+
+if (dataList.get(0) > dataList.get(1)) {
+    Collections.swap(dataList, 0, 1);
+}
+System.out.println(dataList);
+```
+
+- 데이터가 세 개일 때 버블 정렬 알고리즘
 
 ```java
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class InsertionSort {
+ArrayList<Integer> dataList = new ArrayList<Integer>();
+dataList.add(10);
+dataList.add(2);
+dataList.add(4);
+
+for (int index = 0; index < dataList.size() - 1; index++) {
+    if (dataList.get(index) > dataList.get(index + 1)) {
+        Collections.swap(dataList, index, index + 1);
+    }
+}
+System.out.println(dataList);
+```
+
+- 데이터가 네 개일 때 버블 정렬 알고리즘 방식으로 정렬하는 방법에 대해 생각해보며, <br> 데이터 갯수에 상관없이 동작하는 버블 정렬 알고리즘 생각
+- * 데이터가 네 개 일때 (데이터 갯수에 따라 복잡도가 떨어지는 것은 아니므로, 네 개로 바로 로직을 이해해보자.)
+  - 예: data_list = [1, 9, 3, 2]
+    - 1차 로직 적용
+      - 1 와 9 비교, 자리바꿈없음 [1, 9, 3, 2]
+      - 9 와 3 비교, 자리바꿈 [1, 3, 9, 2]
+      - 9 와 2 비교, 자리바꿈 [1, 3, 2, 9]
+    - 2차 로직 적용
+      - 1 와 3 비교, 자리바꿈없음 [1, 3, 2, 9]
+      - 3 과 2 비교, 자리바꿈 [1, 2, 3, 9]
+      - 3 와 9 비교, 자리바꿈없음 [1, 2, 3, 9]
+    - 3차 로직 적용
+      - 1 과 2 비교, 자리바꿈없음 [1, 2, 3, 9]
+      - 2 과 3 비교, 자리바꿈없음 [1, 2, 3, 9]
+      - 3 과 9 비교, 자리바꿈없음 [1, 2, 3, 9]
+
+### 4. 알고리즘 구현 (프로젝트: CH14_BUBBLESORT)
+* **특이점 찾아보기**
+  - n개의 리스트가 있는 경우 최대 n-1번의 로직을 적용한다.
+  - 로직을 1번 적용할 때마다 가장 큰 숫자가 뒤에서부터 1개씩 결정된다.
+  - 로직이 경우에 따라 일찍 끝날 수도 있다. 따라서 로직을 적용할 때 한 번도 데이터가 교환된 적이 없다면 이미 정렬된 상태이므로 더 이상 로직을 반복 적용할 필요가 없다.
+
+![image](https://user-images.githubusercontent.com/102513932/176361152-ef8a5d31-7632-4263-a0dc-6b5805768f79.png)
+
+1. for (int index = 0; index < dataList.size() - 1; index++) 반복
+2. swap = false (교환이 되었는지를 확인하는 변수를 두자)
+2. 반복문안의 반복문으로 n - 1번 반복하며,
+3. 반복문안의 반복문 안에서, if (dataList.get(index2) > dataList.get(index2 + 1)) 이면
+4. 데이터를 스왑하고, Collections.swap(dataList, index2, index2 + 1);
+5. 스왑했음을 체크하기 위해, swap 을 true 로 놓고,
+6. 반복문안의 반복문을 수행 후에도 swap 이 false 이면, 전체 반복을 멈춤 (break)
+
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class BubbleSort {
     public ArrayList<Integer> sort(ArrayList<Integer> dataList) {
         for (int index = 0; index < dataList.size() - 1; index++) {
-            for (int index2 = index + 1; index2 > 0; index2--) {
-                if (dataList.get(index2) < dataList.get(index2 - 1)) {
-                    Collections.swap(dataList, index2, index2 - 1);
-                } else {
-                    break;
+            boolean swap = false;
+            
+            for (int index2 = 0; index2 < dataList.size() - 1 - index; index2++) {
+                if (dataList.get(index2) > dataList.get(index2 + 1)) {
+                    Collections.swap(dataList, index2, index2 + 1);
+                    swap = true;
                 }
             }
+            
+            if (swap == false) {
+                break;
+            }
         }
+        
         return dataList;
     }
 }
-ArrayList<Integer> testData = new ArrayList<Integer>();
-
-for (int index = 0; index < 100; index++) {
-    testData.add((int)(Math.random() * 100));
-}
-
-InsertionSort iSort = new InsertionSort();
-iSort.sort(testData);
 ```
 
-### 4. 알고리즘 분석
+### 랜덤 숫자 생성하기
+- 디폴트로 지원하는 Math 패키지의 random() 메서드를 통해, 0 이상, 1 미만의 부동소숫점 값을 가져올 수 있음
+```java
+Math.random()
+```
+- 이를 기반으로, 정수 타입 변환 등을 통해, 다음 코드처럼 랜덤 값을 가져올 수 있음
+
+### 테스트
+```java
+ArrayList<Integer> testData = new ArrayList<Integer>();
+for (int i = 0; i < 100; i++) {
+    testData.add((int)(Math.random() * 100));
+}
+BubbleSort bSort = new BubbleSort();
+bSort.sort(testData);
+```
+
+### 5. 알고리즘 분석
 * 반복문이 두 개 O($n^2$)
   - 최악의 경우, <font size=5em>$\frac { n * (n - 1)}{ 2 }$</font>
 * 완전 정렬이 되어 있는 상태라면 최선은 O(n)
-
