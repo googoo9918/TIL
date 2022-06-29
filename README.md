@@ -3,8 +3,8 @@
 ### ETC
 -------------------------
 - [재귀 호출](https://github.com/ssu18/TIL/blob/main/ETC/RecursiveCall.md) <br><br>
-- [자바 기초 문법](JavaBasic.md) <br><br>
-- [마크다운 문법](MDgrammer.md) <br><br>
+- [자바 기초 문법](https://github.com/ssu18/TIL/blob/main/ETC/JavaBasic.md)) <br><br>
+- [마크다운 문법](https://github.com/ssu18/TIL/blob/main/ETC/MDgrammer.md)) <br><br>
 
 
 ### 자료구조
