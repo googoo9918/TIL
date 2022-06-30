@@ -46,7 +46,7 @@ public class BootSpringBootApplication {
   }
 }
 ```
-> 이것은 인용문: 자료에 애착이 많습니다. 절대 자료를 자신의 블로그에 오픈하지 말아주세요! 엄격하게 저작권법을 적용하고 있습니다.
+> 이것은 인용문
 
 * 다음 세 문장은 어디가 다를까요?
   - This is python
@@ -56,6 +56,4 @@ public class BootSpringBootApplication {
 * 링크 걸기: [python webpage](https://www.python.org)
 
 ![1](https://user-images.githubusercontent.com/102513932/170987972-73072f14-5a12-4f25-96b0-d1592673f329.png)
-
-<span style="background-color: #f6f8fa">회색형광펜</span>
 
