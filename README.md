@@ -31,3 +31,7 @@
 - [퀵 정렬](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_QuickSort.md) <br><br>
 - [순차 탐색](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SequentialSearch.md) <br><br>
 - [이진 탐색](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BinarySearch.md) <br><br>
+- [그래프](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Graph.md)<br><br>
+- [너비 우선 탐색(BFS)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BreadthFirstSearch.md)<br><br>
+- [깊이 우선 탐색(DFS)](https://github.com/ssu18/TIL/blob/main/Algorithm/Al_DepthFirstSearch.md)<br><br>
+- [탐욕 알고리즘](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Greedy.md)<br><br>
