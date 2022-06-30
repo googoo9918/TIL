@@ -361,7 +361,7 @@ map2.get("Dave"); // 01032221111
 import java.util.Map;
 import java.util.HashMap;
 HashMap<String,String> map1 = new HashMap<String,String>();
-//HashMap생성
+//HashMap생성 , <키 타입, 값 타입>
 HashMap<String,String> map2 = new HashMap<>();
 //new에서 타입 파라미터 생략가능
 HashMap<String,String> map3 = new HashMap<>(map1);
