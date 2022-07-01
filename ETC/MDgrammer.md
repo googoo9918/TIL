@@ -46,7 +46,7 @@ public class BootSpringBootApplication {
   }
 }
 ```
-> 이것은 인용문: 자료에 애착이 많습니다. 절대 자료를 자신의 블로그에 오픈하지 말아주세요! 엄격하게 저작권법을 적용하고 있습니다.
+> 이것은 인용문
 
 * 다음 세 문장은 어디가 다를까요?
   - This is python
