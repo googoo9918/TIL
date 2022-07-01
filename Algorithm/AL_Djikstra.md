@@ -320,7 +320,7 @@ public class DijkstraPath {
     }
 }
 ```
-
+![image](https://user-images.githubusercontent.com/102513932/176881856-43ac3f18-c210-4dec-9654-4eb1a0fd6f52.png)
 ### 3단계: 그래프 정의 및 실행
 ```java
 HashMap<String, ArrayList<Edge>> graph = new HashMap<String, ArrayList<Edge>>();
@@ -337,7 +337,7 @@ DijkstraPath dObject = new DijkstraPath();
 dObject.dijkstraFunc(graph, "A");
 //{A=0, B=6, C=1, D=2, E=5, F=6}
 ```
-
+![image](https://user-images.githubusercontent.com/102513932/176881846-05d2dd8e-569b-4059-8782-147e5f2351a2.png)
 ### 6. 시간 복잡도
 - 위 다익스트라 알고리즘은 크게 다음 두 가지 과정을 거침
   - 과정1: 각 노드마다 인접한 간선들을 모두 검사하는 과정
