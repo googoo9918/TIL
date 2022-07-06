@@ -35,3 +35,4 @@
 - [너비 우선 탐색(BFS)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BreadthFirstSearch.md)<br><br>
 - [깊이 우선 탐색(DFS)](https://github.com/ssu18/TIL/blob/main/Algorithm/Al_DepthFirstSearch.md)<br><br>
 - [탐욕 알고리즘](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Greedy.md)<br><br>
+- [다익스트라](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Djikstra.md)<br><br> 

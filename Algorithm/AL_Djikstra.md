@@ -48,8 +48,7 @@
    - 초기에는 첫 정점의 거리는 0, 나머지는 무한대로 저장함 (inf 라고 표현함)
    - 우선순위 큐에 (첫 정점, 거리 0) 만 먼저 넣음 
 
-<img src="https://www.fun-coding.org/00_Images/dijkstra_initial.png">
-
+![image](https://user-images.githubusercontent.com/102513932/176884830-347699b8-5225-4ea7-9a71-d0b24e7703d1.png)
 ### 2단계: 우선순위 큐에서 추출한 (A, 0) [노드, 첫 노드와의 거리] 를 기반으로 인접한 노드와의 거리 계산
 - 우선순위 큐에서 노드를 꺼냄
      - 처음에는 첫 정점만 저장되어 있으므로, 첫 정점이 꺼내짐
@@ -61,7 +60,7 @@
        
 > 이전 표에서 보듯이, 첫 정점 이외에 모두 inf 였었으므로, 첫 정점에 인접한 노드들은 모두 우선순위 큐에 들어가고, 첫 정점과 인접한 노드간의 거리가 배열에 업데이트됨
 
-<img src="https://www.fun-coding.org/00_Images/dijkstra_1st.png">
+![image](https://user-images.githubusercontent.com/102513932/176884887-22265751-f98b-4ce6-9f7f-055cec6d9b8e.png)
 
 ### 3단계: 우선순위 큐에서 (C, 1) [노드, 첫 노드와의 거리] 를 기반으로 인접한 노드와의 거리 계산
 - 우선순위 큐가 MinHeap(최소 힙) 방식이므로, 위 표에서 넣어진 (C, 1), (D, 2), (B, 8) 중 (C, 1) 이 먼저 추출됨 (pop)
@@ -70,26 +69,25 @@
     - 배열에 업데이트했으므로 B, 6 (즉 A에서 B까지의 현재까지 발견한 최단 거리) 값이 우선순위 큐에 넣어짐
   - C - D 의 거리는 2, 즉 A - C - D 는 1 + 2 = 3 이므로, A - D의 현재 최단 거리인 2 보다 긴 거리, 그래서 D 의 거리는 업데이트되지 않음
 
-<img src="https://www.fun-coding.org/00_Images/dijkstra_2nd.png">
+![image](https://user-images.githubusercontent.com/102513932/176884936-74af44fd-936b-46d4-909a-1e95fa410f0a.png)
 
 ### 4단계: 우선순위 큐에서 (D, 2) [노드, 첫 노드와의 거리] 를 기반으로 인접한 노드와의 거리 계산
 - 지금까지 접근하지 못했던 E와 F 거리가 계산됨
   - A - D 까지의 거리인 2 에 D - E 가 3 이므로 이를 더해서 E, 5
   - A - D 까지의 거리인 2 에 D - F 가 5 이므로 이를 더해서 F, 7
 
-<img src="https://www.fun-coding.org/00_Images/dijkstra_3rd.png">
+![image](https://user-images.githubusercontent.com/102513932/176884983-dffbdba9-7ff4-459b-bca7-0639ccd4d414.png)
 
 ### 5단계: 우선순위 큐에서 (E, 5) [노드, 첫 노드와의 거리] 를 기반으로 인접한 노드와의 거리 계산
 - A - E 거리가 5인 상태에서, E에 인접한 F를 가는 거리는 1, 즉 A - E - F 는 5 + 1 = 6, 현재 배열에 A - F 최단거리가 7로 기록되어 있으므로, F, 6 으로 업데이트
   - 우선순위 큐에 F, 6 추가
 
-<img src="https://www.fun-coding.org/00_Images/dijkstra_3-2th.png">
-
+![image](https://user-images.githubusercontent.com/102513932/176885015-549d4085-6720-40f2-803e-e202a47b16f3.png)
 ### 6단계: 우선순위 큐에서 (B, 6), (F, 6) 를 순차적으로 추출해 각 노드  기반으로 인접한 노드와의 거리 계산
 - 예제의 방향 그래프에서 B 노드는 다른 노드로 가는 루트가 없음 
 - F 노드는 A 노드로 가는 루트가 있으나, 현재 A - A 가 0 인 반면에 A - F - A 는 6 + 5 = 11, 즉 더 긴 거리이므로 업데이트되지 않음
 
-<img src="https://www.fun-coding.org/00_Images/dijkstra_4th.png">
+![image](https://user-images.githubusercontent.com/102513932/176885050-6d77fa49-1e81-4e68-8dd3-63e13ef2db3f.png)
 
 ### 6단계: 우선순위 큐에서 (F, 7), (B, 8) 를 순차적으로 추출해 각 노드  기반으로 인접한 노드와의 거리 계산
 - A - F 로 가는 하나의 루트의 거리가 7 인 상황이나, 배열에서 이미 A - F 로 가는 현재의 최단 거리가 6인 루트의 값이 있는 상황이므로, 더 긴거리인 F, 7 루트 기반 인접 노드까지의 거리는 계산할 필요가 없음, 그래서 계산없이 스킵함
@@ -98,7 +96,7 @@
 
 > 우선순위 큐를 사용하면 불필요한 계산 과정을 줄일 수 있음
 
-<img src="https://www.fun-coding.org/00_Images/dijkstra_5th.png">
+![image](https://user-images.githubusercontent.com/102513932/176885113-b8d071d5-3f63-444e-ad13-8593e500aff5.png)
 
 ### 우선순위 큐 사용 장점
 - 지금까지 발견된 가장 짧은 거리의 노드에 대해서 먼저 계산
