@@ -26,18 +26,21 @@
 - M개를 A) 순서 있게 나열하기.
 - [BOJ 15651](https://www.acmicpc.net/problem/15651) 
   - N과 M(3) (난이도:2) (실버3)
+- [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/P15651(N%EA%B3%BC%20M(3)).md)
 
 ### 2+A 버전
 - N개 중 2) 중복 없이
 - M개를 A) 순서 있게 나열하기.
 - [BOJ 15649](https://www.acmicpc.net/problem/15649) 
   - N과 M(1) (난이도:2) (실버3)
+- [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/P15649(N%EA%B3%BC%20M(1)).md)
 
 ### 1+B 버전
 - N개 중 1) 중복을 허용해서
 - M개를 B) 고르기 (순서O, 조합)
 - [BOJ 15652](https://www.acmicpc.net/problem/15652) 
   - N과 M(4) (난이도:2) (실버3)
+- [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/P15662(N%EA%B3%BC%20M(4)).md)
 
 
 ### 2+B 버전
@@ -45,4 +48,5 @@
 - M개를 B) 고르기 (순서O, 조합)
 - [BOJ 15650](https://www.acmicpc.net/problem/15650) 
   - N과 M(2) (난이도:2) (실버3)
+- [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/P15650(N%EA%B3%BC%20M(2)).md)
 
