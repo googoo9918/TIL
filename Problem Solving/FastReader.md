@@ -4,6 +4,7 @@
 ```java
 public class Main {
     static FastReader scan = new FastReader();
+    // 입력을 위한 객체 생성
     // 입력시 사용
     // ex)  N = scan.nextInt();
     // M = scan.nextInt();
@@ -13,6 +14,7 @@ public class Main {
     // sb.append('\n');
 
     static StringBuilder sb = new StringBuilder();
+    // 출력을 위한 객체 생성
     // 출력시 사용
     // String은 불변 객체이므로, 2개의 String을 더해주면 새로운 String을 생성한다.
     // 즉, String과 String을 더해주는 행위는 메모리 해제와 메모리 할당을 발생시키며
@@ -126,4 +128,52 @@ public class Main {
         }
     }
 }
+```
+
+```java
+static class FastReader {
+        BufferedReader br;
+        StringTokenizer st;
+
+        public FastReader() {
+            br = new BufferedReader(new InputStreamReader(System.in));
+        }
+
+        public FastReader(String s) throws FileNotFoundException {
+            br = new BufferedReader(new FileReader(new File(s)));
+        }
+
+        String next() {
+            while (st == null || !st.hasMoreElements()) {
+                try {
+                    st = new StringTokenizer(br.readLine());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return st.nextToken();
+        }
+
+        int nextInt() {
+            return Integer.parseInt(next());
+        }
+
+        long nextLong() {
+            return Long.parseLong(next());
+        }
+
+        double nextDouble() {
+            return Double.parseDouble(next());
+        }
+
+        String nextLine() {
+            String str = "";
+            try {
+                str = br.readLine();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return str;
+        }
+    }
 ```
