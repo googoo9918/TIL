@@ -315,4 +315,134 @@ public class SingleLinkedList<T> {
 }
 ```
 
+### 6. 다양한 링크드 리스트 구조: 더블 링크드 리스트(Doubly linked list)
+* 더블 링크드 리스트(Doubly linked list) 기본 구조 
+  - 이중 연결 리스트라고도 함
+  - 장점: 양방향으로 연결되어 있어서 노드 탐색이 양쪽으로 모두 가능
+  <br>
+  ![image](https://user-images.githubusercontent.com/102513932/175000234-c388a33c-a3a5-427f-ab6b-f4ccd724d42e.png)
+```java
+public class DoubleLinkedList<T> {
+    public Node<T> head = null; 
+    public Node<T> tail = null; 
+    //끝에서 부터도 찾을 수 있게 tail 변수도 존재.
+    
+    public class Node<T> {
+        T data;
+        Node<T> prev = null;
+        Node<T> next = null; // 포인터 2개 형성.
+        
+        public Node(T data) {
+            this.data = data; //생성자
+        }
+    }
+    
+    public void addNode(T data) { // 노드 추가 메소드
+        if (this.head == null) {
+            this.head = new Node<T>(data);
+            this.tail = this.head; 
+            // 처음 값을 생성하는 것이니까, tail에도 값 넣어주기
+        } else {
+            Node<T> node = this.head; //노드가 존재하는 경우, 임시 변수 설정
+            while (node.next != null) {
+                node = node.next; //끝을 찾기 위해서!
+            }
+            node.next = new Node<T>(data); 
+            // 맨 끝에 노드 추가해주기.
+            node.next.prev = node; 
+            // node.next의 next는 null로 설정되는것이 맞지만, prev는 그 전 노드를 가르키게 해 줘야함.
+            this.tail = node.next; 
+            // 현재 node의 tail 은 node.next를 가르키면 되겠지?
+        } // 지금 this는 DoubleLinkedList를 가르킨다고 보면 된다.
+    }
+    
+    public void printAll() {
+        if (this.head != null) {
+            Node<T> node = this.head; 
+            // 임시 변수 설정 (출력해야 되니까)
+            System.out.println(node.data); 
+            // while문 안에서 출력 시작하면 마지막 값 출력 못함.. do while 느낌
+            while (node.next != null) {
+                node = node.next;
+                System.out.println(node.data);
+            }
+        }
+    }
+}
+
+
+public T searchFromHead(T isData) { //head 부터 data 찾는 메소드
+        if (this.head == null) { 
+            return null; // 노드 없는 경우
+        } else {
+            Node<T> node = this.head;
+            while (node != null) {
+                if (node.data == isData) { // 내가 찾는 data라면
+                    return node.data; // 리턴
+                } else {
+                    node = node.next; // 아니면 순회
+                }
+            }
+            return null; // 찾는 data 없으면 null 리턴해주기.
+        }
+        
+    }
+    
+    public T searchFromTail(T isData) { // tail에서 부터 data찾는 메소드
+        if (this.head == null) {
+            return null;
+        } else {
+            Node<T> node = this.tail;
+            while (node != null) {
+                if (node.data == isData) {
+                    return node.data;
+                } else {
+                    node = node.prev; // 순회 방식만 달리하면 됨.
+                }
+            }
+            return null;
+        }
+    }
+
+// 임의 노드 앞에 노드에 원하는 데이터를 추가하는 메소드 
+public boolean insertToFront(T existedData, T addData) { 
+    //해당 DATA를 가진 노드, 새로 만들 노드가 가질 DATA
+        if (this.head == null) { // DATA가 없을 경우
+            this.head = new Node<T>(addData); 
+            // addData 값을 가진 노드를 만들어 주면 되겠지!
+            this.tail = this.head;
+            return true;
+        } else if (this.head.data == existedData) { 
+            // 제일 앞에 있는 data가 찾는 data일때. (이 앞에 새 노드 추가해줘야겠지?)
+            Node<T> newHead = new Node<T>(addData); 
+            // 새 head 만들고 만들 node가 가질 data 추가.
+            newHead.next = this.head; // 연결해주기.
+            this.head.next.prev = this.head; // prev도 연결해주기.
+            this.head = newHead; // head 바꿔주기! 
+            return true;
+        } else { // head가 아닌 다른 node 사이에 값을 넣는 경우
+            Node<T> node = this.head; // 순회를 위한 node
+            while (node != null) {
+                if (node.data == existedData) { 
+                    Node<T> nodePrev = node.prev; 
+                    // 현재 노드값 이전 node를 가르키는 nodeprev 변수 임시 설정.
+                    
+                    nodePrev.next = new Node<T>(addData);
+                    // 중간에 새 노드 만들어주기!
+                    nodePrev.next.next = node; 
+                    // 새로 만든 노드의 next 부분 채워주기.
+                    
+                    nodePrev.next.prev = nodePrev; 
+                    // 새로 만든 노드의 prev 부분 채워주기.
+                    node.prev = nodePrev.next; 
+                    // 현재 노드값의 이전 부분도 수정해주기.
+                    return true;
+                } else {
+                    node = node.next; //순회
+                }
+            }
+            return false; // 값을 찾지 못한경우, false.
+        }
+    }
+```
 

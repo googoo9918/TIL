@@ -361,7 +361,7 @@ map2.get("Dave"); // 01032221111
 import java.util.Map;
 import java.util.HashMap;
 HashMap<String,String> map1 = new HashMap<String,String>();
-//HashMap생성 , <키 타입, 값 타입>
+//HashMap생성
 HashMap<String,String> map2 = new HashMap<>();
 //new에서 타입 파라미터 생략가능
 HashMap<String,String> map3 = new HashMap<>(map1);
@@ -375,20 +375,30 @@ HashMap<String,String> map6 = new HashMap<String,String>(){{
     put("a","b");
 }};
 ```
-#### 값 추가 및 삭제
+#### 기타 용법
 ```java
 HashMap<Integer,String> map = new HashMap<>();
 //new에서 타입 파라미터 생략가능
+HashMap<Integer,String> map2 = new HashMap<>();
 map.put(1,"사과"); //값 추가
 map.put(2,"바나나");
 map.put(3,"포도");
 map.put(3,"수박"); //같은 키의 새로운 value 들어가면 대치됨.
+map2.putAll(map); // putAll로 두개의 map을 합칠 수 있다. 
 map.remove(1); //key값 1 제거
 map.clear(); //모든 값 제거
+map.replace(3, "단감"); // value를 교체해줌.
+amp.replace(3,"단감","곶감")// 인자가 3개인 replace 메소드.
+// key 3의 값의 value가 "단감"일때만 "곶감"으로 변경하고 true 리턴
+// "단감"이 아니라면 false를 리턴한다.
 
 if(!map.containsKey(2))	
 //키가 들어있는지 확인. 있으면 덮어쓰지 않는다.
+//containsValue도 마찬가지로 사용 가능.
 		map.put(2, "참외"); 
+
+map.isEmpty(); // 비었으면 true, 값이 하나라도 있으면 false 리턴
+
 ```
 
 #### 값 출력
@@ -411,7 +421,7 @@ for (Entry<Integer, String> entry : map.entrySet()) {
 //[Key]:2 [Value]:바나나
 //[Key]:3 [Value]:포도
 
-//KeySet() 활용
+//KeySet() 활용 -> 저장된 key들을 set 객체로 리턴.
 for(Integer i : map.keySet()){ //저장된 key값 확인
     System.out.println("[Key]:" + i + " [Value]:" + map.get(i));
 }
