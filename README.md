@@ -36,3 +36,6 @@
 - [깊이 우선 탐색(DFS)](https://github.com/ssu18/TIL/blob/main/Algorithm/Al_DepthFirstSearch.md)<br><br>
 - [탐욕 알고리즘](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Greedy.md)<br><br>
 - [다익스트라](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Djikstra.md)<br><br> 
+- [크루스칼](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Kruskal.md)<br><br>
+- [프림](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Prim.md)<br><br>
+- [백트랙킹](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BackTracking.md)<br><br>
