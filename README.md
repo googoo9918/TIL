@@ -7,7 +7,7 @@
 - [마크다운 문법(MD)](https://github.com/ssu18/TIL/blob/main/ETC/MDgrammer.md) <br><br>
 
 
-### 자료구조
+### 자료구조(Data Structure)
 -----------------------------
 - [OT](https://github.com/ssu18/TIL/blob/main/DataStructure/WelcomeDS_OT.md) <br><br>
 - [리스트(List)](https://github.com/ssu18/TIL/blob/main/DataStructure/WelcomeDS_List.md) <br><br>
@@ -20,7 +20,7 @@
 - [트리(Tree)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Tree.md) <br><br>
 - [힙(Heap)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Heap.md) <br><br>
 
-### 알고리즘
+### 알고리즘(Algorithm)
 -----------------------------------
 - [공간복잡도(Space Complexity)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SpacComplexity.md) <br><br>
 - [버블 정렬(Bubble Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BubbleSort.md) <br><br>
@@ -39,3 +39,7 @@
 - [크루스칼(Kruskal)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Kruskal.md)<br><br>
 - [프림(Prim)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Prim.md)<br><br>
 - [백트랙킹(Back Tracking)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BackTracking.md)<br><br>
+
+### 문제 해결(Problem Solving)
+-----------------------------------------
+- [완전 탐색(Brute Force)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(Brute%20Force).md)<br><br>
