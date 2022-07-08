@@ -27,6 +27,14 @@
 - [BOJ 15651](https://www.acmicpc.net/problem/15651) 
   - N과 M(3) (난이도:2) (실버3)
 - [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/P15651(N%EA%B3%BC%20M(3)).md)
+- 핵심 코드
+```java
+for (int cand = 1; cand <= n; cand++) { //핵심
+                selected[k] = cand;
+                rec_func(k + 1);
+                selected[k] = 0;
+```
+
 
 ### 2+A 버전
 - N개 중 2) 중복 없이
@@ -34,6 +42,19 @@
 - [BOJ 15649](https://www.acmicpc.net/problem/15649) 
   - N과 M(1) (난이도:2) (실버3)
 - [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/P15649(N%EA%B3%BC%20M(1)).md)
+- 핵심 코드
+```java
+if(bool[cand]==true){ //핵심
+                    continue;
+                }
+                selected[k] = cand;
+                bool[cand] = true;
+                rec_func(k+1);
+                selected[k] = 0;
+                bool[cand] = false;
+            }
+```
+
 
 ### 1+B 버전
 - N개 중 1) 중복을 허용해서
@@ -41,6 +62,16 @@
 - [BOJ 15652](https://www.acmicpc.net/problem/15652) 
   - N과 M(4) (난이도:2) (실버3)
 - [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/P15662(N%EA%B3%BC%20M(4)).md)
+- 핵심 코드
+```java
+for(int cand =1; cand<=n; cand++){ //핵심
+                if(selected[k-1]<=cand){
+                    selected[k] = cand;
+                    rec_func(k+1);
+                    selected[k] =0;
+                }
+            }
+```
 
 
 ### 2+B 버전
@@ -49,4 +80,12 @@
 - [BOJ 15650](https://www.acmicpc.net/problem/15650) 
   - N과 M(2) (난이도:2) (실버3)
 - [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/P15650(N%EA%B3%BC%20M(2)).md)
+- 핵심 코드
+```java
+for(int cand=selected[k-1]+1; cand<=n; cand++){
+                selected[k] = cand;
+                rec_func(k+1);
+                selected[k] = 0;
+            }
+```
 
