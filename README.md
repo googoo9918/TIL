@@ -42,4 +42,5 @@
 
 ### 문제 해결(Problem Solving)
 -----------------------------------------
-- [완전 탐색(Brute Force)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(Brute%20Force).md)<br><br>
+- [완전 탐색(Brute Force)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(Brute%20Force).md)<br><br>'
+- [문자열(String)]()<br><br>
