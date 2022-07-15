@@ -34,10 +34,11 @@ public class Main {
         
     }
     static class FastReader {
-        BufferedReader br;
-        StringTokenizer st;
-        public FastReader() {
-            br = new BufferedReader(new InputStreamReader(System.in)); //기본 생성자
+        BufferedReader br; // 객체로 만들 필요는 없다.
+        StringTokenizer st; // 그냥 변수로 충분하다.
+        public FastReader() { //public 잊지말기.
+            br = new BufferedReader(new InputStreamReader(System.in)); //기본 생성자 
+            // BufferedReader는 buffer를 읽고 String으로 반환한다.(엔터 경계 인식)
         }
         public FastReader(String s) throws FileNotFoundException {
             br = new BufferedReader(new FileReader(new File(s))); //txt 파일 읽을때 생성자
