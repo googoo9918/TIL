@@ -33,19 +33,30 @@
 - Character.isAlphabetic() <br><br>
 ### 6. 중복문자제거
 - [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P6.md)
-- '\0' 사용과 주의
+- '\0' 사용과 주의 <br><br>
 ### 7. 회문 문자열
 - [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P7.md)
 - equals()
-- equalsIgnoreCase()
+- equalsIgnoreCase() <br><br>
 ### 8. 유효한 팰린드롬
 - [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P8.md)
-- replaceAll()
+- replaceAll() <br><br>
 ### 9. 숫자만 추출
 - [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P9.md)
 - replaceAll()
 - Integer.parseInt()
-- Character.isDigit()
+- Character.isDigit() <br><br>
 ### 10. 가장 짧은 문자거리
+- [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P9.md)
+- 배열에서 특정 index ~ 각 index 최소거리 갱신하는 ps
+- 단계별로 진행하는 습관 들여볼 것
+- 예외처리로 얼타지 말기! <br><br>
 ### 11. 문자열 압축
+- [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P9.md)
+- 과연 진짜 2중 for문이 필요한가? (for문에 맞는 단계별 진행 하기)
+- index관련 오류시 ""(공백) 추가하는 센스 <br><br>
 ### 12. 암호
+- [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P9.md)
+- 형변환을 너무 복잡하게 생각하지 말자.
+- substring() 인자 2개와 1개 차이
+- 지금 가장 필요한 것은 단계별 진행.
