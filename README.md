@@ -5,7 +5,7 @@
 - [재귀 호출(Recursive Call)](https://github.com/ssu18/TIL/blob/main/ETC/RecursiveCall.md) <br><br>
 - [자바 기초 문법(JavaBasic)](https://github.com/ssu18/TIL/blob/main/ETC/JavaBasic.md) <br><br>
 - [마크다운 문법(MD)](https://github.com/ssu18/TIL/blob/main/ETC/MDgrammer.md) <br><br>
-- [PS용 입력 클래스(FastReader)]()
+- [PS용 입력 클래스(FastReader)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/FastReader.md)
 
 
 ### 자료구조(Data Structure)
@@ -45,4 +45,4 @@
 -----------------------------------------
 - [완전 탐색(Brute Force)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(Brute%20Force).md)<br><br>
 - [문자열(String)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EB%AC%B8%EC%9E%90%EC%97%B4(String).md)<br><br>
-- [배열(Array)]()<br><br>
+- [배열(Array)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EB%B0%B0%EC%97%B4(Array).md)<br><br>
