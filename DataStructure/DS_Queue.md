@@ -6,7 +6,6 @@
   - FIFO(First-In, First-Out) 또는 LILO(Last-In, Last-Out) 방식으로 스택과 꺼내는 순서가 반대
   
 <img src="https://www.fun-coding.org/00_Images/queue.png" />
-* 출처: http://www.stoimen.com/blog/2012/06/05/computer-algorithms-stack-and-queue-data-structure/
 <br/>
 <br/>
 
