@@ -5,20 +5,30 @@
 ### 1. 문자찾기 
 - [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P1.md)
 - toUpperCase()
+  - ex) String str = str2.toUpperCase();
 - toLowerCase()
-- toCharArray() <br><br>
+  - ex)  answer += Character.toLowerCase(x);
+- toCharArray() 
+  - ex) char[] carr = str.toCharArray;
+    - 문자열을 한 글자씩 쪼개서 char타입 배열에 넣어주는 메소드.<br><br>
 ### 2. 대소문자 변환
 - [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P2.md)
 - char배열의 정수형 연산 
 - 아스키코드 (65~90 / 97~122)
 - String 배열에 char형을 더했을 때
 - isUpperCase()
+  - ex) if(Character.isUpperCase(x))
 - isLowerCase()<br><br>
 ### 3. 문장 속 단어
 - [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P3.md)
 - split()
+  - ex) String[] str_arr; str_arr = str.split(" ");
 - indexof()
+  - ex) int pos;  while((pos = str.indexOf(' ')) != -1)
+    - 띄어쓰기가 나오지 않을때 까지 Loop
 - substring() <br><br>
+  -  String tmp = str.substring(0,pos); 
+     -  substring은 0~ <span style = 'backgorund-color: #fff5b1'> pos-1 </span> 까지 문장 짤라서 리턴
 ### 4. 단어 뒤집기
 - [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P4.md)
 - 두개의 임시변수를 이용한 문자열 조절.
