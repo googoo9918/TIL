@@ -14,7 +14,7 @@
 ### 2. 대소문자 변환
 - [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P2.md)
 - char배열의 정수형 연산 
-- 아스키코드 (65~90 / 97~122)
+- 아스키코드 (65 to 90 / 97 to 122)
 - String 배열에 char형을 더했을 때
 - isUpperCase()
   - ex) if(Character.isUpperCase(x))
@@ -26,16 +26,22 @@
 - indexof()
   - ex) int pos;  while((pos = str.indexOf(' ')) != -1)
     - 띄어쓰기가 나오지 않을때 까지 Loop
-- substring() <br><br>
+- substring()
   -  String tmp = str.substring(0,pos); 
-     -  substring은 0~ <span style = 'backgorund-color: #fff5b1'> pos-1 </span> 까지 문장 짤라서 리턴
+     -  substring은 0 ~ <mark> pos-1 </mark>까지 문장 짤라서 리턴  <br><br>
 ### 4. 단어 뒤집기
 - [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P4.md)
 - 두개의 임시변수를 이용한 문자열 조절.
 - StringBuilder
   - reverse()
   - toString()
-- String.valueOf() <br><br>
+    - ex)  String tmp = new StringBuilder(x).reverse().toString();
+      -  reverse 메소드로 거꾸로 뒤집고 -> toString으로 넣어주기
+- String.valueOf()
+  - ex)  char[] s = x.toCharArray();   
+    - String tmp = String.valueOf(s); 
+  - valueOf 메소드는 문자 배열을 String화 시켜준다.
+<br><br>
 ### 5. 특정 문자 뒤집기
 - [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P5.md)
 - if/else로 경우의 수 나눌 때 최대한 간략히
