@@ -87,11 +87,11 @@
 - 단계별로 진행하는 습관 들여볼 것
 - 예외처리로 얼타지 말기! <br><br>
 ### 11. 문자열 압축
-- [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P9.md)
+- [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P11.md)
 - 과연 진짜 2중 for문이 필요한가? (for문에 맞는 단계별 진행 하기)
 - index관련 오류시 ""(공백) 추가하는 센스 <br><br>
 ### 12. 암호
-- [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P9.md)
+- [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P12.md)
 - 형변환을 너무 복잡하게 생각하지 말자.
 - substring() 인자 2개와 1개 차이
 - 지금 가장 필요한 것은 단계별 진행.
