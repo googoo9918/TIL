@@ -1,8 +1,30 @@
-HTML 기초 문법
+HTML(Hyper Text Markup Language) 기초 문법
 ==============================
 
 #### 0. HTML 요소
 ![image](https://user-images.githubusercontent.com/102513932/186053947-67f5abf8-1d86-48a3-a40d-3e253d5a976d.png) <br>
+
+#### 0.0 대표 구획 태그
+- ```<header>```
+  - 소개 및 탐색에 도움을 주는 콘텐츠
+  - 제목, 로고, 검색 폼, 작성자 이름 등
+- ```<main>``` 
+  - 문서 body의 주요 콘텐츠
+  - 핵심 주제, 핵심 기능에 직접적으로 연결됐거나 확장하는 내용 등 
+- ```<nav>``` 
+  - 현재 페이지 내, 또는 다른 페이지로의 링크를 보여주는 구획
+  - 메뉴, 목차, 색인 등
+- ```<aside>``` 
+  - 문서의 주요 내용과 간접적으로 연관된 부분
+  - 사이드바 혹은 콜아웃 박스
+- ```<footer>```
+  - 가장 가까운 구획 콘텐츠나 구획 루트의 푸터
+  - 구획의 작성자, 저작권 정보, 관련 문서 등
+- ```<address>```
+  - 가까운 HTML 요소의 사람, 단체, 조직 등에 대한 연락처 정보
+- ``` <h1>, ~ <h6>```
+  - 6단계 구획 제목
+  - h1이 제일 높고 h6이 제일 낮다
 
 
 #### 1. div , span
@@ -62,44 +84,32 @@ HTML 기초 문법
 - ``` <input> ``` 태그의 다양한 옵션 존재
     - ``` <input type="text"> ```
       - ![image](https://user-images.githubusercontent.com/102513932/186068387-a7965437-afb4-4410-bc62-d52d2b6d84cc.png)
+      - ![image](https://user-images.githubusercontent.com/102513932/186097281-538180cf-da2e-4053-8313-b5d996d243f2.png)
 
-      - First name:<br>
-         <input type="text" name="firstname"><br>
-        Last name:<br>
-        <input type="text" name="lastname">
     - ``` <input type="password"> ```
-      - ![image](https://user-images.githubusercontent.com/102513932/186068438-614c8ca4-c9e4-44a9-9542-02a0b7c31bc3.png)
-      -  User name:<br>
-  <input type="text" name="username"><br>
-  User password:<br>
-  <input type="password" name="psw">
+      - 위와 동일하나, 입력시 별표나 동그라미로 표시
 
     - ``` <input type="submit"> ```
       -  ![image](https://user-images.githubusercontent.com/102513932/186068601-4a193ab3-bd5d-4254-b9a6-cbca54dc7f2a.png)
-      -  <input type="submit" value="Submit">
+      -  ![image](https://user-images.githubusercontent.com/102513932/186097469-05f01c45-369f-42bd-9e46-aac9d45275dd.png)
     - ``` <input type="radio"> ```
       - 하나만 선택 가능
       - ![image](https://user-images.githubusercontent.com/102513932/186068850-c5d8dab6-cb7f-421a-9207-f09314520fa2.png)
- <input type="radio" id="male" name="gender" value="male">
-  <label for="male">Male</label><br>
-  <input type="radio" id="female" name="gender" value="female">
-  <label for="female">Female</label><br>
-  <input type="radio" id="other" name="gender" value="other">
-  <label for="other">Other</label>
-
+      - ![image](https://user-images.githubusercontent.com/102513932/186097599-b5d7621f-7f77-4fde-8d82-0aac5ba8d537.png)
 
     - ``` <input type="checkbox"> ```
       - 중복 선택 가능
       - ![image](https://user-images.githubusercontent.com/102513932/186069015-e27ecf30-f23a-41ad-a0df-83d386b5535d.png)
-  <input type="checkbox" name="vehicle1" value="Bike"> I have a bike<br>
-  <input type="checkbox" name="vehicle2" value="Car"> I have a car
+      - ![image](https://user-images.githubusercontent.com/102513932/186097730-1ca7ad96-379c-485e-acb9-0a655382fc31.png)
 
     - ``` <input type="button"> ```
       - ![image](https://user-images.githubusercontent.com/102513932/186069134-7c557819-65f4-4705-9783-6e2ef5481bcf.png)
-      - <input type="button" onclick="alert('Hello World!')" value="Click Me!"> 
+      - ![image](https://user-images.githubusercontent.com/102513932/186097782-d4df451a-4820-4722-8780-41167f392b2c.png)
+
 - ```<textarea>``` 태그
   - 여러줄 문자열 입력 가능
     - ```<textarea cols="50" rows="10"></textarea>```
-    - <textarea cols="50" rows="10"></textarea>
+    - ![image](https://user-images.githubusercontent.com/102513932/186097970-78fc31e7-b8ec-405d-9da6-78acf856f9f8.png)
       - placeholder 속성으로 안내 문구를 넣을 수 있다.
 ![image](https://user-images.githubusercontent.com/102513932/186053212-aa3b8041-4d07-4aed-ac1d-24fe35d0a88d.png)
+
