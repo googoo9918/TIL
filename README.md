@@ -5,9 +5,9 @@
 - [재귀 호출(Recursive Call)](https://github.com/ssu18/TIL/blob/main/ETC/RecursiveCall.md) <br><br>
 - [자바 기초 문법(JavaBasic)](https://github.com/ssu18/TIL/blob/main/ETC/JavaBasic.md) <br><br>
 - [마크다운 기초 문법(MD)](https://github.com/ssu18/TIL/blob/main/ETC/MDgrammer.md) <br><br>
-- [PS용 입력 클래스(FastReader)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/FastReader.md)
-- [HTML 기초 문법]()<br><br>
-- [Intellij 단축키 모음]()<br><br>
+- [PS용 입력 클래스(FastReader)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/FastReader.md)<br><br>
+- [HTML 기초 문법](https://github.com/ssu18/TIL/blob/main/ETC/HTML.md)<br><br>
+- [Intellij 단축키 모음](https://github.com/ssu18/TIL/blob/main/ETC/Intellij.md)<br><br>
 
 
 ### 자료구조(Data Structure)
