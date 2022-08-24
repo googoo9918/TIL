@@ -16,15 +16,16 @@
      - ![image](https://user-images.githubusercontent.com/102513932/186436360-43aeb2dd-cdd3-4da7-948b-e7caf7ebd5ed.png)
 
 3. 코드 작성
-    - 쓰기 영역
+- 쓰기 영역
 ``` HTML
 <div>
     <div> 댓글 9M</div>
     <input type ="text" placeholder="댓글을 입력해주세요">
     <button>등록</button>
 </div> // 전체 태그를 div로 감싸는 것 주의.
-```
-    - 읽기 영역
+``` 
+- 읽기 영역
+
 ``` HTML
 <ul>
     <li>
