@@ -124,4 +124,33 @@ section + p { }
     - text-align
       - legt, right, center, justify(양쪽 정렬)
 
-  
+#### 5. 박스 모델
+![image](https://user-images.githubusercontent.com/102513932/186367039-e992d1a9-b842-48d7-a71b-d9bf33bfab00.png)
+- 웹 페이지 내의 모든 콘텐츠는 고유의 영역을 지님
+  - 이 영역은 항상 직사각형으로, 박스라 지칭
+  - 일반적으로 하나의 콘텐츠로 묶이는 요소들이 하나의 박스가 된다.
+  - 너비(width)와 높이(height)을 지닌다. 
+
+![image](https://user-images.githubusercontent.com/102513932/186368415-8cf48711-6a9e-492d-af5e-b3ceb35c174f.png)
+- 줄바꿈이 되는 박스(block)
+  - 줄바꿈이 되는 대표적 태그 : ```<h1>```, ```<p>```
+    - 크롬에서 개발자 도구(F12)를 통해 박스 종류 구분 가능
+- 옆으로 붙는 박스(inline, inline-block)
+  - 줄바꿈이 되지 않는 대표적 태그 : ```<span>```
+    - span 태그의 경우, width와 height 속성또한 적용되지 않는다.
+    - 따라서 속성을 적용하기 위해 태그에 `display: inline-block'을 추가해야 한다.
+      - ![image](https://user-images.githubusercontent.com/102513932/186367157-dae64dbb-def0-45da-ab6b-38e0f3246419.png)
+    - inline-block 박스는 inline 박스처럼 다른 요소의 옆으로 붙으며, 자체적으로 고유의 크기를 지닌다.
+  - 크롬에서 개발자 도구(F12)를 통해 박스 종류 구분 가능
+
+- ![image](https://user-images.githubusercontent.com/102513932/186367212-d20a6d11-a089-496c-9b7f-874a13304a53.png)
+
+#### 5.1 박스의 구성 요소
+![image](https://user-images.githubusercontent.com/102513932/186367272-751b0a98-dcc9-403c-98d4-036d44d81656.png)
+
+- border(테두리)
+  - 레이아웃을 시각적으로 확인 가능
+ex) ``` 
+p{
+    border: 1px solid red;
+} // p 태그에 1px의 빨간색 실선 추가```
