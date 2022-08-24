@@ -103,8 +103,8 @@ main {
   - 가로 정렬
   - 내용만큼의 공간 차지
 - Flexobx 속성 활용시
-  - 정렬
-  - 차지하는 공간 설정
+  - 정렬 (주로 부모 요소)
+  - 차지하는 공간 설정(주로 자식 요소)
 
 부모 요소에 적용하는 Flexbox 속성
 ----------------
@@ -151,3 +151,53 @@ main {
       - ![image](https://user-images.githubusercontent.com/102513932/186395629-4783f187-0f3b-47ca-8800-440429846457.png)
     - ```flex-direction : column```인 경우
       - ![image](https://user-images.githubusercontent.com/102513932/186395704-60fc052e-a273-4075-9036-29d7baaceecc.png)
+
+자식 요소에 적용하는 Flexbox 속성
+--------------------------------
+
+- flex 속성의 값
+  - 1. ```<grow(팽창 지수)>```
+    - 요소의 크기가 늘어날 때 얼마나 늘어날 것인지
+  - 2. ```<shrink(수축 지수)>```
+    - 요소의 크기가 줄어들 때 얼마나 줄어들 것인지
+  - 3. ```<basis(기본 크기)>```
+    - 늘어나고 줄어듦과 상관없이 요소의 기본 크기는 얼마인지
+  - 각 속성 기본값 
+    - ```flex: 0 1 auto;```
+```css
+flex-grow: 0;
+flex-shrink: 1;
+flex-basis: auto;
+// 따로 값 지정도 가능
+```
+
+1.grow
+-----------------------
+- grow는 얼마나 늘어날 것인지를 의미
+  - flex 속성을 설정하기 전
+    - ![image](https://user-images.githubusercontent.com/102513932/186427707-0c1b7837-5126-4084-bbfd-29c788a47830.png)
+  - box1만 ```flex-gorw : 1```로 설정시 (나머지 box는 기본값인 0)
+    - ![image](https://user-images.githubusercontent.com/102513932/186427871-057d295a-73b1-48cf-8747-7e361b95c383.png)
+    - 남는 공간 차지 비율 1:0:0
+  - box1, box2 ```flex-gorw : 1```
+    - ![image](https://user-images.githubusercontent.com/102513932/186428017-a8f6a9ce-bda6-40c4-95bf-e43de718a526.png)
+    - 남는 공간 차지 비율 1:1:0
+  - box1, box2, box3 ```flex-gorw : 1```
+    - ![image](https://user-images.githubusercontent.com/102513932/186428151-19d21130-0674-48ce-9bdf-030df7729bb9.png)
+    - 남는 공간 차지 비율 1:1:1
+  - ```grow```는 정렬축 방향의 빈 공간을 비율로 나눠줄 때 사용한다.
+  - 즉, 자식 요소의 grow 값 / 자식 요소들의 grow값의 총합의 비율로 빈 공간을 가져간다.
+
+2. shrink
+------------------------------
+- grow와 반대로, 설정한 비율만큼 박스 크기가 작아진다.
+- 다만, grow와 같이 조정하는 것은 권장하지 않으므로, grow만 조정하는 것을 권장한다.
+  - width, flex-basis의 속성에 따른 비율이므로, 실제 크기 예측 어려움.
+- 기본값인 1로 두자!
+
+3.basis
+-------------------------------
+- ```basis```는 지식 박스가 ```grow```나 ```shrink```에 의해 변동되기 전 갖는 기본 크기이다.
+  - ```grow```가 0일 때, basis 크기를 지정시 그 크기는 유지 된다.
+  - ```display``` 속성에 ```flex```가 적용된 박스는 경우에 다라 ```basis```설정 크기가 달라질 수 있다.
+- 즉, ```grow```가 0일때만, ```basis```가 정확히 보장된다.

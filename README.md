@@ -6,10 +6,14 @@
 - [자바 기초 문법(JavaBasic)](https://github.com/ssu18/TIL/blob/main/ETC/JavaBasic.md) <br><br>
 - [마크다운 기초 문법(MD)](https://github.com/ssu18/TIL/blob/main/ETC/MDgrammer.md) <br><br>
 - [PS용 입력 클래스(FastReader)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/FastReader.md)<br><br>
-- [HTML 기초 문법](https://github.com/ssu18/TIL/blob/main/ETC/HTML.md)<br><br>
 - [Intellij 단축키 모음](https://github.com/ssu18/TIL/blob/main/ETC/Intellij.md)<br><br>
 
-
+### 프론트엔드(Front End)
+----------------------------
+- [HTML 기초 문법](https://github.com/ssu18/TIL/blob/main/FrontEnd/HTML.md)<br><br>
+- [CSS 기초 문법](https://github.com/ssu18/TIL/blob/main/FrontEnd/CSS.md)<br><br>
+- [레이아웃](https://github.com/ssu18/TIL/blob/main/FrontEnd/Layout.md)<br><br>
+- [와이어프레임](https://github.com/ssu18/TIL/blob/main/FrontEnd/WireFrame.md)<br><br>
 ### 자료구조(Data Structure)
 -----------------------------
 - [OT](https://github.com/ssu18/TIL/blob/main/DataStructure/WelcomeDS_OT.md) <br><br>

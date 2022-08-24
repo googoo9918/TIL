@@ -150,7 +150,59 @@ section + p { }
 
 - border(테두리)
   - 레이아웃을 시각적으로 확인 가능
-ex) ``` 
-p{
+ ``` css
+ p{
     border: 1px solid red;
-} // p 태그에 1px의 빨간색 실선 추가```
+} // p 태그에 1px의 빨간색 실선 추가
+```
+  - 테두리 두께 : border-width
+  - 테두리 스타일 : border-style
+  - 테두리 색상 : border-color
+- margin (바깥 여백)
+  - 상, 우, 하, 좌로 시계방향 순서
+ ```css 
+ p{
+    margin: 10px 20px 30px 40px;
+} //p 태그의 상하좌우에 여백 추가
+```
+  - 크롬 개발자 도구에서 확인 가능
+    - margin은 주황색으로 표시된다.
+  - 값을 2개만 넣으면 위아래, 좌우에 여백 적용
+```css
+p {
+  margin: 10px 20px;
+}
+```
+  - 값을 1개만 넣으면 모든 방향에 적용
+```css
+p{
+    margin: 10px;
+}
+```
+- padding (안쪽 여백)
+  - border을 기준으로 박스 내부의 여백 지정
+  - 여러 규칙은 margin과 동일하다.
+  - padding은 크롬 개발자 도구에서 초록색으로 표현된다.
+
+#### 5.2 박스를 벗어나는 콘텐츠 처리
+- 박스 크기보다 콘텐츠 크기가 큰 경우, 스크롤 생성 가능
+```css
+p{
+    height : 40px;
+    overflow: auto;
+} overflow: auto를 통해 스크롤 생성
+```
+  - overflow-x/overflow-y를 통해 두 방향 모두 지정 가능
+- 콘텐츠 내용을 보여주고 싶지 않은 경우, ```overflow:hidden``` 사용
+- 박스 크기 측정 기준
+  - 박스에 적용할 여백을 고려해야 한다.
+  - ![image](https://user-images.githubusercontent.com/102513932/186369579-47bbf5c7-cea7-4f58-a4c7-fdddf9764e2a.png)
+    - 레이아웃 관련 이야기는 border-box 계산법이 기준
+```css
+* {
+    box-sizing : border-box;
+}
+```
+- 모든 박스에서 여백과 테두리를 포함한 크기로 계산된다.
+  - 레이아웃 디자인을 보다 편하게 할 수 있음. 
+
