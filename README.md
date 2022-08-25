@@ -2,7 +2,6 @@
 ### 알고리즘(Algorithm)
 -----------------------------------
 - [재귀 호출(Recursive Call)](https://github.com/ssu18/TIL/blob/main/Algorithm/RecursiveCall.md) <br><br>
-- [공간복잡도(Space Complexity)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SpacComplexity.md) <br><br>
 - [버블 정렬(Bubble Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BubbleSort.md) <br><br>
 - [선택 정렬(Selection Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SelectionSort.md) <br><br>
 - [삽입 정렬(Insertion Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_InsertionSort.md) <br><br>
@@ -28,7 +27,6 @@
 - [큐(Queue)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Queue.md) <br><br>
 - [스택(Stack)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Stack.md) <br><br>
 - [링크드 리스트(Linked List)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_LinkedList.md) <br><br>
-- [시간 복잡도(Time Complexity)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_TimeComplexity.md) <br><br>
 - [해쉬 테이블(Hash Table)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_HashTable.md) <br><br>
 - [트리(Tree)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Tree.md) <br><br>
 - [힙(Heap)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Heap.md) <br><br>
@@ -49,6 +47,8 @@
 ### 문제 해결(Problem Solving)
 -----------------------------------------
 - [PS용 입력 클래스(FastReader)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/FastReader.md)<br><br>
+- [시간 복잡도(Time Complexity)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_TimeComplexity.md) <br><br>
+- [공간복잡도(Space Complexity)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SpacComplexity.md) <br><br>
 - [완전 탐색(Brute Force)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(Brute%20Force).md)<br><br>
 - [문자열(String)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EB%AC%B8%EC%9E%90%EC%97%B4(String).md)<br><br>
 - [배열(Array)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EB%B0%B0%EC%97%B4(Array).md)<br><br>
