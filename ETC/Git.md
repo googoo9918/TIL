@@ -70,8 +70,7 @@ Git 시작하기
     - ![image](https://user-images.githubusercontent.com/102513932/187073831-614029b6-c148-47b1-979d-656107a09dbf.png)
   - GitHub 상 Remote Repository에서도 Compare&Pull request 버튼 확인 가능
     - push 내용에 대해 간단히 요약, 동료들이 코드를 보지 않고도 내용 파악할 수 있게 해줌
-    -  
-1. to CLI? GUI?
+2. to CLI? GUI?
 - CLI
   - 터미널 
   - git에서 뭔가 실행할 때
@@ -121,7 +120,7 @@ Git 시작하기
   - 단, 새로 추가된 untracked 파일이 없을 때만 가능
   - 그냥 따로 하는것을 권장.
 <br><br>
-1. 과거로 돌아가는 두 가지 방법
+2. 과거로 돌아가는 두 가지 방법
 - ```git reset```
   - 원하는 시점으로 돌아간 뒤 이후 내역들을 지운다.
   - ```git log```
@@ -177,5 +176,32 @@ Git 시작하기
   - 브랜치를 다른 브랜치에 이어붙임
     - 한 줄로 깔끔히 정리된 내역을 유지하기 원할 때
     - 이미 팀원과 공유된 커밋들에 대해서는 사용 권장X
-    - ..
 
+협업
+----------------------------
+1. init 으로 기존 디렉토리를 Git Repository로 변경
+- ```git init```
+2. remote and origin 으로 나의 Remote Repository에 연결
+- ``` git remote add origin <Repository 주소>```
+  - Local Repository에 Remote Repository 연결
+3. remote add pair로 pair의 Remote Repository에 연결
+- ```git remote add pair <Repository 주소>```
+  - Local Repository에 Remote Repository 연결
+  - 이름은 편의상 pair
+4. remote -v로 연결된 Remote Repository 확인
+- ```git remote -v ```
+  - 현재의 Local Repository와 연결된 모든 Remote Repository 목록 확인
+5. pull로 Remote Repository의 작업 내용 가져오기
+- ```git pull <shortname> <branch>```
+  - Remote Repository의 해당 branch 내용을 Local Repository로 가져오기
+  - ex) ```git pull pair master```
+  - 브랜치 이름 주의
+  - 받아오는 내용은 자동 병합됨
+6. 충돌 해결하기
+- git status로 충돌 파일 확인
+  - ![image](https://user-images.githubusercontent.com/102513932/187078622-6c7d5892-c45f-4877-aa1b-d2567a8fcd27.png)
+- Accept Current Change
+  - 내가 수정한 내용으로 파일 반영
+- Accept Incoming Change
+  - Remote Repository의 내용으로 파일 반영
+7. push로 마무리
