@@ -3,7 +3,7 @@ Git
 <br><br>
 Git 시작하기
 -------------------------
-1. Git 학습의 이유
+0. Git 학습의 이유
 - GIT는 VCS(Version Control System)의 한 종류이다.
   - 프로젝트의 시간과 차원을 자유롭게 넘나들 수 있다.
   - 메모리 문제 뿐 아니라, 각종 복합적 문제 해결 가능.
@@ -11,22 +11,66 @@ Git 시작하기
   - 하나하나 스냅샷을 만들어 주는 작업 : commit
     - 이전 기록들에 대한 추적 가능
     - 버전 관리 + 협업에 유용
+- Git/GitHub
+  - Git은 로컬에서 버전을 관리해주는 프로그램이며, Github은 Git을 클라우드 방식으로 구현한 서비스이다.
+  - ![image](https://user-images.githubusercontent.com/102513932/186949719-b48fc23a-ebaf-41df-ad45-42f7b9f718aa.png)
 <br><br>
-0. Fork / Clone / Push / Pull
-- Remote Repository / Local Repository
+1. Fork / Clone / Push / Pull / Pull Request
+- - Remote Repository / Local Repository
   - ![image](https://user-images.githubusercontent.com/102513932/186948339-acbd45e7-418c-4e49-a442-1d177e2fe4c1.png)
+  - Local Repository 하부 영역
+    - 세 가지 상태 : Committed, Modified, Staged
+      - ![image](https://user-images.githubusercontent.com/102513932/187073046-889aa7f0-dae4-4482-a4b8-296fc03f1981.png)
+        - Untracked area : git이 관리하고 있지 않은 영역
+        - Tracked area : git의 관리를 받고 있는 영역
+          - unmodified
+            - 기존에 commit했던 파일을 수정하지 않은 상태
+          - modified
+            - 기존에 commit했던 파일을 수정한 상태
+          - staged
+            - commit이 가능한 상태 (add를 통해)
+
+    - git status로 상태 확인 가능
+       - ![image](https://user-images.githubusercontent.com/102513932/187072370-4604d36d-d9c6-419c-a14c-e4f34e226c19.png)
+    - ![image](https://user-images.githubusercontent.com/102513932/187072750-5423af51-397d-4d8a-a59b-c11d6eb9837c.png)
+    - ![image](https://user-images.githubusercontent.com/102513932/187072769-cfd74d96-d6b6-4965-b3b9-b1dae5369850.png)
+     - git restore
+       - commit 되지 않은 local repository의 변경 사항 폐기 가능
+       - ```git restore <파일명>```
+     - git reset "HEAD^"
+       - 가장 최신의 commit 취소 가능
+       - HEAD는 연속된 ^의 shortcut
+         - HEAD~3 == HEAD^^^
+       - HEAD^ == HEAD~1
 - Fork
   - 다른 원격 저장소에 있는 코드를 내 원격 저장소로 옮기는 것
-  - ![image](https://user-images.githubusercontent.com/102513932/186948530-598dff97-a9c8-4516-b851-ca9e0f2bf1e9.png)
+    - ![image](https://user-images.githubusercontent.com/102513932/186948530-598dff97-a9c8-4516-b851-ca9e0f2bf1e9.png)
+  - 실습
+    - ![image](https://user-images.githubusercontent.com/102513932/187072018-b66ab3a3-3089-4129-867d-dd8b7c6310bd.png)
+      - 우측 상단 Fork 클릭 
+    - ![image](https://user-images.githubusercontent.com/102513932/187072040-eb2514a5-82f9-4914-9e42-9778ee097467.png)
+      - create fork 클릭시 fork 작업 완료
+      - 현재 kimcoding의 git-project는 나의 remote repository.
+      - kimcoding이 fork를 하면, git-project는 kimcoding의 repository에 복사본으로 저장되어 있음.
 - Clone
   - 내 Remote 레포에서 Local 레포로 코드를 옮기는 것
-  - ![image](https://user-images.githubusercontent.com/102513932/186948727-c4afc1d1-1a4b-4a6a-a293-cfa8842247c3.png)
+    - ![image](https://user-images.githubusercontent.com/102513932/186948727-c4afc1d1-1a4b-4a6a-a293-cfa8842247c3.png)
+  - 실습
+    - ```git clone <레포지토리 주소>```
+      - 원격 repository를 내 로컬에서 이용할 수 있도록 복사
 - Push
   - Local 레포에서 Remote 레포로 commit을 업로드 하는 것
-  - ![image](https://user-images.githubusercontent.com/102513932/186948972-105ecea3-4a8d-4953-9624-ecdb5f927287.png)
+    - ![image](https://user-images.githubusercontent.com/102513932/186948972-105ecea3-4a8d-4953-9624-ecdb5f927287.png)
 - Pull
   - Remote 레포에서 변경사항이 있을 때 Local 레포로 가져오는 작업
-  - ![image](https://user-images.githubusercontent.com/102513932/186949097-09317b26-c56a-4608-94c4-f44b58be6258.png)
+    - ![image](https://user-images.githubusercontent.com/102513932/186949097-09317b26-c56a-4608-94c4-f44b58be6258.png)<br><br>
+- Pull Request
+  - 내가 push한 변경 사항에 대해 사람들에게 알리는 것
+    - 줄여서 PR이라 지칭
+    - ![image](https://user-images.githubusercontent.com/102513932/187073831-614029b6-c148-47b1-979d-656107a09dbf.png)
+  - GitHub 상 Remote Repository에서도 Compare&Pull request 버튼 확인 가능
+    - push 내용에 대해 간단히 요약, 동료들이 코드를 보지 않고도 내용 파악할 수 있게 해줌
+    -  
 1. to CLI? GUI?
 - CLI
   - 터미널 
@@ -63,8 +107,10 @@ Git 시작하기
     - 문서에서 ctrl + s 필수
   - . 은 현재 폴더 안에 모든 것을 의미
     - ```git add .```
+    - 올리지 말아야 할 파일까지 모두 add될 수 있으니 주의 요망
 - ```git commit```
-  - 타임캡슐 묻기
+  - 타임캡슐 묻기(변경 사항 저장)
+  - 
   - ```git commit -m "메시지"```
 - ```git diff```
   - commit 전후 파일 내용 비교하기
@@ -75,7 +121,7 @@ Git 시작하기
   - 단, 새로 추가된 untracked 파일이 없을 때만 가능
   - 그냥 따로 하는것을 권장.
 <br><br>
-2. 과거로 돌아가는 두 가지 방법
+1. 과거로 돌아가는 두 가지 방법
 - ```git reset```
   - 원하는 시점으로 돌아간 뒤 이후 내역들을 지운다.
   - ```git log```
@@ -131,3 +177,5 @@ Git 시작하기
   - 브랜치를 다른 브랜치에 이어붙임
     - 한 줄로 깔끔히 정리된 내역을 유지하기 원할 때
     - 이미 팀원과 공유된 커밋들에 대해서는 사용 권장X
+    - ..
+

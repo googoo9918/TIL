@@ -206,3 +206,6 @@ p{
 - 모든 박스에서 여백과 테두리를 포함한 크기로 계산된다.
   - 레이아웃 디자인을 보다 편하게 할 수 있음. 
 
+![image](https://user-images.githubusercontent.com/102513932/187020691-0390f320-90be-4c7f-82d8-a6e38fb0e345.png)
+
+
