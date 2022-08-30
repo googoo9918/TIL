@@ -1,6 +1,37 @@
 Java 기초 문법
 ============
+자바의 특징
+-----------------------------------
+1. 운영체제와 독립적
+- JRE(Java Runtime Environment) 이용
+  - JVM(자바 가상머신) + 표준 클래스 라이브러리
+  - ![image](https://user-images.githubusercontent.com/102513932/187331048-b1bd2547-78cb-483d-b8b8-78440fc7de1c.png)
+  - ![image](https://user-images.githubusercontent.com/102513932/187331108-87c393d9-4637-4ca4-a632-0c8a64899c3b.png)
+- JDK(Java Development Kit)
+  - JRE + 개발 도구
+  - OracleJDK
+    - 회사 관리 버전
+  - OpenJDK
+    - 오픈소스
+- 모든 운영체제에서 실행 가능
+2. 객체 지향 언어(Object Oriented Programming)
+- 유지보수 용이, 확장성 높음.
+3. 함수형 프로그래밍 지원
+- 람다식 ,스트링
+4. 자동 메모리 관리(Garbage Collection)
+- C,C++ 은 메모리의 생성과 소멸을 개발자가 직접 설계
+- Java는 가비지 컬렉터를 실행시켜 자동으로 사용하지 않는 메모리 수거. <br><br>
 
+기본 타입과 참조 타입
+----------------------
+- 기본 타입 (primitive type)
+  - 값 저장시, 데이터의 실제 값 저장
+  - 정수 타입(byte, short, int, long), 실수 타입(float, double), 문자 타입(char), 논리 타입(boolean)
+  - float 뒤에 f, long 뒤에 L 사용
+- 참조 타입 (reference type)
+  - 값 저장시, 데이터의 주소 값 저장
+  - 기본 타입을 제외한 나머지
+<br><br>
 주석문
 -----------
 + 문서화 주석
@@ -18,6 +49,7 @@ Import
 Final
 -------------
 - 상수는 대문자 명명규칙 사용
+  - [자바 명명 규칙](https://www.oracle.com/java/technologies/javase/codeconventions-namingconventions.html)
   - final double PI = 3.14
   - 단어와 단어 사이 _(underbar)로 작성할 것.
 
@@ -146,6 +178,7 @@ public class Enumeration {
          // 특정 값만 사용한다면, 열거형을 사용하는 것이 좋다.
          
 	}
+}
 ```
 
 String Class
@@ -182,22 +215,60 @@ String Class
 ```java
 	String str = "hello";
 		
-		System.out.println(str.length());
+		System.out.println(str.length()); //5
 		
-		System.out.println(str.concat(" world"));
+		System.out.println(str.concat(" world")); //hello world
 		
-		System.out.println(str);  
+		System.out.println(str);  //hello
         //위에서 concat을 통해 hello world를 만들어 줬지만 string 객체는 불변 클래스 이기 때문에, 
 		// str이 hello를 가리킨다는 사실은 변하지 않는다.
 		
 		str = str.concat(" world"); 
         //reference를 바꾸고 싶은 경우, 이와 같이 사용해줘야 한다.
-				
+		//hello world
+
+		str = str.trim();
+		// 해당 문자열의 맨 앞과 맨 뒤에 포함된 모든 공백 문자 제거
+		// helloworld		
 		System.out.println(str.substring(3)); 
         // 3번째 index ~ 끝까지 출력
 		System.out.println(str.substring(3,5)); 
         // start ~ end 까지 출력.
 ```
+
+- StringTokenizer
+  - 지정한 구분자로 문자열을 쪼개주는 class
+  - 쪼개어진 문자열을 토근(Token)이라 지칭.
+    - int countTokens()
+      - 남아있는 Token 개수 반환
+      - 전체 개수 아님 주의
+    - boolean hasMoreElements() , boolean hasMoreTokens()
+      - 사용할 수 있는 토큰이 남아있는 경우 -> true / 아니면 false 리턴
+    - Object nextElement(), String nextToken()
+      - 다음 토큰 반환, 반환형 다름 주의.
+- StringBuilder
+  - String은 불변 객체이므로, 새 String을 생성하는 경우가 많음
+  - 매번 메모리 해제와 할당을 발생시킴, 성능적으로 좋지 않다.
+  - StringBuilder는 새 객체를 생성하지 않고 기존 데이터에 더하는 방식 사용
+  - 속도 상승, 메모리 부하 감소
+- StringBuffer
+  - String 클래스의 인스터스는 생성만 가능한 반면
+  - StringBuffer 클래스의 인스턴스는 값 변경, 추가 가능
+  - 인스턴스 생성시 16개 문자를 더 저장할 수 있게 생성
+  - 문자열 결합등 변경시 속도 상승, 메모리 부하 감소
+    - ```append()```
+    - ```capacity()```
+      - 현재 버퍼 크기 확인
+    - ```delete()```
+      - 해당 문자열 특정 부분 제거
+      - ```str.delete(4,8)```
+    - ```deleteCharAt()```
+      - ```str.deleteCharAt(1);```
+    - ```insert()```
+      - 중간에 다른 문자열 삽입
+      - ```str.insert(4,"Script");```
+<br><br>
+
 Variable Scope
 -----------------
 
