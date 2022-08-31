@@ -3,7 +3,7 @@
 - 배열의 기본 동작 원리 및 심화
 
 ### 0. Coplit.09
-- [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/Coplit.09.md)
+- [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/Array/Coplit.09.md)
 - 배열에서 요소를 뽑아 새로운 배열을 만들 때 여러 방법
 - Arrays.copyOf()
   - 배열 복사 메소드
