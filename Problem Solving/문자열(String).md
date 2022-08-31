@@ -2,6 +2,17 @@
 -------------------------
 - 문자열에 사용되는 기본 풀이 및 메소드 정리.
 
+### 0. Coplit.09
+- [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/Coplit.09.md)
+- 배열에서 요소를 뽑아 새로운 배열을 만들 때 여러 방법
+- Arrays.copyOf()
+  - 배열 복사 메소드
+  - Arrays.copyOf(원본배열, 복사할 길이);
+    - ex) int[] array1 = [1,2,3,4,5]; int[] array2 = Arrays.copyOf(array1,3);
+  - Arrays.copyOfRange(원본배열, 복사할 시작 인덱스, 복사할 끝 인덱스)
+    - 인덱스는 0부터 시작
+    - ex) int[] array3 = Arrays.copyOfRange(array1, 3, 4);
+
 ### 1. 문자찾기 
 - [정리](https://github.com/ssu18/TIL/blob/main/Inflearn/String/P1.md)
 - toUpperCase()
