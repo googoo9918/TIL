@@ -115,6 +115,7 @@ public class ExampleClass { //클래스명 대문자 시작
 
 Static 키워드
 -------------------------
+- 모든 객체와 메모리를 공유
 - static은 클래스의 멤버(필드, 메서드, 이너 클래스)에 사용하는 키워드
   - static 키워드가 붙어있는 멤버
     - 정적 멤버
@@ -130,8 +131,10 @@ Static 키워드
   public class StaticTest {
     public static void main(String[] args) {
         StaticExample staticExample = new StaticExample();
-        System.out.println("인스턴스 변수: " + staticExample.num1); // static 키워드가 없는 인스턴스 변수, 참조변수.변수명
-        System.out.println("클래스 변수: " + StaticExample.num2); //static 키워드가 있는 클래스 변수, 클래스명.변수명
+        System.out.println("인스턴스 변수: " + staticExample.num1); 
+        // static 키워드가 없는 인스턴스 변수, 참조변수.변수명
+        System.out.println("클래스 변수: " + StaticExample.num2); 
+        //static 키워드가 있는 클래스 변수, 클래스명.변수명
         }
     }
 
@@ -167,20 +170,20 @@ Static 키워드
         System.out.println(staticField1.num2);
         System.out.println(staticField2.num2);
 
-    }
-}
+            }
+        }
 
-class StaticField {
-    int num1 = 10;
-    static int num2 = 15;
-}
+        class StaticField {
+        int num1 = 10;
+        static int num2 = 15;
+        }
 
-//출력값
-100
-1000
-1500
-1500
-  ```
+        //출력값
+        100
+        1000
+        1500
+        1500
+        ```   
 - num1은 각각 고유성을 지님
   - 100과 100으로 따로 출력
 - num2는 값 공유가 일어남
@@ -190,4 +193,9 @@ class StaticField {
   - static 키워드는 멤버 앞에 붙일 수 있음
   - 인스턴스 생성하지 않아도 됨
   - 특징은 메모리의 저장위치와 관련이 있음
+
+메서드(Method)
+---------------------------
+- 특정 작업을 수행하는 일련의 명령문들의 집합
+  - 
     
