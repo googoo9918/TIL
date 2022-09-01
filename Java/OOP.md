@@ -150,9 +150,6 @@ Static 키워드
   - 정적 필드는 객체 간 공유 변수 성질 지님
     - 메서드에도 동일 적용
     - 정적 메서드는 클래스명으로 바로 접근 가능
-  - 정적 메서드는 인스턴스 변수 또는 인스턴스 메서드 사용 불가능
-    - 정적 메서드는 인스턴스 생성 없이 호출 가능
-      - 바로 호출시 인스턴스 변수와 인스턴스 메서드 사용 불가능하기 때문
   ```java
   public class StaticFieldTest {
     public static void main(String[] args) {
@@ -184,12 +181,31 @@ Static 키워드
         1500
         1500
         ```   
-- num1은 각각 고유성을 지님
-  - 100과 100으로 따로 출력
-- num2는 값 공유가 일어남
-  - 1500으로 두 번 반복
-- static 키워드 이용시 모든 인스턴스에 공통적으로 적용되는 값 공유 가능
-- 정리
+  - num1은 각각 고유성을 지님
+    - 100과 100으로 따로 출력
+  - num2는 값 공유가 일어남
+    - 1500으로 두 번 반복
+  - static 키워드 이용시 모든 인스턴스에 공통적으로 적용되는 값 공유 가능
+```java
+Class car{
+    public String instanceVar = "나는 인스턴스 변수";
+    public String classVar = "나는 클래스 변수";
+
+    public static void ClassMethod(){
+        System.out.println(instanceVar); // 오류 발생
+        System.out.println(classVar);
+    }
+
+    public void InstanceMethod(){
+        System.out.println(instanceVar);
+        System.out.println(classVar);
+    }
+}
+```
+  - 정적 메서드는 인스턴스 변수 또는 인스턴스 메서드 사용 불가능
+      - 정적 메서드는 인스턴스 생성 없이 호출 가능
+        - 바로 호출시 인스턴스 변수와 인스턴스 메서드 사용 불가능하기 때문
+- 총 정리
   - static 키워드는 멤버 앞에 붙일 수 있음
   - 인스턴스 생성하지 않아도 됨
   - 특징은 메모리의 저장위치와 관련이 있음
