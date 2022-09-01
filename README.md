@@ -33,9 +33,7 @@
 
 ### ETC
 -------------------------
-- [자바 기초 문법(Java Basic)](https://github.com/ssu18/TIL/blob/main/ETC/JavaBasic.md) <br><br>
 - [마크다운 기초 문법(MD Basic)](https://github.com/ssu18/TIL/blob/main/ETC/MDgrammer.md) <br><br>
-- [Intellij 단축키 모음(Shortcut keys)](https://github.com/ssu18/TIL/blob/main/ETC/Intellij.md)<br><br>
 - [CLI(Command Line Interface)](https://github.com/ssu18/TIL/blob/main/ETC/CLI.md)<br><br>
 - [Git](https://github.com/ssu18/TIL/blob/main/ETC/Git.md)<br><br>
 
@@ -45,6 +43,11 @@
 - [CSS 기초 문법(CSS Basic)](https://github.com/ssu18/TIL/blob/main/FrontEnd/CSS.md)<br><br>
 - [레이아웃(Layout)](https://github.com/ssu18/TIL/blob/main/FrontEnd/Layout.md)<br><br>
 - [와이어프레임(Wire frame)](https://github.com/ssu18/TIL/blob/main/FrontEnd/WireFrame.md)<br><br>
+
+### 자바(Java)
+-----------------------
+- [자바 기초 문법(Java Basic)](https://github.com/ssu18/TIL/blob/main/Java/JavaBasic.md) <br><br>
+- [Intellij 단축키 모음(Shortcut keys)](https://github.com/ssu18/TIL/blob/main/Java/Intellij.md)<br><br>
 
 ### 문제 해결(Problem Solving)
 -----------------------------------------
