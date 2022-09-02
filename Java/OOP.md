@@ -304,3 +304,170 @@ Class car{
   - 인스턴스 자신을 가르킴
   - 참조변수를 통해 인스턴스의 멤버를 접근하는 것과 같이, this를 통해 자신의 변수에 접근
   - 주로 인스턴스의 필드명과 지역변수를 구분하기 위해 사용
+
+내부 클래스
+----------------------------
+- 클래스 내에 선언된 클래스
+  - 외부 클래스와 내부 클래스 서로 연관시 사용
+  - 사용시 외부 클래스 멤버에 쉽게 접근 가능
+  - 코드의 복잡성 하락
+```java
+class Outer { // 외부 클래스
+	
+	class Inner {
+		// 인스턴스 내부 클래스	
+	}
+	
+	static class StaticInner {
+		// 정적 내부 클래스
+	}
+
+	void run() {
+		class LocalInner {
+		// 지역 내부 클래스
+		}
+	}
+} 
+```
+![image](https://user-images.githubusercontent.com/102513932/188101787-8bdbdc3d-7822-4638-ba19-99a8987dfc4f.png)
+- 인스턴스 내부 클래스
+  - 객체 내부에 멤버 형태로 존재
+  - 외부 클래스의 모든 접근 지정자의 멤버에 접근 가능
+```java
+class Outer { //외부 클래스
+    private int num = 1; //외부 클래스 인스턴스 변수
+    private static int sNum = 2; // 외부 클래스 정적 변수
+
+    private InClass inClass; // 내부 클래스 자료형 변수 선언
+
+    public Outer() {
+        inClass = new InClass(); //외부 클래스 생성자
+    }
+
+    class InClass { //인스턴스 내부 클래스
+        int inNum = 10; //내부 클래스의 인스턴스 변수
+
+        void Test() {
+            System.out.println("Outer num = " + num + "(외부 클래스의 인스턴스 변수)");
+            System.out.println("Outer sNum = " + sNum + "(외부 클래스의 정적 변수)");
+        }
+    }
+
+    public void testClass() {
+        inClass.Test();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Outer outer = new Outer();
+        System.out.println("외부 클래스 사용하여 내부 클래스 기능 호출");
+        outer.testClass(); // 내부 클래스 기능 호출
+    }
+}
+
+// 출력값
+
+외부 클래스 사용하여 내부 클래스 기능 호출
+Outer num = 1(외부 클래스의 인스턴스 변수)
+Outer sNum = 2(외부 클래스의 정적 변수)
+```
+  - 외부 클래스의 생성자 설정으로 외부 클래스 생성시 내부 클래스도 생성
+    - 내부 클래스 기능 호출로 출력값 생성됨
+
+```java
+public class InnerExam1 {
+
+	class Cal{
+		int value = 0;
+		public void plus() {
+			value++;
+		}
+	} 
+// 필드를 선언하는 위치에 선언되는 경우, 중첩클래스 혹은 인스턴스클래스라고 지칭.
+
+	public static void main(String[] args) {
+		InnerExam1 t = new InnerExam1();
+		InnerExam1.Cal cal = t.new Cal();
+		//내부의 Cal을 이용하기 위해서는, 밖에서 InnerExam 객체를 만든 다음 Cal 객체를 생성해 주어야 한다.
+		cal.plus();
+		System.out.println(cal.value);
+	}
+}
+```
+  - 인스턴스 내부 클래스는 반드시 외부 클래스를 생성한 이후에 사용해야 함
+    - 따라서 정적 변수와 정적 메서드는 인스턴스 내부 클래에서 선언 불가능
+    - 첫 번째 예시 코드에서는 생성자를 통해 자동으로 연속 생성 유도
+    - 두 번째 예시 코드에서는 첫 번째 인스턴스를 이용
+
+- 정적 내부 클래스
+  - 내부 클래스가 외부 클래스의 존재와 무관하게 정적 변수 사용 가능
+```java
+class Outer { //외부 클래스
+    private int num = 3; //내부 클래스의 인스턴스 변수
+    private static int sNum = 4;
+
+    void getPrint() {
+        System.out.println("인스턴스 메서드");
+    }
+
+    static void getPrintStatic() {
+        System.out.println("스태틱 메서드");
+    }
+
+    static class StaticInClass { // 정적 내부 클래스
+        void test() {
+            System.out.println("Outer num = " +sNum + "(외부 클래스의 정적 변수)");
+            getPrintStatic();
+            // num 과 getPrint() 는 정적 멤버가 아니라 사용 불가.
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Outer.StaticInClass a = new Outer.StaticInClass(); //정적 이너 클래스의 객체 생성
+        a.test();
+    }
+}
+
+//출력값
+Outer num = 4(외부 클래스의 정적 변수)
+스태틱 메서드
+```
+  - 스태틱 내부 클래스는 외부 클래스의 생성 없이 사용할 수 있음
+  - 스태틱 내부 클래스에서 정적이지 않은 변수와 메서드는 사용 불가
+  
+- 지역 내부 클래스
+  - 메서드 내에서 정의되는 클래스
+    - 메서드 내부에서만 사용 가능
+    - 메서드 안에서 선언 후 바로 객체 생성 일반적
+```java
+class Outer { //외부 클래스
+    int num = 5;
+    void test() {
+        int num2 = 6;
+        class LocalInClass { //지역 내부 클래스
+            void getPrint() {
+                System.out.println(num);
+                System.out.println(num2);
+            }
+        }
+        LocalInClass localInClass = new LocalInClass();
+        localInClass.getPrint();
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        Outer outer = new Outer();
+        outer.test();
+    }
+}
+
+//출력값
+5
+6
+```
+  - LocalInClass가 메서드 안에서 선언 및 생성
+    - 정의된 메서드 호출하여 외부 클래스 변수 출력
+- 내부 클래스는 개발자의 편의를 위해 서로 연관있는 클래스들을 연결
