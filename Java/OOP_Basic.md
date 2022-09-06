@@ -1,4 +1,4 @@
-객체 지향 프로그래밍 (Object Oriented Programming)
+객체 지향 프로그래밍 기초 (Object Oriented Programming Basic)
 ===============
 
 클래스(Class)
@@ -712,4 +712,10 @@ class Student extends Human { // Human 클래스로부터 상속
 학생 클래스 생성자
 ```  
   - 생성자 안에서만 사용가능
-  - **반드시 첫 줄에 와야 함**
+  - 반드시 첫 줄에 와야 함
+  - object클래스를 제외한 자식 클래스의 모든 생성자의 첫 줄
+    - ```this()``` 또는 ```super()```가 선언되어야 함
+    - ```super()```가 없는 경우 컴파일러가 자동으로 ```super()``` 삽입
+    - 상위 클래스에 기본생성자가 없으면 오류 발생
+      - 기본 생성자 생성의 습관화 요망 
+  
