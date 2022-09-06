@@ -249,22 +249,7 @@ String Class
 <br><br>
 
 
-Abstract Class
------------------
-```java
-public class Inheritance  extends Car{
-	// public class 자식클래스 extends 부모클래스
-	// 부모클래스가 갖고 있는 것을 자식클래스가 상속 받을 수 있음.
-	// 만들 때 superclass - browse를 통해서도 만들 수 있음.
-	public static void main(String[] args) {
-		
-		Inheritance a = new Inheritance();
-		
-		a.run(); // Car 클래스가 갖고 있는 메소드 사용 가능.
 
-	}
-}
-```
 
 Access Modifier
 ------------------
@@ -645,32 +630,7 @@ public class MyCalTest {
 	}
 }
 ```
-Inner Class
----------------------------
 
-```java
-public class InnerExam3 {
-	public void exec() {
-		class Cal{
-			int value = 0;
-			public void plus() {
-				value++;
-			}
-		}
-		 Cal cal = new Cal();
-         cal.plus();
-         System.out.println(cal.value);
-     }
-	// 이처럼 메소드 안에 클래스를 선언한 경우, 지역 중첩 클래스 또는 지역 클래스라고 지칭한다.
-	// 메소드 안에서 해당 클래스를 사용할 수 있다.
-
-     public static void main(String args[]){
-         InnerExam3 t = new InnerExam3();
-         t.exec();
-     }
- }
-
-```
 
 Anonymous Class
 ------------------------

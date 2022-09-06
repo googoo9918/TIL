@@ -48,8 +48,8 @@
 -----------------------
 - [자바 기초 문법(Java Basic)](https://github.com/ssu18/TIL/blob/main/Java/JavaBasic.md) <br><br>
 - [Intellij 단축키 모음(Shortcut keys)](https://github.com/ssu18/TIL/blob/main/Java/Intellij.md)<br><br>
-- [객체지향 프로그래밍 기초(Object Oriented Programming_Baisc)](https://github.com/ssu18/TIL/blob/main/Java/OOP_Basic.md)
-- [객체지향 프로그래밍 심화(Object Oriented Programming_Advanced)](https://github.com/ssu18/TIL/blob/main/Java/OOP_Advanced.md)
+- [객체지향 프로그래밍 기초(Object Oriented Programming_Baisc)](https://github.com/ssu18/TIL/blob/main/Java/OOP_Basic.md)<br><br>
+- [객체지향 프로그래밍 심화(Object Oriented Programming_Advanced)](https://github.com/ssu18/TIL/blob/main/Java/OOP_Advanced.md)<br><br>
 
 ### 문제 해결(Problem Solving)
 -----------------------------------------
