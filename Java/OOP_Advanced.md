@@ -348,6 +348,8 @@ public void setId(int id){
 
 다향성
 -------------------------
+[다향성_해시넷](http://wiki.hash.kr/index.php/%EB%8B%A4%ED%98%95%EC%84%B1)
+[다향성_위키백과](https://ko.wikipedia.org/wiki/%EB%8B%A4%ED%98%95%EC%84%B1_(%EC%BB%B4%ED%93%A8%ED%84%B0_%EA%B3%BC%ED%95%99))
 - 하나의 객체가 여러가지 형태를 가질 수 있는 성질
   - 한 타입의 참조변수를 통해 여러 타입의 객체를 참조
   - 상위 클래스 타입의 참조변수를 통해 하위 클래스의 객체 참조
@@ -378,7 +380,7 @@ public class FriendTest {
         Friend friend = new Friend(); // 객체 타입과 참조변수 타입의 일치
         Friend girlfriend = new GirlFriend(); // 객체 타입과 참조변수 타입의 불일치
         //부모 타입인 friend로 자식타입인 girlfriend를 가르킬 수 있다.
-
+        // 사실 이것도 형변환이다.
         friend.friendInfo();
         girlfriend.friendInfo();
         girlfriend.friend(); //오류 발생
@@ -389,7 +391,7 @@ public class FriendTest {
         GirlFriend girlfriend2 = girlfriend; // 오류 발생
         // girlfriend는 현재 Friend 타입이기 때문에 GirlFriend가 가르킬 수 없음.
         GirlFriend girlfriend2 = (GirlFriend)girlfriend;
-        // 따라서 형 변환 필요
+        // 따라서 형 변환 필요 (다운캐스팅)
         // 이 형변환이 가능한 이유는 ,girlfriend 변수가 원래 GirlFriend 타입이지만 실제로는 Friend 타입으로 실행되었기 때문.
         girlfriend2.friend();
         // 형변환시 자식 객체 메서드 사용 가능
@@ -400,8 +402,106 @@ public class FriendTest {
 나는 당신의 여자친구입니다.
 친구
 ```
-    - ```GirlFriend``` 클래스의 인스턴스를 생성 후
-      - ```Friend``` 타입의 참조변수 ```girlfriend```에 할당
-      - 상위 클래스가 참조변수의 타입
-      - 참조변수가 사용할 수 있는 멤버의 개수는 상위 클래스의 멤버의 수
-      - 반대의 경우는 불가능 하다
+- 상위 클래스의 타입으로 하위 클래스를 참조하는 것은 가능
+  - 반대는 불가능
+    - 참조하고 있는 인스턴스에 실제로 구현된 기능이 없어 사용이 불가능
+    - 기능을 줄이는 것은 가능하나, 구현되어 있지 않은 기능을 사용하는 것은 불가능
+- 타입 변환의 세 가지 조건
+  - 서로 상속관계에 있는 상위 클래스 - 하위 클래스만 타입 변환 가능
+  - 하위 클래스 타입 -> 상위 클래스 타입으로 변환 (업캐스팅)
+    - 형변환 연산자(괄호) 생략 가능
+  - 상위 클래스 타입 -> 하위 클래스 타입으로 변환 (다운 캐스팅)
+    - 형변환 연산자(괄호) 필히 명시
+
+
+instanceof 연산자
+--------------------
+- 캐스팅의 가능 여부를 boolean 타입으로 확인 가능
+  - 객체를 어떤 생성자로 만들었는가?
+  - 클래스 사이에 상속관계가 존재하는가?
+- ```참조_변수 instanceof 타입```
+  - 리턴 값이 true가 나오면 타입 변환 가능
+  - false가 나오면 불가능
+```java
+public class InstanceOfExample {
+    public static void main(String[] args) {
+        Animal animal = new Animal();
+        System.out.println(animal instanceof Object); //true
+        System.out.println(animal instanceof Animal); //true
+        System.out.println(animal instanceof Bat); //false
+
+        Animal cat = new Cat();
+        System.out.println(cat instanceof Object); //true
+        System.out.println(cat instanceof Animal); //true
+        System.out.println(cat instanceof Cat); //true
+        System.out.println(cat instanceof Bat); //false
+    }
+}
+
+class Animal {};
+class Bat extends Animal{};
+class Cat extends Animal{};
+```
+
+다양성 활용 예제
+---------------------------
+```java
+public class PolyMorphismEx{
+    public static void main(String[] args){
+        Customer customer = new Customer();
+        customer.buyCoffee(new Americano());
+        customer.buyCoffee(new CaffeLatte());
+
+        System.out.println("현재 잔액은" + customer.money + " 원 입니다.");
+    }
+}
+class Coffee{
+    int price;
+    public Coffee(int price){
+        this.price = price;
+    }
+}
+
+class Americano extends Coffee{
+    public Americano(){
+    super(4000); //상위 클래스 Coffee의 생성자 호출
+    }
+    
+    public String toString(){
+        return "아메리카노";
+        } //toStirng 오버라이드 
+}
+
+class CaffeLatte extends Coffee{
+    public CaffeLatte(){
+        super(5000);
+    }
+    public String toString() {
+        return "카페라떼";
+        }
+}
+
+class Customer{
+    int money = 50000;
+
+    // void buyCoffee(Americano americano){
+    //     money = money - americano.price;
+    // }
+    // void buyCoffee(CaffeLatte caffeLatte){
+    //     money = money - caffeLatte.price;
+    // }
+    // 커피의 종류가 한 두개가 아니라 수십 수백가지가 된다면 매번 메서드를 추가해 줘야함 -> 이를 객체의 다향성을 이용해 해결
+    void buyCoffee(Coffee coffee){
+        if(money<coffee.price){
+            System.out.println("잔액이 부족합니다");
+            return;
+        }
+        money = money - coffee.price;
+        System.out.println(coffee + "를 구입했습니다.");
+    } // 개별적인 커피의 타입이 아닌, 상위클래스인 Coffee의 타입을 매개변수로 전달해 다향성 증가.
+}
+// 출력값
+아메리카노를 구입했습니다.
+카페라떼를 구입했습니다.
+현재 잔액은 41000원 입니다.
+```
