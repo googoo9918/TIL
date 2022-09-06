@@ -348,7 +348,7 @@ public void setId(int id){
 
 다향성
 -------------------------
-[다향성_해시넷](http://wiki.hash.kr/index.php/%EB%8B%A4%ED%98%95%EC%84%B1)
+[다향성_해시넷](http://wiki.hash.kr/index.php/%EB%8B%A4%ED%98%95%EC%84%B1) <br>
 [다향성_위키백과](https://ko.wikipedia.org/wiki/%EB%8B%A4%ED%98%95%EC%84%B1_(%EC%BB%B4%ED%93%A8%ED%84%B0_%EA%B3%BC%ED%95%99))
 - 하나의 객체가 여러가지 형태를 가질 수 있는 성질
   - 한 타입의 참조변수를 통해 여러 타입의 객체를 참조
@@ -504,4 +504,287 @@ class Customer{
 아메리카노를 구입했습니다.
 카페라떼를 구입했습니다.
 현재 잔액은 41000원 입니다.
+```
+
+추상화
+----------------------------
+- [추상화_해시넷](http://wiki.hash.kr/index.php/%EC%B6%94%EC%83%81%ED%99%94)
+- [추상화_위키백과](https://ko.wikipedia.org/wiki/%EC%B6%94%EC%83%81%ED%99%94_(%EC%BB%B4%ED%93%A8%ED%84%B0_%EA%B3%BC%ED%95%99))
+- 기존 클래스들의 공통적인 요소들을 뽑아 상위/하위 클래스를 만들어 내는 것
+- ![image](https://user-images.githubusercontent.com/102513932/188605051-8fa8f37a-b346-4ad8-b719-66ce05826329.png)
+  - 자동차와 오토바이의 공통 분모를 모아 이동수단이라는 클래스에 담음
+  - 혹은 이동수단이 갖는 공통적인 특징을 자동차와 오토바이에 내려줌
+- abstract 제어자
+  - 메서드 앞에 붙은 경우
+    - 추상 메서드
+  - 클래스 앞에 붙은 경우
+    - 추상 클래스
+  - 클래스에 추상 메서드가 포함되어 있는 경우
+    - 클래스는 자동으로 추상 클래스가 된다.
+```java
+abstract class AbstractExample{//추상 메서드가 최소 하나 이상 포함되어 있는 추상(미완성) 클래스
+    abstract void start(); // 메서드 바디가 없는 추상(미완성)메서드
+}
+AbstractExample abstractExample = new AbstractExample(); //에러 발생
+```
+  - 추상 클래스는 미완성 설계도
+    - 기반으로 객체 생성 불가능
+- 상속 관계에 있어 새로운 클래스 작성시 유용
+  - 상위 클래스에는 선언부 작성
+  - 구체적인 내용은 하위 클래스에서 구현
+    - 오버라이딩 이용
+  - 더욱 유연한 대응 가능
+    - 각각 상황에 맞는 메서드 구현 가능
+- 추상 클래스는 추상화 구현시 핵심적 역할
+  - 상속계층도 상층부 위치할시 추상화 정도 높음
+    - 상층부에 가까울수록 더욱 공통적인 속성과 기능 정의
+  - 하층부로 내려갈수록 구체화
+```java
+public abstract class AbstractClass_bird {
+	public abstract void sing(); 
+	// 중괄호 열고 닫지 않았으므로 구현하지 않았다 판단. 
+	// 구체적이지 않은 것을 구현한 클래스를 추상 클래스라 한다!
+	// 추상 메소드를 한개 이상 포함하면, class 앞에도 항상 abstract가 붙어야 한다.
+	// 추상 클래스는 인스턴스를 생성할 수 없다.
+	
+	public void fly() {
+		System.out.println("날다");
+	} 
+	// 추상 클래스라 하더라도, 일반 메소드(concreate method)를 만들 수 있다.
+}
+```
+```java
+public class AbstractClass_duck extends AbstractClass_bird {
+// 추상 클래스를 상속 받으면, 추상 메소드를 반드시 구현해야 한다.
+// (구현해도 오류가 뜨는 경우가 있으니, sing()을 썼다가 다시 지워볼 것)
+	public void sing(){
+		System.out.println("꽥꽥");
+	}
+// 추상클래스를 구현해 줘야 한다.
+// 구현하지 않았을 때, 해당 클래스도 추상 클래스가 된다.
+}
+```
+
+final 키워드
+---------------------------
+![image](https://user-images.githubusercontent.com/102513932/188627585-a0c6082d-f617-44c5-8fe3-9f64acf60cd2.png)
+- 공통적으로 변경이 불가능하고 확장할 수 없음
+```java
+final class FinalEx{ // 확장/ 상속 불가능한 클래스
+    final int x = 1; //변경되지 않는 상수
+
+    final int getNum(){//오버라이딩 불가한 메서드
+        final int localVar = x; //상수
+        return x;
+    }
+}
+```
+- final제어자 추가시
+  - 더이상 변경이 불가하거나 확장되지 않음
+
+인터페이스(Interface)
+----------------
+- 추상 메서드와 상수만을 멤버로 가질 수 있음
+  - 추상 클래스에 비해 추상화 정도가 더 높다
+- 인터페이스 기본 구조
+  - 내부 모든 필드가 ```public static final```로 정의
+  - ```static```과 ```default``` 메서드 이외 모든 메서드가 ```public abstract```로 정의됨
+  - 모든 인터페이스의 필드와 메서드에는 위 요소 내포
+    - 명시하지 않아도 생략 가능
+```java
+public interface InterfaceEx{
+    public static final int rock = 1; //인터페이스 인스턴스 변수 정의
+    final int scissors = 2; //public static 생략
+    static int paper = 3; //public & final 생략
+
+    public abstract String getPlayingNum();
+}
+```
+
+- 인터페이스 구현
+  - 그 자체로 인스턴스 생성 불가능
+  - 메서드 바디 정의 클래스 따로 작성
+```java
+class 클래스명 implements 인터페이스명 {
+    ... // 인터페이스에 정의된 모든 추상메서드 구현
+}
+```
+  - 특정 인터페이스를 구현한 클래스
+    - 해당 인터페이스에 정의된 모든 추상메서드를 구현해야함
+    - 클래스에게 인터페이스의 추상 메서드 구현을 강제시킴
+    - 인터페이스의 모든 추상 메서드들을 해당 클래스 내에서 오버라이딩하여 바디를 완성한다.
+  - 인터페이스의 다중 구현
+    - 상속에서 다중 상속은 허용되지 않음
+      - 부모 클래스에 동일한 이름의 필드 또한 메서드 존재시 충돌 발생하기 떄문
+    - 인터페이스는 다중적 구현 가능
+      - 하나의 클래스가 여러 개의 인터페이스 구현 가능
+      - 미완성된 멤버를 갖기 때문에 충볼 발생 가능성 X, 안전하게 다중 구현 가능
+    - 인터페이스는 인터페이스로부터만 상속 가능
+      - 클래스 와 달리 Object와 같은 최고 조상 존재 X
+    - 특정 클래스는 다른 클래스로부터 상속을 받으면서 동시에 인터페이스를 구현할 수 있음.
+```java
+class ExampleClass implements ExampleInterface1,ExampleInterface2,ExampleInterface3{
+    ... 생략 ...
+}
+```
+
+- 인터페이스의 장점
+  - 역할과 기능을 분리
+  - 복잡한 구현의 내용 또는 변경과 상관없이 해당 기능 사용 가능
+  - ![image](https://user-images.githubusercontent.com/102513932/188671898-12ff31f2-4486-41c4-b37b-5c1674f4aa89.png)
+```java
+interface Cover{ //인터페이스 정의
+    public abstract void call();
+}
+
+public class Interface4{
+    public static void main(String[] args){
+        User2 user2 = new User2();
+        user2.callProvider(new Provider2());
+    }
+}
+
+class User{
+    public void callProvider(Cover cover){ //매개변수의 다향성 활용
+        cover.call();
+    }
+}
+
+class Provider implements Cover{
+    public void call() {
+        System.out.println("무야호~");
+    }
+}
+
+class Provider2 implements Cover {
+    public void call() {
+        System.out.println("야호~");
+    }
+}
+
+//출력값
+야호~
+```
+- ```Provider```클래스의 내용 변경 또는 교체가 발생하더라도 ```User``` 클래스는 더이상 코드를 변경해주지 않고 같은 결과를 출력할 수 있음.
+  - User클래스에서 변경되어야 하는 코드가 늘어날 수록 효율은 증가
+- 선언과 구현을 분리시켜 개발시간을 단축
+- 독립적 프로그램을 통해 종속적 영향을 최소화 할 수 있음.
+```java
+public interface Tv {
+	public int MIN_VOLUME =0;
+	public int MAX_VOLUME =100;
+	
+	
+	public void turnOn(); 
+	// 추상 메소드와 비슷한.. 다만, interface는 직접 구현을 하는 것이 아니라 ~가 있을 것이다 라고 작성하는 것이기 때문에
+	// {}를 통해 구현을 직접 하지 않아도 괜찮다.
+	public void turnOff();
+	public void changeVolume(int volume);
+	public void changeChannel(int channel);
+}
+	// 인터페이스에서 정의된 메소드는 모두 추상 메소드이다.
+	// 위에서 선언된 상수는 컴파일 시 public static final int MIN_VOLUME =0; 으로 바뀌고
+	// 메소드는 public abstract void turnOn()으로 바뀌게 된다.
+```
+```java
+public class LedTv implements Tv {
+	// LedTv는 Tv를 구현하겠다는 의미.
+	// interface -> add를 이용해 추가.
+	// 간혹 참조 후 메소드 구현을 한 경우에도 에러가 사라지지 않는 경우가 있는데, 무시하고 컴파일을 진행해도 된다.
+	// 하나라도 구현을 하지 않는 경우, 추상클래스가 되겠지?
+	@Override
+	public void turnOn() {
+		// TODO Auto-generated method stub
+		System.out.println("켜다");
+	}
+
+	@Override
+	public void turnOff() {
+		// TODO Auto-generated method stub
+		System.out.println("끄다");
+	}
+
+	@Override
+	public void changeVolume(int volume) {
+		// TODO Auto-generated method stub
+		System.out.println("볼륨을 조정하다");
+	}
+
+	@Override
+	public void changeChannel(int channel) {
+		// TODO Auto-generated method stub
+		System.out.println("채널을 조정하다");
+		}
+	}
+```
+```java
+public class LedExam {
+	public static void main(String[] args) {
+		Tv tv = new LedTv();
+		//인터페이스도 타입이 될 수 있다!
+		// 여기서 인터페이스의 중요성이 드러나는데, 만약 내가 Lcd tv에 대한 코드를 만들게 된다면
+		// 위 코드에서 new LcdTv();로 바꿔주기만 하면 되겠지.. (물론 LcdTV 클래스 만들고 구현)
+		// 결국 메소드 이름은 동일하게 하면서도 안에서 구현되는 세부 내용이 다를 때 인터페이스 사용하면 좋을 듯
+		tv.turnOn();
+		tv.turnOff();
+		tv.changeChannel(0);
+		tv.changeVolume(0);
+	}
+}
+```
+- JAVA 8이후 default/static 메서드 인터페이스 포함 가능
+```java
+package part08;
+
+public interface Calculator {
+	public int plus(int i,int j);
+	public int multiple(int i, int j);
+	// 원래 배웠던 추상 메소드, 구현하면 에러가 발생한다.
+	
+	
+	default int exec(int i, int j) {
+		return i + j;
+	}
+	// java8 부터는 interface에서 default를 붙이면 메소드를 구현할 수 있음!
+	
+	public static int exec2(int i, int j) {
+		return i*j;
+	}
+}
+```
+```java
+public class MyCal implements Calculator {
+
+	@Override
+	public int plus(int i, int j) {
+		// TODO Auto-generated method stub
+		return i+j;
+	}
+
+	@Override
+	public int multiple(int i, int j) {
+		// TODO Auto-generated method stub
+		return i*j;
+	}
+
+}
+```
+
+```java
+public class MyCalTest {
+	public static void main(String[] args) {
+		Calculator cal = new MyCal();
+		
+		cal.plus(3, 4);
+		cal.multiple(3, 4);
+		// Mycal에 작성한 메소드는 당연히 사용 가능.
+		
+		cal.exec(3, 4);
+		// 인터페이스인 calculator에 구현한 method 또한 사용 가능.
+		
+		// cal.exec2 는 사용할 수 없음!! static 키워드를 이용해서 메소드 구현했기 때문에.
+		Calculator.exec2(3,4);
+		// 인터페이스명.메소드명(); 으로 사용해야 한다.
+	}
+}
 ```
