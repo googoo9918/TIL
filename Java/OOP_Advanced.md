@@ -2,7 +2,9 @@
 =====================================
 상속
 ----------------------------
-
+- [상속 심화_해시넷](http://wiki.hash.kr/index.php/%EC%83%81%EC%86%8D_(%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D))
+- [상속 심화_위키백과](https://ko.wikipedia.org/wiki/%EC%83%81%EC%86%8D_(%EA%B0%9D%EC%B2%B4_%EC%A7%80%ED%96%A5_%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D))
+- [상속 심화_TCP 스쿨](http://www.tcpschool.com/java/java_inheritance_concept)
 - 기존의 클래스를 재활용하여 새로운 클래스를 작성
   - 하위 클래스는 상위클래스가 가진 모든 멤버를 상속받음
   - 하위 클래스 멤버 개수 >= 상위 클래스 멤버 개수
@@ -197,34 +199,209 @@ count = 20
 - ```super()```
   - 상위 클래스의 생성자 호출
 ```java
-public class Test {
-    public static void main(String[] args) {
-        Student s = new Student();
-    }
+
+public class SuperKeyword_car {
+	public SuperKeyword_car() {
+		System.out.println("SuperKeyword_car의 기본 생성자 입니다.");
+	}
 }
 
-class Human {
-    Human() {
-        System.out.println("휴먼 클래스 생성자");
-    }
+```
+```java
+public class SuperKeyword_truck extends SuperKeyword_car {
+	public SuperKeyword_truck() {
+		// super(); --> 부모 class에서 기본생성자 밖에 없을 때, 컴파일러가 자동으로 실행. 
+		// 만약 상위 class에서 SuperKeyword_car가 Superkeyword_Car(String name) 으로 변경되었다면,
+		// 현재 클래스에서 오류가 발생하게 된다. 이 경우, super("소방차")와 같이 따로 명명 해줘야 한다.
+		System.out.println("SuperKeyword_truck의 기본 생성자 입니다.");
+		// 정리하자면, 기본생성자가 있으면 super을 생략해도 되지만, 기본생성자가 없다면 직접 부모의 생성자를 호출해 줘야 한다.
+		// 또한 super 키워드는 자식에서 부모의 메소드나 필드를 사용할 때도 사용한다.
+	}
 }
 
-class Student extends Human { // Human 클래스로부터 상속
-    Student() {    
-        super(); // Human 클래스의 생성자 호출
-        System.out.println("학생 클래스 생성자");
-    }
+```
+
+```java
+
+public class SuperKeyword_tuckexm {
+	
+	public static void main(String args[]) {
+			
+		SuperKeyword_truck t1 = new SuperKeyword_truck();
+		
+		// 객체가 생성이 될 때, 반드시 생성자를 실행하고 생성이 된다. 
+		// 이때, truck이 메모리에 올라갈 때 부모 생성자인 Car도 함께 메모리에 올라가는 것을 알 수 있다.
+		// 부모 클래스에서 기본 생성자밖에 없을 때, super();이라는 코드를 컴파일러가 자동으로 실행하는 것이다. 
+		// 또한, 부모 생성자가 먼저 메모리에 올라가고, 그 이후에 자식 생성자가 메모리에 올라간다.
+		// 따라서 car의 print문이 먼저 출력되고, 이후에 truck의 print문이 출력되는 것이다.
+		// 출력 :	SuperKeyword_car의 기본 생성자 입니다.
+		//			SuperKeyword_truck의 기본 생성자 입니다.
+
+	}
 }
 
-// 출력값
-휴먼 클래스 생성자
-학생 클래스 생성자
-```  
-  - 생성자 안에서만 사용가능
-  - 반드시 첫 줄에 와야 함
-  - object클래스를 제외한 자식 클래스의 모든 생성자의 첫 줄
-    - ```this()``` 또는 ```super()```가 선언되어야 함
-    - ```super()```가 없는 경우 컴파일러가 자동으로 ```super()``` 삽입
-    - 상위 클래스에 기본생성자가 없으면 오류 발생
-      - 기본 생성자 생성의 습관화 요망 
+```
+
   
+Object 클래스
+------------------------------------------
+- 자바의 모든 클래스는 Object 클래스로부터 확장
+  - 컴파일러는 아무 상속을 받지 않는 클래스에 자동으로 ```extends object``` 추가
+```java
+class ParentEx {  //  컴파일러가 "extends Object" 자동 추가 
+}
+class ChildEx extends ParentEx {
+}
+```
+- 상위 클래스 ParentEx는 상속하지 않기에 자동 삽입
+- Object 클래스는 자바 클래스 상속계층도에 가장 위에 위치
+- Object 클래스의 멤버들을 자동으로 상속받아 사용 가능
+- Object 클래스의 대표적인 메서드
+  - ![image](https://user-images.githubusercontent.com/102513932/188542401-29116e06-2634-4aaf-b07b-a188ccf58612.png)
+
+캡슐화
+---------------------------------
+[캡슐화_해시넷](http://wiki.hash.kr/index.php/%EC%BA%A1%EC%8A%90%ED%99%94)
+[캡슐화_위키백과](https://ko.wikipedia.org/wiki/%EC%BA%A1%EC%8A%90%ED%99%94)
+[]
+![image](https://user-images.githubusercontent.com/102513932/188549225-8cff874c-7c0c-4ca5-97e4-d02ca4afa687.png)
+- 특정 객체 안에 관련된 속성과 기능을 캡슐로 만듬
+  - 데이터를 외부로부터 보호
+  - 내부적으로만 사용되는 데이터에 대한 외부 노출 방지
+- 정보 은닉에 가장 큰 장점
+  - 객체의 속성과 기능 변경 방지
+  - 독립성 확보
+- 코드 유지보수와 확장
+  - 오류의 범위 최소화
+
+패키지
+-------------------
+- 특정한 목적을 공유하는 클래스와 인터페이스의 묶음
+  - 클래스들을 그룹 단위로 묶어 효과적으로 관리
+  - 클래스의 충돌 방지
+    - 같은 이름의 클래스라도 다른 패키지 소속이면 충돌 발생X
+- 물리적인 하나의 디렉토리
+  - 계층 구조를 가짐
+    - 계층 구조 간 구분은 점(.)으로 표시
+- 패키지가 있는 경우 첫 번째 줄에 ```package 패키지명```표시
+```java
+// 패키지를 생성했을 때
+package practicepack.test; // 패키지 구문 포함. 패키지가 없다면 구문 필요없음
+// 패키지 선언이 없으면 이름 없는 패키지에 속하게 됨
+public class PackageEx {
+
+}
+```
+- 대표적인 패키지
+  - java.lang
+    - 자바의 기본 클래스들을 모아놓음
+    - ex) java.lang.String
+  - java.util
+    - 확장 클래스를 묶어 놓음
+  - java.io / java.nio
+    - 입출력 관련 클래스
+- Import 문
+  - 다른 패키지 내의 클래스를 사용하기 위해 사용
+```java
+import 패키지명.클래스명; 또는 import 패키지명.*;
+```
+  - 같은 패키지에서 여러 클래스 사용시
+    - ```import 패키지명.*```
+  - 컴파일시 처리 
+    - 프로그램 성능에 영향 X
+
+접근 제어자
+--------------------------
+- 제어자
+  - 클래스, 필드, 메서드, 생성자 등에 부가적 의미 부여
+  - 마치 형용사의 역할
+  - ![image](https://user-images.githubusercontent.com/102513932/188550097-92f1ae77-df36-4bb1-a124-a479e1b384ca.png)
+  - 하나의 대상에 대해 여러 제어자 사용 가능
+  - 접근 제어자는 한 번만 사용 가능
+- 접근 제어자
+  - 클래스 외부로의 불필요한 데이터 노출 방지
+  - 외부로부터 데이터 임의 변경 방지
+  - ![image](https://user-images.githubusercontent.com/102513932/188550195-7b7ff59b-29f1-4966-addd-04b02cd6e2ed.png)
+  - public > protected > defaulte > private
+    - default -> 아무 접근제어를 붙이지 않는 경우
+  - ![image](https://user-images.githubusercontent.com/102513932/188550327-29bc3fb6-9da6-48c8-9154-b8189287c424.png)
+
+getter과 setter 메서드
+----------------------------------
+- 캡슐화의 목적을 달성하면서도 데이터의 변경이 필요한 경우
+  - ex) private 객체의 변수의 데이터 값을 추가하거나 수정하고 싶을 때
+  - getter 메서드
+    - 설정한 변수 값을 읽어 오는데 사용
+```java
+int id = w.getId();
+public int getId(){
+    return id;
+}
+``` 
+  - setter 메서드
+    - 데이터 값을 변경 가능하게 해줌
+```java 
+public void setId(int id){ 
+    this.id =id;
+}
+```
+
+다향성
+-------------------------
+- 하나의 객체가 여러가지 형태를 가질 수 있는 성질
+  - 한 타입의 참조변수를 통해 여러 타입의 객체를 참조
+  - 상위 클래스 타입의 참조변수를 통해 하위 클래스의 객체 참조
+```java
+//참조변수의 다형성 예시
+
+class Friend {
+    public void friendInfo() {
+        System.out.println("나는 당신의 친구입니다.");
+    }
+
+}
+
+class GirlFriend extends Friend {
+    
+    public void friendInfo() {
+        System.out.println("나는 당신의 여자친구입니다.");
+    }
+
+     public void friend(){
+        System.out.println("친구.");
+    }
+}
+
+public class FriendTest {
+
+    public static void main(String[] args) {
+        Friend friend = new Friend(); // 객체 타입과 참조변수 타입의 일치
+        Friend girlfriend = new GirlFriend(); // 객체 타입과 참조변수 타입의 불일치
+        //부모 타입인 friend로 자식타입인 girlfriend를 가르킬 수 있다.
+
+        friend.friendInfo();
+        girlfriend.friendInfo();
+        girlfriend.friend(); //오류 발생
+        // 단, 이때 Friend 클래스의 friend 메소드는 사용할 수 없다.
+        // 즉, 부모 타입으로 자식 객체를 참고하게 되면, 부모가 갖고 있는 메소드만 사용할 수 있다.
+        // 단, 이 때 부모가 갖고 있는 메소드 중 자식 객체에서 오버라이딩 된 메소드가 있다면 오버라이딩 된 값으로 출력된다.
+
+        GirlFriend girlfriend2 = girlfriend; // 오류 발생
+        // girlfriend는 현재 Friend 타입이기 때문에 GirlFriend가 가르킬 수 없음.
+        GirlFriend girlfriend2 = (GirlFriend)girlfriend;
+        // 따라서 형 변환 필요
+        // 이 형변환이 가능한 이유는 ,girlfriend 변수가 원래 GirlFriend 타입이지만 실제로는 Friend 타입으로 실행되었기 때문.
+        girlfriend2.friend();
+        // 형변환시 자식 객체 메서드 사용 가능
+     }
+}
+// 출력값
+나는 당신의 친구입니다.
+나는 당신의 여자친구입니다.
+친구
+```
+    - ```GirlFriend``` 클래스의 인스턴스를 생성 후
+      - ```Friend``` 타입의 참조변수 ```girlfriend```에 할당
+      - 상위 클래스가 참조변수의 타입
+      - 참조변수가 사용할 수 있는 멤버의 개수는 상위 클래스의 멤버의 수
+      - 반대의 경우는 불가능 하다

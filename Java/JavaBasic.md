@@ -249,41 +249,6 @@ String Class
 <br><br>
 
 
-
-
-Access Modifier
-------------------
-```java
-
-/** 
- * public
-어떤 클래스든 접근할 수 있다는 것을 의미
- 
- * protected
-자기 자신, 같은 패키지, 서로 다른 패키지다 하더라도 상속받은 자식 클래스에서는 접근할수 있다는 것을 의미
-
- * private
-자기 자신만 접근할 수 있다는 것을 의미
- 
- * 접근제한자를 적지 않으면 default접근 지정자
-자기자신과 같은 패키지에서만 접근할 수 있다는 것을 의미
- *
- *  public > protected > default > private.
- *         > 다른 패키지면 상속 받아야 가능 > 다른 패키지면 불가능 > 같은 패키지여도 불가능. 자기 자신만 가능.
- */
-public class AccessModifier {
-	 
-	 private int i = 1;
-     int k = 2; // default접근 제한자
-     public int p = 3;
-     protected int p2 = 4;
-     
-	public static void main(String[] args) {
-		
-		}
-	}
-```
-
 Abstract Class
 ---------------------
 
@@ -324,54 +289,6 @@ public class AbstractClass_duckexam {
 	// 추상 클래스는 인스턴스를 생성할 수 없다.	
 	}
 }
-```
-
-Super and Constructor
----------------------
-```java
-
-public class SuperKeyword_car {
-	public SuperKeyword_car() {
-		System.out.println("SuperKeyword_car의 기본 생성자 입니다.");
-	}
-}
-
-```
-
-```java
-
-public class SuperKeyword_truck extends SuperKeyword_car {
-	public SuperKeyword_truck() {
-		// super(); --> 부모 class에서 기본생성자 밖에 없을 때, 컴파일러가 자동으로 실행. 
-		// 만약 상위 class에서 SuperKeyword_car가 Superkeyword_Car(String name) 으로 변경되었다면,
-		// 현재 클래스에서 오류가 발생하게 된다. 이 경우, super("소방차")와 같이 따로 명명 해줘야 한다.
-		System.out.println("SuperKeyword_truck의 기본 생성자 입니다.");
-		// 정리하자면, 기본생성자가 있으면 super을 생략해도 되지만, 기본생성자가 없다면 직접 부모의 생성자를 호출해 줘야 한다.
-		// 또한 super 키워드는 자식에서 부모의 메소드나 필드를 사용할 때도 사용한다.
-	}
-}
-
-```
-
-```java
-
-public class SuperKeyword_tuckexm {
-	
-	public static void main(String args[]) {
-			
-		SuperKeyword_truck t1 = new SuperKeyword_truck();
-		
-		// 객체가 생성이 될 때, 반드시 생성자를 실행하고 생성이 된다. 
-		// 이때, truck이 메모리에 올라갈 때 부모 생성자인 Car도 함께 메모리에 올라가는 것을 알 수 있다.
-		// 부모 클래스에서 기본 생성자밖에 없을 때, super();이라는 코드를 컴파일러가 자동으로 실행하는 것이다. 
-		// 또한, 부모 생성자가 먼저 메모리에 올라가고, 그 이후에 자식 생성자가 메모리에 올라간다.
-		// 따라서 car의 print문이 먼저 출력되고, 이후에 truck의 print문이 출력되는 것이다.
-		// 출력 :	SuperKeyword_car의 기본 생성자 입니다.
-		//			SuperKeyword_truck의 기본 생성자 입니다.
-
-	}
-}
-
 ```
 
 OverRiding
