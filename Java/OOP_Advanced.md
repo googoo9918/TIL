@@ -258,6 +258,8 @@ class ChildEx extends ParentEx {
 - Object 클래스의 멤버들을 자동으로 상속받아 사용 가능
 - Object 클래스의 대표적인 메서드
   - ![image](https://user-images.githubusercontent.com/102513932/188542401-29116e06-2634-4aaf-b07b-a188ccf58612.png)
+  - 오버라이드를 통해 재정의 후 사용해야 한다.
+    - alt + insert 이용
 
 캡슐화
 ---------------------------------
@@ -296,10 +298,38 @@ public class PackageEx {
   - java.lang
     - 자바의 기본 클래스들을 모아놓음
     - ex) java.lang.String
+    - import하지 않고도 사용할 수 있음.
+    - 기본형 타입을 객체로 변환시킬 때 사용하는 Wrapper 클래스 존재
+      - ex) Integer, Long, Float
+    - Object, String, StringBuffer, StringBuilder, System, Math, Thread 관련 중요 클래스 모두 java.lang 패키지
+    ```java
+    public class WrapperExam{
+      public static void main(String[] args){
+        int i= 5;
+        Integer i2 = new Integer(5);
+        Integer i3 = 5; //오토박싱
+        int i4 = i2.intValue();
+        int i5 = i2; //오토 언박싱
+      }
+    }
+    ```
+    - 오토박싱
+      - Integer i3 = 5; 
+        - 숫자 5는 원래 기본형이지만 자동으로 Integer형태로 전환됨.
+    - 오토 언박싱
+      - int i5 = i2; 
+        - Ingeter 객체타입의 값을 기본형 int로 자동 변환하여 값 할당
+    - 오토박싱, 오토 언박싱 모두 JAVA 5부터 지원, 내부적으로 Wrapper 클래스 사용
   - java.util
     - 확장 클래스를 묶어 놓음
+    - 자료구조 클래스 다수 존재, 이를 컬렉션 프레임워크라 지칭
+      - List, Set, Collection, Map
   - java.io / java.nio
     - 입출력 관련 클래스
+- Generic
+  - 제네릭 사용으로 선언시 가상의 타입으로 선언
+  - 사용시에는 구체적 타입 설정으로 다양한 타입의 클래스 이용 가능
+  - 대표적으로 컬렉션 프레임워크와 관련된 클래스
 - Import 문
   - 다른 패키지 내의 클래스를 사용하기 위해 사용
 ```java
@@ -443,7 +473,7 @@ class Bat extends Animal{};
 class Cat extends Animal{};
 ```
 
-다양성 활용 예제
+다향성 활용 예제
 ---------------------------
 ```java
 public class PolyMorphismEx{

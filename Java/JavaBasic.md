@@ -2,6 +2,7 @@ Java 기초 문법
 ============
 자바의 특징
 -----------------------------------
+[자바 명명 규칙](https://www.oracle.com/java/technologies/javase/codeconventions-namingconventions.html)
 1. 운영체제와 독립적
 - JRE(Java Runtime Environment) 이용
   - JVM(자바 가상머신) + 표준 클래스 라이브러리
@@ -32,6 +33,7 @@ Java 기초 문법
   - 값 저장시, 데이터의 주소 값 저장
   - 기본 타입을 제외한 나머지
 <br><br>
+
 주석문
 -----------
 + 문서화 주석
@@ -41,23 +43,7 @@ Java 기초 문법
 + 한줄 주석
   + ctrl + /
 
-Import
--------------
-- import java.util.*;
-  - java.util 패키지 안 모든 클래스 import
 
-Final
--------------
-- 상수는 대문자 명명규칙 사용
-  - [자바 명명 규칙](https://www.oracle.com/java/technologies/javase/codeconventions-namingconventions.html)
-  - final double PI = 3.14
-  - 단어와 단어 사이 _(underbar)로 작성할 것.
-
-DoWhile
------------
-	do {
-		<수행할 문장>
-	}while(조건문);
 
 For
 ------------
@@ -101,34 +87,6 @@ Ternary Operator
 - (a>b) ? 50 : 40 ;
   - 맞으면 앞(true), 틀리면 뒤(false) 
 
-Array
-------------
-```java
-        int [] array1 = new int[100]; // 정석
-		int [] array2 = new int[] {1,2,3,4}; // 요소 지정만 가능
-		int [] array3 = {1,2,3,4};   // new int[] 안붙여도 가능.
-```
-
-Two Demension Array
-```java
-        int[][] array4 = new int[3][4]; //3행 4열짜리 배열 생성.
-		// array4[N]는 각 행을 표현하기 위한 참조 변수로 사용.
-		 	
-		int[][] array5 = new int[3][]; // 3행 ?열 배열 생성.
-        // 이 경우 array5.length = 3이다.
-		// 참조변수까지만 생성됨.
-		// array5[0][0] = 10; 사용시 오류 발생.
-
-		array5[0] = new int[1];
-		array5[1] = new int[2];
-		array5[2] = new int[3]; 
-
-		// 열 개수가 다른 2차원 배열 생성됨...
-        // 1행 열개수 1개 , 2행 2개, 3행 3개!
-	
-		int [][] array6 = {{1},{1,2},{1,2,3}}; // 이렇게도 가능함! 
-```
-
 
 Enum
 ---------------------
@@ -158,6 +116,20 @@ public class Enumeration {
          
 	}
 }
+```
+
+Math Class
+---------------------------
+- Math 클래스는 생성자가 private으로 되어 있기 때문에 new 연산자 사용 불가능
+- 객체를 생성할 수는 없지만, 모든 메소드와 속성이 static 이기 때문에 객체를 생성하지 않고도 사용 가능
+```java
+int value1 = Math.max(5,20); //최대값
+int value2 = Math.min(5,-5);//최소값
+int value3 = Math.abs(-10); // 절대값
+int value4 = Math.pow(2,10); // 2^10
+double value5 = Math.random();//0~1 random 실수값
+double value6 = Math.sqrt(25); //5.0
+double value7 = Math.log10(200); // log200 = 2.3010..
 ```
 
 String Class
@@ -214,6 +186,15 @@ String Class
 		System.out.println(str.substring(3,5)); 
         // start ~ end 까지 출력.
 ```
+```java
+String str1 = "hello world";
+String str2 = "world";
+String str3 = str1 + str2;
+// 문자열과 문자열을 더하게 되면 내부적으로는 다음과 같은 코드 실행
+// String str3 = new StringBuffer().append(str1).append(str2).toString();
+// 반복문에서 문자열을 더할 경우, new 연산자의 사용이 많아져 성능상 문제가 생길 수 있음. 
+// 반복문에서는 직접 append를 사용하여 처리할 수 있도록 하자.
+```
 
 - StringTokenizer
   - 지정한 구분자로 문자열을 쪼개주는 class
@@ -236,6 +217,16 @@ String Class
   - 인스턴스 생성시 16개 문자를 더 저장할 수 있게 생성
   - 문자열 결합등 변경시 속도 상승, 메모리 부하 감소
     - ```append()```
+      - 결과 출력시 ```toString``` 이용
+      ```java
+      StringBuffer sb2 = new StringBuffer();
+      StringBuffer sb3 = sb2.append("hello");
+      if(sb2 == sb3)
+        System.out.println("sb2 == sb3");
+      // sb2 == sb3 출력
+      ```
+      - StringBuffer가 갖고 있는 메소드는 대부분 자기 자신, this를 반환
+        - 자기 자신의 메소드를 호출하여 자기 자신의 값을 바꿔나가는 것을 메소드체이닝 이라 지칭
     - ```capacity()```
       - 현재 버퍼 크기 확인
     - ```delete()```
@@ -247,12 +238,6 @@ String Class
       - 중간에 다른 문자열 삽입
       - ```str.insert(4,"Script");```
 <br><br>
-
-
-
-
-
-
 
 Exception Handling
 -------------------------
@@ -415,7 +400,7 @@ public class Main {
 // int형 double형 등 primitive Type의 경우 Integer, Double 같은 Wrapper Type으로 쓰는 이유이다.
 ```
 ```java
-ublic class ClassName <T> { ... }
+public class ClassName <T> { ... }
  
 public class Student { ... }
  
@@ -426,48 +411,48 @@ public class Main {
 }
  // 사용자 정의 클래스도 당연히 사용 가능하다.
 ```
-- 활용 예시
+- 기초 예시
 ```java
-class ClassName<E> {
-	
-	private E element;	// 제네릭 타입 변수
-	
-	void set(E element) {	// 제네릭 파라미터 메소드
-		this.element = element;
-	}
-	
-	E get() {	// 제네릭 타입 반환 메소드
-		return element;
-	}
-	
-}
- 
-class Main {
-	public static void main(String[] args) {
-		
-		ClassName<String> a = new ClassName<String>();
-		ClassName<Integer> b = new ClassName<Integer>();
-		
-		a.set("10");
-		b.set(10);
-	
-		System.out.println("a data : " + a.get());
-		// 반환된 변수의 타입 출력 
-		System.out.println("a E Type : " + a.get().getClass().getName());
-		
-		System.out.println();
-		System.out.println("b data : " + b.get());
-		// 반환된 변수의 타입 출력 
-		System.out.println("b E Type : " + b.get().getClass().getName());
-		
-	}
-}
-// ClassName이란 객체를 생성할 때 <> 안에 타입 파라미터(Type parameter)를 지정
-//  a객체의 ClassName의 E 제네릭 타입은 String으로 모두 변환
-// b객체의 ClassName의 E 제네릭 타입은 Integer으로 모두 변환
-```
-- 실행 결과
-  - ![image](https://user-images.githubusercontent.com/102513932/173494890-4274c0ab-c4ff-45d9-8531-9bd09ca5b0fe.png)
+public class Box{
+  private Object obj;
 
+  public void setObj(Object obj){
+    this.obj = obj;
+  }
+  
+  public Object getObj(){
+    return obj;
+  }
+
+  public static void main(String[] args){
+    Box box = new Box();
+    box.setObj("hello"); 
+    //object니까 무슨 형태든 매개변수로 넘겨줄 수 있음.
+    String str = (String)box.getObj();
+    //다만 값을 꺼낼 때, 형 변환이 필수적임
+  }
+}
+```
+```java
+public class Box<E>{ //Object -> E로 변환
+ //가상의 타입으로 선언
+  private E obj;
+
+  public void setObj(E obj){
+    this.obj = obj;
+  }
+  
+  public E getObj(){
+    return obj;
+  }
+
+  public static void main(String[] args){
+    Box<String> box2 = new Box<>();
+    // 구체적 타입을 설정해서 사용 
+    box2.setObj("Hello");
+    String str = box2.getObj(); 
+    // 더 이상 형변환을 하지 않아도 된다
+  }
+```
 
  

@@ -84,3 +84,7 @@ Intellij 단축키
   - ctrl + shift + I
 - Quick Document
   - ctrl + Q
+
+#### 16. Generate
+- alt + insert
+  - ![image](https://user-images.githubusercontent.com/102513932/188876256-f4022677-aa88-4a56-99cc-67d5632d3f43.png)
