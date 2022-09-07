@@ -2,7 +2,7 @@
 ### 알고리즘(Algorithm)
 -----------------------------------
 - 복잡도
-  - [공간복잡도(Space Complexity)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SpacComplexity.md) <br><br>
+  - [공간복잡도(Space Complexity)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SpacComplexity.md) <br>
   - [시간 복잡도(Time Complexity)](https://github.com/ssu18/TIL/blob/main/DataStructure/AL_TimeComplexity.md) <br><br>
 - 정렬
   - [버블 정렬(Bubble Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BubbleSort.md) <br>
@@ -22,7 +22,7 @@
 - 최단 경로
   - [다익스트라(Djikstra)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Djikstra.md)<br><br> 
 - 최소 신장 트리
-  - [크루스칼(Kruskal)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Kruskal.md)<br><br>
+  - [크루스칼(Kruskal)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Kruskal.md)<br>
   - [프림(Prim)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Prim.md)<br><br>
 - [백트랙킹(Back Tracking)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BackTracking.md)<br><br>
 
