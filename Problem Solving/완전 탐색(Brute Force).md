@@ -26,7 +26,7 @@
 - M개를 A) 순서 있게 나열하기(순열)
 - [BOJ 15651](https://www.acmicpc.net/problem/15651) 
   - N과 M(3) (난이도:2) (실버3)
-- [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/P15651(N%EA%B3%BC%20M(3)).md)
+- [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/%EC%99%84%EC%A0%84%ED%83%90%EC%83%89/P15651(N%EA%B3%BC%20M(3)).md)
 - 핵심 코드
 ```java
 for (int cand = 1; cand <= n; cand++) { //핵심
@@ -41,7 +41,7 @@ for (int cand = 1; cand <= n; cand++) { //핵심
 - M개를 A) 순서 있게 나열하기(순열)
 - [BOJ 15649](https://www.acmicpc.net/problem/15649) 
   - N과 M(1) (난이도:2) (실버3)
-- [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/P15649(N%EA%B3%BC%20M(1)).md)
+- [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/%EC%99%84%EC%A0%84%ED%83%90%EC%83%89/P15649(N%EA%B3%BC%20M(1)).md)
 - 핵심 코드
 ```java
 if(bool[cand]==true){ //핵심
@@ -61,7 +61,7 @@ if(bool[cand]==true){ //핵심
 - M개를 B) 고르기 (조합)
 - [BOJ 15652](https://www.acmicpc.net/problem/15652) 
   - N과 M(4) (난이도:2) (실버3)
-- [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/P15662(N%EA%B3%BC%20M(4)).md)
+- [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/%EC%99%84%EC%A0%84%ED%83%90%EC%83%89/P15662(N%EA%B3%BC%20M(4)).md)
 - 핵심 코드
 ```java
 for(int cand =1; cand<=n; cand++){ //핵심
@@ -79,7 +79,7 @@ for(int cand =1; cand<=n; cand++){ //핵심
 - M개를 B) 고르기 (조합)
 - [BOJ 15650](https://www.acmicpc.net/problem/15650) 
   - N과 M(2) (난이도:2) (실버3)
-- [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/P15650(N%EA%B3%BC%20M(2)).md)
+- [정리 및 풀이](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/BackJoon/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(BruteForce)/%EC%99%84%EC%A0%84%ED%83%90%EC%83%89/P15650(N%EA%B3%BC%20M(2)).md)
 - 핵심 코드
 ```java
 for(int cand=selected[k-1]+1; cand<=n; cand++){
