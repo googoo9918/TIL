@@ -132,6 +132,8 @@ double value6 = Math.sqrt(25); //5.0
 double value7 = Math.log10(200); // log200 = 2.3010..
 ```
 
+
+
 String Class
 ---------------
 ```java
@@ -455,4 +457,134 @@ public class Box<E>{ //Object -> E로 변환
   }
 ```
 
- 
+ java.util 패키지
+ -----------------------
+ 1. Set
+```java
+import java.util.Set; 
+
+public class setExam{
+  public static void main(String[] args){
+    Set<String> set1 = new HashSet<>();
+    //Set은 인터페이스라 객체 생성 불가능, HashSet 통해 인스턴스 생성
+    set1.add("Hello");
+    //제너릭이 String이니 String값 추가
+    //set은 중복을 허용하지 않는 자료구조
+    //add 메서드 사용시 boolean 값 리턴
+    //같은 값이 이미 존재한다면 false, 없다면 true 리턴
+    int size = set1.size();
+    //자료의 크기 확인 가능 //1
+
+    //들어있는 값을 하나씩 꺼내보기 위해서는 Iterator 인터페이스/for each 이용해야함
+    Iterator<String> iter = set1.iterator();
+    while(iter.hasNext()){ //data가 유무 조건
+      String str = iter.next(); // 값을 꺼내고, 다음 값을 참조하게됨
+      System.out.println(str);
+    }
+    // 인터페이스 보다 for each 구문이 간편함
+    for(String str : set1){
+      System.out.println(str);
+    }
+  }
+}
+```
+ 2. List
+- 순서는 존재하지만 자료의 길이를 제한하지 않는 자료구조
+```java
+import java.util.ArrayList;
+import java.util.List;
+
+public class ListExam{
+  public static void main(String[] args){
+    List<String> list = new ArrayList<>();
+    //List는 인터페이스라 객체 생성 불가능, ArrayList로 인스턴스 생성할 것
+    //혹은 ArrayList<String> arrayList = new ArrayList<>(); 이용
+    //list에 3개의 문자열을 저장합니다.
+    list.add("kim");
+    list.add("lee");
+    list.add("kim");
+
+    System.out.println(list.size());
+    for(int i=0; i< list.size(); i++){
+      String str = list.get(i);
+      System.out.println(str);
+
+    for(String s : list){
+      System.out.println(s);
+    }
+    }
+  }
+}
+```
+ 3. Map
+```java
+import java.util.HaspMap;
+import java.util.Map;
+
+public class MapExam{
+  public static void main(String[] args){
+    Map<String,String> map = new HashMap<>();
+    map.put("001", "kim"); // key, value
+    map.put("002", "lee");
+    map.put("003", "choi");
+
+    map.put("001", "kang"); //001에 kim 대신 kang 입력
+
+    System.out.println(map.size()); //3 출력
+    System.out.println(map.get("001")); //"kang" 출력
+
+    Set<String> keys = map.keySet();
+    //key값 set 자료구조에 저장
+
+    //for each를 통한 자료구조 출력
+    for each(String str: keys){
+      System.out.println(str); //key값 출력
+      System.out.println(map.get(str));// value값 출력
+    } 
+
+    //while문과 iteratior을 활용한 자료구조 출력
+    Iterator<String> iter = keys.iterator();
+    while(iter.hasNext()){
+      String key = iter.next(); //key값
+      String value = map.get(key); //value 값
+      System.out.println(key + ":" + value);
+    }
+  }
+}
+```
+
+4. Date
+- 지역화에 대해 고려되지 않음
+  - 대부분 Deprecated
+```java
+Date date = new Date();
+        System.out.println(date.toString());
+        // Thu Sep 08 17:21:38 KST 2022
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy.MM.dd 'at' hh:mm:ss a zzz");
+        // yyyy는 년도, MM은 월, dd는 일 표시
+        // hh는 시간, mm은 분, ss는 초를 표현 a는 오전/오후
+        // zzz는 TimeZone을 나타낸다. 한국표준시 KST
+        System.out.println(ft.format(date));
+        // 2022.09.08 at 05:21:38 오후 KST
+        long today = System.currentTimeMillis();
+        // 현재 시간 Long 타입으로 저장
+        System.out.println(today - date.getTime());
+        // 현재시간 - date 생성 시간 == 코드 사이 걸린 시간
+```
+5. Calendar
+```java
+Calendar cal = Calendar.getInstance();
+        // calendar는 추상 클래스, new로 인스턴스를 생성할 수 없음
+        // calendar.getInstance(); 메소드는 calendar의 자식 클래스인 그레고리안 인스턴스의 값을 리턴해줌
+        // 추상 클래스의 리턴 값은 자식 클래스들이 리턴될 수 있음
+        System.out.println(cal.get(Calendar.YEAR));
+        System.out.println(cal.get(Calendar.MONTH)+1); //0부터 출력됨, +1 해줄
+        System.out.println(cal.get(Calendar.DATE));
+
+        System.out.println(cal.get(Calendar.HOUR));
+        System.out.println(cal.get(Calendar.HOUR_OF_DAY));
+        System.out.println(cal.get(Calendar.MINUTE));
+
+        cal.add(Calendar.HOUR,5);
+        // add 메소드를 이용해 값을 더하고 뺼 수 있음.
+```

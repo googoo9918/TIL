@@ -423,6 +423,7 @@ public class FriendTest {
         GirlFriend girlfriend2 = (GirlFriend)girlfriend;
         // 따라서 형 변환 필요 (다운캐스팅)
         // 이 형변환이 가능한 이유는 ,girlfriend 변수가 원래 GirlFriend 타입이지만 실제로는 Friend 타입으로 실행되었기 때문.
+        // 즉, 다운캐스팅이 가능하기 위해서는 업캐스팅이 선행되어야 함.
         girlfriend2.friend();
         // 형변환시 자식 객체 메서드 사용 가능
      }
@@ -449,7 +450,7 @@ instanceof 연산자
 - 캐스팅의 가능 여부를 boolean 타입으로 확인 가능
   - 객체를 어떤 생성자로 만들었는가?
   - 클래스 사이에 상속관계가 존재하는가?
-- ```참조_변수 instanceof 타입```
+- ```참조_변수 instanceof 타입``` ```객체 instanceof 클래스```
   - 리턴 값이 true가 나오면 타입 변환 가능
   - false가 나오면 불가능
 ```java
@@ -459,12 +460,16 @@ public class InstanceOfExample {
         System.out.println(animal instanceof Object); //true
         System.out.println(animal instanceof Animal); //true
         System.out.println(animal instanceof Bat); //false
-
+        // 상위 클래스 객체가 하위 클래스로 다운 캐스팅 불가능.
         Animal cat = new Cat();
         System.out.println(cat instanceof Object); //true
         System.out.println(cat instanceof Animal); //true
         System.out.println(cat instanceof Cat); //true
         System.out.println(cat instanceof Bat); //false
+        // 상속관계가 아닌 두 객체
+        
+        class Bat extends Animal{};
+        class Cat extends Animal{};
     }
 }
 
