@@ -459,6 +459,17 @@ public class Box<E>{ //Object -> E로 변환
 
  java.util 패키지
  -----------------------
+ - 컬렉션 프레임워크
+   - 자료구조 클래스들을 컬렉션 프레임워크라 지칭
+   - Set
+     - 중복 허용 x
+     - collection 인터페이스 상속 받음
+   - List
+     - 중복 허용, 순서 기억
+     - collection 인터페이스 상속 받음
+   - Map
+     - key, value값 존재
+     - key 중복 불가능
  1. Set
 ```java
 import java.util.Set; 
@@ -588,3 +599,16 @@ Calendar cal = Calendar.getInstance();
         cal.add(Calendar.HOUR,5);
         // add 메소드를 이용해 값을 더하고 뺼 수 있음.
 ```
+6. java.time 패키지도 있음, 이하 생략
+
+
+java IO 패키지 
+-------------------------
+- 추후 프로그래머스 참고할 것
+- 입출력을 위한 인터페이스와 클래스들
+  - 크게 byte 단위 입출력과 문자 단위 입출력 클래스로 나뉨
+    - byte 단위는 InputStream과 OutputStream 추상클래스를 상속받아 만들어짐
+    - 문자(char)단위는 Reader와 Writer 추상클래스를 상속받아 만들어짐
+1. Byte 단위 입출력
+2. 다양한 타입의 입출력
+3. char 단위 입출력
