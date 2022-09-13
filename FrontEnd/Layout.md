@@ -4,7 +4,7 @@
 -[레이아웃 리셋](#레이아웃-리셋)<br>
 -[Flexbox](#flexbox)<br>
   -[display: flex 분석](#display-flex-분석)<br>
-  -[부모 요소에 적용하는 Flexbox 속성]<br>(#부모-요소에-적용하는-flexbox-속성)
+  -[부모 요소에 적용하는 Flexbox 속성]<br>(#부모-요소에-적용하는-flexbox-속성)<br>
     -[grow](#1grow)<br>
     -[shrink](#2shrink)<br>
     -[basis](#3basis)<br>
