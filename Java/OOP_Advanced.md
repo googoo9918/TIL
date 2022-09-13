@@ -260,6 +260,8 @@ class ChildEx extends ParentEx {
   - ![image](https://user-images.githubusercontent.com/102513932/188542401-29116e06-2634-4aaf-b07b-a188ccf58612.png)
   - 오버라이드를 통해 재정의 후 사용해야 한다.
     - alt + insert 이용
+    - ![image](https://user-images.githubusercontent.com/102513932/189785364-9c0384ae-4971-4d2e-aee7-cbfc182ef34d.png)
+
 
 캡슐화
 ---------------------------------

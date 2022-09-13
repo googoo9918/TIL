@@ -88,8 +88,14 @@ Ternary Operator
   - 맞으면 앞(true), 틀리면 뒤(false) 
 
 
-Enum
+열거형(Enum)
 ---------------------
+- 열거형은 서로 연관된 상수들의 집합
+  - 몇 가지로 한정된 변하지 않는 데이터
+  - 상수명의 중복을 피할 수 있음
+  - 타입에 대한 안정성 보장
+  - 간결하고 가독성 좋은 코드
+  - swithch문 작동 가능
 ```java
 
 public class Enumeration {
@@ -98,8 +104,8 @@ public class Enumeration {
     // 상수 사용시 전체 변수명 대문자 관례!
     
     enum Gender {
-    	MALE,FEMALE //세미콜론 X, 열거형 선언.
-    	};
+    	MALE,FEMALE //세미콜론 X,대문자 사용, 열거형 선언
+    	};//0부터 시작해서 자동으로 정수값 할당됨 (0, 1,..)
     
 	public static void main(String[] args) {
 		 String gender1;
@@ -113,8 +119,32 @@ public class Enumeration {
          gender2 = Gender.FEMALE;
          // gender2 = "boy"; //오류 발생
          // 특정 값만 사용한다면, 열거형을 사용하는 것이 좋다.
-         
+  //enum은 switch-case 구문도 사용 가능하다.     
 	}
+}
+```
+- 열거형에서 사용 가능한 메서드
+  - 모든 열거형의 조상인 ```java.lang.Enum```에 정의
+  - ![image](https://user-images.githubusercontent.com/102513932/189788057-1a615daf-fbcb-4919-adaa-3f2a8e1a134f.png)
+```java
+enum Leve{
+  LOW, //0
+  MEDIUM, //1
+  HIGH //2
+}
+
+public class EnumTest{
+  public static void main(String[] args){
+    Level level = Level.MEDIUM;
+
+    Leve[] allLevels = Level.values();
+    for(Level x : allLevels){
+      System.out.printf("%s=%d%n", x.name(), x.ordinal());
+// LOW=0
+// MEDIUM=1
+// HIGH=2
+    }
+  }
 }
 ```
 
@@ -457,20 +487,21 @@ public class Box<E>{ //Object -> E로 변환
   }
 ```
 
- java.util 패키지
- -----------------------
- - 컬렉션 프레임워크
-   - 자료구조 클래스들을 컬렉션 프레임워크라 지칭
-   - Set
-     - 중복 허용 x
-     - collection 인터페이스 상속 받음
-   - List
-     - 중복 허용, 순서 기억
-     - collection 인터페이스 상속 받음
-   - Map
-     - key, value값 존재
-     - key 중복 불가능
- 1. Set
+
+java.util 패키지
+-----------------------
+- 컬렉션 프레임워크
+  - 자료구조 클래스들을 컬렉션 프레임워크라 지칭
+  - Set
+    - 중복 허용 x
+    - collection 인터페이스 상속 받음
+  - List
+    - 중복 허용, 순서 기억
+    - collection 인터페이스 상속 받음
+  - Map
+    - key, value값 존재
+    - key 중복 불가능
+1. Set
 ```java
 import java.util.Set; 
 
@@ -499,7 +530,7 @@ public class setExam{
   }
 }
 ```
- 2. List
+2. List
 - 순서는 존재하지만 자료의 길이를 제한하지 않는 자료구조
 ```java
 import java.util.ArrayList;
@@ -527,7 +558,7 @@ public class ListExam{
   }
 }
 ```
- 3. Map
+3. Map
 ```java
 import java.util.HaspMap;
 import java.util.Map;
