@@ -485,6 +485,7 @@ public class Box<E>{ //Object -> E로 변환
     String str = box2.getObj(); 
     // 더 이상 형변환을 하지 않아도 된다
   }
+}
 ```
 
 
