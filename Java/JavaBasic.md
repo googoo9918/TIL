@@ -7,14 +7,14 @@
   * [Logical Operation](#logical-operation)<br>
   * [Switch - Case](#switch---case)<br>
   * [Ternary Operator](#ternary-operator)<br>
-  * [열거형(Enum)](#----enum-)<br>
+  * [열거형(Enum)](#열거형enum)<br>
   * [Math Class](#math-class)<br>
   * [String Class](#string-class)<br>
   * [Exception Handling](#exception-handling)<br>
   * [Custom Exception](#custom-exception)<br>
   * [Generic Type](#generic-type)<br>
-  * [java.util 패키지](#javautil----)<br>
-  * [java IO 패키지](#java-io----)<br>
+  * [java.util 패키지](#javautil-패키지)<br>
+  * [java IO 패키지](#java-io-패키지)<br>
 
 Java 기초 문법
 ============
