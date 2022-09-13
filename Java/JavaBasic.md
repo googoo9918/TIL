@@ -8,13 +8,24 @@
   * [Switch - Case](#switch---case)<br>
   * [Ternary Operator](#ternary-operator)<br>
   * [열거형(Enum)](#열거형enum)<br>
+    * [열거형 메서드](#열거형에서-사용-가능한-메서드)
   * [Math Class](#math-class)<br>
   * [String Class](#string-class)<br>
+    * [length, concat, trim, substring, 문자열 덧셈](#length-concat-trim-substring-문자열-덧셈)
+    * [StringTokenizer, StringBuilder, StringBuffer](#stringtokenizer-stringbuilder-stringbuffer)
   * [Exception Handling](#exception-handling)<br>
+    * [try-catch](#try---catch-문)
+    * [예외 전가](#예외-전가)
   * [Custom Exception](#custom-exception)<br>
   * [Generic Type](#generic-type)<br>
+    * [클래스 및 인터페이스 선언](#클래스-및-인터페이스-선언)
+    * [기초 예시 및 다형성 적용](#기초-예시-및-다형성-적용)
+    * [제한된 제네릭 클래스](#제한된-제네릭-클래스)
+    * [제네릭 메서드](#제네릭-메서드)
+    * [와일드 카드](#와일드-카드)
   * [java.util 패키지](#javautil-패키지)<br>
   * [java IO 패키지](#java-io-패키지)<br>
+<br>
 
 Java 기초 문법
 ============
@@ -141,11 +152,11 @@ public class Enumeration {
 	}
 }
 ```
-- 열거형에서 사용 가능한 메서드
+#### 열거형에서 사용 가능한 메서드
   - 모든 열거형의 조상인 ```java.lang.Enum```에 정의
   - ![image](https://user-images.githubusercontent.com/102513932/189788057-1a615daf-fbcb-4919-adaa-3f2a8e1a134f.png)
 ```java
-enum Leve{
+enum Level{
   LOW, //0
   MEDIUM, //1
   HIGH //2
@@ -155,7 +166,7 @@ public class EnumTest{
   public static void main(String[] args){
     Level level = Level.MEDIUM;
 
-    Leve[] allLevels = Level.values();
+    Level[] allLevels = Level.values();
     for(Level x : allLevels){
       System.out.printf("%s=%d%n", x.name(), x.ordinal());
 // LOW=0
@@ -212,7 +223,7 @@ String Class
 		//substring은 문자열을 자른 결과를 반환하는 메소드이다. 해당 코드가 실행되어도 str5는 변하지 않는다.
 		//str6은 str5가 가지고 있는 문자열 중 3번째 위치부터 자른 결과 즉 새로운 String을 참조하게 된다.
 ```
-
+#### length, concat, trim, substring, 문자열 덧셈
 ```java
 	String str = "hello";
 		
@@ -245,7 +256,7 @@ String str3 = str1 + str2;
 // 반복문에서 문자열을 더할 경우, new 연산자의 사용이 많아져 성능상 문제가 생길 수 있음. 
 // 반복문에서는 직접 append를 사용하여 처리할 수 있도록 하자.
 ```
-
+#### StringTokenizer, StringBuilder, StringBuffer
 - StringTokenizer
   - 지정한 구분자로 문자열을 쪼개주는 class
   - 쪼개어진 문자열을 토근(Token)이라 지칭.
@@ -289,137 +300,137 @@ String str3 = str1 + str2;
       - ```str.insert(4,"Script");```
 <br><br>
 
-Exception Handling
+예외 처리(Exception Handling)
 -------------------------
+- 컴파일 에러
+  - 컴파일 할 때 발생
+  - 주로 문법 오류, 신택스 에러라 지칭하기도 함
+    - ide(컴파일러)를 통해 확인 가능, 비교적 쉽게 해결 가능
+    - ex) ```java: ')' expected```
+- 런타임 에러
+  - 프로그램이 실행될 때 발생하는 에러
+    - 자바 가상 머신(JVM)에 의해 감지
+    - ex) 특정 숫자를 0으로 나눴을 때 발생 
+- 예외 클래스의 상속 계층도
+  - ![image](https://user-images.githubusercontent.com/102513932/189837930-a5d15e31-03f8-4b79-801b-e6835f782e67.png)
+  - 일반 예외 클래스(Exception)
+    - 컴파일러가 실행 전 예외 처리 코드 여부 검사 , checked 예외라 지칭하기도
+    - 잘못도니 클래스명, 데이터 형식 등 
+  - 실행 예외 클래스(Runtime Exception)
+    - 런타임시 발생하
+    - 컴파일러가 검사하지 않음, unchecked 예외라 지칭하기도
+    - 클래스 간 형변환 오류, 벗어난 배열 범위 지정, null 참조변수 사용 등
+#### try - catch 문
 ```java
-public class Exception {
-	public static void main(String[] args) {
-		int i = 10;
-		int j = 0;
-		
-		try {
-		int k = i/j;
-		// j가 0이기때문에 정상 작동하지 않음!
-		System.out.println(k);
-		}catch(ArithmeticException e) {
-			System.out.println("0으로 나눌 수 없습니다."+ e.toString());
-		}finally {
-            System.out.println("오류가 발생하든 안하든 무조건 실행되는 블록입니다.");
-        }
-	}
+try {
+    // 예외가 발생할 가능성이 있는 코드를 삽입
+} 
+catch (ExceptionType1 e1) {
+    // ExceptionType1 유형의 예외 발생 시 실행할 코드
+} 
+catch (ExceptionType2 e2) {
+    // ExceptionType2 유형의 예외 발생 시 실행할 코드
+} 
+finally {
+    // finally 블럭은 옵셔널
+    // 예외 발생 여부와 상관없이 항상 실행
 }
 ```
-
 ```java
-public class ExceptionExam2 {
+public class RuntimeExceptionTest {
 
     public static void main(String[] args) {
-        int i = 10;
-        int j = 0;
-        try{
-            int k = divide(i, j);
-            System.out.println(k);
-        } catch(ArithmeticException e){
-            System.out.println("0으로 나눌수 없습니다.");
+
+        try {
+            System.out.println("[소문자 알파벳을 대문자로 출력하는 프로그램]");
+            printMyName(null); // (1) 예외 발생
+            printMyName("abc"); // 이 코드는 실행되지 않고 catch 문으로 이동
+        } 
+        catch (ArithmeticException e) {
+            System.out.println("ArithmeticException 발생!"); // (2) 첫 번째 catch문
+        } 
+        catch (NullPointerException e) { // (3) 두 번째 catch문
+            System.out.println("NullPointerException 발생!"); 
+            System.out.println("e.getMessage: " + e.getMessage()); // (4) 예외 정보를 얻는 방법 - 1
+            System.out.println("e.toString: " + e.toString()); // (4) 예외 정보를 얻는 방법 - 2
+            e.printStackTrace(); // (4) 예외 정보를 얻는 방법 - 3
+        } 
+        finally {
+            System.out.println("[프로그램 종료]"); // (5) finally문
         }
-
     }
 
-    public static int divide(int i, int j) throws ArithmeticException{
-        int k = i / j;
-        return k;
+    static void printMyName(String str) {
+        String upperCaseAlphabet = str.toUpperCase();
+        System.out.println(upperCaseAlphabet);
     }
-
 }
-// 메소드 선언 뒤에 throws ArithmeticException 이 적혀있는 것을 알 수 있습니다. 
-// 이렇게 적어놓으면 divide메소드는 ArithmeticException이 발생하니 
-// divide메소드를 호출하는 쪽에서 오류를 처리하라는 뜻입니다.
 
+// 출력값
+[소문자 알파벳을 대문자로 출력하는 프로그램]
+NullPointerException 발생!
+e.getMessage: null
+e.toString: java.lang.NullPointerException
+[프로그램 종료]
+java.lang.NullPointerException
+	at RuntimeExceptionTest.printMyName(RuntimeExceptionTest.java:20)
+	at RuntimeExceptionTest.main(RuntimeExceptionTest.java:7)
 ```
+1. 예외 발생
+2. 첫 번째 catch
+- 첫 번째 catch문은 예외가 적합하지 않기 때문에 생략
+- 예외 발생은 위에서부터 순차적으로 검사 진행 
+  - 검사는 ```instanceOf``` 연산자 이용
+  - 구체적 예외 클래스인 하위클래스 상단 배치 권장
+3. 두 번째 catch
+- 발생한 예외와 일치하는 조건, 코드블럭 순차적 실행
+- 예외 정보를 얻는 법
+  - e.getMessage()
+    - 에러 원인 간단히 출력
+  - e.toString()
+    - 에러의 Exception 내용과 원인을 출력
+  - e.printStackTrace()
+    - 에러의 발생근원지를 찾아 단계별로 에러 출력
+4. finally
+- 꼭 포함되어야 하진 않음
+- 포함 되어 있다면 예외 발생 여부와 관계없이 무조건 실행
 
+#### 예외 전가
+- 예외를 호출한 곳으로 다시 예외를 떠넘기는 방법
+  - 메서드 선언부 끝에 throws 키워드 이용
+  - 메소드를 사용하는 곳으로 책임 전가
 ```java
- public class ExceptionExam3 {
-        public static void main(String[] args) {
-            int i = 10;
-            int j = 0;
-            int k = divide(i, j);
-            System.out.println(k);
-
-        }       
-        public static int divide(int i, int j) throws IllegalArgumentException{
-            if(j == 0){
-                throw new IllegalArgumentException("0으로 나눌 수 없어요.");
-            }
-            int k = i / j;
-            return k;
-        }   
-    }
-	
-	// j가 0일 경우에 new연산자를 통하여 
-	// IllegalArgumentException 객체가 만들어 진다.
-	// new 앞에 throw 는 해당 라인에서 익셉션이 발생한다는 의미이다.
-	// 즉 그 줄에서 오류가 발생했다는 것이다. 
-	// 0으로 나눌수 없습니다. 라는 오류가 발생한것이다.
-	// Exception클래스 이름을 보면 아규먼트가 잘못되었기 때문에 
-	// 발생한 오류라는 것을 알 수 있다.
-```
-
-Custom Exception
--------------------
-
-+ Exception 클래스를 상속 받아 정의한 checked Exception
-  + 반드시 오류를 처리 해야만 하는 Exception
-  + 예외 처리하지 않으면 컴파일 오류를 발생 시킨다.
-+ RuntimeException 클래스를 상속 받아 정의한 unChecked Exception
-  + 예외 처리하지 않아도 컴파일 시에는 오류를 발생시키지 않는다.
-
+반환타입 메서드명(매개변수, ...) throws 예외클래스1, 예외클래스2, ... {
+}
+void ExampleMethod() throws Exception{
+}
+```  
 ```java
- public class BizException extends RuntimeException {
-        public BizException(String msg){
-            super(msg);
-        }       
-        public BizException(Exception ex){
-            super(ex);
+public class ThrowExceptionTest {
+
+    public static void main(String[] args) {
+        try {
+            throwException();
+        } catch (ClassNotFoundException e) {
+            System.out.println(e.getMessage()); //출력
         }
     }
-```
 
-```java
-  public class BizService {
-        public void bizMethod(int i)throws BizException{
-            System.out.println("비지니스 로직이 시작합니다.");
-            if(i < 0){
-                throw new BizException("매개변수 i는 0이상이어야 합니다.");
-            }
-            System.out.println("비지니스 로직이 종료됩니다.");
-        }
+    static void throwException() throws ClassNotFoundException, NullPointerException {//throws로 인해 예외 처리 main에서 진행
+        Class.forName("java.lang.StringX"); //런타임 에러 발생
     }
+}
+//출력값
+java.lang.StringX
 ```
 
-```java
-   public class BizExam {  
-        public static void main(String[] args) {
-            BizService biz = new BizService();
-            biz.bizMethod(5);
-            try{
-                biz.bizMethod(-3);
-            }catch(Exception ex){
-                ex.printStackTrace();
-            }
-        }
-    }
-```
+#### 의도적 예외 발생
+- throw
+  - 예외를 강제로 발생시킴
+  - ```throw new 발생시킬 예외```
+- 기타 예제 후술 요망
 
-+ 실행결과
-  + 비지니스 로직이 시작합니다.
-  + 비지니스 로직이 종료됩니다.
-  + 비지니스 로직이 시작합니다.
-  + javaStudy.BizException: 매개변수 i는 0이상이어야 합니다.
-  + at javaStudy.BizService.bizMethod(BizService.java:7)
-  + at javaStudy.BizExam.main(BizExam.java:9)
-  <br><br>
-
-Generic Type
+제네릭(Generic Type)
 ------------------------
 
 -  제네릭(Generic)은 클래스 내부에서 지정하는 것이 아닌 외부에서 사용자에 의해 지정되는 것을 의미
@@ -431,7 +442,8 @@ Generic Type
   - 3. 비슷한 기능을 지원하는 경우 코드의 재사용성이 높아진다.
 - 범용적 규칙
 	- ![image](https://user-images.githubusercontent.com/102513932/173493996-d695ac84-2eb8-418b-8a89-7129419d2523.png)
-- 클래스 및 인터페이스 선언
+	- 타입 매개변수라 지칭
+#### 클래스 및 인터페이스 선언
 ```java
 public class ClassName <T> { ... }
 public Interface InterfaceName <T> { ... }
@@ -443,6 +455,8 @@ public class ClassName <T, K> { ... }
 public class Main {
 	public static void main(String[] args) {
 		ClassName<String, Integer> a = new ClassName<String, Integer>();
+    ClassName<String, Integer> a = new ClassName<>(); //위와 같은 코드.
+    
 	}
 }
 //  타입 파라미터로 명시할 수 있는 것은 참조 타입(Reference Type)밖에 올 수 없다.
@@ -461,7 +475,7 @@ public class Main {
 }
  // 사용자 정의 클래스도 당연히 사용 가능하다.
 ```
-- 기초 예시
+### 기초 예시 및 다형성 적용
 ```java
 public class Box{
   private Object obj;
@@ -487,7 +501,9 @@ public class Box{
 public class Box<E>{ //Object -> E로 변환
  //가상의 타입으로 선언
   private E obj;
-
+  static E item1; //오류 발생 
+  // 클래스변수(static 변수)에는 타입 매개변수 사용 불가능
+  // 클래스 변수는 값과 메모리를 공유하기 때문에 인스턴스 별로 달라지면 안됨
   public void setObj(E obj){
     this.obj = obj;
   }
@@ -505,6 +521,181 @@ public class Box<E>{ //Object -> E로 변환
   }
 }
 ```
+```java
+// 마찬가지로 다향성 적용 가능
+class Flower{...}
+class Rose extends Flower{...}
+class RosePasta{...}
+
+class Basket<T>{
+  private T item;
+
+  public T getItem(){
+    return item;
+  }
+
+  public void setItem(T item){
+    this.item = item;
+  }
+}
+public static void main(String[] args){
+  Basket<Flower> flowerBasket = new Basket<>();
+  flowerBasket.setItem(new Rose()); //다형성 적용
+  flowerBasket.setItem(new RosePasta()); //에러
+  // new Rose()를 통해 생성된 인스턴스는 Rose 타입, Rose타입은 Flower 클래스를 상속받음
+  // 따라서 Basket<Flower>의 item에 할당될 수 있음.
+}
+```
+#### 제한된 제네릭 클래스
+1. 클래스 제한 
+```java
+class Basket<T>//을
+class Basket<T extends Flower>//로 변경시
+```
+```basket```클래스를 인스턴스화 할 때 타입으로 ```Flower``` 클래스의 하위 클래스만 지정하도록 제한된다.
+
+2. 인터페이스 구현 클래스 제한
+```java
+interface Plant { ... }
+class Flower implements Plant { ... }
+class Rose extends Flower implements Plant { ... }
+
+class Basket<T extends Plant> {
+    private T item;
+	
+		...
+}
+public static void main(String[] args) {
+
+		// 인스턴스화 
+		Basket<Flower> flowerBasket = new Basket<>();
+		Basket<Rose> roseBasket = new Basket<>();
+}
+```
+특정 인터페이스를 구현한 클래스만 타입으로 지정할 수 있도록 제한 가능
+3. 특정 클래스 상속 & 특정 인터페이스 구현 클래스 지정
+```java
+class Basket<T extends Flower & Plant> { // (1)
+    private T item;
+	
+		...
+}// 클래스를 인터페이스보다 앞에 위치시켜야 됨 주의
+```
+#### 제네릭 메서드
+- 클래스 내부 특정 메서드만 제네릭 선언 가능
+- 반환타입 앞에서 타입 매개변수 선언
+  - 해당 메서드 내에서만 선언한 타입 매개변수 사용 가능
+  - 제네릭 클래스의 타입 매개변수와 제네릭 매서드의 타입 매개변수는 별개.
+    - 클래스의 타입 매개변수
+      - 클래스가 인스턴스화 될 때 타입 지정
+    - 메서드의 타입 매개변수
+      - 메서드가 호출될 때 타입 지정.
+      - 클래스와 달리 static 메서드에서도 선언하여 사용 가능
+      - ```length()```와 같은 특정 클래스 메서드 사용 불가능
+        - 제네릭 메서드를 정의하는 시점에서 어떤 타입이 입력 되는지 알 수 없기 때문
+        - 단, object 클래스의 메서드는 사용 가능
+          - 모든 클래스는 object 클래스를 상속받기 때문
+          - ex) ```equals()``` , ```toString()```
+```java
+class Basket<T> {                // 1 : 여기에서 선언한 타입 매개변수 T와 
+		...
+		public <T> void add(T element) { // 2 : 여기에서 선언한 타입 매개변수 T는 서로 다른 것입니다.
+				...
+    static <T> int setPrice(T element){ 
+      // 메서드 에서는 static 메서드에서도 선언 및 사용 가능
+      // 클래스의 클래스 변수에서는 타입 매개변수 사용 불가능
+    }
+
+    public <T> void print(T item){
+      System.out.println(item.length()); //불가능
+    }
+    public <T> void getPrint(T item){
+      System.out.println(item.equals("kim coding")); //가능
+    }
+		}
+}
+Basket<String> basket = new Bakset<>(); // 위 예제의 1의 T가 String으로 지정됩니다. 
+basket.<Integer>add(10);                // 위 예제의 2의 T가 Integer로 지정됩니다. 
+basket.add(10);                         // 타입 지정을 생략할 수도 있습니다. 
+```
+#### 와일드 카드
+- 어떠한 타입으로든 대체될 수 있는 타입 파라미터
+  - 기호 ```?```로 와일드카드 사용
+    - ```extends```와 ```super``` 키워드 조합
+```java
+<? extends T>
+<? super T>
+```    
+    - ```<? extends T>```는 와일드 카드의 상한 제한
+      - T와 T를 상속받는 하위 클래스 타입만 타입 파라미터로 받을 수 있도록 지정
+    - ```<? super T>```는 와일드카드에 하한 제한
+      - T와 T의 상위 클래스만 타입 파라미터로 받도록 한다.
+- 예제
+  - ![image](https://user-images.githubusercontent.com/102513932/189833746-72480feb-0ab3-436e-9296-154e35d68e00.png)
+  - call :통화 기능, 모든 휴대폰에서 사용 가능
+    - ? extends Phone으로 타입 제한
+  - faceId : 애플의 안면 인식 보안 기능, 아이폰만 사용 가능
+    - ? extends IPhone으로 타입 제한
+  - samsungPay : 삼성 휴대폰의 결제 기능, 삼성 휴대폰에서만 사용 가능
+    - ? extends Galaxy로 타입 제한
+  - recordVoice : 통화 녹음 기능, 안드로이드 휴대폰에서만 사용 가능
+    - ? super Galaxy로 타입 제한
+```java
+class PhoneFunction {
+    public static void call(User<? extends Phone> user) {
+  
+    }
+    public static void faceId(User<? extends IPhone> user) {
+    }
+    public static void samsungPay(User<? extends Galaxy> user) {
+    }
+    public static void recordVoice(User<? super Galaxy> user) {
+
+    }
+}
+public class Example {
+    public static void main(String[] args) {
+        PhoneFunction.call(new User<Phone>(new Phone()));
+        PhoneFunction.call(new User<IPhone>(new IPhone()));
+        PhoneFunction.call(new User<Galaxy>(new Galaxy()));
+        PhoneFunction.call(new User<IPhone12Pro>(new IPhone12Pro()));
+        PhoneFunction.call(new User<IPhoneXS>(new IPhoneXS()));
+        PhoneFunction.call(new User<S22>(new S22()));
+        PhoneFunction.call(new User<ZFlip3>(new ZFlip3()));
+
+        System.out.println("\n######################################\n");
+
+//        PhoneFunction.faceId(new User<Phone>(new Phone())); // X
+        PhoneFunction.faceId(new User<IPhone>(new IPhone()));
+        PhoneFunction.faceId(new User<IPhone12Pro>(new IPhone12Pro()));
+        PhoneFunction.faceId(new User<IPhoneXS>(new IPhoneXS()));
+//        PhoneFunction.faceId(new User<Galaxy>(new Galaxy())); // X
+//        PhoneFunction.faceId(new User<S22>(new S22())); // X
+//        PhoneFunction.faceId(new User<ZFlip3>(new ZFlip3())); // X
+
+        System.out.println("\n######################################\n");
+
+//        PhoneFunction.samsungPay(new User<Phone>(new Phone())); // X
+//        PhoneFunction.samsungPay(new User<IPhone>(new IPhone())); // X
+//        PhoneFunction.samsungPay(new User<IPhone12Pro>(new IPhone12Pro())); // X
+//        PhoneFunction.samsungPay(new User<IPhoneXS>(new IPhoneXS())); // X
+        PhoneFunction.samsungPay(new User<Galaxy>(new Galaxy()));
+        PhoneFunction.samsungPay(new User<S22>(new S22()));
+        PhoneFunction.samsungPay(new User<ZFlip3>(new ZFlip3()));
+
+        System.out.println("\n######################################\n");
+
+        PhoneFunction.recordVoice(new User<Phone>(new Phone()));
+//        PhoneFunction.recordVoice(new User<IPhone>(new IPhone())); // X
+//        PhoneFunction.recordVoice(new User<IPhone12Pro>(new IPhone12Pro())); // X
+//        PhoneFunction.recordVoice(new User<IPhoneXS>(new IPhoneXS())); // X
+        PhoneFunction.recordVoice(new User<Galaxy>(new Galaxy()));
+//        PhoneFunction.recordVoice(new User<S22>(new S22())); // X
+//        PhoneFunction.recordVoice(new User<ZFlip3>(new ZFlip3())); // X
+    }
+}
+```  
+- ![image](https://user-images.githubusercontent.com/102513932/189835393-15e11307-4d34-41f4-932f-cd7072f3139d.png)
 
 
 java.util 패키지
