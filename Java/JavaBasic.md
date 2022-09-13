@@ -28,10 +28,13 @@
     * [컬렉션 프레임워크](#컬렉션-프레임워크)
       * [Iterator](#0-iterator)
       * [Set](#1-set)
+        * [HashSet](#hashset)
+        * [TreeSet](#treeset)
       * [List](#2-list)
         * [ArrayList](#arraylist)
         * [LinkedList](#linkedlist)
       * [Map](#3-map)
+        * [HashMap](#hashmap)
       * [Date](#4-date)
       * [Calendar](#5-calendar)
 <br>
@@ -760,6 +763,7 @@ public class setExam{
   public static void main(String[] args){
     Set<String> set1 = new HashSet<>();
     //Set은 인터페이스라 객체 생성 불가능, HashSet 통해 인스턴스 생성
+    //HashSet<String> set1 = new HashSet<>(); 가능
     set1.add("Hello");
     //제너릭이 String이니 String값 추가
     //set은 중복을 허용하지 않는 자료구조
@@ -781,6 +785,40 @@ public class setExam{
   }
 }
 ```
+#### TreeSet
+- 이진 탐색 트리 형태로 데이터 저장
+  - 데이터 중복 x, 저장 순서 유지 x
+  - 모든 왼쪽 자식의 값이 루트나 부모보다 작음
+  - 모든 오른쪽 자식의 값이 루트나 부모보다 큰 값을 가짐
+  - ![image](https://user-images.githubusercontent.com/102513932/189933833-e99dd711-7890-426f-b36d-f905564855df.png) 
+```java
+import java.util.TreeSet;
+
+public class TreeSetExample {
+    public static void main(String[] args) {
+
+				// TreeSet 생성
+        TreeSet<String> workers = new TreeSet<>();
+
+				// TreeSet에 요소 추가
+        workers.add("Lee Java");
+        workers.add("Park Hacker");
+        workers.add("Kim Coding");
+
+        System.out.println(workers); 
+        //전체 출력[Kim Coding, Lee Java, Park Hacker]
+        System.out.println(workers.first());
+        //최소값 출력 Kim Coding
+        System.out.println(workers.last());
+        //최대값 출력 Park Hacker
+        System.out.println(workers.higher("Lee"));
+        //입력값보다 큰 데이터 중 최소값 출력, 없으면 null / Lee Java
+        System.out.println(workers.subSet("Kim", "Park"));
+        //kim~park 까지의 객체들을 반환 / [Kim Coding, Lee Java]
+    }
+}
+```
+![image](https://user-images.githubusercontent.com/102513932/189937071-1083720b-c39c-4d2b-a2c8-c51ca7f9ef16.png)
 ### 2. List
 - 순서는 존재하지만 자료의 길이를 제한하지 않는 자료구조
 - 배열과 같이 객체를 일렬로 늘어 놓은 구조
@@ -837,8 +875,19 @@ public class ListExam{
 ```java
 ArrayList<String> list = new LinkedList<>(); // 선언부
 ```  
-
+![image](https://user-images.githubusercontent.com/102513932/189936989-8897402c-f824-4f78-98e7-d9f5df61fd54.png)
 ### 3. Map
+- 키와 값으로 구성된 객체 저장 (Entry 객체)
+  - ![image](https://user-images.githubusercontent.com/102513932/189934358-74bf7f9e-db0b-42bb-9efe-8d89b2983599.png)
+- 키는 중복 저장 x , 값은 중복 저장 가능
+  - 동일 키로 값 저장시 기존 값 새로운 값으로 대체
+- ![image](https://user-images.githubusercontent.com/102513932/189934726-f93505e7-7a22-45b1-ad2e-7a45813c9f3e.png)
+#### HashMap
+ - 해시 함수를 통해 저장되는 위치 결정
+   - 사용자는 위치를 알 수없음
+   - 삽입되는 순서와 위치는 관계성 x
+ - 많은 양의 데이터를 검색 시 뛰어난 성능
+ - ![image](https://user-images.githubusercontent.com/102513932/189935163-eacfbdfe-ceb1-410c-949b-eab79c69f509.png)
 ```java
 import java.util.HaspMap;
 import java.util.Map;
@@ -846,6 +895,7 @@ import java.util.Map;
 public class MapExam{
   public static void main(String[] args){
     Map<String,String> map = new HashMap<>();
+    // HashMap<String,String> hashmap = new HashMap<>(); 가능
     map.put("001", "kim"); // key, value
     map.put("002", "lee");
     map.put("003", "choi");
@@ -856,7 +906,7 @@ public class MapExam{
     System.out.println(map.get("001")); //"kang" 출력
 
     Set<String> keys = map.keySet();
-    //key값 set 자료구조에 저장
+    //key값 set 자료구조에 저장 , 순회하기 위해 필요.
 
     //for each를 통한 자료구조 출력
     for each(String str: keys){
@@ -871,8 +921,15 @@ public class MapExam{
       String value = map.get(key); //value 값
       System.out.println(key + ":" + value);
     }
+
+    //객체 삭제
+    map.remove("001");
+
+    //객체 전체 삭제
+    map.clear();
   }
 }
+![image](https://user-images.githubusercontent.com/102513932/189936912-38754084-1a90-445e-869f-8c9471fa9f73.png)
 ```
 
 #### 4. Date
