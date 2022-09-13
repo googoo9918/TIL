@@ -1,14 +1,3 @@
-- [HTML(Hyper Text Markup Language) 기초 문법](#htmlhyper-text-markup-language-기초-문법)
-      - [0. HTML 요소](#0-html-요소)
-      - [0.0 대표 구획 태그](#00-대표-구획-태그)
-      - [1. div , span](#1-div--span)
-      - [2. 이미지](#2-이미지)
-      - [3. 링크 삽입](#3-링크-삽입)
-      - [4. 리스트](#4-리스트)
-      - [5. 다양한 입력 폼](#5-다양한-입력-폼)
-
-<small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
-
 목차
 --------------------
 - [HTML 요소](#0-html-요소)<br>
