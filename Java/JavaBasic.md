@@ -25,6 +25,15 @@
     * [와일드 카드](#와일드-카드)
   * [java.util 패키지](#javautil-패키지)<br>
   * [java IO 패키지](#java-io-패키지)<br>
+    * [컬렉션 프레임워크](#컬렉션-프레임워크)
+      * [Iterator](#0-iterator)
+      * [Set](#1-set)
+      * [List](#2-list)
+        * [ArrayList](#arraylist)
+        * [LinkedList](#linkedlist)
+      * [Map](#3-map)
+      * [Date](#4-date)
+      * [Calendar](#5-calendar)
 <br>
 
 Java 기초 문법
@@ -700,18 +709,50 @@ public class Example {
 
 java.util 패키지
 -----------------------
-- 컬렉션 프레임워크
-  - 자료구조 클래스들을 컬렉션 프레임워크라 지칭
-  - Set
-    - 중복 허용 x
-    - collection 인터페이스 상속 받음
-  - List
-    - 중복 허용, 순서 기억
-    - collection 인터페이스 상속 받음
-  - Map
-    - key, value값 존재
-    - key 중복 불가능
-1. Set
+#### 컬렉션 프레임워크
+- 자료구조 클래스들을 컬렉션 프레임워크라 지칭
+  - ![image](https://user-images.githubusercontent.com/102513932/189911067-6321a007-bc69-4abb-99b2-ec3e62510110.png)
+    - Set
+      - 중복 허용 x, 순서 유지 x
+      - HashSet, TreeSet
+      - collection 인터페이스 상속 받음
+    - List
+      - 중복 허용, 순서 기억
+      - ArrayList, Vector, Stack, LinkedList
+      - collection 인터페이스 상속 받음
+    - Map
+      - key, value값 존재
+      - 데이터 순서 유지x
+      - key 중복 불가능, 값 중복 가능
+      - HashMap, HashTable, TreeMap, Properties
+- 컬렉션 인터페이스
+  - ![image](https://user-images.githubusercontent.com/102513932/189912063-485983f9-0132-42ae-9593-3f1fc172f248.png)
+
+### 0. Iterator
+- 컬렉션에 저장된 요소 순차적으로 읽어옴
+  - Collection 인터페이스에 정의된 ```iterator()``` 호출시
+    - Iterator 타입의 인스턴스 반환
+    - List와 Set 인터페이스 구현 클래스는 ```iterator()``` 메서드 사용 가능
+  - Iterator 인터페이스에 정의된 메서드
+    - ![image](https://user-images.githubusercontent.com/102513932/189920731-0c60c1a2-43d6-41e4-a49f-0974c1b9acd4.png)
+```java
+ArrayList<String> list = ...;
+Iterator<String> iterator = list.iterator();
+
+while(iterator.hasNext()) {     // 읽어올 다음 객체가 있다면 
+	String str = iterator.next(); // next()를 통해 다음 객체를 읽어옵니다. 
+	if(str.equals("str과 같은 단어")){ // 조건에 부합한다면
+		iterator.remove();            // 해당 객체를 컬렉션에서 제거합니다. 
+	}
+} //remove는 실제 삭제, next는 읽어오기만 함
+```
+- 
+### 1. Set
+- 집합
+  - 요소의 중복 허용 x
+  - 저장 순서를 유지하지 않음
+  - ![image](https://user-images.githubusercontent.com/102513932/189921378-ee6f68c3-bc71-4ae6-b883-355f139b249c.png)
+#### HashSet
 ```java
 import java.util.Set; 
 
@@ -740,14 +781,23 @@ public class setExam{
   }
 }
 ```
-2. List
+### 2. List
 - 순서는 존재하지만 자료의 길이를 제한하지 않는 자료구조
+- 배열과 같이 객체를 일렬로 늘어 놓은 구조
+  - 자동으로 인덱스 부여, 인덱스로 객체 검색, 추가, 삭제 기능 제공
+  - ![image](https://user-images.githubusercontent.com/102513932/189915797-d74bad69-e545-48fc-bc23-c47b4e2dea9d.png)
+#### ArrayList
+- List의 인터페이스 구현
+- 객체가 인덱스로 관리
+  - 데이터 연속적으로 존재, 순서 유지
+- 객체 추가시 자동으로 저장 용량이 늘어남
 ```java
 import java.util.ArrayList;
 import java.util.List;
 
 public class ListExam{
   public static void main(String[] args){
+    ArrayList<타입 매개변수> 객체명 = new ArrayList<타입 매개변수>(초기 저장 용량);
     List<String> list = new ArrayList<>();
     //List는 인터페이스라 객체 생성 불가능, ArrayList로 인스턴스 생성할 것
     //혹은 ArrayList<String> arrayList = new ArrayList<>(); 이용
@@ -756,19 +806,39 @@ public class ListExam{
     list.add("lee");
     list.add("kim");
 
-    System.out.println(list.size());
+    System.out.println(list.size()); //3
     for(int i=0; i< list.size(); i++){
-      String str = list.get(i);
-      System.out.println(str);
+      String str = list.get(i); 
+      System.out.println(str); // kim, lee, kim
+
+    list.remove(0);
 
     for(String s : list){
-      System.out.println(s);
+      System.out.println(s); // lee, kim
     }
     }
   }
 }
 ```
-3. Map
+#### LinkedList
+- 데이터를 효율적으로 추가, 삭제, 변경하기 위해 사용
+  - 데이터 불연속적 존재, 데이터 서로 연결
+  - ![image](https://user-images.githubusercontent.com/102513932/189917860-0c53302c-cbde-4276-b80d-d088053a5219.png)
+  - 자신과 연결된 이전 요소 및 다음 요소의 주소값 + 데이터로 구성
+  - 데이터 이동시 복사를 하지 않기 때문에 속도가 훨씬 빠름
+    - ArrayList는 데이터 추가 및 삭제 시 데이터 복사 多
+      - 중간에 위치한 객체 추가 및 삭제 시 속도 저하
+        - 순차적 추가, 삭제시에는 유리
+      - 검색 측면에서는 유리
+    - LinkedList는 데이터 추가 및 삭제 시 주소값만 변경
+      - 중간에 데이터를 추가 및 삭제 시, 비교적 빠른 속도
+      - 검색 측면에서는 불리
+  - 데이터의 잦은 변경시 LinkedList, 데이터의 개수가 변하지 않는다면 ArrayList 사용 권장
+```java
+ArrayList<String> list = new LinkedList<>(); // 선언부
+```  
+
+### 3. Map
 ```java
 import java.util.HaspMap;
 import java.util.Map;
@@ -805,7 +875,7 @@ public class MapExam{
 }
 ```
 
-4. Date
+#### 4. Date
 - 지역화에 대해 고려되지 않음
   - 대부분 Deprecated
 ```java
@@ -823,7 +893,7 @@ Date date = new Date();
         System.out.println(today - date.getTime());
         // 현재시간 - date 생성 시간 == 코드 사이 걸린 시간
 ```
-5. Calendar
+#### 5. Calendar
 ```java
 Calendar cal = Calendar.getInstance();
         // calendar는 추상 클래스, new로 인스턴스를 생성할 수 없음
