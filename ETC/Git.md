@@ -3,9 +3,12 @@ Git
 <br><br>
 목차
 ------------------
--[Git 시작하기](#git-시작하기)
-  -[Fork/Clone/Push/Pull/Pull Request](#git-시작하기git-시작하기)
-  
+-[Git 시작하기](#git-시작하기)<br>
+-[버전 관리](#시간-여행하기)<br>
+-[협업](#협업)
+  -[인텔리제이 Github 연결](https://wakestand.tistory.com/659)
+
+
 Git 시작하기
 -------------------------
 1. Git 학습의 이유
