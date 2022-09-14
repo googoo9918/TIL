@@ -1,3 +1,11 @@
+### 목차
+- [선택 정렬 (selection sort)](#선택-정렬-selection-sort)
+  - [1. 선택 정렬 (selection sort) 란?](#1-선택-정렬-selection-sort-란)
+    - [직접 눈으로 보면 더 이해가 쉽다: https://visualgo.net/en/sorting](#직접-눈으로-보면-더-이해가-쉽다-httpsvisualgonetensorting)
+  - [2. 어떻게 코드로 만들까?](#2-어떻게-코드로-만들까)
+  - [3. 알고리즘 구현 (프로젝트: CH15_SELECTIONSORT)](#3-알고리즘-구현-프로젝트-ch15_selectionsort)
+  - [테스트](#테스트)
+  - [4. 알고리즘 분석](#4-알고리즘-분석)
 ## 선택 정렬 (selection sort) 
 ### 1. 선택 정렬 (selection sort) 란?
 * 다음과 같은 순서를 반복하며 정렬하는 알고리즘

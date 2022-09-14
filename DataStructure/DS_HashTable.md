@@ -1,3 +1,29 @@
+### 목차
+- [해쉬 테이블 (Hash Table)](#해쉬-테이블-hash-table)
+  - [1. 해쉬 테이블](#1-해쉬-테이블)
+  - [2. 알아둘 용어](#2-알아둘-용어)
+  - [3. 간단한 해쉬 예](#3-간단한-해쉬-예)
+    - [3.1. hash table 클래스 만들기](#31-hash-table-클래스-만들기)
+    - [3.2. 초간단 해쉬 함수를 만들어봅니다.](#32-초간단-해쉬-함수를-만들어봅니다)
+    - [3.3 해쉬 테이블 클래스에 해쉬 함수 추가](#33-해쉬-테이블-클래스에-해쉬-함수-추가)
+    - [3.3 해쉬 테이블 클래스에 데이터 저장 메서드 추가](#33-해쉬-테이블-클래스에-데이터-저장-메서드-추가)
+    - [참고: 객체 배열](#참고-객체-배열)
+    - [해쉬 테이블 클래스에 saveData() 메서드 추가](#해쉬-테이블-클래스에-savedata-메서드-추가)
+    - [3.4. 해쉬 테이블 클래스에 key 에 대한 데이터를 가져오는 메서드 추가](#34-해쉬-테이블-클래스에-key-에-대한-데이터를-가져오는-메서드-추가)
+    - [3.5. 테스트](#35-테스트)
+  - [4. 자료 구조 해쉬 테이블의 장단점과 주요 용도](#4-자료-구조-해쉬-테이블의-장단점과-주요-용도)
+  - [5. 충돌(Collision) 해결 알고리즘 (좋은 해쉬 함수 사용하기)](#5-충돌collision-해결-알고리즘-좋은-해쉬-함수-사용하기)
+    - [기존 알고리즘의 문제점](#기존-알고리즘의-문제점)
+  - [5.1. Chaining 기법](#51-chaining-기법)
+    - [테스트](#테스트)
+  - [5.2. Linear Probing 기법](#52-linear-probing-기법)
+  - [5.3. 빈번한 충돌을 개선하는 기법](#53-빈번한-충돌을-개선하는-기법)
+  - [참고: JAVA HashMap](#참고-java-hashmap)
+  - [Java HashMap 사용법](#java-hashmap-사용법)
+    - [해시맵(HashMap)](#해시맵hashmap)
+    - [선언](#선언)
+    - [기타 용법](#기타-용법)
+    - [값 출력](#값-출력)
 ## 해쉬 테이블 (Hash Table)
 
 ### 1. 해쉬 테이블
@@ -384,11 +410,12 @@ map.put(1,"사과"); //값 추가
 map.put(2,"바나나");
 map.put(3,"포도");
 map.put(3,"수박"); //같은 키의 새로운 value 들어가면 대치됨.
+map.size(); // 3
 map2.putAll(map); // putAll로 두개의 map을 합칠 수 있다. 
 map.remove(1); //key값 1 제거
 map.clear(); //모든 값 제거
 map.replace(3, "단감"); // value를 교체해줌.
-amp.replace(3,"단감","곶감")// 인자가 3개인 replace 메소드.
+map.replace(3,"단감","곶감")// 인자가 3개인 replace 메소드.
 // key 3의 값의 value가 "단감"일때만 "곶감"으로 변경하고 true 리턴
 // "단감"이 아니라면 false를 리턴한다.
 
@@ -414,7 +441,7 @@ System.out.println(map); //전체 출력 : {1=사과, 2=바나나, 3=포도}
 System.out.println(map.get(1));//key값 1의 value얻기 : 사과
 		
 //entrySet() 활용
-for (Entry<Integer, String> entry : map.entrySet()) {
+for (Map.Entry<Integer, String> entry : map.entrySet()) {
     System.out.println("[Key]:" + entry.getKey() + " [Value]:" + entry.getValue());
 }
 //[Key]:1 [Value]:사과

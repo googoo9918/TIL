@@ -1,3 +1,15 @@
+### 목차
+- [배열 (Array)](#배열-array)
+  - [1. 배열은 왜 필요할까?](#1-배열은-왜-필요할까)
+  - [참고: Primitive 자료형과 Wrapper 클래스](#참고-primitive-자료형과-wrapper-클래스)
+  - [2. JAVA와 배열](#2-java와-배열)
+  - [JAVA 에서는 기본 문법으로 배열 지원](#java-에서는-기본-문법으로-배열-지원)
+  - [JAVA 에서 배열을 보다 손쉽게 다루기 위한 클래스등을 제공](#java-에서-배열을-보다-손쉽게-다루기-위한-클래스등을-제공)
+  - [JAVA 에서 배열을 보다 손쉽게 다루기 위한 ArrayList 클래스 예](#java-에서-배열을-보다-손쉽게-다루기-위한-arraylist-클래스-예)
+  - [참고: List 와 ArrayList](#참고-list-와-arraylist)
+      - [JAVA 에서는 기본 문법으로 다차원 배열도 작성 가능 (2차원 배열)](#java-에서는-기본-문법으로-다차원-배열도-작성-가능-2차원-배열)
+      - [JAVA 에서는 기본 문법으로 다차원 배열도 작성 가능 (3차원 배열)](#java-에서는-기본-문법으로-다차원-배열도-작성-가능-3차원-배열)
+
 ## 배열 (Array)
 
 <br/>
@@ -15,7 +27,7 @@
  
   ### 참고: Primitive 자료형과 Wrapper 클래스
 - JAVA 에서는 int 와 Integer 같이, Primitive 자료형과 Wrapper 클래스가 있음
-- 이 강의 에서는 Integer 와 같은 Wrapper 클래스가 다음과 같은 이유로, 사용되며, 가급적 복잡도를 낮추기 위해, Primitive 와 마구 혼용하기 보다는 주로 Wrapper 클래스를 사용하기로 함 (필요 시에만 Primitive 자료형을 사용하기로 함)
+- Integer 와 같은 Wrapper 클래스가 다음과 같은 이유로 사용되며, 가급적 복잡도를 낮추기 위해, Primitive 와 마구 혼용하기 보다는 주로 Wrapper 클래스를 사용하기로 함 (필요 시에만 Primitive 자료형을 사용하기로 함)
    - null 을 용이하게 처리할 수 있고, 
    - ArrayList 등 객체만을 핸들링 하는 기능을 사용하기 위해
 <br/><br/>
@@ -69,7 +81,7 @@ ArrayList<Integer> list1 = new ArrayList<Integer>();
      ```java
         ArrayList<Integer> list1 = new ArrayList<Integer>();
      ``` 
-   - 이외에  JDK 1.7 이상부터는 인스턴스 생성 시 타입을 추정할 수 있는 경우에는 타입을 생략할 수 있으므로, 다음과 같이 작성 가능하지만, 가능한 JAVA 버전 제한하지 않기 위해, 본 강의에서는 아래 보다는, 가능한 위의 코드처럼 타입을 생략하지 않기로 함
+   - 이외에  JDK 1.7 이상부터는 인스턴스 생성 시 타입을 추정할 수 있는 경우에는 타입을 생략할 수 있으므로, 다음과 같이 작성 가능하지만, 가능한 JAVA 버전 제한하지 않기 위해, 가능한 위의 코드처럼 타입을 생략하지 않기로 함
      ```java
         ArrayList<Integer> list1 = new ArrayList<>();
      ``` 
@@ -82,6 +94,8 @@ ArrayList<Integer> list1 = new ArrayList<Integer>();
 // int 형 데이터를 담을 수 있는 가변 길이의 배열 선언
 list1.add(1); 
 // 배열에 아이템 추가 시 add(아이템) 메서드 사용
+list1.add(1,3);
+//add((index),val)
 list1.add(2);
 list1.get(0) //1
 // 배열에 특정 아이템을 읽을 시 get(인덱스번호) 메서드 사용 (굳이 System.out.println() 을 사용하지 않아도 됨)

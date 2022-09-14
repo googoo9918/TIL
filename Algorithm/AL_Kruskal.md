@@ -1,3 +1,19 @@
+### 목차
+- [최소 신장 트리의 이해](#최소-신장-트리의-이해)
+  - [1. 최소 신장 트리 알고리즘](#1-최소-신장-트리-알고리즘)
+  - [2. 크루스칼 알고리즘 (Kruskal's algorithm)](#2-크루스칼-알고리즘-kruskals-algorithm)
+  - [3. Union-Find 알고리즘](#3-union-find-알고리즘)
+  - [Union-Find 알고리즘의 고려할 점](#union-find-알고리즘의-고려할-점)
+  - [union-by-rank 기법](#union-by-rank-기법)
+  - [path compression](#path-compression)
+  - [6. 크루스칼 알고리즘 (Kruskal's algorithm) 코드 작성](#6-크루스칼-알고리즘-kruskals-algorithm-코드-작성)
+  - [Edge 클래스 정의](#edge-클래스-정의)
+  - [Edge 데이터 자료구조화](#edge-데이터-자료구조화)
+  - [Union-Find 알고리즘 메서드 작성](#union-find-알고리즘-메서드-작성)
+  - [크루스칼 알고리즘 (Kruskal's algorithm) 작성](#크루스칼-알고리즘-kruskals-algorithm-작성)
+  - [최종 코드](#최종-코드)
+  - [테스트](#테스트)
+  - [7. 시간 복잡도](#7-시간-복잡도)
 ## 최소 신장 트리의 이해
 
 ### 1. 최소 신장 트리 알고리즘

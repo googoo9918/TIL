@@ -1,3 +1,14 @@
+### 목차
+- [버블 정렬 (bubble sort)](#버블-정렬-bubble-sort)
+  - [알고리즘 연습 방법](#알고리즘-연습-방법)
+  - [1. 정렬 (sorting) 이란?](#1-정렬-sorting-이란)
+  - [2. 버블 정렬 (bubble sort) 란?](#2-버블-정렬-bubble-sort-란)
+    - [직접 눈으로 보면 더 이해가 쉽다: https://visualgo.net/en/sorting](#직접-눈으로-보면-더-이해가-쉽다-httpsvisualgonetensorting)
+  - [3. 어떻게 코드로 만들까?](#3-어떻게-코드로-만들까)
+  - [4. 알고리즘 구현 (프로젝트: CH14_BUBBLESORT)](#4-알고리즘-구현-프로젝트-ch14_bubblesort)
+  - [랜덤 숫자 생성하기](#랜덤-숫자-생성하기)
+  - [테스트](#테스트)
+  - [5. 알고리즘 분석](#5-알고리즘-분석)
 ## 버블 정렬 (bubble sort)
 
 ### 알고리즘 연습 방법

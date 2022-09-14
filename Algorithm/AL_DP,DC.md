@@ -1,3 +1,10 @@
+### 목차
+- [동적 계획법 (Dynamic Programming)과 분할 정복 (Divide and Conquer)](#동적-계획법-dynamic-programming과-분할-정복-divide-and-conquer)
+  - [1. 정의](#1-정의)
+  - [2. 공통점과 차이점](#2-공통점과-차이점)
+  - [3. 동적 계획법 알고리즘 이해](#3-동적-계획법-알고리즘-이해)
+  - [recursive call 활용](#recursive-call-활용)
+  - [동적 계획법 활용](#동적-계획법-활용)
 ## 동적 계획법 (Dynamic Programming)과 분할 정복 (Divide and Conquer)
 ### 1. 정의
 - 동적계획법 (DP 라고 많이 부름)

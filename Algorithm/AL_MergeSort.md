@@ -1,3 +1,13 @@
+### 목차
+- [병합 정렬 (merge sort)](#병합-정렬-merge-sort)
+  - [1. 병합 정렬 (merge sort)](#1-병합-정렬-merge-sort)
+    - [직접 눈으로 보면 더 이해가 쉽다: https://visualgo.net/en/sorting](#직접-눈으로-보면-더-이해가-쉽다-httpsvisualgonetensorting)
+  - [2. 알고리즘 이해](#2-알고리즘-이해)
+  - [3. 알고리즘 구현](#3-알고리즘-구현)
+  - [mergeSplitFunc 메서드 틀 만들기 (재귀용법 틀 만들기)](#mergesplitfunc-메서드-틀-만들기-재귀용법-틀-만들기)
+  - [mergeFunc 메서드 만들기](#mergefunc-메서드-만들기)
+  - [4. 알고리즘 분석](#4-알고리즘-분석)
+
 ## 병합 정렬 (merge sort) 
 
 ### 1. 병합 정렬 (merge sort) 

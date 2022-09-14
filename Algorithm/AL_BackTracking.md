@@ -1,3 +1,11 @@
+### 목차
+- [백 트래킹 기법의 이해](#백-트래킹-기법의-이해)
+  - [1. 백 트래킹 (backtracking)](#1-백-트래킹-backtracking)
+  - [상태 공간 트리 (State Space Tree)](#상태-공간-트리-state-space-tree)
+  - [2. N Queen 문제 이해](#2-n-queen-문제-이해)
+  - [Pruning (가지치기) for N Queen 문제](#pruning-가지치기-for-n-queen-문제)
+  - [Promising for N Queen 문제](#promising-for-n-queen-문제)
+  - [3. N Queen 문제코드 작성](#3-n-queen-문제코드-작성)
 ## 백 트래킹 기법의 이해
 
 ### 1. 백 트래킹 (backtracking)

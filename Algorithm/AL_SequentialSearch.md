@@ -1,3 +1,7 @@
+### 목차
+- [순차 탐색 (Sequential Search)](#순차-탐색-sequential-search)
+  - [1. 순차 탐색 (Sequential Search) 이란?](#1-순차-탐색-sequential-search-이란)
+  - [2. 알고리즘 분석](#2-알고리즘-분석)
 ## 순차 탐색 (Sequential Search)
 ### 1. 순차 탐색 (Sequential Search) 이란?
 * 탐색은 여러 데이터 중에서 원하는 데이터를 찾아내는 것을 의미

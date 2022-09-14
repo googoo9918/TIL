@@ -1,3 +1,10 @@
+### 목차
+- [삽입 정렬 (insertion sort)](#삽입-정렬-insertion-sort)
+  - [1. 삽입 정렬 (insertion sort) 란?](#1-삽입-정렬-insertion-sort-란)
+    - [직접 눈으로 보면 더 이해가 쉽다: https://visualgo.net/en/sorting](#직접-눈으로-보면-더-이해가-쉽다-httpsvisualgonetensorting)
+  - [2. 어떻게 코드로 만들까? (결국 프로그래밍으로 일반화할 수 있도록 만드는 것)](#2-어떻게-코드로-만들까-결국-프로그래밍으로-일반화할-수-있도록-만드는-것)
+  - [3. 알고리즘 구현](#3-알고리즘-구현)
+  - [4. 알고리즘 분석](#4-알고리즘-분석)
 ## 삽입 정렬 (insertion sort)
 
 ### 1. 삽입 정렬 (insertion sort) 란?
