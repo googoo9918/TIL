@@ -931,7 +931,25 @@ public class MapExam{
 }
 ![image](https://user-images.githubusercontent.com/102513932/189936912-38754084-1a90-445e-869f-8c9471fa9f73.png)
 ```
+#### entrySet, keyset을 이용한 출력
+```java
+HashMap<Integer, String> map = new HashMap<Integer, String>()
+//entrySet() 기본 선언
+Set<Entry<Integer, String>> entry = map.entrySet();
 
+//entrySet() 활용
+for (Map.Entry<Integer, String> entry : map.entrySet()) {
+    System.out.println("[Key]:" + entry.getKey() + " [Value]:" + entry.getValue());
+}
+
+//keySet() 기본 선언
+Set<Integer> keys = map.keySet();
+
+//KeySet() 활용 -> 저장된 key들을 set 객체로 리턴.
+for(Integer i : map.keySet()){ //저장된 key값 확인
+    System.out.println("[Key]:" + i + " [Value]:" + map.get(i));
+}
+```
 #### 4. Date
 - 지역화에 대해 고려되지 않음
   - 대부분 Deprecated
