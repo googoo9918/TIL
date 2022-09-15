@@ -50,6 +50,18 @@
       - [메서드 참조(레퍼런스)](#메서드-참조레퍼런스)
         * [정적 메서드와 인스턴스 메서드 참조](#정적-메서드와-인스턴스-메서드-참조)
         - [생성자 참조](#생성자-참조)
+  - [스트림 생성, 중간 연산, 최종 연산](#스트림-생성-중간-연산-최종-연산)
+    * [스트림 생성](#스트림-생성)
+    * [중간연산](#중간연산)
+      + [필터링(filter(),distinct())](#필터링filterdistinct)
+      + [매핑(map())](#매핑map)
+      + [정렬(sorted())](#정렬sorted)
+      + [연산 결과 확인(peek(),forEach())](#연산-결과-확인peekforeach)
+      + [매칭(match())](#매칭match)
+      + [기본 집계(sum(), count(), average(), max(), min())](#기본-집계sum-count-average-max-min)
+      + [reduce()](#reduce)
+      + [collect()](#collect)
+  + [Optional<T>](#optionalt)
 <br>
 
 Java 기초 문법
@@ -1621,8 +1633,8 @@ double ageAve = opd.getAsDouble();
 // 평균값을 읽기 위한 메소드 호출
 ```
 
-#### 스트림 생성, 중간 연산, 최종 연산
-##### 스트림 생성
+### 스트림 생성, 중간 연산, 최종 연산
+#### 스트림 생성
 - Collection 인터페이스에 stream() 정의
 - ```stream()``` 사용시 해당 Collection의 객체를 소스로 하는 Stream 반환
 ```java
@@ -1654,10 +1666,10 @@ IntStream stream = IntStream.rangr(4, 10);
   - 스트림은 데이터를 읽기만 할 뿐 변경하지 않음(Read-only)
   - 스트림은 일회용. 사용했다면 새로운 스트림을 만들어야 한다.
 
-##### 중간연산
+#### 중간연산
 -![image](https://user-images.githubusercontent.com/102513932/190414920-9dcffaf1-8cd2-49e5-ae06-68a18a3ae834.png)
 - 중간 연산은 연산 결과를 스트림으로 반환, 연속해서 여러 번 수행 가능
-###### 필터링(filter(),distinct())
+##### 필터링(filter(),distinct())
 - ```filter()```
   - 조건에 맞는 데이터만을 정제하여 더 작은 컬렉션 생성
   - 매개값으로 조건이 주어지고, 조건이 참이 되는 요소만 필터링
@@ -1700,7 +1712,7 @@ public class FilteringExample {
 김인기
 */
 ```
-###### 매핑(map())
+##### 매핑(map())
 - ```map()```
   - 기존의 Stream 요소들을 대체하는 요소로 구성된 새로운 Stream을 형성하는 연산
   - 저장된 값을 특정한 형태로 변환하는데 주로 사용
@@ -1723,6 +1735,329 @@ KIMCODING
 - ```flatMap()```
   - 요소를 대체하는 복수 개의 요소들로 구성된 새로운 스트림 리턴
   - map()은 스트림의 스트림을 반환
-    - 리턴 타입 Stream<Stream>
+    - 리턴 타입 ```Stream<Stream>```
   - flatMap()은 스트림을 반환
-    -  asd
+    -  리턴 타입 Strema
+```java
+public class ComparatorExample {
+	public static void main(String[] args) {
+	        Stream<String[]> stringArraysStream = Stream.of(
+									new String[]{"hello", "world", "java"},
+									new String[]{"code", "states"});
+	
+	        stringArraysStream.flatMap(Arrays::stream).forEach(System.out::println);
+	    }
+}
+//flatMap 결과 -> hello
+// world
+// java
+// code
+// states
+
+// map 결과
+//java.util.stream.ReferencePipeline$Head@6acbcfc0
+// java.util.stream.ReferencePipeline$Head@5f184fc6
+```
+
+##### 정렬(sorted())
+- Stream 요소 정렬을 위해 sorted 사용
+  - 파라미터로 Comparator을 넘길 수도 있음
+  - 인자 없이 호출시 오름차순
+  - 내림차순 정렬 시 reverseOrder 이용
+```java
+List<String> list = Arrays.asList("Java", "Scala", "Groovy", "Python", "Go", "Swift");
+
+        list.stream()
+            .sorted()
+            .forEach(n -> System.out.println(n));
+        System.out.println();
+
+/*
+Go, Groovy, Java, Python, Scala, Swift
+*/
+        list.stream()
+            .sorted(Comparator.reverseOrder())
+            .forEach(n -> System.out.println(n));
+
+/*
+Swift, Scala, Python, Java, Groovy, Go
+*/
+```
+- Comparable 기본 구현 클래스가 아닐 시 , comparing() 메서드를 사용해 비교 가능
+```java
+import java.lang.*;
+import java.util.*;
+import java.util.stream.Stream;
+
+class Employee implements Comparable<Employee>{
+    int id;
+    String name,department;
+
+    public Employee(int id, String name, String department) {
+        this.id = id;
+        this.name = name;
+        this.department = department;
+    }
+}
+class ComparatorExample {
+    public static void main(String[] args) {
+        Stream<Employee> workersStream =
+                Stream.of(new Employee(11, "Kim Coding", "Software Engineering"),
+                new Employee(5, "Hello World", "Growth Marketing"),
+                new Employee(7, "Park Hacker", "Software Engineering"));
+        workersStream.sorted(Comparator.comparing(Employee::getId)).forEach(System.out::println);
+
+    }
+} 
+//id 기준 sort
+// [5, Hello World, Growth Marketing]
+// [7, Park Hacker, Software Engineering]
+// [11, Kim Coding, Software Engineering]
+```
+##### 연산 결과 확인(peek(),forEach())
+- peek(), forEach()는 요소를 하나씩 돌면서 출력
+- peek() 는 중간 연산 메서드 
+  - 하나의 스트림에 여러 번 사용 가능
+  - 주로 연산 중간에 결과를 확인하여 디버깅하고자 할 때 사용
+```java
+intStream
+	.filter(a -> a%2 ==0)
+	.peek(n-> System.out.println(n))
+	.sum();
+``` 
+- forEach()는 최종 연산 메서드
+  - 파이프라인 마지막에서 요소를 하나씩 연산
+  - 스트림의 요소를 소모하므로 한 번만 호출 가능
+    - 재호출시 새로운 스트림 생성 요망
+  - 출력 혹은 이메일 발송, 스케줄링 등 리턴 값이 작업에서도 많이 사용
+```java
+intStream
+	.filter(a -> a%2 ==0)
+	.forEach(n -> System.out.println(n));
+```
+
+##### 매칭(match())
+- Stream의 요소들이 특정한 조건을 충족하는지 검사
+  - 함수형 인터페이스 Predicate를 받아 조건 검사 후 boolean형 반환
+- match() 메서드에는 3가지 존재
+  - ```allMatch()```
+    - 모든 요소들이 매개값으로 주어진 Predicate의 조건을 만족하는지 조사
+  - ```anyMatch()```
+    - 최소한 한 개의 요소가 매개값으로 주어진 Predicate의 조건을 만족하는지 조사
+  - ```noneMatch()```
+    - 모든 요소들이 매개값으로 주어진 Predicate의 조건을 만족하지 않는지 조사
+```java
+import java.util.Arrays;
+
+public class MatchesExample {
+    public static void main(String[] args) throws Exception {
+        int[] intArr = {2,4,6};
+        boolean result = Arrays.stream(intArr).allMatch(a->a%2==0);
+        System.out.println("모두 2의 배수인가? " + result);
+
+        result = Arrays.stream(intArr).anyMatch(a->a%3==0);
+        System.out.println("하나라도 3의 배수가 있는가? " + result);
+
+        result = Arrays.stream(intArr).noneMatch(a->a%3==0);
+        System.out.println("3의 배수가 없는가? " + result);
+    }
+}
+
+/*
+모두 2의 배수인가? true
+하나라도 3의 배수가 있는가? true
+3의 배수가 없는가? false
+*/
+```
+
+##### 기본 집계(sum(), count(), average(), max(), min())
+
+```java
+import java.util.Arrays;
+
+public class AggregateExample {
+    public static void main(String[] args) throws Exception {
+        int[] intArr = {1,2,3,4,5};
+
+        long count = Arrays.stream(intArr).count();
+        System.out.println("intArr의 전체 요소 개수 " + count);
+
+        long sum = Arrays.stream(intArr).sum();
+        System.out.println("intArr의 전체 요소 합 " + sum);
+
+        double avg = Arrays.stream(intArr).average().getAsDouble();
+        System.out.println("전체 요소의 평균값 " + avg);
+
+        int max = Arrays.stream(intArr).max().getAsInt();
+        System.out.println("최대값 " + max);
+
+        int min = Arrays.stream(intArr).min().getAsInt();
+        System.out.println("최소값 " + min);
+
+        int first = Arrays.stream(intArr).findFirst().getAsInt();
+        System.out.println("배열의 첫번째 요소 " + first);
+
+    }
+}
+
+/*
+intArr의 전체 요소 개수 5
+intArr의 전체 요소 합 15
+전체 요소의 평균값 3.0
+최대값 5
+최소값 1
+배열의 첫번째 요소 1
+*/
+```
+
+##### reduce()
+- 누적하여 하나로 응축하는 방식으로 동작
+  - 앞의 두 요소의 연산 결과를 바탕으로 다음 요소와 연산
+- 최대 3개의 매개변수를 받을 수 있음
+  - Accumulator
+    - 각 요소를 계산한 중간 결과를 생성하기 위해 사용 
+  - Identity
+    - 계산을 수행하기 위한 초기값
+  - Combiner
+    - 병렬 스트림에서 나누어 계산된 결과를 하나로 합치기 위한 로직
+```java
+import java.util.Arrays;
+
+public class ReduceExample {
+    public static void main(String[] args) throws Exception {
+        int[] intArr = {1,2,3,4,5};
+
+        long sum = Arrays.stream(intArr).sum();
+        System.out.println("intArr의 전체 요소 합 " + sum);
+
+        int sum1 = Arrays.stream(intArr)
+                        .map(el -> el*2)
+                        .reduce((a,b) -> a+b)
+                        .getAsInt();
+        System.out.println("초기값 없는 reduce " + sum1);
+
+        int sum2= Arrays.stream(intArr)
+                        .map(el -> el*2)
+                        .reduce(10 (a,b) -> a+b);
+        System.out.println("초기값 존재하는 reduce " + sum2)
+    }
+}
+
+/*
+intArr의 전체 요소 합 15
+초기값 없는 reduce 30
+초기값 존재하는 reduce 40
+*/
+```
+- 초기값이 있는 reduce는 초기값과 스트림의 첫 번째 요소로 첫 연산 수행
+  - 스티림에 요소가 없을 경우, 디폴트 값 리턴
+- 초기값이 없는 reduce는 스트림의 첫 번쨰 요소와 두 번쨰 요소로 첫 연산 수행
+  - 스트림에 요소가 없을 경우, NoSuchElementException 발생
+
+##### collect()
+- Stream의 요소들을 List나 Set, Map 등 다른 종류의 결과로 수집하고 싶은 경우
+  - Collector 타입을 인자로 받음
+    - Collector 인터페이스를 구현한 클래스
+```java
+public class Student {
+    public enum Gender {Male, Female};
+    private String name;
+    private int score;
+    private Gender gender;
+
+    public Student(String name, int score, Gender gender) {
+        this.name = name;
+        this.score = score;
+        this.gender = gender;
+    }
+
+    public Gender getGender(){
+        return gender;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public int getScore(){
+        return score;
+    }
+}
+```
+```java
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+public class CollectExample {
+    public static void main(String[] args) throws Exception {
+        List<Student> totalList = Arrays.asList(
+            new Student("김코딩", 10, Student.Gender.Male),
+            new Student("김인기", 8, Student.Gender.Male),
+            new Student("이자바", 9, Student.Gender.Female),
+            new Student("최민선", 10, Student.Gender.Female)
+        );
+
+        List<Student> maleList = totalList.stream()
+        .filter(s -> s.getGender() == Student.Gender.Male)
+        .collect(Collectors.toList());
+
+        maleList.stream().forEach(n->System.out.println(n.getName()));
+
+        Set<Student> femaleSet = totalList.stream()
+        .filter(s -> s.getGender() == Student.Gender.Female)
+        .collect(Collectors.toCollection(HashSet :: new));
+
+        femaleSet.stream().forEach(n->System.out.println(n.getName()));
+    }
+}
+// 출력 결과
+// 김코딩
+// 김인기
+// 이자바
+// 최민선
+```
+
+### Optional<T>
+- NullPointerException 방지
+  -  null 값으로 인해 에러가 발생하는 현상을 객체 차원에서 효율적으로 방지
+  -  연산 결과를 optional에 담아 반환시, npe 발생하지 않음
+- Optional 클래스는 모든 타입의 객체를 담을 수 있는 래퍼(Wrapper) 클래스
+```java
+public final class Optional<T>{
+  private final T value; //T 타입의 참조변수
+}
+```
+- Optional 객체를 생성하려면 ```of()``` 혹은 ```ofNullable()``` 사용
+  - 참조변수의 값이 null일 가능성이 있다면, ofNullable() 사용
+```java
+Optional<String> opt1 = Optional.ofNullable(null);
+Optional<String> opt2 = Optional.ofNullable("123");
+System.out.println(opt1.isPresent()); //Optional 객체의 값이 null인지 여부를 리턴합니다.
+System.out.println(opt2.isPresent());
+//출력값
+// false
+// true
+```
+- Optional 타입의 참조변수 기본값으로 초기화 시 ```empty()``` 사용
+```java
+Optional<String> opt3 = Optional.<String>empty();
+```
+- Optional 객체에 저장된 값을 가져오려면 ```get()``` 사용
+- 참조변수의 값이 null일 가능성 존재시 orElse()메서드 사용으로 디폴트 값 지정
+```java
+Optional<String> optString = Optional.of("codestates");
+System.out.println(optString);
+System.out.println(optString.get());
+
+String nullName = null;
+String name = Optional.ofNullable(nullName).orElse("kimcoding");
+System.out.println(name);
+//출력값
+// Optional[codestates]
+// codestates
+// kimcoding
+```
+- Optional 객체는 스트림과 유사하게 여러 메서드를 연결하여 작성 가능 (메서드 체이닝)
