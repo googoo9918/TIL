@@ -1392,11 +1392,11 @@ System.out.println(name);
     }
   }
   //출력 결과
-  <!-- Withdraw 100₩ By 김코딩. Balance : 600 
-Withdraw 300₩ By 박자바. Balance : 600 
-Withdraw 200₩ By 김코딩. Balance : 400 
-Withdraw 200₩ By 박자바. Balance : 200 
-Withdraw 200₩ By 김코딩. Balance : -100  -->
+<!-- Withdraw 100₩ By 김코딩. Balance : 600  -->
+<!-- Withdraw 300₩ By 박자바. Balance : 600  -->
+<!-- Withdraw 200₩ By 김코딩. Balance : 400  -->
+<!-- Withdraw 200₩ By 박자바. Balance : 200  -->
+<!-- Withdraw 200₩ By 김코딩. Balance : -100  --> 
 <!-- Withdraw 100₩ By 박자바. Balance : -100  -->
   ```
   - 위 코드 실행 시 두 개의 작업 스레드 생성
