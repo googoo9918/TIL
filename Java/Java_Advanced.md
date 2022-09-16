@@ -32,6 +32,7 @@
 - [Optional<T>](#optionalt)
 - [스레드(Thread)](#스레드thread)
     - [익명 객체를 이용한 스레드 생성 및 실행](#익명-객체를-이용한-스레드-생성-및-실행)
+- [자바 가상 머신(Java Virtual Machine)](#자바-가상-머신java-virtual-machine)
 
 ### java IO 패키지 
 #### InputStream, OutputStream
@@ -1463,7 +1464,7 @@ class Account {
     - 스레드에는 상태가 존재
     - 스레드의 상태를 바꿀 수 있는 메서드 존재
     - ![image](https://user-images.githubusercontent.com/102513932/190587114-06cb62a1-4b30-4743-b603-a075ec1dbbeb.png)
-  - ##### 스레드 실행 제어 메서드 (sleep)
+  - ##### 스레드 실행 제어 메서드 (sleep())
 ```java
 static void sleep(long milliSecond)
 ```
@@ -1481,3 +1482,199 @@ static void sleep(long milliSecond)
 ```java
 try{Thread.sleep(1000);} catch (Exception error){}
 ```
+  - ##### 스레드 실행 대기 메서드(interrupt())
+```java
+void interrupt()
+```
+  - ```interrupt()```
+    - sleep(), wait(), join()에 의해 일시 정지 상태에 있는 스레드들을 실행 대기 상태로 복귀시킴
+    - 멈춰 있는 스레드가 아닌 다른 스레드에서 ```멈춰 있는 스레드.interrupt()```를 호출하면, 기존에 호출되어 스레드를 멈추게 했던 sleep(), wait(), join() 메서드에서 예외 발생, 일시 정지 해제
+```java
+public class ThreadExample5 {
+  public static void main(String[] args) {
+    Thread thread1 = new Thread() {
+      public void run() {
+      try {
+        while (true) Thread.sleep(1000); 
+        // 1. sleep 실행
+      }
+      catch (Exception e) {}
+      System.out.println("Woke Up!!!");
+      //6. 예외 발생, "Woke up!!" 출력
+    }
+  };
+
+  System.out.println("thread1.getState() = " + thread1.getState());
+  // 2.thread1.getState() = NEW 출력
+  thread1.start();
+
+  System.out.println("thread1.getState() = " + thread1.getState());
+  // 3. thread1.getState() = RUNNABLE 출력
+
+  while (true) {
+    if (thread1.getState() == Thread.State.TIMED_WAITING) {
+      System.out.println("thread1.getState() = " + thread1.getState());
+      // 4. thread1.getState() = TIMED_WAITING 출력
+      break;
+    }
+  }
+
+  thread1.interrupt();
+  //5. 실행 대기 상태로 복귀
+  while (true) {
+    if (thread1.getState() == Thread.State.RUNNABLE) {
+      System.out.println("thread1.getState() = " + thread1.getState());
+      // 7. thread1.getState() = RUNNABLE 출력
+      break;
+    }
+  }
+
+  while (true) {
+  if (thread1.getState() == Thread.State.TERMINATED) {
+    System.out.println("thread1.getState() = " + thread1.getState());
+    // 8. thread1.getState() = TERMINATED 출력
+    break;
+     }
+    }
+  }
+ }
+ // 출력결과
+  //  thread1.getState() = NEW
+  // thread1.getState() = RUNNABLE
+  // thread1.getState() = TIMED_WAITING
+  // Woke Up!!!
+  // thread1.getState() = RUNNABLE
+  // thread1.getState() = TERMINATED
+``` 
+  - ##### 다른 스레드에게 실행 양보(yield())
+```java
+static void yield()
+```
+    - 다른 스레드에게 자신의 실행 시간 양보
+    - 3초를 할당 받은 스레드 A가 1초 동안 작업 수행하다 yield() 호출
+      - 남은 실행 시간 2초는 다음 스레드에게 양보됨
+```java
+public void run() {
+	while (true) {
+		if (example) {
+			//example이 false일 경우 불필요한 while문 반복
+		}
+		else Thread.yield();
+    // 무의미한 반복을 멈추고 실행 대기 상태로 바뀜
+    // 대기열 상 우선순위가 높은 다른 스레드에게 실행 시간 양보
+		}
+}
+```
+- ##### 다른 스레드의 작업이 끝날 때까지 기다림(join)
+```java
+void join()
+void join(long milliSecond)
+```
+- join()
+  - 특정 스레드 작업시 자신을 ```일시 중지``` 상태로 만듬
+    - 시간 경과 시, interrupt() 호출 시, join() 호출 때 지정했던 다른 스레드가 작업을 마칠 시 다시 ```실행 대기``` 상태로 복귀
+  - sleep()과 유사점
+    - join() 호출 스레드는 일시 중지 상태가 됨
+    - try ... catch문 으로 감싸서 사용
+    - interrupt()에 의해 실행 대기 상태로 복귀
+  - sleep()과 차이점
+    - sleep()은 Thread 클래스의 static 메서드
+      - Thread.sleep(1000);
+    - join()은 특정 스레드에 대해 동작하는 인스턴스 메서드
+      - ex) thread1.join();
+  - ##### 스레드 간 협업(wait(), notify())
+    - 두 스레드가 교대로 작업 처리 시
+    - 플로우
+      - 스레드A가 공유 객체에 자신의 작업 완료
+      - 스레드B와 교대하기 위해 notify() 호출
+      - 호출 시 스레드B가 실행 대기 상태가 되며, 곧 실행
+      - 스레드A는 wait()을 호출하며 자기 자신을 일시 정지 상태로 만듬
+      - 스레드B가 작업 완료시 notify()호출 후 스레드A를 다시 실행 대기 상태로 복귀시킴
+      - 이후 wait()을 호출하여 자기 자신의 상태를 일시 정지 상태로 전환
+### 자바 가상 머신(Java Virtual Machine)
+- #### JVM
+  - 자바로 작성한 소스 코드를 해석해 실행하는 별도의 프로그램
+  - 자바는 JVM을 매개해 운영체제와 소통
+    - 운영체제-JVM-자바 쌍방향 소통
+    - 운영체제에 독립적 실행 가능
+    - ![image](https://user-images.githubusercontent.com/102513932/190607035-be3793c8-8e0f-4ede-8bf4-b767699d9809.png)
+- #### JVM 구조
+  - ![image](https://user-images.githubusercontent.com/102513932/190607126-1dcdde75-3801-4464-973f-8faefba80e2b.png)
+  - 1. 소스 코드 작성하고 실행
+  - 2. 컴파일러 실행 -> 컴파일 진행
+    - .java 확장자 자바 소스 코드 -> .class 확장자 가진 바이트 코드 파일
+  - 3. JVM이 운영체제로 부터 메모리 할당 받음
+    - 사진 상 런타임 데이터 영역
+  - 4. 클래스 로더가 바이트 코드 파일을 JVM 내부로 불려들임
+    - 자바 소스 코드를 메모리에 로드
+  - 5. 실행 엔진이 런타임 데이터 영역에 적재된 바이트 코드 실행시킴
+    - 방식1 : 인터프리터를 통해 한 줄씩 기계어로 번역하고 실행
+    - 방식2 : JIT Compiler을 통해 바이트 코드 전체를 기계어로 번역하고 실행
+  - 6. 방식1의 방법으로 바이트 코드를 실행하다 특정 코드가 자주 실행되면 방식2를 차용
+    - 중복적으로 바이트 코드 등장 시
+      - 인터프리터는 매 번 해석하고 실행
+      - JIT 컴파일러 동작 시 한 번에 바이트 코드를 해석하고 실행시킴
+- #### STACK과 HEAP
+  - ##### JVM 메모리 구조
+    - 런타임 데이터 영역
+    - ![image](https://user-images.githubusercontent.com/102513932/190625864-022c00d8-86ff-49ea-ba05-12010394593b.png)
+      - 프로그램이 로드되어 실행될 때 특정 값 및 바이트코드, 객체, 변수등과 같은 데이터들이 런타임 데이터 영역에 저장
+      - 크게 5가지 영역으로 구분
+  - ##### Stack
+    - LIFO
+      - "Last In First Out"
+      - 맨 마지막에 들어온 데이터가 가장 먼저 나감
+    - JVM에서의 Stack 작동
+      - 메서드 호출시 메서드를 위한 공간인 Method Frame 생성
+      - 연산시 일어나는 값들이 임시로 저장
+      - Stack에 호출되는 순서대로 쌓임
+      - ![image](https://user-images.githubusercontent.com/102513932/190627147-032666cc-6abc-429b-b6b6-818a0eac4b08.png)
+  - ##### Heap 
+    - JVM에는 단 하나의 Heap 영역 존재
+      - JVM 작동 시 영역 자동 생성
+      - 객체나 인스턴스 변수, 배열 저장
+```java
+Person person = new person();
+```
+    - 인스턴스는 Heap 영역에 생성
+    - 인스턴스가 생성된 위치의 주소값을 person 에게 할당
+      - 참조변수 person은 Stack 영역에 선언된 변수
+    - Stack 영역에 저장되어 있는 참조 변수를 통해 Heap 영역에 존재하는 객체를 다룬다.
+    - 즉, Heap 영역은 실제 객체의 값이 저장되는 공간.
+    - ![image](https://user-images.githubusercontent.com/102513932/190628063-6ea9e2e9-01d2-4f8f-98ca-1a1bad28f071.png)
+- #### Garbage Collection
+  - ##### Garbage Collection
+    - 메모리를 자동으로 관리하는 프로세스
+    - 프로그램에서 더 이상 사용하지 않는 객체를 찾아 삭제하거나 제거하여 메모리를 확보
+```java
+Person person = new Person();
+person.setName("김코딩");
+person = null; 
+// 가비지 발생
+person = new Person(); 
+person.setName("박해커");
+```
+    - 가비지 발생시 아무 참조변수도 인스턴스를 참조하고 있지 않음
+      - 더 이상 인스턴스의 존재 의의 X
+    - 이처럼 메모리 점유를 해제하며 공간을 확보, 효율적으로 메모리를 사용.
+  - ##### 동작 방식
+  - 동작 방식 이해를 위한 Heap 메모리 설명
+    - ![image](https://user-images.githubusercontent.com/102513932/190629368-07604116-6160-4293-9c13-ffd119504d5e.png)
+    - Heap 영역의 객체는 대부분 일회성, 메모리에 남아 있는 기간이 대부분 짧다는 전제로 설계
+      - 따라서 기간에 따라 young, old 영역으로 나뉨
+    - young 영역
+      - 새롭게 생성된 객체가 할당
+      - 많은 객체가 생성되었다 사라짐
+      - 이 영역에서 활동하는 가비지 컬렉터 : ***Minor GC***
+    - old 영역
+      - 가비지 컬렉션 실행 시 2가지 단계
+      - 1. Stop The World
+        - 가비지 컬렉션 실행을 위해 JVM이 애플리캐이션의 실행을 멈추는 작업
+        - 가비지 컬렉션 실행 시 실행 스레드를 제외한 모든 스레들의 작업 중단, 실행 종료시 재개됨.
+      - 2. Mark and Sweep
+        - Mark
+          - 사용되는 메모리와 사용되지 않는 메모리를 식별하는 작업
+        - Sweep
+          - Mark 단계에서 사용되지 않는 것으로 식별된 메모리 해제 
+      - 즉, 1을 통해 작업 중단 시, 가비지 컬렉션이 모든 변수와 객체 탐색 후 어떤 객체를 참고하고 있는지 확인
+      - 이후, 사용되고 있는 메모리 식별(Mark) 후 사용되지 않는 메모리는 제거(Sweep)
