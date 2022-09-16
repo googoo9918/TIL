@@ -1187,7 +1187,7 @@ System.out.println(name);
   }
   ```
   - 스레드 생성 및 실행
-  ```java
+```java
   public class ThreadExample2{
     public static void main(String[] args){
         // Thread 클래스를 상속받은 클래스를 인스턴스화하여 스레드 생성
@@ -1211,9 +1211,9 @@ System.out.println(name);
     }
   }
   // 결과 1번과 유사.
-  ```
+```
   ##### 익명 객체를 이용한 스레드 생성 및 실행
-  ```java
+```java
   // 익명 Runnable 구현 객체를 활용하여 스레드 생성
   public class ThreadExample1{
     public static void main(String[] args){
@@ -1230,8 +1230,8 @@ System.out.println(name);
         }
     }
   }
-  ```
-  ```java
+```
+```java
   public class ThreadExample2 {
     public static void main(String[] args) {
 
@@ -1250,7 +1250,7 @@ System.out.println(name);
           }
       }
     }
-  ```
+```
 - #### 스레드의 이름
   - 메인스레드
     - "main"
@@ -1258,7 +1258,7 @@ System.out.println(name);
     - "Thread-n"
   - ##### 스레드의 이름 조회하기
     - ```스레드의_참조값.getName()```
-  ```java
+```java
   public class ThreadExample3 {
     public static void main(String[] args) {
 
@@ -1276,10 +1276,10 @@ System.out.println(name);
   // 출력 결과 
   Get Thread Name
   thread3.getName() = Thread-0
-  ```
+```
   - ##### 스레드의 이름 설정하기
     - ```스레드의_참조값.setName()```
-  ```java
+```java
   public class ThreadExample4 {
     public static void main(String[] args) {
 
@@ -1302,12 +1302,12 @@ System.out.println(name);
   // Set And Get Thread Name
   // thread4.getName() = Thread-0
   // thread4.getName() = Code States
-  ``` 
+``` 
   - ##### 스레드 인스턴스의 주소값 얻기
     - 이름을 조회하고 설정하는 위 두 메서드는 Thread 클래스로부터 인스턴스화 된 인스턴스 메서드
       - 호출 시 스레드 객체 참조 필요
       - 실행 중인 스레드의 주소값 사용시 정적 메서드인 ```currentThread()``` 사용
-  ```java
+```java
     public class ThreadExample1{
       public static void main(String[] args){
         Thread thread1 = new Thread(new Runnable(){
@@ -1322,26 +1322,26 @@ System.out.println(name);
     // 출력 결과
     // main
     // Thread-0
-  ``` 
+``` 
 - #### 스레드의 동기화
   - 멀티 스레드 프로세스의 경우, 두 스레드가 동일한 데이터를 공유하게 되어 문제 발생 가능성 존재
   - 예제
-  ```java
-  public class ThreadExample3 {
-    public static void main(String[] args) {
-      Runnable threadTask3 = new ThreadTask3();
-      Thread thread3_1 = new Thread(threadTask3);
-      Thread thread3_2 = new Thread(threadTask3);
+```java
+    public class ThreadExample3 {
+      public static void main(String[] args) {
+        Runnable threadTask3 = new ThreadTask3();
+        Thread thread3_1 = new Thread(threadTask3);
+        Thread thread3_2 = new Thread(threadTask3);
 
       thread3_1.setName("김코딩");
       thread3_2.setName("박자바");
 
       thread3_1.start();
       thread3_2.start();
+      }
     }
-  }
 
-  class Account {
+    class Account {
 
     // 잔액을 나타내는 변수
     private int balance = 1000;
@@ -1364,17 +1364,17 @@ System.out.println(name);
         // 잔액에서 인출금을 깎아 새로운 잔액을 기록
         balance -= money;
 
-        return true;
-        }
-      return false;
+          return true;
+          }
+        return false;
+      }
     }
-  }
 
-  class ThreadTask3 implements Runnable {
-    Account account = new Account();
+    class ThreadTask3 implements Runnable {
+      Account account = new Account();
 
-    public void run() {
-      while (account.getBalance() > 0) {
+      public void run() {
+       while (account.getBalance() > 0) {
 
         // 100 ~ 300원의 인출금을 랜덤으로 정함 
         int money = (int)(Math.random() * 3 + 1) * 100;
@@ -1387,17 +1387,97 @@ System.out.println(name);
         // 해당 내역에 -> DENIED를 출력합니다. 
         System.out.println(String.format("Withdraw %d₩ By %s. Balance : %d %s",
             money, Thread.currentThread().getName(), account.getBalance(), denied ? "-> DENIED" : "")
-          );
+            );
+          }
         }
-    }
-  }
-  //출력 결과
-<!-- Withdraw 100₩ By 김코딩. Balance : 600  -->
-<!-- Withdraw 300₩ By 박자바. Balance : 600  -->
-<!-- Withdraw 200₩ By 김코딩. Balance : 400  -->
-<!-- Withdraw 200₩ By 박자바. Balance : 200  -->
-<!-- Withdraw 200₩ By 김코딩. Balance : -100  --> 
-<!-- Withdraw 100₩ By 박자바. Balance : -100  -->
-  ```
+      }
+   //출력 결과
+   //Withdraw 100₩ By 김코딩. Balance : 600 
+   //Withdraw 300₩ By 박자바. Balance : 600 
+   //Withdraw 200₩ By 김코딩. Balance : 400 
+   //Withdraw 200₩ By 박자바. Balance : 200 
+   //Withdraw 200₩ By 김코딩. Balance : -100  
+   //Withdraw 100₩ By 박자바. Balance : -100 
+```
   - 위 코드 실행 시 두 개의 작업 스레드 생성
-  - 두 개의 작업 스레드는 Account 객체 공유
+    - 두 개의 작업 스레드는 Account 객체 공유
+  - 출력 결과
+    - 인출금과 잔액 출력 에러
+    - 객체 공유에서 발생하는 오류로, 이유 추측 어려움
+    - if()문을 따로 설정했음에도, 음수 출력
+      - 하나의 Account 객체를 공유하는 상황에서 한 스레드가 조건문을 true로 평가, 코드의 흐름이 이동하는 시점에서 다른 스레드가 balance를 인출
+    - 알 수 없는 원인에 의해 ->DENIED 출력 오류
+  - 이러한 상황이 발생하지 않게 하는 것이 **스레드 동기화**
+- #### 임계 영역(Critical section)과 락(Lock)
+  - 임계 영역
+    - 오로지 하나의 스레드만 실행할 수 있는 코드 영역
+  - 락
+    - 임계 영역을 포함하고 있는 객체에 접근할 수 있는 권한
+  - 예제
+    - 임계 영역으로 설정된 객체 존재가 작업이 이루어지고 있지 않을 때
+      - 임의의 스레드 A는 해당 객체에 대한 락을 획득하여 임계 영역 내 코드 실행 가능
+      - 코드 실행을 완료하면 락을 반납
+        - 이 때부터는 다른 임의의 스레드도 락을 획득 후 코드 실행 가능
+    - 위 예제 코드에서 오류 해결 방안 
+      - ```withdraw()``` 메서드를 임계 영역으로 설정
+- ##### 1. 메서드 전체를 임계 영역으로 지정
+  - 임계 영역 설정
+    - ```synchronized``` 키워드 사용
+      - 반환 타입 좌측에 키워드 작성 시
+        - 메서드 전체 임계영역 설정
+        - 메서드 호출 시, 메서드 실행 스레드는 메서드가 포함된 객체의 락을 얻음
+        - ```withdraw``` 호출 시, ```withdraw``` 실행 스레드는 ```withdraw```가 포함된 객체의 락을 획득
+        - 해당 스레드가 락을 반납하기 이전에 다른 스레드는 해당 메서드의 코드 실행 불가능.
+```java
+class Account {
+	...
+	public synchronized boolean withdraw(int money) {
+	  if (balance >= money) {
+	    try { Thread.sleep(1000); } catch (Exception error) {}
+	    balance -= money;
+	    return true;
+	  }
+	  return false;
+	}
+}
+```
+- ##### 2. 특정한 영역을 임계 영역으로 지정하기
+  - ```synchronized``` 키워드와 함께 소괄호안에 해당 영역이 포함된 객체의 참조 삽입 후 중괄호 블록 내에 코드 작성
+```java
+class Account {
+	public boolean withdraw(int money) {
+	  synchronized (this) {
+	    if (balance >= money) {
+       try { Thread.sleep(1000); } catch (Exception error) {}
+	     balance -= money;
+	     return true;
+	    }
+	    return false;
+		}
+	}
+}
+```
+- #### 스레드의 상태와 실행 제어
+  - start()
+    - 스레드를 실행 대기 상태로 만들어줌
+    - 스레드에는 상태가 존재
+    - 스레드의 상태를 바꿀 수 있는 메서드 존재
+    - ![image](https://user-images.githubusercontent.com/102513932/190587114-06cb62a1-4b30-4743-b603-a075ec1dbbeb.png)
+  - ##### 스레드 실행 제어 메서드 (sleep)
+```java
+static void sleep(long milliSecond)
+```
+  - sleep()
+    - milliSecond 동안 스레드를 잠시 멈춤
+    - Thread의 클래스 메서드
+      - ```Thread.sleep(1000);```
+      - 클래스 통해 호출 권장
+    - 실행 -> 일시 정지 상태로 전환
+    - 실행 대기 상태로 전환하는 경우
+      - 인자로 전달한 시간 만큼의 시간이 경과한 경우
+      - ```interrupt()```를 호출한 경우
+        - 호출 시 ```try...catch``` 문을 사용해 예외처리 필수
+        - 따라서 sleep() 사용시 try catch문 사용 필수
+```java
+try{Thread.sleep(1000);} catch (Exception error){}
+```
