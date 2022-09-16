@@ -53,6 +53,7 @@ Intellij 단축키
 
 #### 9. 최근 파일 열기
 - ctrl + E
+- 
 
 #### 10. 퀵 픽스
 - alt + enter

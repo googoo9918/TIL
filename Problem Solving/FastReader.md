@@ -35,7 +35,9 @@ public class Main {
     }
     static class FastReader {
         BufferedReader br; // 객체로 만들 필요는 없다.
+        // 입력을 위한 BufferedReader
         StringTokenizer st; // 그냥 변수로 충분하다.
+        // 쪼개기 위한 StringTokenizer
         public FastReader() { //public 잊지말기.
             br = new BufferedReader(new InputStreamReader(System.in)); //기본 생성자 
             // BufferedReader는 buffer를 읽고 String으로 반환한다.(엔터 경계 인식)
@@ -44,11 +46,10 @@ public class Main {
             br = new BufferedReader(new FileReader(new File(s))); //txt 파일 읽을때 생성자
         }
         String next() { //String 입력 받아야될 때!
-            while (st == null || !st.hasMoreElements()) { // 더 이상 받을 내용이 없을 때까지
+            while (st == null || !st.hasMoreElements()) { // 하나만 입력 받기
                 try {
                     st = new StringTokenizer(br.readLine()); //
                     // StringTokenizer 클래스는 문자열을 우리가 지정한 구분자로 쪼개주는 클래스.
-                    // br.readLine --> 공백 단위로 읽을 수 있는 라인 추가 
                 } catch (IOException e) {
                     e.printStackTrace(); // 에러 메시지의 발생 근원지를 찾아 단계별로 에러 출력
                 }
