@@ -1720,8 +1720,8 @@ public class FilteringExample {
 ```java
 List<String> names = Arrays.asList("kimcoding", "javalee", "ingikim", "kimcoding");
     names.stream()
-				 .map(s -> s.toUpperCase())
-				 .forEach(n->System.out.println(n));
+	  .map(s -> s.toUpperCase())
+		.forEach(n->System.out.println(n));
 /*
 KIMCODING
 JAVALEE
@@ -1742,8 +1742,8 @@ KIMCODING
 public class ComparatorExample {
 	public static void main(String[] args) {
 	        Stream<String[]> stringArraysStream = Stream.of(
-									new String[]{"hello", "world", "java"},
-									new String[]{"code", "states"});
+						new String[]{"hello", "world", "java"},
+						new String[]{"code", "states"});
 	
 	        stringArraysStream.flatMap(Arrays::stream).forEach(System.out::println);
 	    }
