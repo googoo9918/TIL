@@ -4,7 +4,6 @@
 
 ### 1. 문자찾기 
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/String/P1.md)
-- 
 - toUpperCase()
   - ex) String str = str2.toUpperCase();
 - toLowerCase()
