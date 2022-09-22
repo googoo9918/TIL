@@ -25,8 +25,7 @@
 * JAVA 에서는 기본적으로 java.util 패키지에 Queue 클래스를 제공하고 있음
   - Enqueue 에 해당하는 기능으로 Queue 클래스에서는 add(value) 또는 offer(value) 메서드를 제공함
   - Dequeue 에 해당하는 기능으로 Queue 클래스에서는 poll() 또는 remove() 메서드를 제공함
-  - 아쉽게도, Queue 클래스에 데이터 생성을 위해서는 java.util 패키지에 있는 LinkedList 클래스를 사용해야 함
-    - LinkedList 클래스는 자료구조의 링크드리스트 와 연관이 있으며, 관련 내용은 큐보다 복잡하므로 이후 챕터에서 상세히 익히도록 함
+  - Queue 클래스에 데이터 생성을 위해서는 java.util 패키지에 있는 LinkedList 클래스를 사용해야 함
 
 ##### Queue 클래스 사용해보기
 ```java
