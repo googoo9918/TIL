@@ -36,6 +36,7 @@
 - [링크드 리스트(Linked List)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_LinkedList.md) <br><br>
 - [해쉬 테이블(Hash Table)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_HashTable.md) <br><br>
 - [트리(Tree)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Tree.md) <br><br>
+- [그래프(Graph)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Graph.md)<br><br>
 - [힙(Heap)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Heap.md) <br><br>
 
 ### ETC
