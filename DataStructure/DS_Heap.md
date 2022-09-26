@@ -20,6 +20,7 @@
   - [구현을 위한 move_down 메서드 작성하기](#구현을-위한-move_down-메서드-작성하기)
   - [구현을 위한 pop 메서드 작성하기](#구현을-위한-pop-메서드-작성하기)
   - [5. 힙 (Heap) 시간 복잡도](#5-힙-heap-시간-복잡도)
+  - [6. heap tree를 배열로 구현하기](#6-heap-tree를-배열로-구현하기)
 
 <small><i><a href='http://ecotrust-canada.github.io/markdown-toc/'>Table of contents generated with markdown-toc</a></i></small>
 
@@ -269,3 +270,20 @@ System.out.println(heapTest.heapArray);
   - n개의 노드를 가지는 heap 에 데이터 삽입 또는 삭제시, 최악의 경우 root 노드에서 leaf 노드까지 비교해야 하므로 $h = log_2{n} $ 에 가까우므로, 시간 복잡도는 $ O(log{n}) $ 
      - 참고: 빅오 표기법에서 $log{n}$ 에서의 log의 밑은 10이 아니라, 2입니다.
      - 한번 실행시마다, 50%의 실행할 수도 있는 명령을 제거한다는 의미. 즉 50%의 실행시간을 단축시킬 수 있다는 것을 의미함
+
+### 6. heap tree를 배열로 구현하기
+![image](https://user-images.githubusercontent.com/102513932/192280157-b74e3f17-d4a4-4d70-bb3f-4c5009b35deb.png)
+- heap tree는 완전 이진 트리로 구현되어 배열로 표현될 수 있음.
+- 완전 이진 트리의 특성상 중간에 빈값이 없기 때문에, 루트 노드부터 높이 순서대로 배열에 모두 정렬 가능
+- 보통 0번째 인덱스는 사용x, 첫 번째 인덱스부터 사용
+- 높이 순서대로 배열에 값 저장, 좌에서 우로 순서대로 값 저장
+- depth와 부모, 자식 노드 위치 검색 가능
+  - depth : 1,3,7,15 순서대로 2의배수를 계속 더한 만큼
+  - 왼쪽 자신 노드 인덱스
+    - 현재 노드의 인덱스 * 2
+  - 오른쪽 자식 노드 인덱스
+    - 현재 노드의 인덱스 * 2 +1
+  - 부모 인덱스
+    - 자식 노드의 인덱스 /2 (내림)
+
+![image](https://user-images.githubusercontent.com/102513932/192280675-3aff48ac-ddf7-44f0-88c7-292f43054f3f.png)
