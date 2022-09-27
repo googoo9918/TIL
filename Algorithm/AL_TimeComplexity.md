@@ -87,6 +87,8 @@
    ```
   - log base는 big O에서 중요하지 않기 때문에 사실상 $log_2 n$으로 표기 가능
   - 수학적으론 k배수만큼 i가 커지므로 $log_k n$
+
+
 ![image](https://user-images.githubusercontent.com/102513932/175006156-415ae084-5040-48b8-a557-ecf76718ad16.png)
 
 * 빅 오 입력값 표기 방법
