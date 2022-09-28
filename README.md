@@ -67,6 +67,6 @@
 - [완전 탐색(Brute Force)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EC%99%84%EC%A0%84%20%ED%83%90%EC%83%89(Brute%20Force).md)<br><br>
 - [문자열(String)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EB%AC%B8%EC%9E%90%EC%97%B4(String).md)<br><br>
 - [배열(Array)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EB%B0%B0%EC%97%B4(Array).md)<br><br>
-- [탐욕알고리즘(Greedy)]()<br><br>
-- [동적 계획법(Dynamic Programming)]()<br><br>
-- [순열과 조합(Permutation&Combination)]()<br><br>
+- [탐욕알고리즘(Greedy)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%ED%83%90%EC%9A%95%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98(Greedy).md)<br><br>
+- [동적 계획법(Dynamic Programming)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EB%8F%99%EC%A0%81%20%EA%B3%84%ED%9A%8D%EB%B2%95(Dynamic%20Programming).md)<br><br>
+- [순열과 조합(Permutation&Combination)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EC%88%9C%EC%97%B4%EA%B3%BC%20%EC%A1%B0%ED%95%A9(Permutation%26Combination).md)<br><br>
