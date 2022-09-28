@@ -1,0 +1,74 @@
+## 문제
+![image](https://user-images.githubusercontent.com/102513932/192706333-65f0dec6-36ce-4e32-af0a-95f9095e30ef.png)
+
+### 입출력 예시
+```java
+ArrayList<String[]> output = rockPaperScissors(5);
+
+System.out.println(output);
+/*
+    [
+      ["rock", "rock", "rock", "rock", "rock"],
+      ["rock", "rock", , "rock", "rock", "paper"],
+      ["rock", "rock", , "rock", "rock", "scissors"],
+      ["rock", "rock", "rock", "paper", "rock"],
+      ["rock", "rock", "rock", "paper", "paper"],
+      ["rock", "rock", "rock", "paper", "scissors"],
+      ["rock", "rock", "rock", "scissors", "rock"],
+      // ...etc ...
+    ]
+  */
+``` 
+
+### 코드
+```java
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class P5 {
+    public static void main(String[] args) {
+        ArrayList<String[]> output = rockPaperScissors(2);
+
+        System.out.println(Arrays.deepToString(output.toArray()));
+    }
+
+    public static ArrayList<String[]> rockPaperScissors(int rounds) {
+        // 정답 입력을 위한 ans
+        ArrayList<String[]> ans = new ArrayList<>();
+
+        // 넣어줘야 되는 값 저장되있는 srr 배열
+        String[] srr = new String[]{"rock","paper","scissors"};
+
+        // 요소를 저장할 임시 저장공간 s_arr
+        String[] s_arr = new String[rounds];
+
+        //재귀 호출을 위한 메서드
+        overLapPer(0,rounds, ans, srr, s_arr);
+        return ans;
+    }
+
+
+    public static void overLapPer(int count, int rounds,ArrayList<String[]> ans, String[] srr, String[] s_arr){
+        if(count == rounds) {
+            //구한 요소들의 개수가 round가 되면, 답에 넣어주고 재귀 종료
+            String[] tmp = Arrays.copyOf(s_arr,s_arr.length);
+
+            // 위 코드가 아니라, 바로 ans.add(s_arr)을 하면 객체를 기준으로 더해주기 때문에 마지막 s_arr값만 3^n개 저장하게 된다!
+            ans.add(tmp);
+        }
+        else {
+            // 이 부분 잘 이해해 볼 것.
+            // i가 갖는 의미는 '넣어줄 값'임
+            for(int i=0; i<3; i++){
+                // 재귀의 종료 조건이 count로 설정되어 있는 상황 (다 넣어주면 종료)
+                // i로 넣어줄 값을 지정하고, count로 넣어줄 위치를 지정한다.
+                s_arr[count] = srr[i];
+
+                //count값만 조절해서 재귀 실행.
+                overLapPer(count+1, rounds, ans, srr, s_arr);
+            }
+        }
+    }
+}
+
+```
