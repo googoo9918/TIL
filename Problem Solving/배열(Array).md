@@ -11,6 +11,7 @@
       - ex) int[] array1 = [1,2,3,4,5]; int[] array2 = Arrays.copyOf(array1,3);
     - Arrays.copyOfRange(원본배열, 복사할 시작 인덱스, 복사할 끝 인덱스)
       - 인덱스는 0부터 시작
+      - 끝 인덱스 substring 처럼 알아서 1 빠짐
       - ex) int[] array3 = Arrays.copyOfRange(array1, 3, 4);
   - 배열 복사 메소드 2 (시작 위치 저장 가능)
     - System.arraycopy(src, srcPos, dest, destPos, length)
