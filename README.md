@@ -2,7 +2,7 @@
 ### 알고리즘(Algorithm)
 -----------------------------------
 - 복잡도
-  - [공간복잡도(Space Complexity)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SpacComplexity.md) <br>
+  - [공간복잡도(Space Complexity)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SpaceComplexity.md) <br>
   - [시간 복잡도(Time Complexity)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_TimeComplexity.md) <br>
 - 정렬
   - [버블 정렬(Bubble Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BubbleSort.md) <br>
@@ -10,7 +10,7 @@
   - [삽입 정렬(Insertion Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_InsertionSort.md) <br>
   - [병합 정렬(Merge Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_MergeSort.md) <br>
   - [퀵 정렬(Quick Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_QuickSort.md) <br><br>
-- [동적 계획법과 분할 정복(DP DC)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_DP%2CDC.md) <br><br>
+- [동적 계획법과 분할 정복(DP&DC)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_DP%2CDC.md) <br><br>
 - [재귀 호출(Recursive Call)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_RecursiveCall.md) <br><br>
 - 탐색<br>
   - [순차 탐색(Sequential Search)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SequentialSearch.md) <br>
@@ -25,6 +25,7 @@
   - [크루스칼(Kruskal)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Kruskal.md)<br>
   - [프림(Prim)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Prim.md)<br><br>
 - [백트랙킹(Back Tracking)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BackTracking.md)<br><br>
+- [순열과 조합(Permutation & Combination)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Permutation%2CCombination.md)<br><br>
 
 ### 자료구조(Data Structure)
 -----------------------------
