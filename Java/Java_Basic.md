@@ -890,6 +890,15 @@ while(iterator.hasNext()) {     // 읽어올 다음 객체가 있다면
   - 저장 순서를 유지하지 않음
   - ![image](https://user-images.githubusercontent.com/102513932/189921378-ee6f68c3-bc71-4ae6-b883-355f139b249c.png)
 #### HashSet
+##### Hashset의 중복값 판단
+1. add(Object o)를 통해 객체 저장
+2. 저장하고자 하는 객체의 해시코드를 얻어냄(```hashCode()```)
+3. 저장하고 있는 모든 객체들의 해시코드를 얻어냄
+4. 2번과 3번을 비교 같다면(5.1) 다르면(5.2)
+5.1 ```equals()```메서드를 통해 겍체 비교
+5.1.1 true 리턴시 중복 객체로 간주, Set에 추가되지 않음. / add(Object o)가 false 리턴
+5.12. false 리턴시 Set에 객체 추가, add(Object o)가 true 리턴
+5.2 Set에 객체 추가, add(Object o)가 true 리턴
 ```java
 import java.util.Set; 
 
