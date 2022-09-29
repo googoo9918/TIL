@@ -106,3 +106,7 @@
 
 ### 13. readVertically(Coplit)
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Coplit/%EB%AC%B8%EC%9E%90%EC%97%B4/readVertically.md)
+- String[]도 char형으로 바꿔서 조절하는게 편할 때도 있음
+- 인자 해결이 어려워 보인다면, 방향을 처음부터 수립하자
+  - 수도코드로 자세한 설계를 하는게 오히려 시간 절약
+- 레퍼런스 잘 참고해볼 것.. 단계별 진행의 정석적 풀이
