@@ -70,3 +70,8 @@
 - [탐욕알고리즘(Greedy)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%ED%83%90%EC%9A%95%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98(Greedy).md)<br><br>
 - [동적 계획법(Dynamic Programming)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EB%8F%99%EC%A0%81%20%EA%B3%84%ED%9A%8D%EB%B2%95(Dynamic%20Programming).md)<br><br>
 - [순열과 조합(Permutation&Combination)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%EC%88%9C%EC%97%B4%EA%B3%BC%20%EC%A1%B0%ED%95%A9(Permutation%26Combination).md)<br><br>
+- [수학(Mathmetics)]()
+
+![image](https://user-images.githubusercontent.com/102513932/193020330-667b5ba5-4906-4608-811b-fe9cd7bd9e32.png)
+
+![image](https://user-images.githubusercontent.com/102513932/193020472-154e30a2-a4c5-4045-929a-44673b7de241.png)
