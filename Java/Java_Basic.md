@@ -17,6 +17,7 @@
   * [String Class](#string-class)<br>
     * [length, concat, trim, substring, 문자열 덧셈](#length-concat-trim-substring-문자열-덧셈)
     * [StringTokenizer, StringBuilder, StringBuffer](#stringtokenizer-stringbuilder-stringbuffer)
+    * [정규표현식](#정규표현식)
   * [Exception Handling](#exception-handling)<br>
     * [try-catch](#try---catch-문)
     * [예외 전가](#예외-전가)
@@ -32,6 +33,7 @@
       * [Iterator](#0-iterator)
       * [Set](#1-set)
         * [HashSet](#hashset)
+          * [HashSet의 중복값 판단 과정](#hashset의-중복값-판단)
         * [TreeSet](#treeset)
       * [List](#2-list)
         * [ArrayList](#arraylist)
@@ -445,6 +447,24 @@ String str3 = str1 + str2;
       - 중간에 다른 문자열 삽입
       - ```str.insert(4,"Script");```
 <br><br>
+
+#### 정규표현식
+- 문자열에서 특정한 규칙에 따른 문자열 집합을 표현하기 위해 사용하는 형식
+- 이메일 유효성 검사 예시
+```java
+String email = "kimcoding@codestates.com";
+String regExp = "\\w+@\\w+\\.\\w+(\\.\\w+)?";
+
+//Patten.matches 메소드를 사용하여, 결과를 boolean타입으로 확인할 수 있습니다.
+
+if(Pattern.matches(regExp, email)) System.out.println("올바른 이메일 주소입니다.");
+else System.out.println("정확한 이메일 주소를 입력해 주세요.");
+```
+- 휴대전화 번호 유효성 검사 예시
+```java
+String regExp = "^01(?:0|1|[6-9])-(?:\d{3}|\d{4})-\d{4}$";
+```
+![image](https://user-images.githubusercontent.com/102513932/193074964-73f559d9-14a5-4677-864a-b0e2c6bad463.png)
 
 예외 처리(Exception Handling)
 -------------------------
