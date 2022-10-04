@@ -57,3 +57,14 @@
 - ![image](https://user-images.githubusercontent.com/102513932/193202810-06de3ba7-d497-4811-ab74-1676e7eeb75c.png)
   - 브라우저 검색창에 naver.com 입력시, 입력은 DNS에서 IP주소(125.209.222.142)를 찾음
   - IP 주소에 해당하는 웹 서버로 요청을 전달, 클라이언트와 서버가 통신할 수 있도록 함.
+- #### Domain Name
+  - ```sub-domain.domain.TLD.```
+    - Top Level DOmain
+      - .com, .r, .net등 도메인의 가장 오른쪽에 위치
+      - kr,us와 같은 국가 코드를 사용하는 도메인은 co,ac와 같은 2단계 도메인과 함께 사용 가능
+    - sub-domain
+      - 서브도메인은 일반적으로 `www, m`와 같은 제일 왼쪽에 위치한 도메인들 해당
+      - 호스트의 이름으로 불리기도 함
+      - 웹사이트의 특정 부분을 나눠서 보여줘야 하는 경우 사용 
+      - m(모바일), www(기본), store(스토어)등의 도메인에 따라 사이트의 구성이 잘라짐
+- 
