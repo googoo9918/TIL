@@ -57,6 +57,8 @@
 - '\0' 사용과 주의 
   - null 들어간다고 아예 배열이 없어지는게 아님.
   - 출력하면 x 표시로 뜬다. <br><br>
+- 전체에서 뺄 것인가? 0에서 더해줄 것인가?
+- ```str.indexOf(str.charAt(i)) == i```
 
 ### 7. 회문 문자열
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/String/P7.md)
