@@ -1,5 +1,5 @@
 ### 목차
-- [## Rest Api](#-rest-api)
+- [Rest Api](#rest-api)
   - [좋은 REST API를 디자인하는 방법](#좋은-rest-api를-디자인하는-방법)
     - [리차드슨의 4단계 성숙도 모델](#리차드슨의-4단계-성숙도-모델)
     - [REST 성숙도 모델 - 0단계](#rest-성숙도-모델---0단계)
@@ -10,7 +10,6 @@
     - [Open API](#open-api)
     - [API KEY](#api-key)
 ## Rest Api
----------------------------
 - [5가지의 기본적인 REST API 디자인 가이드](https://blog.restcase.com/5-basic-rest-api-design-guidelines/)
 - [구글 API 작성 가이드](https://cloud.google.com/apis/design?hl=ko)
 - [MS의 REST API 가이드라인](https://github.com/Microsoft/api-guidelines/blob/master/Guidelines.md)

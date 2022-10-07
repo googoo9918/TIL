@@ -2,7 +2,7 @@
 - [웹 애플리케이션의 구현](#웹-애플리케이션의-구현)
   - [웹 애플리케이션 구현방식](#웹-애플리케이션-구현방식)
     - [Single Page Application](#single-page-application)
-    - [AJAX](#ajax)
+    - [AJAX)](#ajax)
     - [Microservice architecture](#microservice-architecture)
     - [Serverless Architecture](#serverless-architecture)
   - [웹 애플리케이션 구현 기술](#웹-애플리케이션-구현-기술)
@@ -18,7 +18,7 @@
 - 필수적 요소만을 요청, 페이지 새로 고침을 방지하여 유저 경험 극대화
 - AJAX, Asynchronous JavaScript, XML 주로 사용
 
-#### [AJAX](Web%20Apllication/AJAX.md)
+#### [AJAX]([Web%20Apllication/AJAX.md](https://github.com/ssu18/TIL/blob/main/Network/Web/AJAX.md))
 
 #### Microservice architecture
 - 작은 서비스 여러개가 모여 하나의 시스템을 제공하는 아키텍쳐
