@@ -103,6 +103,7 @@
 ### 12. 암호
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/String/P12.md)
 - 형변환을 너무 복잡하게 생각하지 말자.
+- String tmp = s.subString(0,7).replace('#','1').replace('*','0');
 - substring() 인자 2개와 1개 차이
 - 지금 가장 필요한 것은 단계별 진행.
 

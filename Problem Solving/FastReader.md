@@ -41,6 +41,10 @@ public class Main {
         public FastReader() { //public 잊지말기.
             br = new BufferedReader(new InputStreamReader(System.in)); //기본 생성자 
             // BufferedReader는 buffer를 읽고 String으로 반환한다.(엔터 경계 인식)
+            // System.in은 바이트스트림인 InputStream 타입
+            // 1. 바이트 스트림인 InputStream을 통해 바이트 단위 데이터 입력 받음(System.in 사용)
+            // 2. 입력 데이터를 char 형태로 처리하기 위해 중개자 역할인 문자스트림 InputStreamReader로 감싸줌
+            // 3. BufferedReader을 사용해 버퍼에 문자를 쌓고, 문자열로 읽음!
         }
         public FastReader(String s) throws FileNotFoundException {
             br = new BufferedReader(new FileReader(new File(s))); //txt 파일 읽을때 생성자
@@ -76,106 +80,4 @@ public class Main {
         }
     }
 }
-```
-
-```java
-public class Main {
-    static FastReader scan = new FastReader();
-    //정답은 sb에 append 를 사용하여 출력
-    //만약 개행까지 출력하고 싶으면 append('\n')을 추가
-    static StringBuilder sb = new StringBuilder();
-
-    public static void main(String[] args) {
-        input();
-    }
-    static void input(){
-        
-    }
-    static class FastReader {
-        BufferedReader br;
-        StringTokenizer st;
-        public FastReader() {
-            br = new BufferedReader(new InputStreamReader(System.in));
-        }
-        public FastReader(String s) throws FileNotFoundException {
-            br = new BufferedReader(new FileReader(new File(s)));
-        }
-        String next() {
-            while (st == null || !st.hasMoreElements()) {
-                try {
-                    st = new StringTokenizer(br.readLine());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return st.nextToken();
-        }
-        int nextInt() {
-            return Integer.parseInt(next());
-        }
-        long nextLong() {
-            return Long.parseLong(next());
-        }
-        double nextDouble() {
-            return Double.parseDouble(next());
-        }
-        String nextLine() {
-            String str = "";
-            try {
-                str = br.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return str;
-        }
-    }
-}
-```
-
-```java
-static class FastReader {
-        BufferedReader br;
-        StringTokenizer st;
-
-        public FastReader() {
-            br = new BufferedReader(new InputStreamReader(System.in));
-        }
-
-        public FastReader(String s) throws FileNotFoundException {
-            br = new BufferedReader(new FileReader(new File(s)));
-        }
-
-        String next() {
-            while (st == null || !st.hasMoreElements()) {
-                try {
-                    st = new StringTokenizer(br.readLine());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-            return st.nextToken();
-        }
-
-        int nextInt() {
-            return Integer.parseInt(next());
-        }
-
-        long nextLong() {
-            return Long.parseLong(next());
-        }
-
-        double nextDouble() {
-            return Double.parseDouble(next());
-        }
-
-        String nextLine() {
-            String str = "";
-            try {
-                str = br.readLine();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return str;
-        }
-    }
 ```

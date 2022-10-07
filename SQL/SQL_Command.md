@@ -1,7 +1,7 @@
 ### 목차
 - [데이터베이스 관련 명령어](#데이터베이스-관련-명령어)
   - [데이터베이스 생성(CREATE)](#데이터베이스-생성create)
-  - [데이터베이스 삭제(DROP_)](#데이터베이스-삭제drop_)
+  - [데이터베이스 삭제(DROP)](#데이터베이스-삭제drop)
   - [데이터베이스 사용(USE)](#데이터베이스-사용use)
   - [테이블 생성(CREATE)](#테이블-생성create)
   - [테이블 삭제(DROP)](#테이블-삭제drop)
@@ -44,7 +44,7 @@
 ```SQL
 CREATE DATABASE 데이터베이스_이름;
 ```
-### 데이터베이스 삭제(DROP_)
+### 데이터베이스 삭제(DROP)
 ```SQL
 DROP DATABASE 데이터베이스_이름;
 ```
@@ -63,8 +63,8 @@ USE 데이터베이스_이름;
 
 ```SQL
 CREATE TABLE user(
-    id int PRIMARY KEY AUTO_INCREMENT,
-    name varchar(255),
+    id int not NULL PRIMARY KEY AUTO_INCREMENT,
+    name varchar(255) not NULL DEFAULT NULL,
     email varchar(255)
 );
 ```
