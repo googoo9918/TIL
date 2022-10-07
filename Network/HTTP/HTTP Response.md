@@ -1,6 +1,7 @@
 ### 목차
 - [응답](#응답)
   - [Status line](#status-line)
+    - [HTTP 상태 코드](#http-상태-코드)
   - [Headers](#headers)
   - [Body](#body)
 ## 응답
@@ -14,6 +15,12 @@
     - 상태 코드에 대한 설명
     - ex) Not Found.
   - `HTTP/1.1 404 NOT Found`
+#### [HTTP 상태 코드](https://developer.mozilla.org/ko/docs/Web/HTTP/Status)
+- 100번대 : 정보 응답
+- 200번대 : 성공 응답
+- 300번대 : 리다이렉션 응답
+- 400번대 : 클라이언트 에러 응답
+- 500번대 : 서버 에러 응답
 
 ### Headers
 - 요청 헤더와 동일한 구조 지님
