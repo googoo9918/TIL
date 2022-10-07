@@ -1,3 +1,12 @@
+### 목차
+- [데이터베이스 설계](#데이터베이스-설계)
+  - [Schema](#schema)
+  - [관계형 데이터베이스](#관계형-데이터베이스)
+  - [관계 종류](#관계-종류)
+    - [1:1 관계](#11-관계)
+    - [1:N 관계](#1n-관계)
+    - [N:N 관계](#nn-관계)
+    - [Self Referencing 관계](#self-referencing-관계)
 ## 데이터베이스 설계
 
 ### Schema 
@@ -31,20 +40,20 @@
       - 모든 필드 값은 참조하는 기본키와 동일하거나 NULL 일 수 있음
 
 ### 관계 종류
-- #### 1:1 관계
+#### 1:1 관계
   - 하나의 레코드가 다른 테이블의 레코드 한 개와 연결된 경우
   - ![image](https://user-images.githubusercontent.com/102513932/194222897-5e01d494-b09c-45e0-8ed9-b84a8c1ca970.png)
   - User 테이블의 phone_id는 외래키(foreign key)로써, Phonebook 테이블의 phone_id와 연결됨
   - 각 전화번호가 단 한 명의 유저와 연결 , 각 유저가 단 한 개의 전화번호와 연결
   - 1:1 관계는 자주 사용하지 않음, 차라리 User 테이블에 phone_id 대신 phone_number을 저장하는게 효율적임
-- #### 1:N 관계
+#### 1:N 관계
   - 하나의 레코드가 서로 다른 여러 개의 레코드와 연결된 경우
   - ![image](https://user-images.githubusercontent.com/102513932/194223222-5a3d30b8-859d-4f27-9af3-b5c9259cdab1.png)
   - 한 명의 유저가 여러 전화번호를 가질 수 있음
   - 여러 명의 유저가 하나의 전화번호를 가질 수는 없음
   - User(부모) / Phonebook(자식)
     - 부모 테이블의 Primary Key를 자식 테이블에 Foreign Key로 집어 넣어 관계를 표현함
-- N:N 관계
+#### N:N 관계
   - Join 테이블을 새로 생성해 관리
   - ![image](https://user-images.githubusercontent.com/102513932/194224413-fa40ec15-1d24-4033-b5b4-04ed280180ed.png)
     - 고객 한 명은 여러 개의 여행 상품 구매 가능
@@ -55,7 +64,7 @@
       - 여행 상품 하나가 여러 개의 고객을 가질 수 있음
       - customer_id와 package_id를 묶어주는 역할
       - 조인 테이블을 위한 기본키(cp_id)도 반드시 존재해야 함
-- Self Referencing 관계
+#### Self Referencing 관계
   - 테이블 내 관계
   - ![image](https://user-images.githubusercontent.com/102513932/194225486-d03643fb-670f-446e-9fa4-71d3864b4f0e.png)
   - 한 명의 유저는 한 명의 추천인을 가질 수 있음
