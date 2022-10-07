@@ -3,6 +3,15 @@
   - [Start line](#start-line)
   - [Headers](#headers)
   - [Body](#body)
+  - [HTTP 요청 메서드](#http-요청-메서드)
+    - [GET](#get)
+    - [HEAD](#head)
+    - [POST](#post)
+    - [PUT](#put)
+    - [CONNECT](#connect)
+    - [OPTIONS](#options)
+    - [TRACE](#trace)
+    - [PATCH](#patch)
 ## 요청
 ### Start line
 - Start line에 존재하는 세 가지 요소
@@ -49,3 +58,25 @@
   - Multiple-resource bodies(다중-리소스 본문)
     - 여러 파트로 구성된 본문에서는 각 파트마다 다른 정보를 지님
       - 보통 HTML form과 관련
+
+### HTTP 요청 메서드
+- 주어진 리소스에 수행하길 원하는 행동을 나타냄
+#### GET
+- GET 메서드는 특정 리소스의 표시 요청
+  - 오직 데이터를 받기만 함
+#### HEAD
+- HEAD 메서드는 GET 요청과 동일한 응답 요구
+  - 단, 응답 본문을 포함하지 않음
+#### POST
+- POST 메서드는 특정 리소스에 엔티티를 제출할 때 쓰임
+  - 종종 서버의 상태의 변화나 부작용을 일으킬 수 있음
+#### PUT
+- PUT 메서드는 목적 리소스 모든 현재 표시를 요청 payload로 바꿈
+#### CONNECT
+- CONNECT 메서드는 목적 리소스로 식별되는 서버로의 터널을 맺음
+#### OPTIONS
+- OPTIONS 메서드는 목적 리소스의 통신을 설정하는 데 쓰임
+#### TRACE
+- TRACE 메서드는 목적 리소스의 경로를 따라 메시지 loop-back 테스트를 실행
+#### PATCH
+- PATCH 메서드는 리소스의 부분만을 수정하는 데 사용
