@@ -7,6 +7,7 @@
     - [1:N 관계](#1n-관계)
     - [N:N 관계](#nn-관계)
     - [Self Referencing 관계](#self-referencing-관계)
+  - [Desiging Schema 예시](#desiging-schema-예시)
 ## 데이터베이스 설계
 
 ### Schema 
@@ -70,3 +71,46 @@
   - 한 명의 유저는 한 명의 추천인을 가질 수 있음
   - 여러 명이 한 명의 유저를 추천인으로 등록할 수 있음
   - 같은 테이블 내에서 1:N 관계를 가질 수 있음 
+
+### Desiging Schema 예시
+![image](https://user-images.githubusercontent.com/102513932/194537158-0a7c1dd7-e115-4233-9d14-1f01711524d5.png)
+![image](https://user-images.githubusercontent.com/102513932/194537313-bbf56e72-fd60-4c0d-9e76-70a7f02a01d6.png)
+![image](https://user-images.githubusercontent.com/102513932/194537364-12b21bc6-60a3-404c-932b-34f4fb86938c.png)
+![image](https://user-images.githubusercontent.com/102513932/194537405-7f7c3038-1fe3-42ee-ae3d-9cfb2940412c.png)
+```sql
+CREATE TABLE user (
+  id int not NULL PRIMARY KEY auto_increment default NULL,
+  name varchar(255) not NULL default NULL,
+  email varchar(255) not NULL default NULL,
+  roleId int,
+);
+
+CREATE TABLE content (
+  id int not NULL PRIMARY KEY AUTO_INCREMENT,
+  title varchar(255) not NULL DEFAULT NULL,
+  body varchar(255) not NULL DEFAULT NULL,
+  created_at timestamp not NULL DEFAULT CURRENT_TIMESTAMP,
+  userId int DEFAULT NULL,
+);
+
+CREATE TABLE role (
+  id int not NULL PRIMARY KEY AUTO_INCREMENT,
+  name varchar(255) not NULL
+);
+
+CREATE TABLE category (
+  id int not NULL PRIMARY KEY AUTO_INCREMENT,
+  name varchar(255) not NULL
+);
+
+CREATE TABLE content_category (
+  id int not NULL PRIMARY KEY AUTO_INCREMENT,
+  contentId int not NULL,
+  categoryId int not NULL
+);
+
+ALTER TABLE content ADD FOREIGN KEY (userId) REFERENCES user (id);
+ALTER TABLE user ADD FOREIGN KEY (roleId) REFERENCES role (id);
+ALTER TABLE content_category ADD FOREIGN KEY (contentId) REFERENCES content (id);
+ALTER TABLE content_category ADD FOREIGN KEY (categoryId) REFERENCES category (id);
+```
