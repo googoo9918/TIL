@@ -1,3 +1,10 @@
+### 목차
+- [URL & DNS](#url--dns)
+  - [URL](#url)
+  - [Domain](#domain)
+  - [도메인 종류](#도메인-종류)
+  - [DNS](#dns)
+## URL & DNS
 ### URL
 - URL(Uniform Resource Locator)
   - 서버가 제공되는 환경에 존재하는 파일의 위치를 나타냄
