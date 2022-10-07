@@ -1,13 +1,14 @@
 ### 목차
 - [데이터베이스 관련 명령어](#데이터베이스-관련-명령어)
-  - [데이터베이스 생성](#데이터베이스-생성)
-  - [데이터베이스 삭제](#데이터베이스-삭제)
-  - [데이터베이스 사용](#데이터베이스-사용)
-  - [테이블 생성](#테이블-생성)
-  - [테이블 삭제](#테이블-삭제)
-  - [테이블 내용 삭제](#테이블-내용-삭제)
-  - [테이블 수정하기](#테이블-수정하기)
-  - [테이블 정보 확인](#테이블-정보-확인)
+  - [데이터베이스 생성(CREATE)](#데이터베이스-생성create)
+  - [데이터베이스 삭제(DROP_)](#데이터베이스-삭제drop_)
+  - [데이터베이스 사용(USE)](#데이터베이스-사용use)
+  - [테이블 생성(CREATE)](#테이블-생성create)
+  - [테이블 삭제(DROP)](#테이블-삭제drop)
+  - [테이블 내용 삭제(TRUNCATE)](#테이블-내용-삭제truncate)
+  - [테이블 수정하기(ALTER)](#테이블-수정하기alter)
+  - [테이블 정보 확인(DESCRIBE)](#테이블-정보-확인describe)
+  - [다양한 정보 확인(SHOW)](#다양한-정보-확인show)
 - [SQL 관련 명령어](#sql-관련-명령어)
   - [SELECT](#select)
   - [INSERT](#insert)
@@ -39,39 +40,48 @@
   - [SELECT 실행 순서](#select-실행-순서)
 ## 데이터베이스 관련 명령어
 
-### 데이터베이스 생성
+### 데이터베이스 생성(CREATE)
 ```SQL
 CREATE DATABASE 데이터베이스_이름;
 ```
-### 데이터베이스 삭제
+### 데이터베이스 삭제(DROP_)
 ```SQL
 DROP DATABASE 데이터베이스_이름;
 ```
-### 데이터베이스 사용
+### 데이터베이스 사용(USE)
 - DB를 이용해 테이블을 만들거나 수정, 삭제하는 등의 작업 시 사용 명령을 먼저 전달해야 한다.
 
 ```SQL
 USE 데이터베이스_이름;
 ```
 
-### 테이블 생성
+### 테이블 생성(CREATE)
 - ```USE```를 이용해 데이터베이스 선택 시, 테이블 생성 가능
 - 테이블은 필드와 함께 만들어야 함.
 - EX) `user` 테이블 생성, 테이블 예시
 - ![image](https://user-images.githubusercontent.com/102513932/193962914-1f61e4d0-c61d-41c0-b97b-f6ee8ff7f9e3.png)
 
-### 테이블 삭제
+```SQL
+CREATE TABLE user(
+    id int PRIMARY KEY AUTO_INCREMENT,
+    name varchar(255),
+    email varchar(255)
+);
+```
+- SQL 콘솔에서 `Enter`키를 이용해 여러 줄의 코드 입력 가능
+
+### 테이블 삭제(DROP)
 ```SQL
 DROP TABLE 테이블_이름;
 ```
 
-### 테이블 내용 삭제
+### 테이블 내용 삭제(TRUNCATE)
 ```SQL
 TRUNCATE TABLE 테이블_이름;
 -- 테이블의 모든 데이터가 삭제되지만 테이블의 구조는 삭제되지 않음
 ```
 
-### 테이블 수정하기
+### 테이블 수정하기(ALTER)
 ```sql
 ALTER TABLE 테이블_이름 DROP COLUMN 특성이름_1
 -- column 삭제
@@ -84,16 +94,7 @@ ALTER TABLE 테이블_이름 ALTER COLUMN 특성이름_1 데이터형식 NOT NUL
 -- 테이블에 특성이름_1의 데이터형식 변경 및 NULL값 허용X
 ```
 
-```SQL
-CREATE TABLE user(
-    id int PRIMARY KEY AUTO_INCREMENT,
-    name varchar(255),
-    email varchar(255)
-);
-```
-- SQL 콘솔에서 `Enter`키를 이용해 여러 줄의 코드 입력 가능
-
-### 테이블 정보 확인
+### 테이블 정보 확인(DESCRIBE)
 
 ```SQL
 DESCRIBE user;
@@ -111,6 +112,18 @@ mysql> describe user;
 +-------+--------------+------+-----+---------+----------------+
 3 rows in set (0.00 sec)
 ```
+
+### 다양한 정보 확인(SHOW)
+```SQL
+SHOW DATABASES; -- 데이터베이스 목록 확인
+SHOW TABLES; -- 현재 데이터베이스에 테이블 목록 확인
+SHOW TABLES FROM 데이터베이스; --특정 데이터베이스에 테이블 목록 확인
+SHOW INDEX FROM 테이블; --특정 테이블 인덱스 확인
+SHOW COLUMNS FROM 테이블; -- 특정 테이블 칼럼 확인
+SHOW TABLE STATUS; --현재 데이터베이스 모든 테이블 정보 확인
+SHOW TABLE STATUS FROM 데이터베이스; --특정 데이터베이스 모든 테이블 정보 확인
+```
+
 ## SQL 관련 명령어
 
 ### SELECT
