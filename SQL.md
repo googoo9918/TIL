@@ -1,4 +1,5 @@
 ## SQL
+[SQL Cheat Sheet](https://websitesetup.org/wp-content/uploads/2020/08/SQL-Cheat-Sheet-websitesetup.pdf)
 - SQL(Structured Query Language)
   - 구조화된 Query 언어
   - 데이터베이스용 프로그래밍 언어
@@ -11,6 +12,25 @@
   - 질의문
     - ex) 검색창에 적는 검색어
   - 저장되어있는 정보를 필터링 하기 위한 질문
+- #### SQL 종류
+  - SQL에서도 역할에 다라 문법이 다양하게 존재
+  - ##### Data Definition Language(DDL)
+    - 데이터 정의 시 사용
+    - 테이블을 만들 때 사용하는 `CREATE`, 제거 시 사용되는 `DROP`
+  - ##### Data Manipulation Language(DML)
+    - 데이터 변경 시 사용
+    - `INSERT`, `DELETE`, `UPDATE`
+  - ##### Data Control Language(DCL)
+    - DB 접근 권한 관련 문법
+    - 권한을 주는 `GRANT`, 권한을 가져가는 `REVOKE`
+  - ##### Data Query Language(DQL)
+    - 정해진 스키마 내에서 쿼리할 수 있는 언어
+    - `SELECT`
+    - DQL을 DML의 일부분으로 취급하기도 함
+  - ##### Transaction Control Language(TCL)
+    - DML을 거친 데이터의 변경사항 수정 가능
+      - DML이 작업한 내용을 데이터베이스에 커밋하는 `COMMIT`
+      - 커밋했던 내용을 롤백하는 `ROLLBACK`
 
 ### 데이터베이스 필요성
   - In-memory
@@ -240,6 +260,17 @@ FROM 테이블_이름
 WHERE 특성_1 IS NOT NULL
 -- 값이 없는 경우를 제외할 때는 'NOT' 추가 이용
 ```
+### CASE
+- SQL에서도 if문과 같은 기능 사용 가능
+- 특정 조건에 따라 다른 결과 도출 가능
+```sql
+SELECT CASE
+      WHEN CustomerId <= 25 THEN 'GROUP 1'
+      WHEN CustomerId <= 50 THEN 'GROUP 2'
+      ELSE 'GROUP 3'
+   END
+  FROM customers
+```
 ### Aliases
 - 테이블 또는 테이블의 열에 임시 이름을 지정하는 데 사용
   - alias는 칼럼 이름을 읽기 쉽게 하기 위해 사용
@@ -351,6 +382,53 @@ SELECT
 FROM 테이블_이름
 -- 특성_1, 특성_2, 특성_3의 중복되지 않은 '조합' 값들 선택
 ```
+### SUBQUERY
+- 쿼리문 작성 시, 다른 쿼리문 포함 가능
+- 쿼리에 중첩으로 위치해 정보 전달, 소괄호로 감싸야 함
+- 서브쿼리의 결과는 개별 값 OR 레코드 리스트
+  - 서브커리의 결과를 하나의 칼럼으로도 이용 가능
+```SQL
+SELECT CustomerId, CustomerId = (SELECT CustomerId FROM customers WHERE CustomerId = 2)
+FROM customers
+WHERE CustomerId<6
+```
+#### IN, NOT IN
+- IN은 특정한 값이 서브쿼리에 있는지 확인 가능
+```sql
+SELECT *
+FROM customers
+WHERE CustomerId IN (SELECT CustomerId FROM customers WHERE CustomerId <10)
+-- customers 테이블에서 'CustomerId'의 값이 서브쿼리에서 돌려받는 값에 속한 결과들만 조회
+-- NOT IN 사용 시 서브코리에서 조회된 10을 초과하는 레코드 조회
+```
+#### EXISTS, NOT EXISTS
+- 돌려받은 서브쿼리에 존재하는 레코드 확인
+  - 레코드 존재 시 TRUE, 없을 시 FALSE 리턴
+```SQL
+SELECT EmployeeId
+FROM employees e
+WHERE EXISTS(
+  SELECT 1
+  FROM customers c
+  WHERE c.SupportRepId = e.EmployeeId
+)
+  ORDER BY EmployeeId
+-- employees 테이블에서 'EmployeeId'필드 조회
+-- 서브쿼리로 customers 테이블의 'SupportRepId' 필드값과 employees 테이블의 'EmployeeId' 필드값을 비교해 일치하는 레코드들을 가져옴
+```
+
+#### FROM
+- FROM에도 서브쿼리 사용 가능
+- 조회된 결과의 하나의 테이블이나 조회할 대상으로 지정해 사용 가능
+```SQL
+SELECT *
+FROM (
+  SELECT CustomerId
+  FROM customers
+  WHERE CustomerId <10
+)
+```
+
 
 ### INNER JOIN
 - `INNER JOIN` 이나 `JOIN`으로 실행 가능
@@ -628,3 +706,32 @@ ORDER BY 2
   - 한 명의 유저는 한 명의 추천인을 가질 수 있음
   - 여러 명이 한 명의 유저를 추천인으로 등록할 수 있음
   - 같은 테이블 내에서 1:N 관계를 가질 수 있음 
+
+## 데이터베이스 정규화
+- Database Normalization
+- 데이터베이스 정규화는 데이터베이스의 설계와 연관
+  - 데이터베이스 설계가 결론적으로 데이터가 어떻게 저장될지 구조 저장
+- ### Data redundancy
+  - 데이터 중복
+    - 데이터 중복은 실제 데이터의 동일한 복사본이나 부분적인 복사본을 뜻함
+    - 데이터 복구 시 더 수월할 수 있으나, 문제점을 지니기도 함
+      - 일관된 자료 처리의 어려움
+      - 저장 공간 낭비
+      - 데이터 효율성 감소
+- ### Data integrity
+  - 데이터 무결성
+    - 데이터의 수명 주기 동안 정확성과 일관성을 유지하는 것
+    - 입력된 데이터가 오염되지 않고 입력된 그대로 데이터를 사용할 수 있다는 뜻
+    - 데이터 정규화는 데이터 무결성을 강화하기 위한 목적도 지님
+- ### Anomaly
+  - 데이터 이상 현상
+    - #### 갱신 이상 (update anomaly)
+      - 동일한 데이터가 여러 행에 걸쳐 있을 때 어느 데이터를 갱신해야 하는지에 대한 논리적 일관성 부재 시 발생
+      - ![image](https://user-images.githubusercontent.com/102513932/194449125-52d12808-c724-420a-af21-fa33a6296404.png)
+        - 중복된 Employee ID중 어떤 데이터를 갱신 해야 하는가?
+    - #### 삽입 이상 (insertion anomaly)
+      - 데이터 삽입을 못하는 경우
+      - ![image](https://user-images.githubusercontent.com/102513932/194449222-cc265dd1-1fca-4c52-becd-3a8f973265fb.png)
+        - Course Code가 NULL이 아닌 이상, 신규 학생은 데이터에 추가되지 못함
+    - #### 삭제 이상 (deletion anomaly)
+      - 데이터의 특정 부분을 지울 때 의도치 않게 다른 부분들도 함께 지워지는 현상

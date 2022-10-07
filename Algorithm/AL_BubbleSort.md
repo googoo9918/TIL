@@ -136,9 +136,9 @@ public class BubbleSort {
 
 ```java
   int tmp =0;
-  for(int i=0; i<arr.length-1; i++){
+  for(int i=0; i<arr.length-1; i++){ //i는 index를 표현하는데 사용되지 않음, 왜 -1만큼 반복하는지도 생각해 볼 것
     boolean swap = false;
-      for(int j=0; j<arr.length-1-i; j++){
+      for(int j=0; j<arr.length-1-i; j++){ //결국 이 for문이 핵심임
         if(arr[j]>arr[j+1]){
           tmp = arr[j];
           arr[j] = arr[j+1];
