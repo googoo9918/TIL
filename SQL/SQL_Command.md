@@ -7,7 +7,7 @@
   - [테이블 삭제(DROP)](#테이블-삭제drop)
   - [테이블 내용 삭제(TRUNCATE)](#테이블-내용-삭제truncate)
   - [테이블 수정하기(ALTER)](#테이블-수정하기alter)
-  - [테이블 정보 확인(DESCRIBE)](#테이블-정보-확인describe)
+  - [테이블 구조 확인(DESCRIBE)](#테이블-구조-확인describe)
   - [다양한 정보 확인(SHOW)](#다양한-정보-확인show)
 - [SQL 관련 명령어](#sql-관련-명령어)
   - [SELECT](#select)
@@ -94,12 +94,12 @@ ALTER TABLE 테이블_이름 ALTER COLUMN 특성이름_1 데이터형식 NOT NUL
 -- 테이블에 특성이름_1의 데이터형식 변경 및 NULL값 허용X
 ```
 
-### 테이블 정보 확인(DESCRIBE)
+### 테이블 구조 확인(DESCRIBE)
 
 ```SQL
 DESCRIBE user;
 ```
-- user 테이블의 정보 확인
+- user 테이블의 구조 확인
 
 ```SQL
 mysql> describe user;
