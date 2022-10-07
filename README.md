@@ -96,9 +96,9 @@
 
 ### SQL
 ----------------------------------------------------
--[SQL & NoSQL]()<br><br>
--[데이터베이스 명령어(DB_Command)]()<br><br>
--[SQL 명령어(SQL_Command)]()<br><br>
--[데이터베이스 설계(DB_design)]()<br><br>
--[데이터베이스 정규화(DB_Normalization)]()<br><br>
--[ACID]()<br><br>
+- [SQL & NoSQL]()<br><br>
+- [데이터베이스 명령어(DB_Command)]()<br><br>
+- [SQL 명령어(SQL_Command)]()<br><br>
+- [데이터베이스 설계(DB_design)]()<br><br>
+- [데이터베이스 정규화(DB_Normalization)]()<br><br>
+- [ACID]()<br><br>
