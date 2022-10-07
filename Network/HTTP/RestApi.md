@@ -1,3 +1,14 @@
+### 목차
+- [## Rest Api](#-rest-api)
+  - [좋은 REST API를 디자인하는 방법](#좋은-rest-api를-디자인하는-방법)
+    - [리차드슨의 4단계 성숙도 모델](#리차드슨의-4단계-성숙도-모델)
+    - [REST 성숙도 모델 - 0단계](#rest-성숙도-모델---0단계)
+    - [REST 성숙도 모델 - 1단계](#rest-성숙도-모델---1단계)
+    - [REST 성숙도 모델 - 2단계](#rest-성숙도-모델---2단계)
+    - [REST 성숙도 모델 - 3단계](#rest-성숙도-모델---3단계)
+  - [Open API와 API kEY](#open-api와-api-key)
+    - [Open API](#open-api)
+    - [API KEY](#api-key)
 ## Rest Api
 ---------------------------
 - [5가지의 기본적인 REST API 디자인 가이드](https://blog.restcase.com/5-basic-rest-api-design-guidelines/)
@@ -74,7 +85,6 @@
 ### Open API와 API kEY
 
 #### Open API
------------------
 - 누구에게나 열려있는 API
   - 무제한으로 이용할 수 있다는 의미는 아님
   - 기관, API마다 정해진 이용 수칙 존재

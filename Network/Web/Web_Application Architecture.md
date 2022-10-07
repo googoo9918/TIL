@@ -1,3 +1,11 @@
+### 목차
+- [웹 애플리케이션 아키텍쳐](#웹-애플리케이션-아키텍쳐)
+- [웹 애플리케이션의 요청 흐름](#웹-애플리케이션의-요청-흐름)
+  - [웹 애플리케이션의 요소들](#웹-애플리케이션의-요소들)
+  - [웹 애플리케이션의 3단계 계층 구조](#웹-애플리케이션의-3단계-계층-구조)
+    - [Presentation Layer](#presentation-layer)
+    - [Application Layer](#application-layer)
+    - [Data access layer](#data-access-layer)
 ## 웹 애플리케이션 아키텍쳐
 ![image](https://user-images.githubusercontent.com/102513932/193807845-a16d947a-f163-4984-befb-eaac6bce9dd8.png)
 
@@ -40,7 +48,7 @@
     - server-side
       - HTTP 요청에 따라 서버에서 요청 처리
       - Java, Python, JavaScript, C#, PHP등 서버 사이드에서 실행 가능하고 HTTP 요청에 응답할 수 있는 언어들 사용
-- ### 웹 애플리케이션의 요소들
+### 웹 애플리케이션의 요소들
   - 유저 인터페이스 요소
     - 유저 경험과 관련된 요소들
     - 화면 출력, 로그, 알림, 시스템 통계, 환경 설정 등 웹 애플리케이션의 기능적 부분 외적인 요소들
@@ -49,17 +57,17 @@
     - 유저와 상호작용, 제어, 데이터베이스 등에 관련된 요소
     - 웹 애플리케이션의 전체적인 구조 담당
     - 웹 브라우저, 클라이언트, 웹 애플리케이션 서버, 데이터베이스로 구성
-- ### 웹 애플리케이션의 3단계 계층 구조
+### 웹 애플리케이션의 3단계 계층 구조
   - ![image](https://user-images.githubusercontent.com/102513932/193816771-dbf0e90f-e285-4ec4-8789-c3494a914e85.png)
-  - #### Presentation Layer
+#### Presentation Layer
     - 브라우저등을 이용해 유저와 직접적으로 접촉. 
     - Web Server가 이 영역에 포함, 유저 인터페이스 요소들 포함.
-  - #### Application Layer
+#### Application Layer
     - Business Layer, Business Logic 혹은 Domain Logic 이라고 불리기도 함
     - 유저의 요청을 브라우저로부터 받아 처리를 함.
     - Application Server가 이 계층에 포함
     - 데이터 접근을 위한 경로를 규격화 하는 등의 과정이 작성됨
-  - #### Data access layer
+#### Data access layer
     - Persistence layer이라고 불리기도 함
     - 애플리케이션의 데이터 저장소에 접근, 데이터를 불러 오거나 저장을 담당
     - Application Layer의 로직들이 데이터베이스에 접근하여 데이터 회수 및 저장하는 구조를 최적화

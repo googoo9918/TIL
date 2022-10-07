@@ -1,3 +1,12 @@
+### 목차
+- [SSR과 CSR](#ssr과-csr)
+  - [SSR](#ssr)
+  - [CSR](#csr)
+  - [The Differencer](#the-differencer)
+  - [Characteristic of SSR](#characteristic-of-ssr)
+  - [Characteristic of CSR](#characteristic-of-csr)
+  - [Use SSR](#use-ssr)
+  - [Use CSR](#use-csr)
 ## SSR과 CSR
 
 ### SSR

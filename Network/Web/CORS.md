@@ -1,4 +1,8 @@
-
+### 목차
+- [CORS](#cors)
+  - [Simple request](#simple-request)
+  - [preflighted request](#preflighted-request)
+  - [redirect](#redirect)
 ## CORS
 - [CORS(Cross-Origin Resource Sharing)](https://developer.mozilla.org/ko/docs/Web/HTTP/CORS)
   - 보안 상의 이유로, 브라우저는 스크림트에서 시작한 교차 출처 HTTP 요청을 제한함

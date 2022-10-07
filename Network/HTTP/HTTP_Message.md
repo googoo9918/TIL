@@ -1,16 +1,18 @@
 ### 목차
 - [HTTP](#http)
+  - [Stateless](#stateless)
+  - [HTTP messages](#http-messages)
 ## HTTP
 - HTTP(HypertText Transfer Protocol)
   - HTML과 같은 문서를 전송하기 위한 Application Layer 프로토콜
   - 웹 브라우저와 웹 서버의 소통을 위해 ㅣ자인
   - 무상태성을 지님
-- ### Stateless
+### Stateless
   - HTTP로 클라이언트와 서버가 통신을 주고받는 과정에서, HTTP가 클라이언트나 서버의 상태를 확인하지 않음
   - 클라이언트에서 발생한 모든 상태를 HTTP가 추적하지 않음
     - 단지 통신 규약이기 때문
     - 쿠키-세션, API로 상태 확인
-- ### HTTP messages
+### HTTP messages
   - 클라이언트와 서버 사이에서 데이터가 교환되는 방식
   - 요청, 응답의 두 가지 유형으로 나뉨
   - 구성 파일, API, 기타 인터페이스에서 거의 자동 완성됨

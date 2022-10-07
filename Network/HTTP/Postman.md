@@ -1,3 +1,10 @@
+### 목차
+- [Postman 사용법](#postman-사용법)
+  - [HTTP API 테스트 도구](#http-api-테스트-도구)
+  - [Postman 사용하기(GET)](#postman-사용하기get)
+  - [Postman 화면 보기(GET)](#postman-화면-보기get)
+  - [Postman 사용하기 (POST)](#postman-사용하기-post)
+  - [Postman 화면보기 (POST)](#postman-화면보기-post)
 ## Postman 사용법
 
 ### HTTP API 테스트 도구
