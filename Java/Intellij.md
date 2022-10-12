@@ -1,5 +1,6 @@
 Intellij 단축키
 ===================
+![intellij-단축키모음집-windows](https://user-images.githubusercontent.com/102513932/195266978-b89e71e6-fed6-488d-a3bb-e6fc673b718d.jpg)
 
 #### 1. 프로젝트 창 포커스
  - Alt + 1
