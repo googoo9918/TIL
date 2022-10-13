@@ -74,12 +74,15 @@
 
 ### 네트워크(Network)
 ------------------------------------------
-- 기본 개념
+<details>
+<summary>기본 개념</summary>
+
   - [TCP,IP기초(TCP&IP_BASIC)](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/TCP%26IP_Basic.md)
   - [인터넷 프로토콜(IP)](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/IP.md)
   - [TCP&UDP](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/TCP%26UDP.md)
   - [포트(Port)](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/Port.md)
   - [URL&DNS](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/URL%26DNS.md)<br><br>
+</details>
 - HTTP
   - [HTTP_메시지](https://github.com/ssu18/TIL/blob/main/Network/HTTP/HTTP_Message.md)
   - [HTTP_요청](https://github.com/ssu18/TIL/blob/main/Network/HTTP/HTTP%20Request.md)
