@@ -4,12 +4,18 @@
 - 복잡도
   - [공간복잡도(Space Complexity)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SpaceComplexity.md) <br>
   - [시간 복잡도(Time Complexity)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_TimeComplexity.md) <br>
-- 정렬
-  - [버블 정렬(Bubble Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BubbleSort.md) <br>
+
+</details>
+<details>
+<summary>정렬</summary>
+
+- [버블 정렬(Bubble Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BubbleSort.md) <br>
   - [선택 정렬(Selection Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SelectionSort.md) <br>
   - [삽입 정렬(Insertion Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_InsertionSort.md) <br>
   - [병합 정렬(Merge Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_MergeSort.md) <br>
   - [퀵 정렬(Quick Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_QuickSort.md) <br><br>
+</details>
+
 - [동적 계획법과 분할 정복(DP&DC)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_DP%2CDC.md) <br><br>
 - [재귀 호출(Recursive Call)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_RecursiveCall.md) <br><br>
 - 탐색<br>
@@ -83,19 +89,27 @@
   - [포트(Port)](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/Port.md)
   - [URL&DNS](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/URL%26DNS.md)<br><br>
 </details>
-- HTTP
+<details>
+<summary>HTTP</summary>
+
   - [HTTP_메시지](https://github.com/ssu18/TIL/blob/main/Network/HTTP/HTTP_Message.md)
   - [HTTP_요청](https://github.com/ssu18/TIL/blob/main/Network/HTTP/HTTP%20Request.md)
   - [HTTP_응답](https://github.com/ssu18/TIL/blob/main/Network/HTTP/HTTP%20Response.md)
   - [REST API](https://github.com/ssu18/TIL/blob/main/Network/HTTP/RestApi.md)
   - [Postman](https://github.com/ssu18/TIL/blob/main/Network/HTTP/Postman.md)<br><br>
-- Web
+</details>
+
+</details>
+<details>
+<summary>Web</summary>
+
   - [클라이언트-서버 구조](https://github.com/ssu18/TIL/blob/main/Network/Web/Clinet-server%20Architecture.md)
   - [웹 애플리케이션 구조](https://github.com/ssu18/TIL/blob/main/Network/Web/Web_Application%20Architecture.md)
   - [웹 애플리케이션 구현](https://github.com/ssu18/TIL/blob/main/Network/Web/Web_Application_Implent.md)
   - [SSR&CSR](https://github.com/ssu18/TIL/blob/main/Network/Web/SSR%26CSR.md)
   - [AJAX](https://github.com/ssu18/TIL/blob/main/Network/Web/AJAX.md)
   - [CORS](https://github.com/ssu18/TIL/blob/main/Network/Web/CORS.md)<br><br>
+</details>
 
 ### SQL
 ----------------------------------------------------
