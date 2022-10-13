@@ -1,6 +1,12 @@
 Intellij 단축키
 ===================
-![intellij-단축키모음집-windows](https://user-images.githubusercontent.com/102513932/195266978-b89e71e6-fed6-488d-a3bb-e6fc673b718d.jpg)
+![image](https://user-images.githubusercontent.com/102513932/195267452-2b609f36-3820-4179-83ca-a5b3b2ba26e8.png)
+![image](https://user-images.githubusercontent.com/102513932/195267489-ba99a7f4-066b-4e3e-a14a-d5c575b0a515.png)
+![image](https://user-images.githubusercontent.com/102513932/195267505-c4df4b37-241b-446f-a8b2-d69a91a5406b.png)
+![image](https://user-images.githubusercontent.com/102513932/195267529-6e85bc6f-d4e4-46ef-9b58-7a3e52a443f1.png)
+![image](https://user-images.githubusercontent.com/102513932/195267549-02418251-2d77-4fe2-bf0b-517190a40633.png)
+![image](https://user-images.githubusercontent.com/102513932/195267580-4d57db9e-d1df-4bdb-943c-d9ee56c68553.png)
+![image](https://user-images.githubusercontent.com/102513932/195267611-a06b64d8-9195-4edb-affa-6b49269df0a7.png)
 
 #### 1. 프로젝트 창 포커스
  - Alt + 1
