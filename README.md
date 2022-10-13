@@ -9,7 +9,7 @@
 <details>
 <summary>정렬</summary>
 
-- [버블 정렬(Bubble Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BubbleSort.md) <br>
+  - [버블 정렬(Bubble Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BubbleSort.md) <br>
   - [선택 정렬(Selection Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SelectionSort.md) <br>
   - [삽입 정렬(Insertion Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_InsertionSort.md) <br>
   - [병합 정렬(Merge Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_MergeSort.md) <br>
@@ -118,3 +118,7 @@
 - [데이터베이스 설계(DB_design)](https://github.com/ssu18/TIL/blob/main/SQL/DB_design.md)<br><br>
 - [데이터베이스 정규화(DB_Normalization)](https://github.com/ssu18/TIL/blob/main/SQL/DB_Normalization.md)<br><br>
 - [ACID](https://github.com/ssu18/TIL/blob/main/SQL/ACID.md)<br><br>
+
+### Spring
+--------------------------------------------------
+- [기초 개념](https://github.com/ssu18/TIL/blob/main/Spring/Basic/Basic.md)<br><br>
