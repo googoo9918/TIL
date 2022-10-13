@@ -51,23 +51,40 @@
 <br><br>
 
 ### 7. 점수계산
-- [정리]()
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Array/P7.md)
+- 큰 특징 x
 <br><br>
 
 ### 8. 등수구하기
-- [정리]()
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Array/P8.md)
+- 한 번에 정리해서 풀려는 나쁜 습관..
+- 처음에는 혼자 못풀었지만 두 번째 풀 때는 수월하게 풀림
 <br><br>
 
 ### 9. 격자판 최대합
-- [정리]()
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Array/P9.md)
+- 1차원 배열에서의 대각선 표현
+  - arr[i][n-i-1]
+  - arr[i][i]
+- 최댓값 또한 마찬가지, 마지막에 비교해줄 필요는 없다. 
+  - 계속 비교해 나가면서 갱신하자!
 <br><br>
 
 ### 10. 봉우리
-- [정리]()
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Array/P10.md)
+- 임시 변수를 통한 상대적 위치 조정
+  - int nx = i + dx[k];
+- 조건을 통한 index 차단
+  - nx>=0 && nx<n
 <br><br>
 
 ### 11. 임시반장 정하기
-- [정리]()
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Array/P11.md)
+- 행으로 접근할 것인가? 열로 접근할 것인가?
+  - 조건을 따져 초기 전략 잘 수립할 것
+- Worst Case를 따져 변수 초깃값을 잘 설정할 것
+- 3중 for문 이라도 상수번 만큼 돌면 괜찮다
+- 문제를 잘못 이해하고 있는건 아닌지 확인하는 자세 필요
 <br><br>
 
 ### 12. 멘토링
