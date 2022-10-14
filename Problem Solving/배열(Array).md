@@ -88,7 +88,7 @@
 <br><br>
 
 ### 12. 멘토링
-- [정리]()
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Array/P12.md)
 - 변수의 크기가 작을 때 가능한 4중 for문
 - 인덱스가 아닌, 학생 번호를 for문의 변수로 표현
 <br><br>
