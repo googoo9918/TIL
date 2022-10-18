@@ -37,12 +37,150 @@ spring.datasource.username=sa
   - 아니면 Wrong user name or password 오류 발생
   - 마지막에 공백이 들어가는지도 확인할 것
 ### Jdbc 리포지토리 구현
-- JDBC API로 직좁 코딩하는 것은 20년전 이야기, 참고만 하고 넘어가자
+- JDBC API로 직접 코딩하는 것은 20년전 이야기, 참고만 하고 넘어가자
 - `hello-Spring/src/main/java/hello/helloSpring/repository/JdbcMebmerRepository` 참고
+### 스프링 설정 변경
+```java
+public class SpringConfig {
+
+    private final DataSource dataSource;
+    @Autowired
+    public SpringConfig(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    @Bean // 스프링 빈을 만들겠단 의미
+    public MemberService memberService(){
+        return new MemberService(memberRepository());
+    }
+    @Bean
+    public MemberRepository memberRepository(){
+
+//        return new MemoryMemberRepository();
+        return new JdbcMemberRepository(dataSource);
+    }
+    // 다른 어떤 코드도 건들지 않고, Jdbc멤버 리포지토리를 만들고
+    // 인터페이스를 확장 후 configuration만 수정했을 뿐임
+    // localHost:8080 들어가면 회원 목록에 DB에 저장했던 목록을 확인할 수 있음(DB와 연결)
+}
+```
+- DataSource는 데이터베이스 커넥션을 획득할 때 사용하는 객체임
+  - 스프링 부트는 데이터베이스 커넥션 정보를 바탕으로 DataSource를 생성하고 스프린 빈으로 만듬
+  - 그래서 DI를 받을 수 있다
+- ![image](https://user-images.githubusercontent.com/102513932/196241419-dcf6566e-fb23-461b-8cae-c056d7e7d5c4.png)
+  - MemberService는 MemberRepository를 의존
+  - 인터페이스 구현체로 MemoryMemberRepository와 JdbcMemberRepository 존재
+- ![image](https://user-images.githubusercontent.com/102513932/196241490-0ab09b71-825d-42dc-9ef8-96b63baab9ff.png)
+  - 개방_폐쇄 원칙(OCP, Open_Closed Principle)
+    - 확장에는 열려있고, 수정, 변경에는 닫혀있음
+  - 스프링의 DI(Dependencies Inject)을 사용하면 **기존 코드를 전혀 손대지 않고, 설정많으로 구현 클래스를 변경**할 수 있음
+  - 회원을 등록하고 DB에 결과가 잘 입력되는지 확인
+    - 데이터를 DB에 저장, 스프링 서버를 다시 실행해도 데이터 안전하게 저장 가능
 ## 스프링 통합 테스트
+- 스프링 컨테이너와 DB까지 연결한 통합 테스트 진행
+### 회원 서비스 스프링 통합 테스트
+```java
+@SpringBootTest
+    // 스프링 컨테이너와 테스트를 함께 실행한다
+@Transactional
+    // Transactional은 test를 반복하기 위해서 붙는 annotation
+    // 이게 없으면 afterEach를 사용해야 한다
+    // 테스트를 실행할 때 transaction을 먼저 실행하고, 테스트가 끝나면 다 롤백을 해준다
+    // test가 db에 영향을 주지 않게 됨
+class MemberServiceIntegrationTest {
+    // 여태까지 실행한 테스트는 스프링과 무관한 테스트였음
+    // 지금은 db도 스프링과 연결되어 관리되고 있기 때문에, 스프링과 연관하여 test를 만들어 보겠음
+    // MemberServiceTest와 차이점을 잘 살펴보자
+    @Autowired MemberService memberService;
+    @Autowired MemberRepository memberRepository;
 
-## 스프링 JdbcTemplatr
+    @Test
+    void 회원가입() {
+        //given
+        Member member = new Member();
+        member.setName("hello");
 
+        //when
+        Long saveId = memberService.join(member);
+
+        //then
+        Member findMember = memberService.findOne(saveId).get();
+        assertThat(member.getName()).isEqualTo(findMember.getName());
+    }
+    @Test
+    public void 중복_회원_예외(){
+        //given
+        Member member1 = new Member();
+        member1.setName("spring");
+
+        Member member2 = new Member();
+        member2.setName("spring");
+        //when
+        memberService.join(member1);
+        IllegalAccessError e = assertThrows(IllegalAccessError.class, () -> memberService.join(member2));
+        assertThat(e.getMessage()).isEqualTo("이미 존재하는 회원입니다.");
+
+    }
+}
+```
+- `@SpringBootTest`
+  - 스프링 컨테이너와 테스트를 함께 실행한다
+- `@Transactional`
+  - 테스트 케이스에 존재 시, 테스트 시작 전에 트랜잭션을 시작
+  - 테스트 완료 후에 항상 롤백
+  - DB에 데이터가 남지 않으므로 다음 테스트에 영향을 주지 않는다
+- Spring을 사용하지 않은 단위 테스트는 불필요한 것인가?
+  - 그렇지 않음. 실행 시간에 차이도 있을 뿐더러 테스트의 구조 상 유리한 측면이 많다
+  - 상세히 기술하진 않았음
+## 스프링 JdbcTemplate
+- 순수 Jdbc와 동일한 환결설정
+- 스프링 JdbcTemplate과 MyBatis 같은 라이브러리는 JDBC API에서 본 반복 코드를 대부분 제거해줌
+  - 하지만, SQL은 직접 작성해야 함
+### 스프링 JdbcTemplate 회원 리포지토리
+- src/main/java/repository/JdbcTemplateMemberRepository 참고
+
+### JdbcTemplate을 사용하도록 스프링 설정 변경
+```java
+public MemberRepository memberRepository(){
+
+//        return new MemoryMemberRepository();
+//        return new JdbcMemberRepository(dataSource);
+        return new JdbcTemplateMemberRepository(dataSource);
+    }
+```
 ## JPA
+- JPA는 기존의 반복 코드는 물론이고, 기본적인 SQL도 JPA가 직접 만들어서 실행해줌
+  - JDBC Template는 반복 코드는 제거해 줬으나, SQL은 직접 작성했어야 했다
+- JPA 사용 시, SQL과 데이터 중심 설계에서 객체 중심 설계로 패러다임 전환 가능
+- JPA를 사용하면 개발 생산성을 크게 높일 수 있다
+### build.gradle에 JPA, h2 데이터베이스 관련 라이브러리 추가
+```java
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+//	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'com.h2database:h2'
+	testImplementation('org.springframework.boot:spring-boot-starter-test'){
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}
+```
+- ```spring-boot-starter-data-jap```는 내부에 jdbc 관련 라이브러리를 포함함 따라서 jdbc는 제거해도 상관 없음
 
+### 스프링 부트에 JPA 설정 추가
+`resorces/application.properties` 파일
+```java
+spring.datasource.url=jdbc:h2:tcp://localhost/~/test
+spring.datasource.driver-class-name = org.h2.driver
+spring.datasource.username=sa
+
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=none
+```
+- ```show-sql``` : JPA가 생성하는 SQL 출력
+- ```ddl-auto``` : JPA는 테이블을 자동으로 생성하는 기능을 제공
+  - ```none``` 사용 시 해당 기능 off
+  - ```create``` 사용 시 엔티티 정보를 바탕으로 테이블도 직접 생성해줌
 ## 스프링 데이터 JPA
