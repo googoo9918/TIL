@@ -27,7 +27,7 @@ implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 runtimeOnly 'com.h2database:h2'
 ```
 ### 스프링 부트 데이터베이스 연결 설정 추가
-- resuorces/application.properies
+- resuorces/application.properties
 ```java
 spring.datasource.url=jdbc:h2:tcp://localhost/~/test
 spring.datasource.driver-class-name = org.h2.driver
