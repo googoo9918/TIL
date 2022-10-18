@@ -183,4 +183,171 @@ spring.jpa.hibernate.ddl-auto=none
 - ```ddl-auto``` : JPA는 테이블을 자동으로 생성하는 기능을 제공
   - ```none``` 사용 시 해당 기능 off
   - ```create``` 사용 시 엔티티 정보를 바탕으로 테이블도 직접 생성해줌
+
+### JPA 엔티티 매핑
+```JAVA
+@Entity
+//이제 jpa가 관리하는 entity가 됨
+public class Member {
+
+    @Id // PK 매핑
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // DB에 값을 넣으면 DB가 ID값을 자동으로 생성해주는 것을 IDENTITY 전략이라 칭함
+
+    private Long id;
+    private String name;
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+}
+```
+### JPA 회원 리포지토리
+```JAVA
+public class JpaMemberRepository implements MemberRepository{
+
+    private final EntityManager em;
+
+    public JpaMemberRepository(EntityManager em) {
+        this.em = em;
+    }
+    //jpa는 entitymanger로 모든 것이 동작함
+    //스프링부트가 각종 정보와 데이터베이스 커넥션 정보를 통합해 entitymanger를 만드는데,
+    //이를 통해 db와 내부적으로 통신 처리 가능함
+    //즉, jpa를 쓰려면 entitymanger를 주입받아야함
+    @Override
+    public Member save(Member member){
+        em.persist(member);
+        return member;
+        //jpa가 insert query 만들어서 db에 집어넣고, id까지 만들어 줌
+    }
+
+    @Override
+    public Optional<Member> findById(Long id){
+        Member member = em.find(Member.class,id); // 조회 (식별자, pk값)
+        return Optional.ofNullable(member);
+    }
+
+    @Override
+    public Optional<Member> findByName(String name){
+        List<Member> result = em.createQuery("select m from Member m where m.name = :name", Member.class)
+                .setParameter("name", name)
+                .getResultList();
+        return result.stream().findAny();
+    }
+
+    @Override
+    public List<Member> findAll() {
+        return em.createQuery("select m from Member m", Member.class)
+                .getResultList();
+        // pk 기반이 아니면 jpql을 작성해야함!
+        // 보통 테이블 대상으로 query를 날리는데,
+        // jpql(객체지향 쿼리)은 객체(entity)를 대상으로 함
+        // 불필요한 매핑 과정 생략 가능
+    }
+}
+```
+### 서비스 계층에 트랜잭션 추가
+```JAVA
+@Transactional //jpa 사용시 항상 transaction이 있어야 함
+public class MemberService {}
+```
+- ```org.springframework.transaction.annotation.Transactional``` 사용
+- 스프링은 해당 클래스의 메서드를 실행할 때 트랜잭션을 시작
+  - 메서드가 정상 종료되면 트랜잭션 커밋
+  - 만일 런타임 예외 발생 시 롤백
+- **JPA를 통한 모든 데이터 변경은 트랜잭션 안에서 실행해야 한다**
+
+### JPA를 사용하도록 스프링 설정 변경
+```JAVA
+@Configuration
+public class SpringConfig {
+
+    private DataSource dataSource;
+    private final EntityManager em;
+    @Autowired
+    public SpringConfig(DataSource dataSource, EntityManager em) {
+        this.dataSource = dataSource;
+        this.em = em;
+    }
+
+    @Bean // 스프링 빈을 만들겠단 의미
+    public MemberService memberService(){
+        return new MemberService(memberRepository());
+    }
+    @Bean
+    public MemberRepository memberRepository(){
+
+//        return new MemoryMemberRepository();
+//        return new JdbcMemberRepository(dataSource);
+//        return new JdbcTemplateMemberRepository(dataSource);
+        return new JpaMemberRepository(em);
+    }
+}
+```
 ## 스프링 데이터 JPA
+- 스프링 부트와 JPA만 사용해도 개발 생산성이 많이 증가하고, 코드도 확연히 줄어듬
+- 만일 여기에 스프링 데이터 JPA를 사용하면, 기존의 한계를 넘어 리포지토리에 구현 클래스 없이 인터페이스 만으로 개발 가능
+  - 반복 개발해온 기본 CRUD 기능도 스프링 데이터 JPA가 모두 제공
+- 스프링 부트와 JPA라는 기반 위에, 스프링 데이터 JAP라는 프레임워크를 더하면, 개발자는 핵심 비즈니스 로직을 개발하는데 더욱 집중할 수 있음
+- 단, 스프링 데이터 JAP는 JPA를 편리하게 사용하도록 도와주는 기술임
+  - 따라서 JPA를 선행 학습한 후 스프링 데이터 JPA를 학습할 것
+
+### 스프링 데이터 JPA 회원 리포지토리
+```JAVA
+public interface SpringDataJpaMemberRepository extends JpaRepository<Member, Long>, MemberRepository {
+
+    // interface만 만들어 놓고,
+    // extends만 해놓으면 Spring data jpa가 interface에 대한 구현체를 만들고 spring 빈에 등록함
+    // 그리고 DI를 통해 injection을 받음
+    @Override
+    Optional<Member> findByName(String name);
+}
+```
+### 스프링 데이터 JPA 회원 리포지토리를 사용하도록 스프링 설정 변경
+```JAVA
+public class SpringConfig {
+
+    private  final MemberRepository memberRepository;
+
+    @Autowired
+    public SpringConfig(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
+
+    @Bean 
+    public MemberService memberService(){
+        return new MemberService(memberRepository);
+    }
+}
+```
+- 스프링 데이터 JPA가 `SpringDataJpaMemberRepository`를 스프링 빈으로 자동 등록해준다
+  - 프록시라는 기술을 통해 객체를 생성 후 스프링 빈에 등록
+
+### 스프링 데이터 JPA 제공 클래스
+![image](https://user-images.githubusercontent.com/102513932/196451783-69b20cff-c813-44ca-8c25-15081bca8de3.png)
+- 통용되는 메서드는 구현되어 있음
+  - 다만, business마다 다른 메서드(ex : 주문서 번호로 조회, 고객이 주문한 상품 이름으로 조회)는 따로 구현해 줘야함
+    - 이 구현마저도, 간단한 구현은 인터페이스로 처리 가능
+    - 위 코드에서 `findByName`을 override할 시
+      - JPQL : `select m from Member m where m.name =?`로 처리해버림
+
+### 스프링 데이터 JPA 제공 기능
+- 인터페이스를 통한 기본적인 CRUD
+- `findByName()`, `findByEmail()` 처럼 메서드 이름만으로 조회 기능 제공
+- 페이징 기능 자동 제공
+- 위 코드 같은 경우, `org.springframework.data.jpa.repository.JpaRepository`에 구현되어 있음
+
+> 참고: 실무에서는 jpa와 스프링 데이터 jpa를 기본으로 사용, 복잡한 동적 쿼리는 Querydsl이라는 라이브러리를 사용하면 된다. Querydsl을 사용하면 쿼리도 자바 코드로 안전하게 작성할 수 있고, 동적 쿼리도 편리하게 작성할 수 있다. 이 조합으로 해결하기 어려운 쿼리는 JPA가 제공하는 네이티브 쿼리를 사용하거나, 앞서 학습한 스프링 JdbcTemplate를 사용하면 된다.
