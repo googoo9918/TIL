@@ -23,7 +23,7 @@ primary key (id)
 - 옛날 방식을 차용함, 편하게 정리
 - build.gradle 파일에 jdbc, h2 데이터베이스 관련 라이브러리 추가
 ```java
-mplementation 'org.springframework.boot:spring-boot-starter-jdbc'
+implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 runtimeOnly 'com.h2database:h2'
 ```
 ### 스프링 부트 데이터베이스 연결 설정 추가
