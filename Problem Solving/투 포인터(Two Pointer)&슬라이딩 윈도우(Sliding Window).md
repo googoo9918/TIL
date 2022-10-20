@@ -18,3 +18,12 @@
   - index 처리에만 유의하면 될 듯
   - 시간 복잡도를 획기적으로 줄일 수 있음!
     - 중복된 값으로 더하지 않게 된다 (코드 비교해보기)
+
+### 4. 연속 부분수열 (투 포인터)
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/TwoPointer/P4.md)
+- 케이스만 잘 나눠준다면..
+- 사실 케이스를 나눌 필요가 없을 수도 있음
+  - 정답 코드와 내 코드 비교해볼 것
+### 5. 연속된 자연수의 합 (투 포인터)
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/TwoPointer/P5.md)
+- 4번과 다른 듯 같은 문제
