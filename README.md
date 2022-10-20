@@ -5,9 +5,9 @@
   - [공간복잡도(Space Complexity)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SpaceComplexity.md) <br>
   - [시간 복잡도(Time Complexity)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_TimeComplexity.md) <br>
 
-  </details>
-  <details>
-  <summary>정렬</summary>
+</details>
+<details>
+<summary>정렬</summary>
 
   - [버블 정렬(Bubble Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BubbleSort.md) <br>
   - [선택 정렬(Selection Sort)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_SelectionSort.md) <br>
