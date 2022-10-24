@@ -414,7 +414,7 @@ map.put(3,"포도");
 map.put(3,"수박"); //같은 키의 새로운 value 들어가면 대치됨.
 map.size(); // 3
 map2.putAll(map); // putAll로 두개의 map을 합칠 수 있다. 
-map.remove(1); //key값 1 제거
+map.remove(1); //key값 1 제거 , return값 "사과" (value값 return)
 map.clear(); //모든 값 제거
 map.replace(3, "단감"); // value를 교체해줌.
 map.replace(3,"단감","곶감");// 인자가 3개인 replace 메소드.

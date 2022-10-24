@@ -1,5 +1,6 @@
 ### 목차
 - [큐 (Queue)](#큐-queue)
+  - [0. Deque](#0-deque)
   - [1. 큐 구조](#1-큐-구조)
   - [2. 알아둘 용어](#2-알아둘-용어)
   - [3. JAVA 에서의 큐 자료 구조 사용하기](#3-java-에서의-큐-자료-구조-사용하기)
@@ -8,6 +9,8 @@
 
 ## 큐 (Queue)
 
+### 0. Deque
+- [Deque](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Deque)
 ### 1. 큐 구조
 * 줄을 서는 행위와 유사
 * 가장 먼저 넣은 데이터를 가장 먼저 꺼낼 수 있는 구조
