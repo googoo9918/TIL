@@ -417,9 +417,11 @@ map2.putAll(map); // putAll로 두개의 map을 합칠 수 있다.
 map.remove(1); //key값 1 제거
 map.clear(); //모든 값 제거
 map.replace(3, "단감"); // value를 교체해줌.
-map.replace(3,"단감","곶감")// 인자가 3개인 replace 메소드.
+map.replace(3,"단감","곶감");// 인자가 3개인 replace 메소드.
 // key 3의 값의 value가 "단감"일때만 "곶감"으로 변경하고 true 리턴
 // "단감"이 아니라면 false를 리턴한다.
+map.getOrDefault(key, 0);
+// key값이 없으면 0를 return
 
 if(!map.containsKey(2))	
 //키가 들어있는지 확인. 있으면 덮어쓰지 않는다.
