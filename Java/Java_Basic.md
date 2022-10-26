@@ -4,7 +4,7 @@
   * [기본 타입과 참조 타입](#기본-타입과-참조-타입)<br>
   * [주석문](#주석문)<br>
   * [애너테이션(Annotation)](#애너테이션annotation)
-    * * [표준 애너테이션](#표준-애너테이션)
+    * [표준 애너테이션](#표준-애너테이션)
     * [메타 애너테이션](#메타-애너테이션)
     * [사용자 정의 애너테이션](#사용자-정의-애너테이션)
   * [For](#for)<br>
@@ -1092,8 +1092,8 @@ public class MapExam{
     map.clear();
   }
 }
-![image](https://user-images.githubusercontent.com/102513932/189936912-38754084-1a90-445e-869f-8c9471fa9f73.png)
 ```
+![image](https://user-images.githubusercontent.com/102513932/189936912-38754084-1a90-445e-869f-8c9471fa9f73.png)
 #### entrySet, keyset을 이용한 출력
 ```java
 HashMap<Integer, String> map = new HashMap<Integer, String>()

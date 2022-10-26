@@ -8,3 +8,8 @@
 ### 2. 아나그램(해쉬)
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/HashMap%26TreeSet/P2.md)
 - 기본 용례2, 특별한 건 없음
+
+### 3. 매출액의 종류(해쉬, 슬라이딩 윈도우)
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/HashMap%26TreeSet/P3.md)
+- 해쉬와 슬라이딩 윈도우 복합
+  - 어떤 자료구조를 쓸 것인가?
