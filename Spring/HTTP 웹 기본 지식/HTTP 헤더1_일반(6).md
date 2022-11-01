@@ -82,12 +82,16 @@
   - Accept-Encoding: 클라이언트가 선호하는 압축 인코딩
   - Accept-Language: 클라이언트가 선호하는 자연 언어
 - 협상 헤더는 요청시에만 사용
+- 서버에서 무엇을 제공하는지 미리 알고 있어야함!
 - Accept-Language 적용 전
   - ![image](https://user-images.githubusercontent.com/102513932/198540079-53fbf91b-d628-4948-8ca2-73b7f7a8873a.png)
 - Accept-Language 적용 후
   - ![image](https://user-images.githubusercontent.com/102513932/198540120-bd3a1529-f865-443f-8137-a552346e11a8.png)
 - Accept-Language 복잡한 예시
   - ![image](https://user-images.githubusercontent.com/102513932/198540403-56beda8d-80fa-420e-8064-4b1278cda8e5.png)
+    - 서버에서 한국어는 지원 안함
+      - 적어도 독일어가 아닌 영어로 받고 싶음
+      - 우선순위 필요!
 
 ### 협상과 우선순위1
 - Quality Values(q)
@@ -128,9 +132,15 @@
 - 분할 전송
   - Transfer-Encoding
   - ![image](https://user-images.githubusercontent.com/102513932/198542593-23513bf8-0fbb-46be-a9e7-c3fab8fa55f4.png)
+    - 바이트 단위로 나눠서 보낼 수 있음
+      - 5 Byte Hello / 5 Byte World / 0 Byte \r\n 
+    - 분할 전송 시에는 Content-Length 내용이 들어가면 안됨
+      - Content-Length가 처음에 예상이 안됨
+      - chunked 단위 마다 바이트 정보가 들어가 있음
 - 범위 전송
   - Range, Content-Range
   - ![image](https://user-images.githubusercontent.com/102513932/198542587-efed75c8-949a-4e18-bf08-cfabf1f792aa.png)
+    - 범위를 지정해서 요청 가능
 
 ## 일반 정보
 ### From
@@ -154,6 +164,7 @@
   - 요청에서 사용
 ### Server
 - 요청을 처리하는 ORIGIN 서버의 소프트웨어 정보
+  - ORIGIN 서버는 중간에 있는 캐시 서버가 아닌, 요청이 도달한 마지막 서버를 의미함
   - Server: Apache/2.2.22(Debian)
   - server: nginx
   - 응답에서 사용
@@ -173,7 +184,115 @@
   - 필수
   - 하나의 서버가 여러 도메인을 처리해야 할 때
   - 하나의 IP 주소에 여러 도메인이 적용되어 있을 때
-- 가상 호스트를 통해 여러 도메인을 한 번에 처리할 수 있는 서버가 있다고 가정, 이 서버에서는 실제 애플리케이션이 여러개 구동될 수 있음
+- ![image](https://user-images.githubusercontent.com/102513932/198545925-3373bad4-0693-4a73-a639-eaf350feb8a0.png) 
+  - 가상 호스트를 통해 여러 도메인을 한 번에 처리할 수 있는 서버가 있다고 가정, 이 서버에서는 실제 애플리케이션이 여러개 구동될 수 있음
   - `GET /hello HTTP/1.1` 전송 시 서버에서 알아듣지 못함
   - Get /hello HTTP/1.1 <br> Host: aaa.com 으로 처리
+
+### Location
+- 페이지 리다이렉션
+  - 웹 브라우저는 3xx 응답 결과에 Location 헤더가 있으면, Location 위치로 자동 이동(리다이렉트)
+  - 응답코드 3xx에서 설명
+  - 201(Created): Location 값은 요청에 의해 생성된 리소스 URI
+  - 3xx (Redirection): Location 값은 요청을 자동으로 리디렉션하기 위한 대상 리소스를 가리킴
+### Allow
+- 허용 가능한 HTTP 메서드
+  - URL 경로는 있는데, 허용하지 않는 메서드가 존재하는 경우
+  - 405(Method Not Allowed)에서 응답에 포함해야함
+  - Allow: GET, HEAD, PUT
+    - POST 메서드 사용 불가
+### Retry-After
+- 유저 에이전트가 다음 요청을 하기까지 기다려야 하는 시간
+  - 503(Service Unavailable): 서비스가 언제까지 불능인지 알려줄 수 있음
+  - Retry-After: Fri, 31 Dec 1999 23:59:59 GMT(날짜 표기)
+  - Retry-After: 120 (초단위 표기)
+### 인증
+- Authorization: 클라이언트 인증 정보를 서버에 전달
+  - Authorization: Basic xxxxxxxxxxxxx
+    - 인증하는 방법은 여러 매커니즘 존재, 다 다른 형태로 나타남
+- WWW-Authenticate: 리소스 접근시 필요한 인증 방법 정의
+  - 리소스 접근시 필요한 인증 방법 정의
+  - 401 Unauthorized 응답과 함께 사용
+    - 인증이 제대로 안됐을 시
+  - `WWW-Authenticate: Newauth realm="apps", type=1. title="Login to \"apps\"", Basic realm="simple"`
 ## 쿠키
+- Set-Cookie: 서버에서 클라이언트로 쿠키 전달(응답)
+- Cookie: 클라이언트가 서버에서 받은 쿠키를 저장하고, HTTP 요청시 서버로 전달
+### 쿠키 미사용 시 예시
+- 처음 wlecome 페이지 접근
+  - ![image](https://user-images.githubusercontent.com/102513932/198549291-ee5b3530-fcc6-4161-b180-8d3831333e21.png)
+- 로그인
+  - ![image](https://user-images.githubusercontent.com/102513932/198549846-6b02544a-4fd8-44df-9a14-6fee4be51d8a.png)
+- 로그인 이후 welcome 페이지 접근
+  - ![image](https://user-images.githubusercontent.com/102513932/198550298-25e25fbb-2fdb-45e2-846d-a3548f9850fe.png)
+    - 안녕하세요 홍길동님을 기대했는데 안녕하세요 손님이 나옴
+    - 서버입장에서 로그인한 회원인지 아닌지 구별할 수 있는 방법이 없음
+### Stateless
+- HTTP는 무상태(Stateless) 프로토콜임
+- 클라이언트와 서버가 요청과 응답을 주고 받으면 연결이 끊어짐
+- 클라이언트가 다시 요청하면 서버는 이전 요청을 기억하지 못함
+  - 위 예시에서 로그인한 회원인지 아닌지 구별할 수 없음
+- 클라이언트와 서버는 서로 상태를 유지하지 않음
+
+### 쿠키 사용 시 예시
+- 로그인
+  - ![image](https://user-images.githubusercontent.com/102513932/199134221-a771735f-a3ff-42f9-b883-9be6c2e1e4f8.png)
+    - 서버는 응답에서 회원 정보를 쿠키로 만듬
+    - 웹 브라우저는 쿠키 저장소에 서버에서 만든 쿠키를 저장
+- 로그인 이후 welcome 페이지 접근
+  - ![image](https://user-images.githubusercontent.com/102513932/199134346-303d1826-077a-4e01-a028-9db1e04570ce.png)
+    - 웹 브라우저는 요청을 보낼때마다 쿠키 저장소를 확인함
+    - 쿠키 정보를 포함한 요청을 보냄
+- 모든 요청에 쿠키 정보 자동 포함
+  - ![image](https://user-images.githubusercontent.com/102513932/199134391-5032bc0d-8674-427b-b473-0fe274d27ba5.png)
+    - 모든 요청에 대한 쿠키 정보를 자동 저장
+
+### 정리
+- ex) set-cookie: sessionId=abcde1234; expires=Sat, 26-Dec-2020 00:00:00 GMT; path=/; domain=.google.com; Secure
+- 사용처
+  - 사용자 로그인 세션 관리
+  - 광고 정보 트래킹
+- 쿠키 정보는 항상 서버에 전송됨
+  - 네트워크 트래픽 추가 유발
+  - 최송한의 정보만 사용(세션 id, 인증 토큰)
+  - 서버에 전송하지 않고, 웹 브라우저 내부에 데이터 저장 시 웹 스토리지(localStorage, sessionStorage) ㅊ마고
+- 주의!
+  - 보안에 민감한 데이터는 저장하면 안됨
+    - ex) 주민번호, 신용카드 번호
+### 생명주기
+- Set-Cookie: expires=Sat, 26-Dec-2020 04:39:21 GMT
+  - 만료일이 되면 쿠키 삭제
+- Set-Cookie: max-age = 3600 (3600초)
+  - 0이나 음수를 지정하면 쿠키 삭제
+- 세션 쿠키: 만료 날짜를 생략하면 브라우저 종료시 까지만 유지
+- 영속 쿠키: 만료 날짜를 입력하면 해당 날짜까지 유지
+### 도메인
+- ex) domain=example.org
+- 명시: 명시한 문서 기준 도메인 + 서브 도메인 포함
+  - domain=example.org를 지정해서 쿠키 생성
+    - example.org, dev.example.org 쿠키 접근
+- 생략: 현재 문서 기준 도메인만 적용
+  - example.org에서 쿠키 생성, domain 지정 생략
+    - example.org에서만 쿠키 접근
+    - dev.example.org는 쿠키 미접근
+### 경로
+- ex) path=/home
+- 이 경로를 포함한 하위 경로 페이지만 쿠키 접근
+- 일반적으로 path=/ 루트로 지정
+- ex)
+  - path=/home 지정
+  - /home -> 가능
+  - /home/level1 -> 가능
+  - /home/level1/level2 -> 가능
+  - /hello -> 불가능
+### 보안
+- Secure
+  - 쿠키는 http, https를 구분하지 않고 전송
+  - Secure를 적용하면 https인 경우에만 전송
+- HttpOnly
+  - XSS 공격 방지
+  - 자바스크립트에서 접근 불가(document.cookie)
+  - HTTP 전송에만 사용
+- SameSite
+  - XSRF 공격 방지
+  - 요청 도메인과 쿠키에 설정된 도메인이 같은 경우만 쿠키 전송
