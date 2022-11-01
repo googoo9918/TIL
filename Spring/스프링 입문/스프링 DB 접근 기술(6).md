@@ -60,6 +60,7 @@ spring.datasource.username=sa
 - 스프링부트 2.4부터는 `spring.datasource.username=sa`을 꼭 추가해주어야 함
   - 아니면 Wrong user name or password 오류 발생
   - 마지막에 공백이 들어가는지도 확인할 것
+    - 들어가면 안됨
 ### Jdbc 리포지토리 구현
 - JDBC API로 직접 코딩하는 것은 20년전 이야기, 참고만 하고 넘어가자
 - `hello-Spring/src/main/java/hello/helloSpring/repository/JdbcMebmerRepository` 참고
@@ -147,17 +148,18 @@ class MemberServiceIntegrationTest {
     }
 }
 ```
-- `@SpringBootTest`
-  - 스프링 컨테이너와 테스트를 함께 실행한다
-- `@Transactional`
-  - 테스트 케이스에 존재 시, 테스트 시작 전에 트랜잭션을 시작
-  - 테스트 완료 후에 항상 롤백
-  - DB에 데이터가 남지 않으므로 다음 테스트에 영향을 주지 않는다
+- 차이점
+  - `@SpringBootTest`
+    - 스프링 컨테이너와 테스트를 함께 실행한다
+  - `@Transactional`
+    - 테스트 케이스에 존재 시, 테스트 시작 전에 트랜잭션을 시작
+    - 테스트 완료 후에 항상 롤백
+    - DB에 데이터가 남지 않으므로 다음 테스트에 영향을 주지 않는다
 - Spring을 사용하지 않은 단위 테스트는 불필요한 것인가?
   - 그렇지 않음. 실행 시간에 차이도 있을 뿐더러 테스트의 구조 상 유리한 측면이 많다
   - 상세히 기술하진 않았음
 ## 스프링 JdbcTemplate
-- 순수 Jdbc와 동일한 환결설정
+- 순수 Jdbc와 동일한 환경설정
 - 스프링 JdbcTemplate과 MyBatis 같은 라이브러리는 JDBC API에서 본 반복 코드를 대부분 제거해줌
   - 하지만, SQL은 직접 작성해야 함
 ### 스프링 JdbcTemplate 회원 리포지토리
@@ -217,8 +219,8 @@ public class Member {
     @Id // PK 매핑
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     // DB에 값을 넣으면 DB가 ID값을 자동으로 생성해주는 것을 IDENTITY 전략이라 칭함
-
     private Long id;
+    
     private String name;
 
     public void setId(Long id) {

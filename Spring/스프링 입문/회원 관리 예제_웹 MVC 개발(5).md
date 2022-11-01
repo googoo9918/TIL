@@ -50,6 +50,7 @@ public class HomeController {
 
 ## 회원 웹 기능 - 등록
 ### 회원 등록 폼 HTML
+- resources/templates/members/CreateMemberForm.html
 ```html
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
@@ -82,9 +83,13 @@ public class MemberController {
 
     @GetMapping("/members/new")
     public String createForm(){
-        return "members/crateMemberForm";
+        return "members/createMemberForm";
     }
-    // createMemberFrom.html 파일 추가
+    // 웹 어플리케이션에서 /members/new 입력시 해당 메서드(createForm) 호출
+    // return "members/createMemberForm" -> resources의 템플릿에 있는 members/createMemberForm에 찾아가서 랜더링 하라
+    // 뷰 리졸버가 화면을 찾아서 처리하게 됨
+    // 스프링 부트 템플릿엔진 기본 viewName 매핑 
+    // 'resources:templates/' + {ViewName} + '.html'
 
     @PostMapping("/members/new")
     public String create(MemberForm form){
@@ -99,38 +104,40 @@ public class MemberController {
     // 2. members/createMemberForm 리턴
     // 3. 템플릿에서 해당 파일 찾음 -> 뷰 리졸버에 의해 선택 -> 타임리프 랜더링
     // 4. 등록 버튼을 누르면 action url로 post방식으로 넘어옴
-    // 5. 멤버 컨트롤러 -> postmapping(데이터를 폼에 전달하는 경우 보통 사용)
-    // url은 같지만 get이냐 post냐에 따라 다르게 매핑할 가능
-    // 정리가 잘 안된 느낌
+    // 5. **멤버 컨트롤러 -> postmapping(데이터를 폼에 전달하는 경우 보통 사용)**
+    // url은 같지만 get이냐 post냐에 따라 다르게 매핑 가능
 }
 ```
 ## 회원 웹 기능 조회
 
 ### 회원 리스트 HTML
+- resources/templates/members/memberList.html
 ```html
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
 <div class="container">
-<div>
-<table>
-<thead>
-<tr>
-<th>#</th>
-<th>이름</th>
-</tr>
-</thead>
-<tbody>
-<tr th:each="member : ${members}">
-<td th:text="${member.id}"></td>
-<td th:text="${member.name}"></td>
-</tr>
-</tbody>
-</table>
-</div>
+ <div>
+     <table>
+         <thead>
+         <tr>
+             <th>#</th>
+             <th>이름</th>
+         </tr>
+         </thead>
+         <tbody>
+         <tr th:each="member : ${members}">
+             <td th:text="${member.id}"></td>
+             <td th:text="${member.name}"></td>
+         </tr>
+         <!-- 루프를 돌면서 member에 있는 값들을 꺼냄 -->
+         </tbody>
+     </table>
+ </div>
 </div> <!-- /container -->
 </body>
 </html>
+
 ```
 
 ### 회원 컨트롤러에서 조회 기능
