@@ -1,3 +1,30 @@
+### 목차
+- [HTTP 상태코드 소개](#http-상태코드-소개)
+- [2xx - 성공](#2xx---성공)
+  - [200 OK](#200-ok)
+  - [201 Created](#201-created)
+  - [202 Accepted](#202-accepted)
+  - [204 No COntent](#204-no-content)
+- [3xx - 리다이렉션1](#3xx---리다이렉션1)
+  - [리다이렉션 이해](#리다이렉션-이해)
+  - [영구 리다이렉션_301, 308](#영구-리다이렉션_301-308)
+  - [영구 리다이렉션_301](#영구-리다이렉션_301)
+  - [영구 리다이렉션_308](#영구-리다이렉션_308)
+- [3xx - 리다이렉션2](#3xx---리다이렉션2)
+  - [일시적인 리다이렉션_302, 307, 303](#일시적인-리다이렉션_302-307-303)
+  - [PRG: Post/Redirect/Get](#prg-postredirectget)
+  - [그래서 뭘 써야 하는가?](#그래서-뭘-써야-하는가)
+  - [기타 리다이렉션](#기타-리다이렉션)
+- [4xx - 클라이언트 오류, 5xx - 서버 오류](#4xx---클라이언트-오류-5xx---서버-오류)
+  - [4xx(Client Error)](#4xxclient-error)
+    - [400 Bad Request](#400-bad-request)
+    - [401 Unauthorized](#401-unauthorized)
+    - [403 Forbidden](#403-forbidden)
+    - [404 Not Found](#404-not-found)
+  - [5xx (Server Error)](#5xx-server-error)
+    - [500 Internal Server Error](#500-internal-server-error)
+    - [503 Service Unavailable](#503-service-unavailable)
+
 ## HTTP 상태코드 소개
 - 상태 코드
   - 클라이언트가 보낸 요청의 처리 상태를 응답에서 알려주는 기능

@@ -1,3 +1,32 @@
+### 목차
+- [HTTP API를 만들어보자](#http-api를-만들어보자)
+- [HTTP 메서드 - GET, POST](#http-메서드---get-post)
+  - [GET](#get)
+  - [POST](#post)
+  - [POST 정리](#post-정리)
+- [HTTP 메서드 - PUT, PATCH, DELETE](#http-메서드---put-patch-delete)
+  - [PUT](#put)
+  - [PATCH](#patch)
+  - [DELETE](#delete)
+- [HTTP 메서드의 속성](#http-메서드의-속성)
+  - [안전](#안전)
+  - [멱등](#멱등)
+  - [캐시 가능](#캐시-가능)
+- [HTTP 메서드 활용](#http-메서드-활용)
+  - [클라이언트에서 서버로 데이터 전송](#클라이언트에서-서버로-데이터-전송)
+    - [정적 데이터 조회](#정적-데이터-조회)
+    - [동적 데이터 조회](#동적-데이터-조회)
+    - [HTML Form 데이터 전송](#html-form-데이터-전송)
+    - [HTTP API 데이터 전송](#http-api-데이터-전송)
+  - [HTTP API 설계 예시](#http-api-설계-예시)
+    - [회원 관리 시스템_API 설계 - POST 기반 등록](#회원-관리-시스템_api-설계---post-기반-등록)
+    - [회원 관리 시스템_POST - 신규 자원 등록 특징](#회원-관리-시스템_post---신규-자원-등록-특징)
+    - [파일 관리 시스템_API 설계 - PUT 기반 등록](#파일-관리-시스템_api-설계---put-기반-등록)
+    - [파일 관리 시스템_PUT - 신규 자원 등록 특징](#파일-관리-시스템_put---신규-자원-등록-특징)
+    - [HTML FORM 사용](#html-form-사용)
+    - [정리](#정리)
+    - [참고하면 좋은 URI 설계 개념](#참고하면-좋은-uri-설계-개념)
+
 ## HTTP API를 만들어보자
 - 요구사항
   - 회원 정보 관리 API를 만들어라
@@ -168,8 +197,9 @@
 - GET, HEAD, POST, PATCH 캐시 가능
 - 실제로는 GET, HEAD 정도만 캐시로 사용
   - POST, PATCH는 본문 내용까지 캐시 키로 고려해야 하는데, 구현이 쉽지 않음
-# HTTP 메서드 활용
-## 클라이언트에서 서버로 데이터 전송
+
+## HTTP 메서드 활용
+### 클라이언트에서 서버로 데이터 전송
 - 데이터 전달 방식은 크게 2가지
   - 쿼리 파라미터를 통한 데이터 전송
     - 쿼리 파라미터 : `?` 뒤에 지정하는 파라미터, 여러 개를 연결할 떄는 `&` 사용
@@ -189,7 +219,7 @@
   - HTTP API를 통한 데이터 전송
     - 회원 가입, 상품 주문, 데이터 변경
     - 서버 to 서버, 앱 클라이언트, 웹 클라이언트(Ajax)
-### 정적 데이터 조회
+#### 정적 데이터 조회
 - **쿼리 파라미터 미사용**
 - ![image](https://user-images.githubusercontent.com/102513932/198282001-a7b78e67-4195-4295-bf25-873e0b4246a1.png)
   - 경로만 넣으면 서버에서 이미지 리소스 반환
@@ -198,7 +228,7 @@
   - 이미지, 정적 텍스트 문서
   - 조회는 GET 사용
   - 정적 데이터는 일반적으로 쿼리 파라미터 없이 리소스 경로로 단순히 조회 가능
-### 동적 데이터 조회
+#### 동적 데이터 조회
 - **쿼리 파라미터 사용**
 - ![image](https://user-images.githubusercontent.com/102513932/198282453-71801f05-07d8-4020-9c3f-09b8bccdc1bf.png)
   - 검색어 같은 추가 데이터 필요 -> 쿼리 파라미터 사용
@@ -209,7 +239,7 @@
   - 조회는 GET 사용
   - GET은 쿼리 파라미터 사용해 데이터를 전달
     - 물론 GET도 message body를 사용할 수 있지만, 아직 지원하지 않는 서버가 많아 권장하지 않음
-### HTML Form 데이터 전송
+#### HTML Form 데이터 전송
 - **POST 전송 - 저장**
   - ![image](https://user-images.githubusercontent.com/102513932/198283090-89e62a8f-ed4c-402d-bc8c-5017feef2519.png)
     - username과 age를 입력할 수 있는 화면을 만들고, 전송을 통해 저장하고 싶음
@@ -246,7 +276,7 @@
     - 다른 종류의 여러 파일과 폼의 내용 함께 전송 가능
       - 그래서 이름이 multipart임
   - 참고 : HTML Form 전송은 **GET, POST만 지원**
-### HTTP API 데이터 전송
+#### HTTP API 데이터 전송
 - ![image](https://user-images.githubusercontent.com/102513932/198284839-5a4def6f-5bdd-4252-a22f-e7844de47a16.png)
   - 직접 만들어서 전달!
 - 정리
@@ -262,7 +292,7 @@
   - GET: 조회, *쿼리 파라미터*로 데이터 전달
   - Content-Type: application/json을 주로 사용(사실상 표준)
     - TEXT, XML, JSON 등등
-## HTTP API 설계 예시
+### HTTP API 설계 예시
 - HTTP API - 컬렉션
   - POST 기반 등록
   - ex) 회원 관리 API 제공
@@ -272,7 +302,7 @@
 - HTML FORM 사용
   - 웹 페이지 회원 관리
   - GET, POST만 지원
-### 회원 관리 시스템_API 설계 - POST 기반 등록
+#### 회원 관리 시스템_API 설계 - POST 기반 등록
 - 리소스를 식별하자!! 리소스는 **회원**임
 - 회원 목록 /members -> **GET**
   - 정렬 조건 등은 파라미터로 넣어주면 됨
@@ -285,7 +315,7 @@
   - 둘 다 애매하면 POST 사용!
 - 회원 삭제 /members/{id} -> **DELETE**
 
-### 회원 관리 시스템_POST - 신규 자원 등록 특징
+#### 회원 관리 시스템_POST - 신규 자원 등록 특징
 - 클라이언트는 등록될 리소스의 URI를 모름
   - 회원 등록 /members -> POST
   - POST /members
@@ -297,7 +327,7 @@
   - 서버가 리소스의 URI를 생성하고 관리
   - 여기서 컬렉션은 /members
 
-### 파일 관리 시스템_API 설계 - PUT 기반 등록
+#### 파일 관리 시스템_API 설계 - PUT 기반 등록
 - 파일 목록 /files -> **GET**
 - 파일 조회 /files/{filename} -> **GET**
 - 파일 등록 /files/{filename} -> **PUT**
@@ -307,7 +337,7 @@
 - 파일 대량 등록 /files -> **POST**
   - 임의로 POST의 역할을 정해줌
 
-### 파일 관리 시스템_PUT - 신규 자원 등록 특징
+#### 파일 관리 시스템_PUT - 신규 자원 등록 특징
 - 클라이언트가 리소스 URI를 알고 있어야 함
   - 파일 등록 /files/{filename} -> PUT
   - PUT /files/star.jpg
@@ -321,7 +351,7 @@
   - 여기서 스토어는 /files
 - 실무에서는 스토어보단 거의 컬렉션을 사용
 
-### HTML FORM 사용
+#### HTML FORM 사용
 - HTML FORM은 **GET, POST만 지원**
 - AJAX 같은 기술을 사용해서 해결 가능 -> 회원 API 참고
 - 다만, 여기서는 순수 HTML, HTML FORM 사용 가정
@@ -342,7 +372,7 @@
   - POST의 /new, /edit, /delete가 컨트롤 URI
   - HTTP 메서드로 해결하기 애매한 경우 사용(HTTP API 포함)
   - 최대한 리소스 기반으로 URI 설계를 하고, 정 안될 때 대체제로 사용하는게 맞음
-### 정리
+#### 정리
 - HTTP API - 컬렉션
   - POST 기반 등록
   - 서버가 리소스 URI 결정
@@ -353,7 +383,7 @@
   - 순수 HTML + HTML form 사용
   - GET, POST만 지원
   
-### 참고하면 좋은 URI 설계 개념
+#### 참고하면 좋은 URI 설계 개념
 - 이렇게 URI를 설계해보자!
 - 문서(document)
   - 단일 개념(파일 하나, 객체 인스턴스, 데이터베이스 row)

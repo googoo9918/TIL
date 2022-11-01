@@ -1,3 +1,6 @@
+### 목차
+- [URI](#uri)
+- [웹 브라우저 요청 흐름](#웹-브라우저-요청-흐름)
 ## URI
 - Uniform Resource Identifier
   - Unifrom: 리소스 식별하는 통일된 방식

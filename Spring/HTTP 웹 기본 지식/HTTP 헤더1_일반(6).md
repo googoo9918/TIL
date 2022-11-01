@@ -1,3 +1,39 @@
+### 목차
+- [HTTP 헤더 개요](#http-헤더-개요)
+  - [HTTP 헤더](#http-헤더)
+  - [HTTP BODY](#http-body)
+- [표현](#표현)
+  - [Content-Type](#content-type)
+  - [Content-Encoding](#content-encoding)
+  - [Content-Language](#content-language)
+  - [Content-Length](#content-length)
+- [콘텐츠 협상](#콘텐츠-협상)
+  - [협상과 우선순위1](#협상과-우선순위1)
+  - [협상과 우선순위2](#협상과-우선순위2)
+  - [협상과 우선순위3](#협상과-우선순위3)
+- [전송 방식](#전송-방식)
+- [일반 정보](#일반-정보)
+  - [From](#from)
+  - [Referer](#referer)
+  - [User-Agent](#user-agent)
+  - [Server](#server)
+  - [Date](#date)
+- [특별한 정보](#특별한-정보)
+  - [Host](#host)
+  - [Location](#location)
+  - [Allow](#allow)
+  - [Retry-After](#retry-after)
+  - [인증](#인증)
+- [쿠키](#쿠키)
+  - [쿠키 미사용 시 예시](#쿠키-미사용-시-예시)
+  - [Stateless](#stateless)
+  - [쿠키 사용 시 예시](#쿠키-사용-시-예시)
+  - [정리](#정리)
+  - [생명주기](#생명주기)
+  - [도메인](#도메인)
+  - [경로](#경로)
+  - [보안](#보안)
+
 ## HTTP 헤더 개요
 ### HTTP 헤더
 - header-field = field-name ":" OWS field-value OWS (OWS: 띄어쓰기 허용)
@@ -253,9 +289,9 @@
   - 사용자 로그인 세션 관리
   - 광고 정보 트래킹
 - 쿠키 정보는 항상 서버에 전송됨
-  - 네트워크 트래픽 추가 유발
-  - 최송한의 정보만 사용(세션 id, 인증 토큰)
-  - 서버에 전송하지 않고, 웹 브라우저 내부에 데이터 저장 시 웹 스토리지(localStorage, sessionStorage) ㅊ마고
+  - 네트워크 트래픽 추가 유발 가능
+  - 최송한의 정보만 사용 권장(세션 id, 인증 토큰)
+  - 서버에 전송하지 않고, 웹 브라우저 내부에 데이터 저장 시 웹 스토리지(localStorage, sessionStorage) 
 - 주의!
   - 보안에 민감한 데이터는 저장하면 안됨
     - ex) 주민번호, 신용카드 번호
@@ -269,10 +305,10 @@
 ### 도메인
 - ex) domain=example.org
 - 명시: 명시한 문서 기준 도메인 + 서브 도메인 포함
-  - domain=example.org를 지정해서 쿠키 생성
+  - domain=example.org를 지정해서 쿠키 생성 시
     - example.org, dev.example.org 쿠키 접근
 - 생략: 현재 문서 기준 도메인만 적용
-  - example.org에서 쿠키 생성, domain 지정 생략
+  - example.org에서 쿠키 생성, domain 지정 생략 시
     - example.org에서만 쿠키 접근
     - dev.example.org는 쿠키 미접근
 ### 경로
