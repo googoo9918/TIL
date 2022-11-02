@@ -66,6 +66,8 @@ stack_int.pop();       // 2
 // Stack 에서 데이터 추출 (현재 Stack 에 있는 데이터 중, 가장 나중에 넣어진 데이터 출력)
 stack_int.pop();       // 1
 // stack에 값 제거
+stack_int.clear();
+//stack에서 전체 값 제거
 
 stack_int.peek(); // 가장 상단의 값 출력 (삭제x)
 stack_int.size(); // 크기 출력
