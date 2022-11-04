@@ -12,3 +12,8 @@
 ### 3. 연속된 자연수의 합
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/TwoPointer/P5.md)
 - 투 포인터, 슬라이딩 윈도우 관련 수학 문제
+
+### 4. 후위식 연산(postfix)
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Stack%26Queue/P4.md)
+  - 대단한건 없다. 후위식 연산 하는 법만 숙지할 것
+  - 스택 관련 수학 문제

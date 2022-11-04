@@ -34,18 +34,18 @@
 #### SQL 종류
   - SQL에서도 역할에 다라 문법이 다양하게 존재
 ##### Data Definition Language(DDL)
-    - 데이터 정의 시 사용
-    - 테이블을 만들 때 사용하는 `CREATE`, 제거 시 사용되는 `DROP`
+  - 데이터 정의 시 사용
+  - 테이블을 만들 때 사용하는 `CREATE`, 제거 시 사용되는 `DROP`
 ##### Data Manipulation Language(DML)
-    - 데이터 변경 시 사용
-    - `INSERT`, `DELETE`, `UPDATE`
+  - 데이터 변경 시 사용
+  - `INSERT`, `DELETE`, `UPDATE`
 ##### Data Control Language(DCL)
-    - DB 접근 권한 관련 문법
-    - 권한을 주는 `GRANT`, 권한을 가져가는 `REVOKE`
+  - DB 접근 권한 관련 문법
+  - 권한을 주는 `GRANT`, 권한을 가져가는 `REVOKE`
 ##### Data Query Language(DQL)
-    - 정해진 스키마 내에서 쿼리할 수 있는 언어
-    - `SELECT`
-    - DQL을 DML의 일부분으로 취급하기도 함
+  - 정해진 스키마 내에서 쿼리할 수 있는 언어
+  - `SELECT`
+  - DQL을 DML의 일부분으로 취급하기도 함
 ##### Transaction Control Language(TCL)
     - DML을 거친 데이터의 변경사항 수정 가능
       - DML이 작업한 내용을 데이터베이스에 커밋하는 `COMMIT`
