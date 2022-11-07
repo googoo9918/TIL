@@ -72,7 +72,7 @@ queue_int.clear();
 - JAVA ArrayList 클래스를 활용해서 큐를 다루는 enqueue, dequeue 기능 구현해보기 <br>
 - dequeue 기능 호출 시, 큐에 데이터가 없을 경우, null 을 리턴하도록 함 <br>
 - 다양한 데이터 타입을 다룰 수 있도록, Java Genric 타입 문법을 활용해보기    
-</div>
+
 ```java
 public class MyQueue<T> {
     private ArrayList<T> queue = new ArrayList<T>();

@@ -26,9 +26,13 @@
   - 대단한건 없다. 후위식 연산 하는 법만 숙지할 것
   - if-else if 에서 중복되는 부분 있으면 통일 처리할 것
 
-### 5. 후위식 연산(postfix)
-- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Stack%26Queue/P4.md)
+### 5. 쇠막대기
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Stack%26Queue/P5.md)
   - 논리의 흐름, 사고의 흐름도 괜찮았으나.. 되는 것과 안되는 것을 명확히 분류하고 해결책을 찾아 나가야 함!!
     - 같은 고민을 반복하다 무의미하게 소요되는 시간이 많다
   - 괄호 문제가 나오면 일단 때려박자!!
     - 첫 if문의 조건을 어떻게 설정하는지에 따라 코드의 간결성이 달라질 수 있다
+
+### 6. 공주 구하기
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Stack%26Queue/P6.md)
+  - Queue 대표 유형
