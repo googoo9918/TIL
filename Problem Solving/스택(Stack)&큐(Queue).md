@@ -36,3 +36,9 @@
 ### 6. 공주 구하기
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Stack%26Queue/P6.md)
   - Queue 대표 유형
+
+### 7. 교육과정설계
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Stack%26Queue/P7.md)
+  - Queue에 최대한 익숙해져보자
+    - 6번도 그렇고 7번도 그렇고 배열 인덱스 하나씩 올려가며 억지로 찾는 상황에 주로 Queue 사용되는 듯
+  - 조건 빠트리지 말기!
