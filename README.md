@@ -162,3 +162,21 @@
 - [HTTP 헤더1_일반](https://github.com/ssu18/TIL/blob/main/Spring/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%ED%97%A4%EB%8D%941_%EC%9D%BC%EB%B0%98(6).md)
 - [HTTP 헤더2_캐시와 조건부](https://github.com/ssu18/TIL/blob/main/Spring/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%ED%97%A4%EB%8D%942_%20%EC%BA%90%EC%8B%9C%EC%99%80%20%EC%A1%B0%EA%B1%B4%EB%B6%80(7).md)
 </details>
+
+
+### JPA
+---------------------------------------
+<details>
+ <summary>자바 ORM 표준 JPA_기본 </summary>
+  - [JPA 소개](https://github.com/ssu18/TIL/blob/main/Spring/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/JPA%20%EC%86%8C%EA%B0%9C(1).md)
+  - [JPA 시작하기](https://github.com/ssu18/TIL/blob/main/Spring/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/JPA%20%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0(2).md)
+  - [영속성 관리_내부 동작 방식](https://github.com/ssu18/TIL/blob/main/Spring/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/%EC%98%81%EC%86%8D%EC%84%B1%20%EA%B4%80%EB%A6%AC_%EB%82%B4%EB%B6%80%20%EB%8F%99%EC%9E%91%20%EB%B0%A9%EC%8B%9D(3).md)
+  - [엔티티 매핑](https://github.com/ssu18/TIL/blob/main/Spring/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/%EC%97%94%ED%8B%B0%ED%8B%B0%20%EB%A7%A4%ED%95%91(4).md)
+  - [연관관계 매핑 기초](https://github.com/ssu18/TIL/blob/main/Spring/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84%20%EB%A7%A4%ED%95%91%20%EA%B8%B0%EC%B4%88(5).md)
+  - [다양한 연관관계 매핑](https://github.com/ssu18/TIL/blob/main/Spring/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/%EB%8B%A4%EC%96%91%ED%95%9C%20%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84%20%EB%A7%A4%ED%95%91(6).md)
+  - [고급 매핑](https://github.com/ssu18/TIL/blob/main/Spring/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/%EA%B3%A0%EA%B8%89%20%EB%A7%A4%ED%95%91(7).md)
+  - [프록시와 연관관계 관리](https://github.com/ssu18/TIL/blob/main/Spring/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/%ED%94%84%EB%A1%9D%EC%8B%9C%EC%99%80%20%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84%20%EA%B4%80%EB%A6%AC(8).md)
+  - [값 타입](https://github.com/ssu18/TIL/blob/main/Spring/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/%EA%B0%92%20%ED%83%80%EC%9E%85(9).md)
+  - [JPQL_기본](https://github.com/ssu18/TIL/blob/main/Spring/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%20%EC%BF%BC%EB%A6%AC%20%EC%96%B8%EC%96%B4_%EA%B8%B0%EB%B3%B8(10).md)
+  - [JPQL_중급](https://github.com/ssu18/TIL/blob/main/Spring/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%20%EC%BF%BC%EB%A6%AC%20%EC%96%B8%EC%96%B42_%EC%A4%91%EA%B8%89(11).md)
+ </details>
