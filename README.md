@@ -168,6 +168,7 @@
 ---------------------------------------
 <details>
  <summary>자바 ORM 표준 JPA_기본 </summary>
+ 
   - [JPA 소개](https://github.com/ssu18/TIL/blob/main/Spring/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/JPA%20%EC%86%8C%EA%B0%9C(1).md)
   - [JPA 시작하기](https://github.com/ssu18/TIL/blob/main/Spring/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/JPA%20%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0(2).md)
   - [영속성 관리_내부 동작 방식](https://github.com/ssu18/TIL/blob/main/Spring/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/%EC%98%81%EC%86%8D%EC%84%B1%20%EA%B4%80%EB%A6%AC_%EB%82%B4%EB%B6%80%20%EB%8F%99%EC%9E%91%20%EB%B0%A9%EC%8B%9D(3).md)
