@@ -12,3 +12,7 @@
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Sorting%26Searching/P3.md)
   - 삽입정렬은 부분배열의 크기를 늘려가며 정렬하는 방식
     - j가 어떻게 동작하는지 집중하라
+
+### 4. Least Recently Used
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Sorting%26Searching/P3.md)
+  - 무난한 문제, 무난한 풀이
