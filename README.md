@@ -181,3 +181,10 @@
   - [JPQL_기본](https://github.com/ssu18/TIL/blob/main/JPA/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%20%EC%BF%BC%EB%A6%AC%20%EC%96%B8%EC%96%B4_%EA%B8%B0%EB%B3%B8(10).md)
   - [JPQL_중급](https://github.com/ssu18/TIL/blob/main/JPA/%EC%9E%90%EB%B0%94%20ORM%20%ED%91%9C%EC%A4%80%20JPA_%EA%B8%B0%EB%B3%B8/%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5%20%EC%BF%BC%EB%A6%AC%20%EC%96%B8%EC%96%B42_%EC%A4%91%EA%B8%89(11).md)
  </details>
+
+ <details>
+ <summary>스프링 부트와 JPA 활용 </summary>
+  
+  - [프로젝트 환경 설정](https://github.com/ssu18/TIL/blob/main/JPA/%EC%8A%A4%ED%94%84%EB%A7%81%20%EB%B6%80%ED%8A%B8%EC%99%80%20JPA%20%ED%99%9C%EC%9A%A91/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95(0).md)
+  - [도메인 분석 설계](https://github.com/ssu18/TIL/blob/main/JPA/%EC%8A%A4%ED%94%84%EB%A7%81%20%EB%B6%80%ED%8A%B8%EC%99%80%20JPA%20%ED%99%9C%EC%9A%A91/%EB%8F%84%EB%A9%94%EC%9D%B8%20%EB%B6%84%EC%84%9D%20%EC%84%A4%EA%B3%84(1).md)
+ </details>
