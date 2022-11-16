@@ -28,3 +28,10 @@
     - 정렬 후 비교
       - O(nlogn)
   - 왜인지는 모르겠지만 2중 for문이 제일 빠른..
+
+### 6. 장난꾸러기
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Sorting%26Searching/P6.md)
+  - 정렬을 사용하면 복잡한 구현없이 깔끔하게 풀 수 있다.
+    - 심지어 구현 실패함 ㅠㅠ
+  - 깊은 복사
+    - `int[] tmp = arr.clone();`
