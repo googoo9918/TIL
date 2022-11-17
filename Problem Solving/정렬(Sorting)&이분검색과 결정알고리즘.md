@@ -35,3 +35,10 @@
     - 심지어 구현 실패함 ㅠㅠ
   - 깊은 복사
     - `int[] tmp = arr.clone();`
+
+### 7. 좌표정렬
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Sorting%26Searching/P7.md)
+  - 나는 기본 정렬에 조건식을 추가해서 풀었음
+    - 기본 정렬 구현 확실히 익혀두자 계속 헷갈려함
+  - **클래스 만들어 `Comparable` 구현 하고 `compareTo` 오버라이딩**
+    - 도움없이 혼자 구현할 수 있어야 함
