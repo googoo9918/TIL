@@ -255,7 +255,7 @@
 - Set-Cookie: 서버에서 클라이언트로 쿠키 전달(응답)
 - Cookie: 클라이언트가 서버에서 받은 쿠키를 저장하고, HTTP 요청시 서버로 전달
 ### 쿠키 미사용 시 예시
-- 처음 wlecome 페이지 접근
+- 처음 welcome 페이지 접근
   - ![image](https://user-images.githubusercontent.com/102513932/198549291-ee5b3530-fcc6-4161-b180-8d3831333e21.png)
 - 로그인
   - ![image](https://user-images.githubusercontent.com/102513932/198549846-6b02544a-4fd8-44df-9a14-6fee4be51d8a.png)
