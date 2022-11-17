@@ -252,6 +252,10 @@
     - 인증이 제대로 안됐을 시
   - `WWW-Authenticate: Newauth realm="apps", type=1. title="Login to \"apps\"", Basic realm="simple"`
 ## 쿠키
+- 서버가 웹 브라우저에 정보를 저장하고 불러올 수 있는 수단
+  - 해당 도메인에 대해 쿠키 존재 시, 웹 브라우저는 도메인에게 http 요청 시 쿠키를 함께 전달함
+    - ![image](https://user-images.githubusercontent.com/102513932/202376532-92f9736a-0cd1-478b-a752-8802aeacce8d.png)
+- 사용자 선호, 테마 등 장시간 보존해야하는 정보 저장에 적합
 - Set-Cookie: 서버에서 클라이언트로 쿠키 전달(응답)
 - Cookie: 클라이언트가 서버에서 받은 쿠키를 저장하고, HTTP 요청시 서버로 전달
 ### 쿠키 미사용 시 예시
@@ -325,10 +329,20 @@
 - Secure
   - 쿠키는 http, https를 구분하지 않고 전송
   - Secure를 적용하면 https인 경우에만 전송
+    - 해당 옵션이 true로 설정된 경우임
 - HttpOnly
   - XSS 공격 방지
+    - ![image](https://user-images.githubusercontent.com/102513932/202376977-6102a027-def9-4bab-855a-81aea9937b03.png)
   - 자바스크립트에서 접근 불가(document.cookie)
+    - 해당 옵션이 true로 설정한 경우임
+    - 명시되지 않는 경우, 기본값 false
   - HTTP 전송에만 사용
 - SameSite
   - XSRF 공격 방지
-  - 요청 도메인과 쿠키에 설정된 도메인이 같은 경우만 쿠키 전송
+    - ![image](https://user-images.githubusercontent.com/102513932/202377122-50e214ef-483a-42a3-b5ab-edf4ade5a5a9.png)
+  - Lax : Cross-Origin 요청이면 GET 메서드에 대해서만 쿠키 전송
+  - Strict: 요청 도메인과 쿠키에 설정된 도메인이 같은 경우만 쿠키 전송
+    - Cross-Origin 아닌 경우
+    - 도메인, 프로토콜, 포트가 다 같아야 함
+  - None: 항상 쿠키를 보내줄 수 있음
+    - 다만 쿠키 옵션 중 `Secure` 옵션 필요
