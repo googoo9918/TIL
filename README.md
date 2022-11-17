@@ -151,8 +151,8 @@
 - [HTTP 상태코드](https://github.com/ssu18/TIL/blob/main/Spring/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%EC%83%81%ED%83%9C%EC%BD%94%EB%93%9C(5).md)
 - [HTTP 헤더1_일반](https://github.com/ssu18/TIL/blob/main/Spring/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%ED%97%A4%EB%8D%941_%EC%9D%BC%EB%B0%98(6).md)
 - [HTTP 헤더2_캐시와 조건부](https://github.com/ssu18/TIL/blob/main/Spring/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%ED%97%A4%EB%8D%942_%20%EC%BA%90%EC%8B%9C%EC%99%80%20%EC%A1%B0%EA%B1%B4%EB%B6%80(7).md)
-- [REST API](https://github.com/ssu18/TIL/blob/main/Spring/HTTP/RestApi.md)
-- [Postman](https://github.com/ssu18/TIL/blob/main/Spring/HTTP/Postman.md)
+- [REST API](https://github.com/ssu18/TIL/blob/main/Spring/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/RestApi.mdhttps://github.com/ssu18/TIL/blob/main/Spring/HTTP/RestApi.md)
+- [Postman](https://github.com/ssu18/TIL/blob/main/Spring/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/Postman.md)
 </details>
 
 
