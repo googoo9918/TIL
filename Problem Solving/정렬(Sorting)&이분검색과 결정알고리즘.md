@@ -42,3 +42,10 @@
     - 기본 정렬 구현 확실히 익혀두자 계속 헷갈려함
   - **클래스 만들어 `Comparable` 구현 하고 `compareTo` 오버라이딩**
     - 도움없이 혼자 구현할 수 있어야 함
+
+### 8. 이분검색
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Sorting%26Searching/P8.md)
+  - 기본 이본검색 알고리즘! 익혀둘 수 있도록 하자
+    - 처음에도 잘 풀었지만.. 조금 더 리팩토링 할 수 있을 듯
+    - [이진 탐색](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BinarySearch.md)
+      - 여기서는 ArryaList와 재귀를 활용
