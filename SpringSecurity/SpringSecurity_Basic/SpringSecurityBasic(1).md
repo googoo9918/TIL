@@ -340,7 +340,7 @@ public class SecurityConfiguration {
         </body>
         </html>        
         ```
-        - 접근 권한이 없는 페이지에 대한 Mapping 추가
+        - 접근 권한이 없는 페이지에 대한 Mapping AuthControoler에 추가 
         ```java
         @GetMapping("/access-denied")
         public String accessDenied(){
@@ -402,3 +402,38 @@ public class SecurityConfiguration {
 ```
 - (1)과 같이 `admin@gmail.com` 이라는 InMemory User 하나를 추가함
   - `admin@gmail.com` 에게는 `ADMIN` Role이 부여됨
+
+### 로그인 한 사용자 아이디 표시 및 사용자 로그아웃
+- 현재 화면에서는 사용자가 로그인 한 후에 어떤 사용자가 로그인 했는지 알 수 없음
+  - 또한 로그인 한 사용자가 로그아웃을 할 수 있는 기능도 없음
+  - 또한 마이 페이지 링크 역시 로그인 한 사용자에게만 보이는 것이 좋음
+```html
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"> <!-- (1) -->
+    <body>
+        <div align="right" th:fragment="header">
+            <a href="/members/register" class="text-decoration-none">회원가입</a> |
+            <span sec:authorize="isAuthenticated()"> <!-- (2) -->
+                <span sec:authorize="hasRole('USER')">  <!-- (3) -->
+                    <a href="/members/my-page" class="text-decoration-none">마이페이지</a> |
+                </span>
+                <a href="/logout" class="text-decoration-none">로그아웃</a>  <!-- (4) -->
+                <span th:text="${#authentication.name}">홍길동</span>님  <!-- (5) -->
+            </span>
+            
+            <span sec:authorize="!isAuthenticated()"> <!-- (6) -->
+                <a href="/auths/login-form" class="text-decoration-none">로그인</a>
+            </span>
+        </div>
+    </body>
+</html>
+<!-- 코드(4-13) 로그아웃 및 권한별 메뉴 표시를 위한 코드 수정(header.html) -->
+```
+- 타임리프 기반의 HTML 템플릿에서 사용자의 인증 정보나 권한 정보를 이용해 어떤 로직을 처리하가 위해서는 먼저 (1)과 같이 `sec` 태그를 사용하기 위한 XML 네임스페이스를 지정함
+- (2)와 같이 태그 내부에서 `sec:authorize="isAuthenticated()"`를 지정하면 현재 페이지에 접근한 사용자가 인증에 성공한 사용자인지를 체크함
+  - 즉, `isAuthenticated()`의 값이 `true`이면 태그 하위에 포함된 컨텐츠를 화면에 표시
+- 마이페이지의 경우 ADMIN Role을 가진 사용자는 필요없는 기능이므로, (3)과 같이 `sec:authorize="hasRole('USER')"` 를 지정해서 USER Role을 가진 사용자에게만 표시
+- (2)에서 isAuthenticated()의 값이 true 라는 의미는 이미 로그인 한 사용자라는 의미이므로 [로그인] 메뉴 대신에 (4)와 같이 [로그아웃] 메뉴를 표시합니다. (4)의 href="/logout" 에서 “/logout” URL은 SecutiryConfiguration 클래스에서 설정한 값과 같아야 함
+- (5)에서는 th:text="${#authentication.name}"를 통해 로그인 사용자의 username을 표시하고 있음
+  - 이 곳에는 우리가 로그인할 때 사용한 username이 표시됨
+- (6)에서는 sec:authorize="!isAuthenticated()"를 통해 로그인한 사용자가 아니라면 [로그인] 버튼이 표시 되도록 함
