@@ -41,7 +41,7 @@
 - 2. HTTP 메서드 선택
   - GET, POST, DELETE 등과 같은 메서드 중 하나 선택
     - 예시에서 GET 사용
-- 3. URL 입쳑 창
+- 3. URL 입력 창
   - URL과 Endpoint를 입력
     - API 문서에 따라, ```http://3.36.72.17:3000/kimcoding/messages``` 입력
 - 4. HTTP 요청 버튼

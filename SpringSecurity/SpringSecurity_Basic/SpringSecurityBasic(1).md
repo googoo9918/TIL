@@ -427,7 +427,7 @@ public class SecurityConfiguration {
         </div>
     </body>
 </html>
-<!-- 코드(4-13) 로그아웃 및 권한별 메뉴 표시를 위한 코드 수정(header.html) -->
+<!-- 코드(4-13) 로그아웃 및 권한별 메뉴 표시를 위한 코드 수정(templates/fragments/header.html) -->
 ```
 - 타임리프 기반의 HTML 템플릿에서 사용자의 인증 정보나 권한 정보를 이용해 어떤 로직을 처리하가 위해서는 먼저 (1)과 같이 `sec` 태그를 사용하기 위한 XML 네임스페이스를 지정함
 - (2)와 같이 태그 내부에서 `sec:authorize="isAuthenticated()"`를 지정하면 현재 페이지에 접근한 사용자가 인증에 성공한 사용자인지를 체크함
@@ -437,3 +437,47 @@ public class SecurityConfiguration {
 - (5)에서는 th:text="${#authentication.name}"를 통해 로그인 사용자의 username을 표시하고 있음
   - 이 곳에는 우리가 로그인할 때 사용한 username이 표시됨
 - (6)에서는 sec:authorize="!isAuthenticated()"를 통해 로그인한 사용자가 아니라면 [로그인] 버튼이 표시 되도록 함
+
+> 코드 4-13과 같이 sec 태그를 사용하기 위해서는 아래와 같이 build.gradle의 dependecies{}에 의존 라이브러리를 추가해야함 <br>
+> `dependencies {...implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity5'}`
+
+- `SecurityConfiguration`에서 로그아웃 기능을 사용하기 위한 설정
+```java
+@Configuration
+public class SecurityConfiguration {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable()
+            .formLogin()
+            .loginPage("/auths/login-form")
+            .loginProcessingUrl("/process_login")
+            .failureUrl("/auths/login-form?error")
+            .and()
+            .logout()                        // (1)
+            .logoutUrl("/logout")            // (2)
+            .logoutSuccessUrl("/")  // (3)
+            .and()
+            .exceptionHandling().accessDeniedPage("/auths/access-denied")
+            .and()
+            .authorizeHttpRequests(authorize -> authorize
+                    .antMatchers("/orders/**").hasRole("ADMIN")
+                    .antMatchers("/members/my-page").hasRole("USER")
+                    .antMatchers("⁄**").permitAll()
+            );
+        return http.build();
+    }
+    
+    ...
+    ...
+}
+// (코드 4-14) 로그아웃 설정이 추가된 SecurityConfiguration 클래스
+```
+- 로그아웃에 대한 추가 설정을 위해서는 (1)과 같이 `logout()`을 먼저 호출해야 함
+  - `logout()` 메서드는 로그아웃 설정을 위한 `LogoutConfigurer` 를 리턴
+- (2)에서는 logoutUrl("/logout")을 통해 사용자가 로그아웃을 수행하기 위한 request URL을 지정
+  - 여기서 설정한 URL은 코드 4-13 header.html의 로그아웃 메뉴에 지정한 href=”/logout”과 동일해야 함
+- (3)에서는 로그아웃을 성공적으로 수행한 이후 리다이렉트 할 URL을 지정
+  - 로그아웃 이후 샘플 애플리케이션의 메인 화면으로 리다이렉트
+- 로그인 시 화면
+  - ![image](https://user-images.githubusercontent.com/102513932/202981045-0eb2580e-5e91-4bda-b357-039d2822b1fc.png)
