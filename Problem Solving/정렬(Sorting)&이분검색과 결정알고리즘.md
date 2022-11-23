@@ -49,3 +49,9 @@
     - 처음에도 잘 풀었지만.. 조금 더 리팩토링 할 수 있을 듯
     - [이진 탐색](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BinarySearch.md)
       - 여기서는 ArryaList와 재귀를 활용
+
+### 9. 뮤직비디오(결정알고리즘)
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Sorting%26Searching/P9.md)
+- 이진 탐색 심화
+  - 꼭 다시 풀어볼 것
+  - `찾는 것`이 무엇인지 집중 -> 최소 or 최대 문제에서 활용 가능할 듯
