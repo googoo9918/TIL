@@ -422,3 +422,5 @@ public class MemberAuthenticationFailureHandler implements AuthenticationFailure
   - (2-3)에서는 response의 Contetnt Type이 "`application/json`"이라는 것을 클라이언트에게 알려줄 수 있도록 `MediaType.APPLICATION_JSON_VALUE`를 HTTP Header에 추가함
   - (2-4)에서는 response의 status가 401임을 클라이언트에게 알려줄 수 있도록 `HttpStatus.UNAUTHORIZED.value()`를 HTTP Header에 추가함
   - (2-5)에서는 Gson을 이용해 ErrorResponse 객체를 JSON 포맷 문자열로 변환 후, 출력 스트림을 생성
+
+### AuthenticationSuccessHandler

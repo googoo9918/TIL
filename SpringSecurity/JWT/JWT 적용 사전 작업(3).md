@@ -202,3 +202,10 @@ public class MemberService {
 }
 // [코드 4-64] 사용자 등록 시, 패스워드와 권한 정보 추가
 ```
+- (1)과 (2)에서는 `PasswordEncoder`와 `CustomAuthorityUtils` 클래스를 DI 받도록 필드를 추가
+  - `CustomAuthorityUtils`는 따로 생성
+- (3)에서는 패스워드를 단방향 암호화
+- (4)에서는 등록하는 사용자의 권한 정보를 생성
+
+- JWT 적용을 위한 사전 작업은 끝남
+- Spring Security 기반의 애플리케이션에 **JWT를 적용하기 위해서는 jjwt나 Java JWT 같은 별도 라이브러리가 필요**함을 기억하자

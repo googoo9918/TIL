@@ -52,6 +52,12 @@
 
 ### 9. 뮤직비디오(결정알고리즘)
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Sorting%26Searching/P9.md)
-- 이진 탐색 심화
+- 이진 탐색 활용
   - 꼭 다시 풀어볼 것
   - `찾는 것`이 무엇인지 집중 -> 최소 or 최대 문제에서 활용 가능할 듯
+
+### 10. 마구간 정하기(결정알고리즘)
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Sorting%26Searching/P10.md)
+- 이진 탐색 활용
+  - 최대 or 최소 문제에서 활용!!
+    - 그 중 최대 문제
