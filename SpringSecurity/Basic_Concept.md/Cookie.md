@@ -1,5 +1,15 @@
-- [쿠키](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%ED%97%A4%EB%8D%941_%EC%9D%BC%EB%B0%98(6).md#%EC%BF%A0%ED%82%A4)
+### 목차
+- [쿠키](#쿠키)
+  - [쿠키 미사용 시 예시](#쿠키-미사용-시-예시)
+  - [Stateless](#stateless)
+  - [쿠키 사용 시 예시](#쿠키-사용-시-예시)
+  - [정리](#정리)
+  - [생명주기](#생명주기)
+  - [도메인](#도메인)
+  - [경로](#경로)
+  - [보안](#보안)
 ## 쿠키
+- [쿠키](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%ED%97%A4%EB%8D%941_%EC%9D%BC%EB%B0%98(6).md#%EC%BF%A0%ED%82%A4)
 - 서버가 웹 브라우저에 정보를 저장하고 불러올 수 있는 수단
   - 해당 도메인에 대해 쿠키 존재 시, 웹 브라우저는 도메인에게 http 요청 시 쿠키를 함께 전달함
     - ![image](https://user-images.githubusercontent.com/102513932/202376532-92f9736a-0cd1-478b-a752-8802aeacce8d.png)

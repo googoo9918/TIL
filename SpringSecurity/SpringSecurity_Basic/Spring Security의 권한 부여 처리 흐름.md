@@ -1,3 +1,12 @@
+### 목차
+- [Spring Security의 권한 부여 처리 흐름](#spring-security의-권한-부여-처리-흐름)
+	- [Spring Security의 컴포넌트로 보는 권한 부여(Authorization) 처리 흐름](#spring-security의-컴포넌트로-보는-권한-부여authorization-처리-흐름)
+	- [Spring Security의 권한 부여 컴포넌트](#spring-security의-권한-부여-컴포넌트)
+		- [AuthorizationFilter](#authorizationfilter)
+		- [AuthorizationManger](#authorizationmanger)
+		- [RequestMatcherDelegatingAuthorizationManager](#requestmatcherdelegatingauthorizationmanager)
+	- [핵심 포인트](#핵심-포인트)
+
 # Spring Security의 권한 부여 처리 흐름
 - Spring Security Filter Chain에 도달한 사용자의 인증 요청 처리 후, 인증된 사용자임을 확인했다 가정
   - 인증된 사용자는 권한 부여(인가)를 받아야 특정 리소스에 접근 가능함

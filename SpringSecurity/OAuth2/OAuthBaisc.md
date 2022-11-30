@@ -1,3 +1,26 @@
+### 목차
+- [OAuth 2란?](#oauth-2란)
+  - [OAuth 2란?](#oauth-2란-1)
+  - [OAuth 2를 사용하는 애플리케이션 유형](#oauth-2를-사용하는-애플리케이션-유형)
+    - [써드 파티 애플리케이션에서 제공하는 API의 직접적인 사용](#써드-파티-애플리케이션에서-제공하는-api의-직접적인-사용)
+    - [추가적인 인증 서비스 제공 용도](#추가적인-인증-서비스-제공-용도)
+- [OAuth 2의 동작 방식](#oauth-2의-동작-방식)
+  - [OAuth 2 인증 컴포넌트(Componetnt, 구성요소)들의 역할](#oauth-2-인증-컴포넌트componetnt-구성요소들의-역할)
+    - [Resource Owner](#resource-owner)
+    - [Client](#client)
+    - [Resource Server](#resource-server)
+    - [Authorization Server](#authorization-server)
+    - [컴포넌트 상호작용](#컴포넌트-상호작용)
+  - [OAuth 2 인증 프로토콜에서 사용되는 용어](#oauth-2-인증-프로토콜에서-사용되는-용어)
+    - [Authorization Grant](#authorization-grant)
+    - [Access Token](#access-token)
+    - [Scope](#scope)
+  - [Authorization Grant 유형](#authorization-grant-유형)
+    - [Authorization Code Grant : 권한 부여 승인 코드 방식](#authorization-code-grant--권한-부여-승인-코드-방식)
+    - [Implict Grant: 암묵적 승인 방식](#implict-grant-암묵적-승인-방식)
+    - [Resource Owner Password Credential Grant: 자원 소유자 자격 증명 승인 방식](#resource-owner-password-credential-grant-자원-소유자-자격-증명-승인-방식)
+    - [Client Credentials Grant: 클라이언트 자격 증명 승인 방식](#client-credentials-grant-클라이언트-자격-증명-승인-방식)
+
 # OAuth 2란?
 
 ## OAuth 2란?
@@ -122,3 +145,33 @@
   - Refresh Token 사용이 불가능하며, 이 방식에서 Authorization Server는 Client Secret을 통해 클라이언트 인증 과정을 생략함
 - 권한 부여 승인 요청 시 응답 타입(`response_type`)을 `token`으로 지정하여 요청
   - <img width="924" alt="W5UMsrihBRxXo12snXvUa-1664238452834" src="https://user-images.githubusercontent.com/102513932/203975382-651e42a0-21c3-49ce-a535-78d1eb1f85e5.png">
+    - (그림 4-35) Implict Grant 방식의 인증 처리 흐름
+    - 1. Resource Owner는 소셜 로그인 버튼을 누르는 등의 서비스 요청을 Client(애플리케이션)에게 전송
+    - 2. Client는 Authorization Server에게 접근 권한 요청을 보냄
+      - 요청과 함께 미리 생성한 Client ID, Redirect URI, 응답타입을 전송(Authroization Code를 획득하기 위한 요청이 아님)
+    - 3. Resource Owner는 로그인 페이지를 통해 로그인을 진행
+    - 4. 로그인이 확인되면 Authorization Server는 Client에게 Access Token을 전달
+    - 5. Client는 Access Token을 이용해 Resource Server에게 Resource를 요청
+    - 6. Access Token을 확인한 후 요청 받은 Resource를 전달
+
+### Resource Owner Password Credential Grant: 자원 소유자 자격 증명 승인 방식
+- 간단히 로그인 시 필요한 정보로 Access Token을 발급받는 방식
+  - 자신의 서비스에서 제공하는 애플리케이션의 경우에만 사용됨
+  - Refresh Token의 사용 또한 가능
+- ex) 네이버 계정으로 네이버 웹툰 애플리케이션에 로그인, 카카오 계정으로 카카오 지도 애플리케이션에 로그인하는 경우
+- 다시 말해 Authorization Server, Resource Server, Client가 모두 같은 시스템에 속해 있을 때만 사용이 가능함
+  - <img width="924" alt="MgcaGyneLt5yHT-onZpjb-1664238503667" src="https://user-images.githubusercontent.com/102513932/203976846-38712ec7-fe44-4323-80a7-1d618400463b.png">
+    - 1. Resource Owner는 로그인 버트를 누르는 등의 서비스 요청을 Client에게 전송함
+      - 이 때 로그인에 필요한 정보를 이용해 요청
+    - 2. Client에서는 Resource Owner에게서 전달받은 로그인 정보를 통해 Authorization Server에 Access Token을 요청함
+      - 이 때 미리 생성한 Client ID, 권한 부여 방식, 로그인 정보를 함께 전달함
+    - 3. 요청과 함께 온 정보들을 확인한 후 Client에게 Access Token을 전달함
+    - 4. Client는 Access Token을 이용하여 Resource Server에게 Resource를 요청함
+    - 5. Access Token을 확인한 후 요청 받은 Resource를 전달함
+
+### Client Credentials Grant: 클라이언트 자격 증명 승인 방식 
+- Client 자신이 관리하는 Resource이거나, 혹은 Authorization Server에 해당 Client를 위해 제한된 Resource 접근 권한이 설정되어 있는 경우 사용 가능한 방식
+  - 자격 증명을 안전히 보관할 수 있는 Client에서만 사용되어야 함
+  - Refresh Token 사용 불가능
+
+

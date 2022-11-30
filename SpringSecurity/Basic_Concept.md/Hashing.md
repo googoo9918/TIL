@@ -1,3 +1,13 @@
+### 목차
+- [No Authentication](#no-authentication)
+- [Authentication(Plaintext)](#authenticationplaintext)
+- [Encryption](#encryption)
+- [Hashing](#hashing)
+- [Authentication(Hashing)](#authenticationhashing)
+- [Salt](#salt)
+  - [Salt 사용 시 주의점](#salt-사용-시-주의점)
+  - [Authentication(Hashing + Salt)](#authenticationhashing--salt)
+
 ## No Authentication
 - ![image](https://user-images.githubusercontent.com/102513932/202368594-e513e8d1-810c-4fc0-ace0-5802847ac40b.png)
   - 이메일과 관련된 정보를 얻을 때 어떠한 인증 과정을 거치지 않는다면?

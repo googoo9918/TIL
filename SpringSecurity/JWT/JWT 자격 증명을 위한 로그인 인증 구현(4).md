@@ -423,4 +423,92 @@ public class MemberAuthenticationFailureHandler implements AuthenticationFailure
   - (2-4)에서는 response의 status가 401임을 클라이언트에게 알려줄 수 있도록 `HttpStatus.UNAUTHORIZED.value()`를 HTTP Header에 추가함
   - (2-5)에서는 Gson을 이용해 ErrorResponse 객체를 JSON 포맷 문자열로 변환 후, 출력 스트림을 생성
 
-### AuthenticationSuccessHandler
+### AuthenticationSuccessHandler와 AuthenticationFailureHandler 추가
+- 이제 AuthenticationSuccessHandler 인터페이스와 AuthenticationFailureHandler 인터페이스의 구현 클래스를 `JwtAuthenticationFilter`에 등록하면 로그인 인증 시, 두 헨들러 사용 가능 
+```java
+/**
+ * JwtAuthenticationFilter 추가
+ */
+@Configuration
+public class SecurityConfiguration {
+    private final JwtTokenizer jwtTokenizer;
+   
+    public SecurityConfiguration(JwtTokenizer jwtTokenizer) {
+        this.jwtTokenizer = jwtTokenizer;
+    }
+
+    ...
+    ...
+
+    public class CustomFilterConfigurer extends AbstractHttpConfigurer<CustomFilterConfigurer, HttpSecurity> {
+        @Override
+        public void configure(HttpSecurity builder) throws Exception {
+            AuthenticationManager authenticationManager = builder.getSharedObject(AuthenticationManager.class);
+
+            JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(authenticationManager, jwtTokenizer);
+            jwtAuthenticationFilter.setFilterProcessesUrl("/v11/auth/login");
+            jwtAuthenticationFilter.setAuthenticationSuccessHandler(new MemberAuthenticationSuccessHandler());  // (3) 추가
+            jwtAuthenticationFilter.setAuthenticationFailureHandler(new MemberAuthenticationFailureHandler());  // (4) 추가
+            builder.addFilter(jwtAuthenticationFilter);
+        }
+    }
+}
+// (코드 4-83) JwtAutehnticationFilter에 AuthenticationSuccessHandler와 AuthenticationFailureHandler 등록
+```
+- (3), (4)와 같이 JwtAutehnticationFIlter에 등록해주기만 하면 됨
+  - AutenticationSuccessHandler와 AuthenticationFailureHandler 인터페이스의 구현 클래스가 다른 Security Filter에서 사용이 된다면 AppliacationContext Bean으로 등록해 DI 받는 것이 맞음
+  - 하지만 일반적으로 인증을 위한 Security Filter 마다 AutehnticationSuccessHandler와 AuthenticationFailureHandler의 구현 클래스를 각각 생성할 것이므로, `new` 키워드를 사용해 객체를 생성해도 무방함
+
+### AutehnticationSuccessHandler 호출
+- AuthenticationSuccessHandler와 AuthenticationFailureHandler 구현 완료
+- jwtAuthenticationFilter에서 AuthenticationSuccessHandler와 AuthenticationFailureHandler를 사용할 수 있도록 SecurityConfiguration에 추가도 함
+- 이제 jwtAuthenticationFilter에서 해당 핸들러의 구현 메서드를 호출 후 사용하기만 하면 됨
+```java
+public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+    ...
+    ...
+    
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request,
+                                            HttpServletResponse response,
+                                            FilterChain chain,
+                                            Authentication authResult) throws ServletException, IOException {
+        Member member = (Member) authResult.getPrincipal();
+
+        String accessToken = delegateAccessToken(member);
+        String refreshToken = delegateRefreshToken(member);
+
+        response.setHeader("Authorization", "Bearer " + accessToken);
+        response.setHeader("Refresh", refreshToken);
+
+        this.getSuccessHandler().onAuthenticationSuccess(request, response, authResult);  // (1) 추가
+    }
+
+    ...
+    ...
+}
+// (코드 4-84) JwtAuthenticationFilter(AuthenticationSuccessHandler 호출 코드 추가)
+```
+- 코드 4-84에서는 로그인 인증에 성공 후, JWT를 생성해 response header에 추가한 뒤, (1)과 같이 AuthenticaitonSuccessHandler의 `onAuthenticaitonSuccess()`메서드를 호출함
+  - 앞서 구현한 MemberAuthenticationSuccessHandler의 `onAuthenticaitonSuccess()` 메서드가 호출됨
+- AuthenticationFailureHandler는 별도의 코드를 추가하지 않아도 로그인 인증에 실패 시, 구현한 MemberAuthenticaitonFailureHandler의 `onAuthenticationFailure()`메서드를 알아서 호출함
+
+> 현재 코드 상에서는 로그인 인증에 성공한 후, JwtAuthenticationFilter의 successfulAuthentication()메서드에서 JWT를 생성하고 있지만, AuthenticationSuccessHandler에서 JWT를 생성하는 것 또한 나쁘지 않음 <br>
+> 클래스의 역할 분담을 어디까지 할 것인지 고찰해 볼 것
+
+- 애플리케이션을 다시 실행 시킨 뒤 회원 가입에 전송했던 이메일 주소와 패스워드로 로그인 인증을 위한 request 전송 시
+  - AuthenticationSuccessHandler 정상 동작 시
+    - `2022-09-20 16:33:15.273  INFO 10948 --- [nio-8080-exec-4] c.a.h.MemberAuthenticationSuccessHandler : # Authenticated successfully!`
+- 로그인 인증 패스워드를 다르게 해 로그인 인증 request 전송 시
+  - AuthenticationFailureHandler 정상 동작 시 다음과 같은 response body 출력
+    - ![tJVxxBxYOYNf1aJeH3Xg2-1663828482639](https://user-images.githubusercontent.com/102513932/203913566-48f13ad5-68c2-475b-9d4f-c82d26cddebd.png)
+      - AuthenticationFailureHandler가 전송한 error respons 
+
+## 핵심 포인트
+- UsernamePasswordAuthenticationFilter를 이용해서 JWT 발급 전의 로그인 인증 기능을 구현할 수 있음
+- Spring Security에서는 개발자가 직접 Custom Configurer를 구성해 Spring Security의 Configuration을 커스터마이징(customizations) 할 수 있음
+- Username/Password 기반의 로그인 인증은 `OncePerRequestFilter` 같은 Spring Security에서 지원하는 다른 Filter를 이용해서 구현할 수 있음
+  - Controller에서 REST API 엔드포인트로 구현하는 것도 가능
+- Spring Security에서는 Username/Password 기반의 로그인 인증에 성공했을 때, 로그를 기록하거나 로그인에 성공한 사용자 정보를 response로 전송하는 등의 추가 처리를 할 수 있는 `AuthenticationSuccessHandler`를 지원
+  -  로그인 인증 실패 시에도 마찬가지로 인증 실패에 대해 추가 처리를 할 수 있는 `AuthenticationFailureHandler`를 지원
+
