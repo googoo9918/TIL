@@ -1,5 +1,23 @@
+### 목차
+- [JWT 자격 증명을 위한 로그인 인증 구현](#jwt-자격-증명을-위한-로그인-인증-구현)
+  - [JWT 자격 증명을 위한 로그인 인증 구현](#jwt-자격-증명을-위한-로그인-인증-구현-1)
+    - [Custom UserDetailsService 구현](#custom-userdetailsservice-구현)
+    - [로그인 인증 정보 역직렬화(Deserialization)를 위한 LoginDTO 클래스 생성](#로그인-인증-정보-역직렬화deserialization를-위한-logindto-클래스-생성)
+    - [JWT를 생성하는 JwtTokenizer 구현](#jwt를-생성하는-jwttokenizer-구현)
+      - [application.yml](#applicationyml)
+    - [로그인 인증 요청을 처리하는 Custom Security Filter 구현](#로그인-인증-요청을-처리하는-custom-security-filter-구현)
+    - [Custom Filter 추가를 위한 SecurityConfiguration 설정 추가](#custom-filter-추가를-위한-securityconfiguration-설정-추가)
+  - [로그인 인증 테스트](#로그인-인증-테스트)
+    - [1. 회원 가입 요청](#1-회원-가입-요청)
+    - [로그인 인증 요청](#로그인-인증-요청)
+    - [로그인 인증 성공 및 실패에 따른 추가 처리](#로그인-인증-성공-및-실패에-따른-추가-처리)
+    - [AuthenticationSuccessHandler 구현](#authenticationsuccesshandler-구현)
+    - [AuthenticationFailureHandler 구현](#authenticationfailurehandler-구현)
+    - [AuthenticationSuccessHandler와 AuthenticationFailureHandler 추가](#authenticationsuccesshandler와-authenticationfailurehandler-추가)
+    - [AutehnticationSuccessHandler 호출](#autehnticationsuccesshandler-호출)
+  - [핵심 포인트](#핵심-포인트)
 # JWT 자격 증명을 위한 로그인 인증 구현
-- 사용자의 Username과 Password로 로그인 인증에 성공 시 로그인 인증에 성공한 사용자에게 JWT 생성 및 발 급
+- 사용자의 Username과 Password로 로그인 인증에 성공 시 로그인 인증에 성공한 사용자에게 JWT 생성 및 발급
 
 - 사용자의 로그인 인증 성공 후, JWT가 클라이언트에게 전달되는 과정
   - 1. 클라이언트가 서버 측에 로그인 인증 요청(Username/Password를 서버 측에 전송)
