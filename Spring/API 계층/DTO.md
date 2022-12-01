@@ -1,3 +1,21 @@
+### 목차
+- [HTTP 요청/응답에서의 DTO(Data Transfer Object)](#http-요청응답에서의-dtodata-transfer-object)
+  - [DTO(Data Transfer Object)란?](#dtodata-transfer-object란)
+  - [DTO가 필요한 이유](#dto가-필요한-이유)
+  - [데이터 유효성(Validation) 검증의 단순화](#데이터-유효성validation-검증의-단순화)
+  - [HTTP 요청/응답 데이터에 DTO 적용](#http-요청응답-데이터에-dto-적용)
+    - [DTO 생성](#dto-생성)
+    - [@RequestBody 애너테이션](#requestbody-애너테이션)
+    - [@ResponseBody 애너테이션](#responsebody-애너테이션)
+- [DTO 유효성 검증(Validation)](#dto-유효성-검증validation)
+  - [DTO 클래스에 유효성 검증 적용하기](#dto-클래스에-유효성-검증-적용하기)
+    - [유효성 검증을 위한 의존 라이브러리 추가](#유효성-검증을-위한-의존-라이브러리-추가)
+    - [MemberPostDto 유효성 검증](#memberpostdto-유효성-검증)
+    - [쿼리 파라미터 및 @Pathvariable에 대한 유효성 검증](#쿼리-파라미터-및-pathvariable에-대한-유효성-검증)
+  - [Custom Validator 를 사용한 유효성 검증](#custom-validator-를-사용한-유효성-검증)
+    - [Custom Annotation 정의](#custom-annotation-정의)
+    - [Custom Validator 구현](#custom-validator-구현)
+    - [유효성 검증을 위해 Custom Annotation 추가](#유효성-검증을-위해-custom-annotation-추가)
 # HTTP 요청/응답에서의 DTO(Data Transfer Object)
 ## DTO(Data Transfer Object)란?
 - 데이터를 전송하기 위한 용도의 객체
