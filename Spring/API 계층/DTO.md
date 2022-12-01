@@ -321,6 +321,69 @@ public class MemberController {
 ### 쿼리 파라미터 및 @Pathvariable에 대한 유효성 검증
 - 핸들러 메서드의 URI path에서 사용되는 `@PathVariable("member-id") long memberId` 변수에 대한 유효성 검증
 ```java
-public ResponseEntity patchMember(@PathVariable("member-id") @Min(1) long memberId,
+@RestController
+@RequestMapping("/v1/members")
+@Validated   // (1)
+public class MemberController {
+		...
+		...
+
+    @PatchMapping("/{member-id}")
+    public ResponseEntity patchMember(@PathVariable("member-id") @Min(1) long memberId,
                                     @Valid @RequestBody MemberPatchDto memberPatchDto)
 ```
+- id가 1 이상의 숫자일 경우에만 통과하도록 함
+- @PathVariable이 추가된 변수에 유효성 검증이 정상적으로 수행되기 위해서는 (1)과 같이 클래스 레벨에 `@Validated` 애너테이션을 반드시 붙여줘야 함
+
+## Custom Validator 를 사용한 유효성 검증
+- DTO 클래스에 유효성 검증을 적용하다보면 Jakarta Bean Validation에 내장된 애너테이션 중 목적에 맞는 애너테이션이 존재하지 않을 수 있음
+  - 애너테이션을 직접 만들어 유효성 검증에 적용해야함
+- 1. Cusotm Validator를 사용하기 위한 Custom Annotation을 정의함
+- 2. 정의한 Custom Annotation에 바인딩 되는 Custom Validator를 구현
+- 3. 유효성 검증이 필요한 DTO 클래스의 멤버 변수에 Custom Annotation을 추가함
+
+### Custom Annotation 정의
+```java
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+@Constraint(validatedBy = {NotSpaceValidator.class}) // (1)
+public @interface NotSpace {
+    String message() default "공백이 아니어야 합니다"; // (2)
+    Class<?>[] groups() default {};
+    Class<? extends Payload>[] payload() default {};
+}
+//  공백을 허용하지 않는 Custom Annotation
+```
+- `NotSpace` 애너테이션이 멤버 변수에 추가되었을 때, 동작 할 Custom Validatior을 (1)과 같이 추가해야함
+- (2)는 애너테이션 추가 시 별도로 정의하지 않으면 유효성 검증 실패 시 표시되는 디폴트 메시지 
+
+### Custom Validator 구현
+```java
+public class NotSpaceValidator implements ConstraintValidator<NotSpace, String> {
+
+    @Override
+    public void initialize(NotSpace constraintAnnotation) {
+        ConstraintValidator.super.initialize(constraintAnnotation);
+    }
+
+    @Override
+    public boolean isValid(String value, ConstraintValidatorContext context) {
+        return value == null || StringUtils.hasText(value);
+    }
+}
+```
+- CustomValidator 구현을 위해 `ConstraintValidator` 인터페이스를 구현
+- `ConstraintValidator<NotSpace, String>`에서 `NotSpace`는 CustomValidator와 매핑된 Custom Annotation을 의미함
+  - `String`은 Custom Annotation으로 검증할 대상 멤버 변수의 타입을 의미함
+
+### 유효성 검증을 위해 Custom Annotation 추가
+```java
+public class MemberPatchDto {
+    private long memberId;
+
+    @NotSpace(message = "회원 이름은 공백이 아니어야 합니다") // (1)
+    private String name;
+}
+```
+- name 멤버 변수에 적용된 `@Pattern(regexp ="^\\S+(\\s?\\S+)*$")` 애너테이션을 제거
+  - Custom Annotation인 `@NotSpace`를 추가함
