@@ -16,8 +16,13 @@
 
 ### 4. 피보나치 재귀(메모이제이션)
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Recuresive%2C%20Tree%2C%20Graph(DFS%2C%20BFS%20Basic)/P4.md)
-  - 원래 알고있던 피보나치 재귀를 디벨롭
+  - 원래 알고있던 피보나치 재귀를 2단계 디벨롭
     - 원래 모든 항의 재귀를 실행시켜 값을 구함 -> 마지막 항의 재귀만 실행시키고, 나머지 값은 배열의 저장하여 출력만 함
       - `fibo[]` 추가, for문으로 solution 호출 -> solution(n)만 호출하고 for문으로 fibo[] 호출
     - 배열에 저장되는 값도 수많은 재귀로 이뤄짐 -> 어차피 같은 연산을 계속 반복하니.. 미리 저장해놓고 값이 있으면 꺼내서 쓰자!
       - `if(fibo[n]!=0) return fibo[n];` 추가
+
+### 5. 이진트리순회(DFS)
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Recuresive%2C%20Tree%2C%20Graph(DFS%2C%20BFS%20Basic)/P5.md)
+  - DFS 기본
+  - 재귀 원리를 생각하여, 전위 중위 후위 순회에 대해 완벽히 이해할 것

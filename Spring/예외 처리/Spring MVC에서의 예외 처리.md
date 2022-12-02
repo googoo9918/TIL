@@ -107,3 +107,44 @@ public class MemberControllerV7 {
 > 참고: `@InitBinder`, `@ModelAttribue` 는 주로 서버 사이드 렌더링(SSR) 방식에서 주로 사용
 
 - MemberController 클래스에서 `@ExceptionHandler` 로직 제거
+
+### ExceptionAdivce 클래스 정의
+```java
+@RestControllerAdvice
+public class GlobalExceptionAdvice {
+}
+```
+- Controller 클래스의 예외 공통으로 처리할 클래스
+- 이제 Controller에서 발생하는 예외를 도맡아서 처리하게 됨
+
+### Exception 핸들러 메서드 구현
+```java
+@RestControllerAdvice
+public class GlobalExceptionAdvice {
+    // (1)
+    @ExceptionHandler
+    public ResponseEntity handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException e){
+        final List<FieldError> fieldErrors = e.getBindingResult().getFieldErrors();
+
+        List<ErrorResponse.FieldError> errors =
+                fieldErrors.stream()
+                        .map(error -> new ErrorResponse.FieldError(
+                                error.getField(),
+                                error.getRejectedValue(),
+                                error.getDefaultMessage()))
+                        .collect(Collectors.toList());
+
+        return new ResponseEntity<>(new ErrorResponse(errors), HttpStatus.BAD_REQUEST);
+    }
+
+    //(2)
+    @ExceptionHandler
+    public ResponseEntity handleConstraintViolationException(ConstraintViolationException e) {
+        // TODO implement
+
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    }
+}
+```
+- 예외 처리 공통화를 통해 각 Controller 마다 추가되는 `@ExceptionHandler` 로직에 대한 중복 코드를 제거하고, Controller 코드를 단순화 할 수 있음
