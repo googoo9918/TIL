@@ -26,3 +26,8 @@
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Recuresive%2C%20Tree%2C%20Graph(DFS%2C%20BFS%20Basic)/P5.md)
   - DFS 기본
   - 재귀 원리를 생각하여, 전위 중위 후위 순회에 대해 완벽히 이해할 것
+
+### 6. 부분집합 구하기(DFS)
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Recuresive%2C%20Tree%2C%20Graph(DFS%2C%20BFS%20Basic)/P6.md)
+  - 양갈래로 뻗어나가는 dfs(사용 유무에 따라)
+    - 기본적인 구조부터 확실히 익혀놔야 응용이 가능할 것
