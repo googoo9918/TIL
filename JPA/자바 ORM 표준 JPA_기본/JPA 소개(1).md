@@ -10,7 +10,7 @@
   - [JPA 동작](#jpa-동작)
   - [JPA 소개](#jpa-소개-1)
   - [JPA 사용 당위성](#jpa-사용-당위성)
-    - [생산성_ JPA와 CRUD](#생산성_-jpa와-crud)
+    - [생산성\_ JPA와 CRUD](#생산성_-jpa와-crud)
     - [유지보수](#유지보수)
   - [JPA와 패러다임의 불일치 해결](#jpa와-패러다임의-불일치-해결)
     - [JPA와 상속](#jpa와-상속)
@@ -224,7 +224,7 @@ member1 == member2; //같다
 - 저장: **jpa.persist**(member)
 - 조회: Member member = **jpa.find**(memberId)
 - 수정: **member.setName**("변경할 이름")
-- 삭제: **jpa.remover**(member)
+- 삭제: **jpa.remove**(member)
 
 #### 유지보수
 - 기존: 필드 변경 시 모든 SQL 수정

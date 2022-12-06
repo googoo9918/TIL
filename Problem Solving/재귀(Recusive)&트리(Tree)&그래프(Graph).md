@@ -31,3 +31,8 @@
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Recuresive%2C%20Tree%2C%20Graph(DFS%2C%20BFS%20Basic)/P6.md)
   - 양갈래로 뻗어나가는 dfs(사용 유무에 따라)
     - 기본적인 구조부터 확실히 익혀놔야 응용이 가능할 것
+
+### 7. 이진트리 레벨탐색(BFS)
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Recuresive%2C%20Tree%2C%20Graph(DFS%2C%20BFS%20Basic)/P7.md)
+  - 계층마다 이뤄지는 기본 BFS
+    - 기본 구조 잘 익혀둘 것! 

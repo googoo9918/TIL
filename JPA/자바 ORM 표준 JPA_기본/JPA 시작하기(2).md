@@ -1,7 +1,7 @@
 ### 목차
 - [Hello JPA - 프로젝트 생성](#hello-jpa---프로젝트-생성)
 - [Hello JPA - 애플리케이션 개발](#hello-jpa---애플리케이션-개발)
-  - [실습_JPA 동작 확인](#실습_jpa-동작-확인)
+  - [실습\_JPA 동작 확인](#실습_jpa-동작-확인)
   - [회원 등록 실습](#회원-등록-실습)
   - [회원 수정, 조회, 삭제 실습](#회원-수정-조회-삭제-실습)
   - [주의](#주의)
@@ -174,7 +174,7 @@ Hibernate:
 - 추가적인 매핑 ex)
   - `@Table(name = "USER")`
     - 테이블 이름 설정 가능
-  - `@Column(name = "username")
+  - `@Column(name = "username")`
     - 컬럼 이름 설정 가능
 ```java
 try {
