@@ -36,3 +36,8 @@
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Recuresive%2C%20Tree%2C%20Graph(DFS%2C%20BFS%20Basic)/P7.md)
   - 계층마다 이뤄지는 기본 BFS
     - 기본 구조 잘 익혀둘 것! 
+
+### 8. 송아지 찾기(BFS)
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Recuresive%2C%20Tree%2C%20Graph(DFS%2C%20BFS%20Basic)/P8.md)
+  - 레벨을 임의로 지정해주며(L), for문이 끝날 때 증가시켜주면 됨!
+  - 또한 큐에 넣어주기만 하면 자연스럽게 BFS를 돌릴 수 있음 
