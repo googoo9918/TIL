@@ -1,4 +1,4 @@
-### 목차
+## TIL 목차
 - [Today I Learned (TIL)](#today-i-learned-til)
     - [알고리즘(Algorithm)](#알고리즘algorithm)
     - [자료구조(Data Structure)](#자료구조data-structure)
