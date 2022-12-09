@@ -175,6 +175,7 @@
 ----------------------------
 <details>
  <summary>기본 개념 </summary>
+
   - [쿠키](https://github.com/ssu18/TIL/blob/main/SpringSecurity/Basic_Concept.md/Cookie.md)
   - [Hashing](https://github.com/ssu18/TIL/blob/main/SpringSecurity/Basic_Concept.md/Hashing.md)
   - [HTTPS](https://github.com/ssu18/TIL/blob/main/SpringSecurity/Basic_Concept.md/HTTPS.md)
@@ -213,6 +214,7 @@
 - [OAuth2와 JWT를 이용한 샘플 애플리케이션 구현](https://github.com/ssu18/TIL/blob/main/SpringSecurity/OAuth2/OAuth%202%EC%99%80%20JWT%EB%A5%BC%20%EC%9D%B4%EC%9A%A9%ED%95%9C%20%EC%83%98%ED%94%8C%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B5%AC%ED%98%84.md)
 - [샘플 애플리케이션 구현](https://github.com/ssu18/TIL/blob/main/SpringSecurity/OAuth2/%EC%83%98%ED%94%8C%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B5%AC%ED%98%84.md)
  </details>
+<br>
 
 ### Cloud
 ----------------------------------------
@@ -237,7 +239,7 @@
   - [인터넷 프로토콜(IP)](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/IP.md)
   - [TCP&UDP](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/TCP%26UDP.md)
   - [포트(Port)](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/Port.md)
-  - [URL&DNS](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/URL%26DNS.md)<br><br>
+  - [URL&DNS](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/URL%26DNS.md)<br>
   </details>
 
   <details>
@@ -248,7 +250,7 @@
   - [웹 애플리케이션 구현](https://github.com/ssu18/TIL/blob/main/Network/Web/Web_Application_Implent.md)
   - [SSR&CSR](https://github.com/ssu18/TIL/blob/main/Network/Web/SSR%26CSR.md)
   - [AJAX](https://github.com/ssu18/TIL/blob/main/Network/Web/AJAX.md)
-  - [CORS](https://github.com/ssu18/TIL/blob/main/Network/Web/CORS.md)<br><br>
+  - [CORS](https://github.com/ssu18/TIL/blob/main/Network/Web/CORS.md)<br>
   </details>
 
   <details>
@@ -264,7 +266,7 @@
   - [REST API](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/RestApi.mdhttps://github.com/ssu18/TIL/blob/main/Network/HTTP/RestApi.md)
   - [Postman](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/Postman.md)
   </details>
-
+<br>
 
 ### 프론트엔드(Front End)
 ----------------------------
