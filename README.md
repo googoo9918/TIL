@@ -215,15 +215,16 @@
  </details>
 
 ### Cloud
+----------------------------------------
 - 운영 환경 구성
-  - [AWS 기초](https://github.com/ssu18/TIL/blob/main/Cloud/%EC%9A%B4%EC%98%81%20%ED%99%98%EA%B2%BD%20%EA%B5%AC%EC%84%B1/AWS_Basic.md)<br><br>
-  - [서버 배포](https://github.com/ssu18/TIL/blob/main/Cloud/%EC%9A%B4%EC%98%81%20%ED%99%98%EA%B2%BD%20%EA%B5%AC%EC%84%B1/%EC%84%9C%EB%B2%84%20%EB%B0%B0%ED%8F%AC.md)<br><br>
+  - [AWS 기초](https://github.com/ssu18/TIL/blob/main/Cloud/%EC%9A%B4%EC%98%81%20%ED%99%98%EA%B2%BD%20%EA%B5%AC%EC%84%B1/AWS_Basic.md)<br>
+  - [서버 배포](https://github.com/ssu18/TIL/blob/main/Cloud/%EC%9A%B4%EC%98%81%20%ED%99%98%EA%B2%BD%20%EA%B5%AC%EC%84%B1/%EC%84%9C%EB%B2%84%20%EB%B0%B0%ED%8F%AC.md)<br>
 - 배포 컨테이너
-  - [Docker](https://github.com/ssu18/TIL/blob/main/Cloud/%EB%B0%B0%ED%8F%AC%20%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88/Docker.md)<br><br>
-  - [DocerCli](https://github.com/ssu18/TIL/blob/main/Cloud/%EB%B0%B0%ED%8F%AC%20%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88/DockerCli.md)<br><br>
+  - [Docker](https://github.com/ssu18/TIL/blob/main/Cloud/%EB%B0%B0%ED%8F%AC%20%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88/Docker.md)<br>
+  - [DocerCli](https://github.com/ssu18/TIL/blob/main/Cloud/%EB%B0%B0%ED%8F%AC%20%EC%BB%A8%ED%85%8C%EC%9D%B4%EB%84%88/DockerCli.md)<br>
 - 배포 자동화
-  - [배포 자동화 기초](https://github.com/ssu18/TIL/blob/main/Cloud/%EB%B0%B0%ED%8F%AC%20%EC%9E%90%EB%8F%99%ED%99%94/%EB%B0%B0%ED%8F%AC%20%EC%9E%90%EB%8F%99%ED%99%94%20%EA%B8%B0%EC%B4%88.md)<br><br>
-  - [Github Actions를 통한 배포 자동화](https://github.com/ssu18/TIL/blob/main/Cloud/%EB%B0%B0%ED%8F%AC%20%EC%9E%90%EB%8F%99%ED%99%94/Github%20ACtions%EB%A5%BC%20%ED%86%B5%ED%95%9C%20%EB%B0%B0%ED%8F%AC%20%EC%9E%90%EB%8F%99%ED%99%94.md)<br><br>
+  - [배포 자동화 기초](https://github.com/ssu18/TIL/blob/main/Cloud/%EB%B0%B0%ED%8F%AC%20%EC%9E%90%EB%8F%99%ED%99%94/%EB%B0%B0%ED%8F%AC%20%EC%9E%90%EB%8F%99%ED%99%94%20%EA%B8%B0%EC%B4%88.md)<br>
+  - [Github Actions를 통한 배포 자동화](https://github.com/ssu18/TIL/blob/main/Cloud/%EB%B0%B0%ED%8F%AC%20%EC%9E%90%EB%8F%99%ED%99%94/Github%20ACtions%EB%A5%BC%20%ED%86%B5%ED%95%9C%20%EB%B0%B0%ED%8F%AC%20%EC%9E%90%EB%8F%99%ED%99%94.md)<br>
 - [운영 전략](https://github.com/ssu18/TIL/blob/main/Cloud/%EC%9A%B4%EC%98%81%20%EC%A0%84%EB%9E%B5.md)<br><br>
 
 
