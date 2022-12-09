@@ -119,6 +119,23 @@
   - [빈 스코프](https://github.com/ssu18/TIL/blob/main/Spring/%EC%8A%A4%ED%94%84%EB%A7%81%20%ED%95%B5%EC%8B%AC%20%EC%9B%90%EB%A6%AC/%EB%B9%88%20%EC%8A%A4%EC%BD%94%ED%94%84(9).md)
 </details>
 
+ - API 계층
+   - [Spring MVC 아키텍처](https://github.com/ssu18/TIL/blob/main/Spring/API%20%EA%B3%84%EC%B8%B5/Spring%20MVC%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.md)<br>
+   - [Controller](https://github.com/ssu18/TIL/blob/main/Spring/API%20%EA%B3%84%EC%B8%B5/Controller.md)<br>
+   - [DTO](https://github.com/ssu18/TIL/blob/main/Spring/API%20%EA%B3%84%EC%B8%B5/DTO.md)<br>
+ - Service 계층
+   - [서비스 계층에서의 DI](https://github.com/ssu18/TIL/blob/main/Spring/%EC%84%9C%EB%B9%84%EC%8A%A4%20%EA%B3%84%EC%B8%B5/%EC%84%9C%EB%B9%84%EC%8A%A4%20%EA%B3%84%EC%B8%B5%EC%97%90%EC%84%9C%EC%9D%98%20DI.md)<br>
+ - 예외 처리
+   - [Spring MVC에서의 예외 처리](https://github.com/ssu18/TIL/blob/main/Spring/%EC%98%88%EC%99%B8%20%EC%B2%98%EB%A6%AC/Spring%20MVC%EC%97%90%EC%84%9C%EC%9D%98%20%EC%98%88%EC%99%B8%20%EC%B2%98%EB%A6%AC.md)<br>
+   - [비즈니스 로직 예외 처리](https://github.com/ssu18/TIL/blob/main/Spring/%EC%98%88%EC%99%B8%20%EC%B2%98%EB%A6%AC/%EB%B9%84%EC%A6%88%EB%8B%88%EC%8A%A4%20%EB%A1%9C%EC%A7%81%20%EC%98%88%EC%99%B8%20%EC%B2%98%EB%A6%AC.md)<br>
+ - JPA 기반 데이터 엑세스 계층
+   - [JPA 개요](https://github.com/ssu18/TIL/blob/main/Spring/JPA%20%EA%B8%B0%EB%B0%98%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%97%91%EC%84%B8%EC%8A%A4%20%EA%B3%84%EC%B8%B5/JPA%20%EA%B0%9C%EC%9A%94.md)<br>
+   - [JPA 엔티티 매핑과 연관 관계 매핑](https://github.com/ssu18/TIL/blob/main/Spring/JPA%20%EA%B8%B0%EB%B0%98%20%EB%8D%B0%EC%9D%B4%ED%84%B0%20%EC%97%91%EC%84%B8%EC%8A%A4%20%EA%B3%84%EC%B8%B5/JPA%20%EC%97%94%ED%8B%B0%ED%8B%B0%20%EB%A7%A4%ED%95%91%EA%B3%BC%20%EC%97%B0%EA%B4%80%20%EA%B4%80%EA%B3%84%20%EB%A7%A4%ED%95%91.md)<br>
+ - 트랜잭션
+ - 테스팅
+ - API 문서화
+ - 애플리케이션 빌드/실행/배포
+
 ### JPA
 ---------------------------------------
 <details>
