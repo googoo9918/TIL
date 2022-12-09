@@ -119,6 +119,9 @@
   - [빈 스코프](https://github.com/ssu18/TIL/blob/main/Spring/%EC%8A%A4%ED%94%84%EB%A7%81%20%ED%95%B5%EC%8B%AC%20%EC%9B%90%EB%A6%AC/%EB%B9%88%20%EC%8A%A4%EC%BD%94%ED%94%84(9).md)
 </details>
 
+<details>
+ <summary>웹 애플리케이션 제작 </summary>
+
  - API 계층
    - [Spring MVC 아키텍처](https://github.com/ssu18/TIL/blob/main/Spring/API%20%EA%B3%84%EC%B8%B5/Spring%20MVC%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.md)<br>
    - [Controller](https://github.com/ssu18/TIL/blob/main/Spring/API%20%EA%B3%84%EC%B8%B5/Controller.md)<br>
@@ -135,6 +138,7 @@
  - 테스팅
  - API 문서화
  - 애플리케이션 빌드/실행/배포
+</details>
 
 ### JPA
 ---------------------------------------
