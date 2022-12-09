@@ -185,14 +185,14 @@
 
 <details>
  <summary>SpringSecurity_기초 </summary>
+
 - [기본 개념](https://github.com/ssu18/TIL/blob/main/SpringSecurity/SpringSecurity_Basic/BasicConcept(0).md)
 - [기본 구조(1)](https://github.com/ssu18/TIL/blob/main/SpringSecurity/SpringSecurity_Basic/SpringSecurityBasic(1).md)
 - [기본 구조(2)](https://github.com/ssu18/TIL/blob/main/SpringSecurity/SpringSecurity_Basic/SpringSecurityBasic(2).md)
 - [웹 요청 처리 흐름](https://github.com/ssu18/TIL/blob/main/SpringSecurity/SpringSecurity_Basic/Spring%20Security%EC%9D%98%20%EC%9B%B9%20%EC%9A%94%EC%B2%AD%20%EC%B2%98%EB%A6%AC%20%ED%9D%90%EB%A6%84(3).md)
 - [인증(컴포넌트)](https://github.com/ssu18/TIL/blob/main/SpringSecurity/SpringSecurity_Basic/Spring%20Security%EC%9D%98%20%EC%9D%B8%EC%A6%9D(%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8)(4).md)
 - [권한 부여 처리 흐름](https://github.com/ssu18/TIL/blob/main/SpringSecurity/SpringSecurity_Basic/Spring%20Security%EC%9D%98%20%EA%B6%8C%ED%95%9C%20%EB%B6%80%EC%97%AC%20%EC%B2%98%EB%A6%AC%20%ED%9D%90%EB%A6%84.md)
-
-<details>
+</details>
 
 <details>
  <summary>JWT </summary>
@@ -202,13 +202,17 @@
 - [JWT 적용 사전 작업](https://github.com/ssu18/TIL/blob/main/SpringSecurity/JWT/JWT%20%EC%A0%81%EC%9A%A9%20%EC%82%AC%EC%A0%84%20%EC%9E%91%EC%97%85(3).md)
 - [JWT 자격 증명을 위한 로그인 인증 구현](https://github.com/ssu18/TIL/blob/main/SpringSecurity/JWT/JWT%20%EC%9E%90%EA%B2%A9%20%EC%A6%9D%EB%AA%85%EC%9D%84%20%EC%9C%84%ED%95%9C%20%EB%A1%9C%EA%B7%B8%EC%9D%B8%20%EC%9D%B8%EC%A6%9D%20%EA%B5%AC%ED%98%84(4).md)
  
-<details>
+</details>
 
 
 <details>
  <summary>OAuth2 </summary>
 
- <details>
+- [OAuth2 기초](https://github.com/ssu18/TIL/blob/main/SpringSecurity/OAuth2/OAuthBaisc(0).md)
+- [OAuth2 인증을 위한 사전 작업](https://github.com/ssu18/TIL/blob/main/SpringSecurity/OAuth2/OAuth2%20%EC%9D%B8%EC%A6%9D%EC%9D%84%20%EC%9C%84%ED%95%9C%20%EC%82%AC%EC%A0%84%20%EC%9E%91%EC%97%85(1).md)
+- [OAuth2와 JWT를 이용한 샘플 애플리케이션 구현](https://github.com/ssu18/TIL/blob/main/SpringSecurity/OAuth2/OAuth%202%EC%99%80%20JWT%EB%A5%BC%20%EC%9D%B4%EC%9A%A9%ED%95%9C%20%EC%83%98%ED%94%8C%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B5%AC%ED%98%84.md)
+- [샘플 애플리케이션 구현](https://github.com/ssu18/TIL/blob/main/SpringSecurity/OAuth2/%EC%83%98%ED%94%8C%20%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B5%AC%ED%98%84.md)
+ </details>
 
 ### Cloud
 - 운영 환경 구성
