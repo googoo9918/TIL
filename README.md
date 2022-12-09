@@ -1,17 +1,38 @@
 ## TIL 목차
 - [Today I Learned (TIL)](#today-i-learned-til)
-    - [알고리즘(Algorithm)](#알고리즘algorithm)
-    - [자료구조(Data Structure)](#자료구조data-structure)
-    - [ETC](#etc)
-    - [프론트엔드(Front End)](#프론트엔드front-end)
     - [자바(Java)](#자바java)
+    - [자료구조(Data Structure)](#자료구조data-structure)
+    - [알고리즘(Algorithm)](#알고리즘algorithm)
     - [문제 해결(Problem Solving)](#문제-해결problem-solving)
-    - [네트워크(Network)](#네트워크network)
     - [SQL](#sql)
     - [Spring](#spring)
     - [JPA](#jpa)
     - [Spring Security](#spring-security)
+    - [네트워크(Network)](#네트워크network)
+    - [프론트엔드(Front End)](#프론트엔드front-end)
+    - [ETC](#etc)
 # Today I Learned (TIL)
+### 자바(Java)
+-----------------------
+- [자바 기초 문법(Java_Basic)](https://github.com/ssu18/TIL/blob/main/Java/Java_Basic.md) <br><br>
+- [자바 심화 문법(Java_Advanced)](https://github.com/ssu18/TIL/blob/main/Java/Java_Advanced.md)<br><br>
+- [Intellij 단축키 모음(Shortcut keys)](https://github.com/ssu18/TIL/blob/main/Java/Intellij.md)<br><br>
+- [객체지향 프로그래밍 기초(Object Oriented Programming_Baisc)](https://github.com/ssu18/TIL/blob/main/Java/OOP_Basic.md)<br><br>
+- [객체지향 프로그래밍 심화(Object Oriented Programming_Advanced)](https://github.com/ssu18/TIL/blob/main/Java/OOP_Advanced.md)<br><br>
+
+### 자료구조(Data Structure)
+-----------------------------
+- [OT](https://github.com/ssu18/TIL/blob/main/DataStructure/WelcomeDS_OT.md) <br><br>
+- [리스트(List)](https://github.com/ssu18/TIL/blob/main/DataStructure/WelcomeDS_List.md) <br><br>
+- [배열(Array)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Array.md) <br><br>
+- [큐(Queue)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Queue.md) <br><br>
+- [스택(Stack)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Stack.md) <br><br>
+- [링크드 리스트(Linked List)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_LinkedList.md) <br><br>
+- [해쉬 테이블(Hash Table)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_HashTable.md) <br><br>
+- [트리(Tree)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Tree.md) <br><br>
+- [그래프(Graph)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Graph.md)<br><br>
+- [힙(Heap)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Heap.md) <br><br>
+
 ### 알고리즘(Algorithm)
 -----------------------------------
 - 복잡도
@@ -46,40 +67,6 @@
 - [백트랙킹(Back Tracking)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_BackTracking.md)<br><br>
 - [순열과 조합(Permutation & Combination)](https://github.com/ssu18/TIL/blob/main/Algorithm/AL_Permutation%2CCombination.md)<br><br>
 
-### 자료구조(Data Structure)
------------------------------
-- [OT](https://github.com/ssu18/TIL/blob/main/DataStructure/WelcomeDS_OT.md) <br><br>
-- [리스트(List)](https://github.com/ssu18/TIL/blob/main/DataStructure/WelcomeDS_List.md) <br><br>
-- [배열(Array)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Array.md) <br><br>
-- [큐(Queue)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Queue.md) <br><br>
-- [스택(Stack)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Stack.md) <br><br>
-- [링크드 리스트(Linked List)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_LinkedList.md) <br><br>
-- [해쉬 테이블(Hash Table)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_HashTable.md) <br><br>
-- [트리(Tree)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Tree.md) <br><br>
-- [그래프(Graph)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Graph.md)<br><br>
-- [힙(Heap)](https://github.com/ssu18/TIL/blob/main/DataStructure/DS_Heap.md) <br><br>
-
-### ETC
--------------------------
-- [마크다운 기초 문법(MD Basic)](https://github.com/ssu18/TIL/blob/main/ETC/MDgrammer.md) <br><br>
-- [CLI(Command Line Interface)](https://github.com/ssu18/TIL/blob/main/ETC/CLI.md)<br><br>
-- [Git](https://github.com/ssu18/TIL/blob/main/ETC/Git.md)<br><br>
-
-### 프론트엔드(Front End)
-----------------------------
-- [HTML 기초 문법(HTML Basic)](https://github.com/ssu18/TIL/blob/main/FrontEnd/HTML.md)<br><br>
-- [CSS 기초 문법(CSS Basic)](https://github.com/ssu18/TIL/blob/main/FrontEnd/CSS.md)<br><br>
-- [레이아웃(Layout)](https://github.com/ssu18/TIL/blob/main/FrontEnd/Layout.md)<br><br>
-- [와이어프레임(Wire frame)](https://github.com/ssu18/TIL/blob/main/FrontEnd/WireFrame.md)<br><br>
-
-### 자바(Java)
------------------------
-- [자바 기초 문법(Java_Basic)](https://github.com/ssu18/TIL/blob/main/Java/Java_Basic.md) <br><br>
-- [자바 심화 문법(Java_Advanced)](https://github.com/ssu18/TIL/blob/main/Java/Java_Advanced.md)<br><br>
-- [Intellij 단축키 모음(Shortcut keys)](https://github.com/ssu18/TIL/blob/main/Java/Intellij.md)<br><br>
-- [객체지향 프로그래밍 기초(Object Oriented Programming_Baisc)](https://github.com/ssu18/TIL/blob/main/Java/OOP_Basic.md)<br><br>
-- [객체지향 프로그래밍 심화(Object Oriented Programming_Advanced)](https://github.com/ssu18/TIL/blob/main/Java/OOP_Advanced.md)<br><br>
-
 ### 문제 해결(Problem Solving)
 -----------------------------------------
 - [PS용 입력 클래스(FastReader)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/FastReader.md)<br><br>
@@ -94,43 +81,6 @@
 - [탐욕알고리즘(Greedy)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%ED%83%90%EC%9A%95%EC%95%8C%EA%B3%A0%EB%A6%AC%EC%A6%98(Greedy).md)<br><br>
 - [투 포인터(Two pointer) & 슬라이딩 윈도우(Sliding Window)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%ED%88%AC%20%ED%8F%AC%EC%9D%B8%ED%84%B0(Two%20Pointer)%26%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%94%A9%20%EC%9C%88%EB%8F%84%EC%9A%B0(Sliding%20Window).md)<br><br>
 - [해쉬(Hash), 정렬지원 Set(Tree Set)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%ED%95%B4%EC%89%AC%2C%20%EC%A0%95%EB%A0%AC%EC%A7%80%EC%9B%90%20Set.md)<br><br>
-
-### 네트워크(Network)
-------------------------------------------
-  <details>
-  <summary>기본 개념</summary>
-
-  - [TCP,IP기초(TCP&IP_BASIC)](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/TCP%26IP_Basic.md)
-  - [인터넷 프로토콜(IP)](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/IP.md)
-  - [TCP&UDP](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/TCP%26UDP.md)
-  - [포트(Port)](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/Port.md)
-  - [URL&DNS](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/URL%26DNS.md)<br><br>
-  </details>
-
-  <details>
-  <summary>Web</summary>
-
-  - [클라이언트-서버 구조](https://github.com/ssu18/TIL/blob/main/Network/Web/Clinet-server%20Architecture.md)
-  - [웹 애플리케이션 구조](https://github.com/ssu18/TIL/blob/main/Network/Web/Web_Application%20Architecture.md)
-  - [웹 애플리케이션 구현](https://github.com/ssu18/TIL/blob/main/Network/Web/Web_Application_Implent.md)
-  - [SSR&CSR](https://github.com/ssu18/TIL/blob/main/Network/Web/SSR%26CSR.md)
-  - [AJAX](https://github.com/ssu18/TIL/blob/main/Network/Web/AJAX.md)
-  - [CORS](https://github.com/ssu18/TIL/blob/main/Network/Web/CORS.md)<br><br>
-  </details>
-
-  <details>
-  <summary>HTTP 웹 기본 지식 </summary>
-
-  - [인터넷 네트워크](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/%EC%9D%B8%ED%84%B0%EB%84%B7%20%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC(1).md)
-  - [URI와 웹 브라우저 요청 흐름](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/URI%EC%99%80%20%EC%9B%B9%20%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80%20%EC%9A%94%EC%B2%AD%20%ED%9D%90%EB%A6%84(2).md)
-  - [HTTP 기본](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%EA%B8%B0%EB%B3%B8(3).md)
-  - [HTTP 메서드](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%EB%A9%94%EC%84%9C%EB%93%9C(4).md)
-  - [HTTP 상태코드](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%EC%83%81%ED%83%9C%EC%BD%94%EB%93%9C(5).md)
-  - [HTTP 헤더1_일반](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%ED%97%A4%EB%8D%941_%EC%9D%BC%EB%B0%98(6).md)
-  - [HTTP 헤더2_캐시와 조건부](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%ED%97%A4%EB%8D%942_%20%EC%BA%90%EC%8B%9C%EC%99%80%20%EC%A1%B0%EA%B1%B4%EB%B6%80(7).md)
-  - [REST API](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/RestApi.mdhttps://github.com/ssu18/TIL/blob/main/Network/HTTP/RestApi.md)
-  - [Postman](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/Postman.md)
-  </details>
 
 ### SQL
 ----------------------------------------------------
@@ -169,7 +119,6 @@
   - [빈 스코프](https://github.com/ssu18/TIL/blob/main/Spring/%EC%8A%A4%ED%94%84%EB%A7%81%20%ED%95%B5%EC%8B%AC%20%EC%9B%90%EB%A6%AC/%EB%B9%88%20%EC%8A%A4%EC%BD%94%ED%94%84(9).md)
 </details>
 
-
 ### JPA
 ---------------------------------------
 <details>
@@ -193,7 +142,12 @@
   
   - [프로젝트 환경 설정](https://github.com/ssu18/TIL/blob/main/JPA/%EC%8A%A4%ED%94%84%EB%A7%81%20%EB%B6%80%ED%8A%B8%EC%99%80%20JPA%20%ED%99%9C%EC%9A%A91/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%ED%99%98%EA%B2%BD%EC%84%A4%EC%A0%95(0).md)
   - [도메인 분석 설계](https://github.com/ssu18/TIL/blob/main/JPA/%EC%8A%A4%ED%94%84%EB%A7%81%20%EB%B6%80%ED%8A%B8%EC%99%80%20JPA%20%ED%99%9C%EC%9A%A91/%EB%8F%84%EB%A9%94%EC%9D%B8%20%EB%B6%84%EC%84%9D%20%EC%84%A4%EA%B3%84(1).md)
- </details>
+  - [애플리케이션 구현 준비](https://github.com/ssu18/TIL/blob/main/JPA/%EC%8A%A4%ED%94%84%EB%A7%81%20%EB%B6%80%ED%8A%B8%EC%99%80%20JPA%20%ED%99%9C%EC%9A%A91/%EC%95%A0%ED%94%8C%EB%A6%AC%EC%BC%80%EC%9D%B4%EC%85%98%20%EA%B5%AC%ED%98%84%20%EC%A4%80%EB%B9%84(2).md)
+  - [회원 도메인 개발](https://github.com/ssu18/TIL/blob/main/JPA/%EC%8A%A4%ED%94%84%EB%A7%81%20%EB%B6%80%ED%8A%B8%EC%99%80%20JPA%20%ED%99%9C%EC%9A%A91/%ED%9A%8C%EC%9B%90%20%EB%8F%84%EB%A9%94%EC%9D%B8%20%EA%B0%9C%EB%B0%9C(3).md)
+  - [상품 도메인 개발](https://github.com/ssu18/TIL/blob/main/JPA/%EC%8A%A4%ED%94%84%EB%A7%81%20%EB%B6%80%ED%8A%B8%EC%99%80%20JPA%20%ED%99%9C%EC%9A%A91/%EC%83%81%ED%92%88%20%EB%8F%84%EB%A9%94%EC%9D%B8%20%EA%B0%9C%EB%B0%9C(4).md)
+  - [주문 도메인 개발](https://github.com/ssu18/TIL/blob/main/JPA/%EC%8A%A4%ED%94%84%EB%A7%81%20%EB%B6%80%ED%8A%B8%EC%99%80%20JPA%20%ED%99%9C%EC%9A%A91/%EC%A3%BC%EB%AC%B8%20%EB%8F%84%EB%A9%94%EC%9D%B8%20%EA%B0%9C%EB%B0%9C(5).md)
+  - [웹 계층 개발](https://github.com/ssu18/TIL/blob/main/JPA/%EC%8A%A4%ED%94%84%EB%A7%81%20%EB%B6%80%ED%8A%B8%EC%99%80%20JPA%20%ED%99%9C%EC%9A%A91/%EC%9B%B9%20%EA%B3%84%EC%B8%B5%20%EA%B0%9C%EB%B0%9C(6).md)
+  </details>
 
 ### Spring Security
 ----------------------------
@@ -234,4 +188,55 @@
 
  <details>
 
+### 네트워크(Network)
+------------------------------------------
+  <details>
+  <summary>기본 개념</summary>
+
+  - [TCP,IP기초(TCP&IP_BASIC)](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/TCP%26IP_Basic.md)
+  - [인터넷 프로토콜(IP)](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/IP.md)
+  - [TCP&UDP](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/TCP%26UDP.md)
+  - [포트(Port)](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/Port.md)
+  - [URL&DNS](https://github.com/ssu18/TIL/blob/main/Network/Baisc%20Concept/URL%26DNS.md)<br><br>
+  </details>
+
+  <details>
+  <summary>Web</summary>
+
+  - [클라이언트-서버 구조](https://github.com/ssu18/TIL/blob/main/Network/Web/Clinet-server%20Architecture.md)
+  - [웹 애플리케이션 구조](https://github.com/ssu18/TIL/blob/main/Network/Web/Web_Application%20Architecture.md)
+  - [웹 애플리케이션 구현](https://github.com/ssu18/TIL/blob/main/Network/Web/Web_Application_Implent.md)
+  - [SSR&CSR](https://github.com/ssu18/TIL/blob/main/Network/Web/SSR%26CSR.md)
+  - [AJAX](https://github.com/ssu18/TIL/blob/main/Network/Web/AJAX.md)
+  - [CORS](https://github.com/ssu18/TIL/blob/main/Network/Web/CORS.md)<br><br>
+  </details>
+
+  <details>
+  <summary>HTTP 웹 기본 지식 </summary>
+
+  - [인터넷 네트워크](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/%EC%9D%B8%ED%84%B0%EB%84%B7%20%EB%84%A4%ED%8A%B8%EC%9B%8C%ED%81%AC(1).md)
+  - [URI와 웹 브라우저 요청 흐름](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/URI%EC%99%80%20%EC%9B%B9%20%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80%20%EC%9A%94%EC%B2%AD%20%ED%9D%90%EB%A6%84(2).md)
+  - [HTTP 기본](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%EA%B8%B0%EB%B3%B8(3).md)
+  - [HTTP 메서드](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%EB%A9%94%EC%84%9C%EB%93%9C(4).md)
+  - [HTTP 상태코드](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%EC%83%81%ED%83%9C%EC%BD%94%EB%93%9C(5).md)
+  - [HTTP 헤더1_일반](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%ED%97%A4%EB%8D%941_%EC%9D%BC%EB%B0%98(6).md)
+  - [HTTP 헤더2_캐시와 조건부](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/HTTP%20%ED%97%A4%EB%8D%942_%20%EC%BA%90%EC%8B%9C%EC%99%80%20%EC%A1%B0%EA%B1%B4%EB%B6%80(7).md)
+  - [REST API](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/RestApi.mdhttps://github.com/ssu18/TIL/blob/main/Network/HTTP/RestApi.md)
+  - [Postman](https://github.com/ssu18/TIL/blob/main/Network/HTTP%20%EC%9B%B9%20%EA%B8%B0%EB%B3%B8%20%EC%A7%80%EC%8B%9D/Postman.md)
+  </details>
+
+
+### 프론트엔드(Front End)
+----------------------------
+- [HTML 기초 문법(HTML Basic)](https://github.com/ssu18/TIL/blob/main/FrontEnd/HTML.md)<br><br>
+- [CSS 기초 문법(CSS Basic)](https://github.com/ssu18/TIL/blob/main/FrontEnd/CSS.md)<br><br>
+- [레이아웃(Layout)](https://github.com/ssu18/TIL/blob/main/FrontEnd/Layout.md)<br><br>
+- [와이어프레임(Wire frame)](https://github.com/ssu18/TIL/blob/main/FrontEnd/WireFrame.md)<br><br>
+
+
+### ETC
+-------------------------
+- [마크다운 기초 문법(MD Basic)](https://github.com/ssu18/TIL/blob/main/ETC/MDgrammer.md) <br><br>
+- [CLI(Command Line Interface)](https://github.com/ssu18/TIL/blob/main/ETC/CLI.md)<br><br>
+- [Git](https://github.com/ssu18/TIL/blob/main/ETC/Git.md)<br><br>
 
