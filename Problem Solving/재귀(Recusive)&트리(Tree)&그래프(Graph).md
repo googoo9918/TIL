@@ -41,3 +41,9 @@
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Recuresive%2C%20Tree%2C%20Graph(DFS%2C%20BFS%20Basic)/P8.md)
   - 레벨을 임의로 지정해주며(L), for문이 끝날 때 증가시켜주면 됨!
   - 또한 큐에 넣어주기만 하면 자연스럽게 BFS를 돌릴 수 있음 
+
+### 12. 경로탐색(DFS)
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Recuresive%2C%20Tree%2C%20Graph(DFS%2C%20BFS%20Basic)/P12.md)
+  - 사실 구현하는 것이 그렇게 어렵지 않음.. 논리구조만 잘 따져서 단순하게 생각해보자!!
+  - 경로 출력 부분 잘 확인할 것
+    - 너무 배운대로만, 틀에 박힌 사고로만 행하지 말 것
