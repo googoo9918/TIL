@@ -40,3 +40,17 @@
 #### Exception 핸들러 메서드 수정(수정된 ErrorResponse 클래스 메서드 사용, @ResponseStatus)
 ## 비즈니스 로직에대한 예외 처리
 ### 비즈니스적인 예외 던지기(throw)및 예외 처리
+#### 체크, 언체크 예외
+#### 의도적인 예외 던지기/받기(throw/catch)(GlobalExceptionAdivce -> RuntimeException)(문제점: 메서드 하나로 예외 상황을 포괄적으로 담지 못함, RuntimeExcpetion은 너무 추상적임)
+#### 사용자 정의 예외 사용(ExceptionCode, BusinessLogicException)
+# JPA 기반 데이터 엑세스 계층
+## JPA 개요
+### 영속성 컨텍스트(1차 캐시, 쓰기 지연 SQL 저장소)
+#### 사전 설정(build.gradle, application.yml, JpaBasicConfig)
+#### 엔티티 저장 (@Id, @Entity, @GeneratedValue)
+#### 영속성 컨텍스트와 테이블(em.persist(), tx.commit(), em.find(), 쓰기 지연)
+## JPA 엔티티 매핑과 연관 관계 매핑
+### 엔티티 매핑
+### 엔티티 간의 연관 관계 매핑
+## Spring Data JPA
+### Spring Data JPA를 통한 데이터 액세스 계층 구현
