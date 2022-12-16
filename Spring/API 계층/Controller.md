@@ -50,7 +50,7 @@ public class Section3Week1Application {
 ## 커피 주문 애플리케이션의 Controller 구조 작성
 ```java
 @RestController //(1)
-@RequestMappin("/v1/members") //(2)
+@RequestMapping("/v1/members") //(2)
 public class MemberController{
 
 }
@@ -152,7 +152,7 @@ public class MemberController {
         // (2) JSON 문자열 수작업을 Map 객체로 대체
         Map<String, String> map = new HashMap<>();
         map.put("email", email);
-        map.put("name", name);
+        map.put("name", name))
         map.put("phone", phone);
 
         // (3) 리턴 값을 ResponseEntity 객체로 변경
@@ -190,3 +190,4 @@ public class MemberController {
     - 다만 `ResponseEntity` 객체로 데이터를 래핑하여 보다 세련된 방식으로 응답 데이터를 생성함
 - (4), (5)
   - 리턴 값 변환
+  - ㅁㄴㅇㄴㅁㅇ
