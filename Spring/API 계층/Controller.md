@@ -190,4 +190,3 @@ public class MemberController {
     - 다만 `ResponseEntity` 객체로 데이터를 래핑하여 보다 세련된 방식으로 응답 데이터를 생성함
 - (4), (5)
   - 리턴 값 변환
-  - ㅁㄴㅇㄴㅁㅇ
