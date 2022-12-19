@@ -121,7 +121,7 @@
 </details>
 
 <details>
- <summary>웹 애플리케이션 제작 </summary>
+ <summary>웹 애플리케이션 </summary>
 
  - API 계층
    - [Spring MVC 아키텍처](https://github.com/ssu18/TIL/blob/main/Spring/API%20%EA%B3%84%EC%B8%B5/Spring%20MVC%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B2%98.md)<br>
