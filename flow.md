@@ -12,7 +12,7 @@
 #### 코드 개선(JSON수작업 -> Map객체 (produces 삭제), 리턴 값 String -> ResponseEntity(HTTP 상태 코드 추가))
 ## DTO
 ### HTTP 요청/응답에서의 DTO
-#### DTO를 통한 코드 개선(@RequestParam -> MemberDto, 유효성 검증(@Valid))의 당위성
+#### DTO를 통한 코드 개선(@RequestParam -> MemberDto, 유효성 검증(@Valid))의 당위성)
 #### DTO 생성 및 적용(@RequestParam -> @RequsetBody MemberDto, map -> memberDto, @ResponseBody)
 ### DTO 유효성 검증
 #### DTO 클래스에 유효성 검증 적용(@NotBlank, @Email, @Pattern, 정규표현식) 및 핸들러 메서드 수정(@Valid)

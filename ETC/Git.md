@@ -100,7 +100,7 @@
   - Settings(레포지토리 Setting임) -> Features -> Issues -> Set up templates
     - Issues 체크가 안되어 있다면 체크하고 새로고침 할 것
     - 템플릿 제작 하면, 이유 생성 시 템플릿 그대로 사용 가능
-
+![image](https://user-images.githubusercontent.com/102513932/208079291-d2b55ab2-aa76-44cc-bfb8-c086a243e285.png)
 #### Github Milestones
 - 이슈, PR 그룹의 진척도를 확인하는데 사용함
   - 하나의 요구사항을 여러 개의 마일스톤으로 나눠도 되고, 여러 개의 마을스톤을 하나로 합쳐도 괜찮음
