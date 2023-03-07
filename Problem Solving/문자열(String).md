@@ -9,7 +9,7 @@
 - toLowerCase()
   - ex)  answer += Character.toLowerCase(x);
 - toCharArray() 
-  - ex) char[] carr = str.toCharArray;
+  - ex) char[] carr = str.toCharArray();
     - 문자열을 한 글자씩 쪼개서 char타입 배열에 넣어주는 메소드.<br><br>
 ### 2. 대소문자 변환
 - [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/String/P2.md)
