@@ -1,15 +1,62 @@
-목차
-------------------
-- [절대 경로, 상대 경로](#절대-경로와-상대-경로)<br>
-- [관리자 권한](#관리자-권한)<br>
-- [기본 명령어](#기본-명령어)<br>
-- [텍스트 에디터 nano](#텍스트-에디터-nano)<br>
-- [패키지](#패키지)<br>
-- [패키지 매니저 -apt](#패키지-매니저---apt)<br>
-- [RWX 권한](#rwx-권한)<br>
+## 목차
+- [목차](#목차)
+- [WSL2 설치 및 실행](#wsl2-설치-및-실행)
+  - [WSL2](#wsl2)
+  - [설치 과정](#설치-과정)
+- [우분투 리눅스 설치 및 설정](#우분투-리눅스-설치-및-설정)
+- [설치 확인](#설치-확인)
+- [CLI(Command-line interface)](#clicommand-line-interface)
+- [절대 경로와 상대 경로](#절대-경로와-상대-경로)
+- [관리자 권한](#관리자-권한)
+- [기본 명령어](#기본-명령어)
+- [텍스트 에디터 nano](#텍스트-에디터-nano)
+- [패키지](#패키지)
+- [패키지 매니저 - apt](#패키지-매니저---apt)
+- [RWX 권한](#rwx-권한)
 
-CLI(Command-line interface)
-===================================
+
+## WSL2 설치 및 실행
+### WSL2
+- Windows Subsystem for Linux 2
+  - Windows에서 리눅스 터미널을 실행할 수 있게 해주는 프로그램
+### 설치 과정
+1. Microsoft Store 접속
+2. Windows Terminal 검색 후 다운로드
+3. 다운 후 검색 -> 관리자 권한으로 실행
+4. ```dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart``` 입력
+- 실행 결과
+  - ![image](https://user-images.githubusercontent.com/102513932/223358030-a20726ab-9198-4890-b95a-3ad17ac8181c.png)
+5. ```dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart``` 입력
+- 실행 결과
+  - ![image](https://user-images.githubusercontent.com/102513932/223358175-68bd80c6-ab69-46f7-a24b-9177e0e44fd1.png)
+6. 컴퓨터 재부팅
+7. 리눅스 커널 업데이트 패키지 다운
+- [링크](https://learn.microsoft.com/ko-kr/windows/wsl/install-manual)로 이동
+- x64 머신용 최신 WSL2 Linux 커널 업데이트 패키지를 다운로드 받고 실행
+  - ![image](https://user-images.githubusercontent.com/102513932/223358422-9c206139-4548-443d-8b16-11280238e3a5.png)
+- 에러 발생 시 OK와 Finish를 차례로 눌러 설치 프로그램 종료 후 4번부터 다시 진행
+8. 에러가 발생하지 않고 설치 프로그램이 정상 실행된다면, Next를 눌러 설치 진행
+9. ```wsl --set-default-version 2``` 명령어 입력
+- 입력 결과
+  - ![image](https://user-images.githubusercontent.com/102513932/223358797-311e4e1c-dacf-47c8-9707-0260c4a9fb72.png)
+
+## 우분투 리눅스 설치 및 설정
+1. Microsoft Sotre에서 ubuntu lts 검색 후, 버전 다운로드 후 열기 버튼 클릭
+- LTS : Long term Support
+2. 사용자 이름과 비밀번호 입력
+- ![image](https://user-images.githubusercontent.com/102513932/223359118-fd6765cc-f162-4d48-a6bb-5cbeda5cedad.png)
+- 비밀번호 입력 시, 입력 커서에 변화가 없어도 입력은 이루어짐
+
+## 설치 확인
+- ```wsl -l -v``` 입력 후, 버전이 '2'로 나타나는지 확인
+  - 만약 1이라면, ```wsl --set-version Ubuntu 2```를 입력하여 2로 바꿔줌
+- 터미널 종료 후 다시 실행, 상단바 꺽쇠 버튼을 클릭하여 리눅스 선택
+  - ![image](https://user-images.githubusercontent.com/102513932/223359415-847b8586-86eb-4214-83df-8702e999883c.png)
+- 설치완료 시 보이는 화면
+  - ![image](https://user-images.githubusercontent.com/102513932/223359524-204feefd-ea2a-4a28-80fe-3f6d41454668.png)
+
+## CLI(Command-line interface)
+
 
 절대 경로와 상대 경로
 -------------------------------

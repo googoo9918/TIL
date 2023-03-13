@@ -4,7 +4,7 @@
     - [자료구조(Data Structure)](#자료구조data-structure)
     - [알고리즘(Algorithm)](#알고리즘algorithm)
     - [문제 해결(Problem Solving)](#문제-해결problem-solving)
-    - [SQL](#sql)
+    - [DataBase](#database)
     - [Spring](#spring)
     - [JPA](#jpa)
     - [Spring Security](#spring-security)
@@ -83,13 +83,13 @@
 - [투 포인터(Two pointer) & 슬라이딩 윈도우(Sliding Window)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%ED%88%AC%20%ED%8F%AC%EC%9D%B8%ED%84%B0(Two%20Pointer)%26%EC%8A%AC%EB%9D%BC%EC%9D%B4%EB%94%A9%20%EC%9C%88%EB%8F%84%EC%9A%B0(Sliding%20Window).md)<br><br>
 - [해쉬(Hash), 정렬지원 Set(Tree Set)](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/%ED%95%B4%EC%89%AC%2C%20%EC%A0%95%EB%A0%AC%EC%A7%80%EC%9B%90%20Set.md)<br><br>
 
-### SQL
+### DataBase
 ----------------------------------------------------
-- [SQL & NoSQL](https://github.com/ssu18/TIL/blob/main/SQL/SQL%26NoSQL.md)<br><br>
-- [SQL 명령어(SQL_Command)](https://github.com/ssu18/TIL/blob/main/SQL/SQL_Command.md)<br><br>
-- [데이터베이스 설계(DB_design)](https://github.com/ssu18/TIL/blob/main/SQL/DB_design.md)<br><br>
-- [데이터베이스 정규화(DB_Normalization)](https://github.com/ssu18/TIL/blob/main/SQL/DB_Normalization.md)<br><br>
-- [ACID](https://github.com/ssu18/TIL/blob/main/SQL/ACID.md)<br><br>
+- [SQL & NoSQL](https://github.com/ssu18/TIL/blob/main/DataBase/SQL%26NoSQL.md)<br><br>
+- [SQL 명령어(SQL_Command)](https://github.com/ssu18/TIL/blob/main/DataBase/SQL_Command.md)<br><br>
+- [데이터베이스 설계(DB_design)](https://github.com/ssu18/TIL/blob/main/DataBase/DB_design.md)<br><br>
+- [데이터베이스 정규화(DB_Normalization)](https://github.com/ssu18/TIL/blob/main/DataBase/DB_Normalization.md)<br><br>
+- [ACID](https://github.com/ssu18/TIL/blob/main/DataBase/ACID.md)<br><br>
 
 ### Spring
 --------------------------------------------------

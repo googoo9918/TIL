@@ -6,6 +6,8 @@
     - [배열](#배열)
     - [문자열](#문자열)
   - [구조체](#구조체)
+  - [포인터](#포인터)
+    - [new, delete 연산](#new-delete-연산)
 # c++ 기초
 ## Hello, c++
 ```cpp
@@ -196,4 +198,119 @@ int main() {
 
 	return 0;
 }
+```
+
+## 포인터
+```cpp
+int main() {
+
+	//포인터 : 사용할 주소에 이름을 붙인다.
+	// 즉, 포인터는 포인터의 이름이 주소를 나타냄
+	// 간전값 연산자, 간접 참조 연산자 *
+	
+    int a = 6;
+    int* b;
+
+    b = &a;
+
+    cout << "a의 값 " << a << endl;
+    //6
+    cout << "*b의 값 " << *b << endl;
+    //6
+
+    cout << "a의 주소 " << &a << endl;
+    //0033FACO
+    cout << "*b의 주소 " << b << endl;
+    //0033FACO
+
+    *b = *b + 1;
+    
+    cout << "이제 a의 값은 " << a << endl;
+    //7
+    return 0;
+```
+
+### new, delete 연산
+```cpp
+int main() {
+	// new 연산자
+	/*
+	* 어떤 데이터형을 원하는지 new 연산자에게 알려주면, 
+	new 연산자는 그에 알맞은 크기의 메모리 블록을 찾아내고
+	그 블록의 주소를 리턴함
+	*/
+
+	int* pointer = new int;
+
+	//delete 연산자
+	/*
+	사용한 메모리를 다시 메모리 풀로 환수
+	환수된 메모리는 프로그램의 다른 부분이 다시 사용
+	*/
+
+	int* ps = new int;
+	//메모리 사용
+	delete ps;
+
+	/*
+	1. new로 대입하지 않은 메모리는 delete로 해제할 수 없다
+	2. 같은 메모리 블록을 연달아 두 번 delete로 해제할 수 없다
+	3. new []로 메모리를 대입할 경우 delete[]로 해제한다
+	4. 대괄호를 사용하지 않았다면 delete도 대괄호를 사용하지 않아야 한다
+	*/
+
+	double* p3 = new double[3];
+	//double형 데이터 3개를 저장할 수 있는 공간을 대입
+
+	p3[0] = 0.2;
+	p3[1] = 0.5;
+	p3[2] = 0.8;
+
+	cout << "p3[1] is " << p3[1] << ".\n";
+
+	p3 = p3 + 1;
+	//현재 1은 double형 데이터 공간 한 개이다.
+
+	cout << "Now p3[0] is " << p3[0] << " and ";
+	cout << "p3[1] is " << p3[1] << "\n.";
+
+	p3 = p3 - 1; // 다시 시작 위치를 지시
+	delete[] p3; // 배열 메모리를 해제함
+
+	return 0;
+}
+```
+
+```cpp
+using namespace std;
+	
+	char animal[SIZE];
+	char* ps;
+
+	cout << "동물 이름을 입력하십시오\n";
+	cin >> animal;
+
+	ps = new char[strlen(animal) + 1];
+	strcpy(ps, animal);
+
+	cout << "입력하신 동물 이름을 복사하였습니다" << endl;
+	cout << "입력하신 동물 이름은 " << animal << "이고, 그 주소는 " << &animal << " 입니다." << endl;
+	cout << "복사된 동물 이름은" << ps << "이고, 그 주소는 " << (int*)ps << "입니다." << endl;
+	
+	
+	
+	//동적 구조체 생성
+	MyStruct* temp = new MyStruct;
+
+	cout << "당신의 이름을 입력하십시오.\n";
+	cin >> temp->name;
+
+	cout << "당신의 나이를 입력하십시오.\n";
+	cin >> (*temp).age;
+
+	cout << "안녕하세요! " << temp->name << "씨!\n";
+	cout << "당신은 " << temp->age << "살 이군요!\n";
+
+	delete temp;
+	return 0;
 ```
