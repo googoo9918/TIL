@@ -50,4 +50,57 @@
 ### C ToolChain
 - ![image](https://user-images.githubusercontent.com/102513932/224871558-0dca4cc3-a277-45b3-9f99-af2e50004333.png)
   - CPP : C Preprocessor, 전처리기
-- ![image](https://user-images.githubusercontent.com/102513932/224871729-1b808a36-8354-452e-beae-169af758d611.png)
+  - 점선
+    - 실행파일에 외부 library를 포함할 수도(static linking), 포함하지 않을 수도(dynamic linking) 있음
+- C Preprocessor
+  - 컴파일러에서 컴파일 될 수 있도록 코드를 전처리함 -> .i 파일 생성됨
+  - include, definde, ifdef, endif, if, endif 등 처리 (모두 `#`생략)
+- C Compiler
+  - 컴파일러는 C를 machine-dependent한 assembly code로 변환함 -> .s 파일 생성됨
+    - 어떤 architecture를 타겟으로 하는지에 다라 assembly code의 형태가 다르게 됨
+    - ex) x86, ARM, mips, ...
+- Assembler
+  - assembly code를 machine-executable instructions로 변환함 -> .o 파일 생성됨
+    - ex) op code / add r0, r1, r2, ...
+  - 오브젝트 파일은 다음을 포함
+    - constant data(상수 등), Static symbols(지역 변수 등), locally-defined globals(전역 변수 등), unresolved symbols(extern 변수 등)
+    - 컴파일 단계에서 .c파일 마다 따로 컴파일을 진행하기 때문에 외부에서 선언된 extern 변수는 unresolved symbols로 남아있게 됨
+- Linker
+  - 다수의 object 파일을 실행파일(executable)로 변환함
+  - ![image](https://user-images.githubusercontent.com/102513932/224873890-a1fecec9-0b26-44a4-9bf5-fa6c21c836e3.png)
+    - 해결 안된 unresolved 는 외부 library를 통해 해결 가능
+
+### Compiling Hello world
+```c
+#include <stdio.h>
+
+int main(int argc, char *argv[]){ 
+    // argc는 메인함수에 전달되는 정보의 개수를 의미
+    // argv는 전달되는 실질적인 정보로 문자열의 배열을 의미함, 첫 번쨰 문자열은 프로그램의 실행경로로 항상 고정
+    // ex) HelloWorld.exe I Love You Always
+    // argc = 5 , agrv[0] : C:\Users\ceo\Desktop\새 폴더 "HelloWorld.exe"
+    // argv[1] : "I", argv[2] : "Love", argv[3] : "You", argv[4] : "Always"
+    return 0;
+}
+```
+- 보통 컴파일 할 때 
+  - `gcc -o helloworld helloworld.c`
+    - helloworld : binary 파일명
+- 가능한 다양한 옵션
+  - `gcc -Wall -Werror -O2 -g -std=c99 -o helloworld helloworld.c`
+    - Wall : 모든 경고 메시지를 켬
+    - Werror : 모든 Warning을 error 취급
+    - O2 : 컴파일 코드 최적화 단계 조절
+    - g : 디버깅 정보 포함(gdb 등을 이용해 분석 시 사용)
+    - std=c99 : 1999 iso C 표준을 따름
+- 전처리기가 header를 포함시켜주고, 컴파일러가 assembly를 생성해주고, assmebler가 object 파일을 생성해주고, linker가 helloworld(executable binary)를 생성해줌
+- 단계별 컴파일
+  - `gcc -E` : 전처리를 실행하고 컴파일을 중단함
+    - `#include <file>` 
+      - System에 이미 환경변수로 지정되어 있는 파일을 쓸 때 사용
+    - `#include "file"`
+      - 다른 경로로 저장한 header 사용 시
+  - `gcc -S` : c코드에서 assembly로 변환
+    - ![image](https://user-images.githubusercontent.com/102513932/224876139-cc34c6b6-dc1b-42b5-87e3-bf7b9bf7ad0e.png)
+  - `gcc -c` : 컴파일만 하고 링크를 수행하지 않으며, 오브젝트 파일을 생성함
+  - `gcc -o` : 바이너리 형식의 출력 파일을 생성하고 이름 또한 지정함
