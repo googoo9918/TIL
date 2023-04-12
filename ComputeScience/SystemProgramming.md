@@ -367,11 +367,11 @@ int i = c;
 - 둘 다 크기가 가변적임
 - ![image](https://user-images.githubusercontent.com/102513932/231425155-8a3dff84-8d1d-4781-b585-099bb619c911.png)
   - grow downward when functions are called and shrinks when they return
-  - `kernel` manages the size of the stack automatically
+  - ```kernel``` manages the size of the stack automatically
   - function call은 argument와 Local variables를 포함
 - ![image](https://user-images.githubusercontent.com/102513932/231425640-6f066a00-280d-45a6-a068-707f216d0ec3.png)
   - Heap은 자동적으로 늘어나진 않음
-  - `kernel`이 brk(program break)를 unmapped memory와 heap 사이에서 유지함
+  - ```kernel```이 brk(program break)를 unmapped memory와 heap 사이에서 유지함
   - grow upward -> brk(program break) be moved
 - ![image](https://user-images.githubusercontent.com/102513932/231426251-26c2ecb2-97b1-4b67-92f8-38db74d7c7f2.png)
   - 초기화된 전역 변수 --> data section
@@ -485,3 +485,101 @@ if(pid == 0){
 - exec()는 현재 process image를 new program으로 교체함
   - 성공 시 반환값은 따로 존재하지 않음 
   - fork()와 exec()를 결합하면 현재 프로세스를 복제한 후 자식 프로세스에서 새로운 프로그램을 실행할 수 있음
+  - posix_spawn() 은 fork와 exec()의 기능 결합
+    - 최신에 많이 사용되는만큼, 더 효율적임
+
+### exec()
+- exec() 시스템 호출에 여러 변형이 있음(ex: execl(), execv(), exelp())
+  - 모두 현재 프로세스의 메모리 공간에서 새 실행 파일을 로드하고 실행하는 목적을 수행함
+```c
+excel("/bin/ls", "ls", "-F", "/", NULL);
+// /bin/ls는 ls 실행 파일의 경로임
+// "ls"는 실행 중인 프로그램의 이름
+// -F는 ls 명령에 전달되는 옵션
+// "/"는 나열할 디렉토리를 지정
+// NULL은 인수 목록의 끝을 나타냄
+
+// 새로운 프로세스를 실행한 뒤 경로와 여러 옵션을 붙여 ls명령어를 실행시킨거임.  
+
+// output:
+// afs/
+// boot/
+// dev/
+// etc/
+// ...
+```
+
+### Process Termination
+- 종료 시점
+  - exit()을 call 했을 때
+    - 종료 시 정수 인수(argument) 리턴 
+  - main()으로 return 될 떄
+    - 종료 시 정수 반환 값 리턴
+  - 특정 signal을 catch 하는데 실패했을 때(제대로 된 응답을 못받았을 때)
+    - ex) SIGSEGV 시그널(세그멘테이션 폴트)를 받았지만 이를 catch하기 위한 시그널 핸들러가 없는 경우
+  - 특정(종료) signal을 받았을 때
+    - 신호에 의해 종료되었음을 나타내는 특수 값 반환
+    - 어떤 신호가 종료를 유발했는지도 나타냄
+
+### Detecting Process Termination
+- wait() system call은 부모 프로세스에서 자식 프로세스 중 하나가 종료될 때까지 대기하는데 사용됨
+  - reaping : 프로세스가 종료된 후 그 프로세스에 대한 정보를 회수하는 과정
+    - 주로 부모 프로세스가 자식 프로세스가 종료될 때 그 결과를 회수하여 시스템 리소스를 정리함
+  - 만약 자식 프로세스가 종료되었는데 reaping되지 않았다면 시스템에서 여전히 PID를 차지하고 있는 상태임
+  - 좀비 프로세스는 memory space에 올라와 있어서 자원을 계속해서 소모하게 됨
+  - 고아 프로세스는 부모 프로세스가 먼저 종료된 경우로, init 프로세스가 reap 하게됨
+
+```c
+pid_t pid = fork();
+if (pid == 0){ //child에서 수행
+  puts("In child");
+  exit(42); //42를 종료 상태로 반환함 --> status 값으로 넘겨지게 됨
+} else{ //부모 process에서 수행
+  int status;
+  waitpid(pid, &status, 0); //특정 pid로 부터 &status 값을 받으면 다음줄 실행
+  printf("Child exited with status %d\n", WEXITSTATUS(status));
+  //WEXITSTATUS()를 통해 status 변수에서 자식 프로세스의 종료 상태를 추출하고 출력 -> 42 출력
+}
+
+//Output :
+// In child
+// Child exited with status 42
+// 당연히 순서가 정해져 있겠지? 
+// 부모 process는 waitpid에서 자식 process가 끝날때 까지 못넘어가니까.. 
+```
+
+### More Environment
+- 프로세스 환경은 다음도 포함함
+  - 현재 working directory
+  - 환경 변수
+  - open files
+- 상기 환경은 kernel에 의해 유지됨
+### current working directory
+  - 모든 process는 working directory를 지님
+  - 프로세스가 실행되는 동안 파일 시스템에 대한 상대적 기준점 역할을 함
+    - 쉽게 말해, 상대 파일 경로는 현재 작업 디렉토리를 기준으로 함
+  - cf
+    - chdir()을 통해 작업 디렉토리 변경 가능
+    - 조회를 위한 getcwd()
+    - getwd()는 버퍼 크기를 확인하지 않아 오버플로우가 일어날 수 있으니 사용 지양
+
+### Environment Variables
+- 환경변수는 프로세스가 실행되는 동안 사용할 수 있는 설정 값이나 정보를 저장함
+  - 모든 프로세스는 환경 변수를 가짐
+  - 환경 변수들은 environ 이라는 전역 배열에 저장됨
+    - fork() 시 커널에 의해 복제됨
+  - getenv()를 통해 특정 환경 변수 검색 가능
+  - setenv()를 통해 환경 변수 설정 가능
+
+### Files
+- 커널은 모든 프로세스에 대해 open 파일을 유지함
+  - 이 파일들은 정수 파일 descriptor로 식별됨
+  - 프로세스는 이 파일 디스크립터를 사용하여 파일을 읽고 쓸 수 있음
+- stdin, stout, stderr은 각각 파일 디스크립터 0, 1, 2로 정의됨
+  - 표준 입력, 표준 출력, 표준 오류
+- 각 파일 디스크립터에 대해 가장 최근에 읽거나 쓴 위치가 저장됨
+  - 이 위치 정보를 통해 파일 내에서 읽고 쓰기 작업의 시작점을 결정할 수 있음
+- 파일 디스크립터는 fork()에 의해 복제됨 
+- 파일 디스크립터는 exec()에 의해 선택적으로 닫힐 수 있음
+  - 새로운 프로그램이 실행되기 전 현재 프로세스의 파일 디스크립터를 닫을지 여부를 결정 할 수 있음
+  - 자식 프로세스가 부모 프로세스의 파일 디스크립터를 상속받지 않고 새로운 실행 환경 설정 가능
