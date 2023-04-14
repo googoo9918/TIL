@@ -260,7 +260,7 @@
 ## 17. 속성과 관련된 연산(Operation)을 클래스 안에 묶어서 하나로 취급하는 것을 의미하는 객체지향 개념은?
 - Inheritance(상속)
 - Class
-- Encapsulation(캡슐화)
+- Encapsulation(캡슐화) (O)
 - Assocation(연관)
 ## 18. 애자일(Agile) 프로세스 모델에 대한 설명으로 틀린 것은?
 - 빠른 변화에 대응하고 끊임없이 개선하는 방식의 개발 프로세스
@@ -280,11 +280,11 @@
 - 생성(추상 팩토리(Abstract Factory), 빌더(Builder), 팩토리 메소드(Factory Method), 프로토타입(Prototype), 싱글톤(Singleton))
 - 구조(어댑터(Adapter), 브릿지(Bridge), 컴포지트(Compostie), 데코레이터(Decorator), 퍼싸드(Facade), 플라이웨이트(Flyweight), 프록시(Proxy))
 - 행위(책임 연쇄(Chain of Responsibility), 커맨드(Command), 인터프리터(InterPreter), 반복자(Iterator), 중재자(Mediator), 메멘토(Memento), 옵서버(Observer), 상태(State), 전략(Strategy), 템플릿 메소드(Template Method), 방문자(Visitor))
-- Adapter 패턴
-- Bridge 패턴
-- Builder 패턴
+- Adapter 패턴(O)
+- Bridge 패턴(O)
+- Builder 패턴(X)
   - 생성 패턴임
-- Proxy 패턴
+- Proxy 패턴(O)
 ## 20. 소프트웨어 모델링과 관련한 설명으로 틀린 것은?
 - 소프트웨어 모델링은 소프트웨어 개발 과정에서 시스템의 구조, 행위, 기능, 그리고 비즈니스 프로세스 등을 시각화,명세화, 문서화하는 과정
   - 시스템을 이해하고 분석하는 데 도움이 되고, 개발자와 이해관계자들 간의 의사소통을 원할하게 하며, 소프트웨어의 품질과 정확성을 높임
