@@ -1,5 +1,104 @@
+## 목차
+- [시스템 프로그래밍](#시스템-프로그래밍)
+  - [C\_POSIX](#c_posix)
+    - [POSIX](#posix)
+    - [Pointer](#pointer)
+    - [C/POSIX Text I/O](#cposix-text-io)
+    - [C ToolChain](#c-toolchain)
+    - [Compiling Hello world](#compiling-hello-world)
+  - [Mem\_representation](#mem_representation)
+    - [Bit, Word](#bit-word)
+    - [Bus](#bus)
+    - [CPU \<-\> Memory Transfer](#cpu---memory-transfer)
+    - [Hexadecimal](#hexadecimal)
+    - [Padding and Alignment](#padding-and-alignment)
+    - [Pointers to Structures](#pointers-to-structures)
+    - [Exploring Representation](#exploring-representation)
+  - [Process v1](#process-v1)
+    - [Process](#process)
+    - [Executable Formats](#executable-formats)
+    - [Loading](#loading)
+    - [ELF Structure](#elf-structure)
+    - [ELF Sections](#elf-sections)
+    - [Program to Process](#program-to-process)
+    - [Basic Layout](#basic-layout)
+    - [Text, Data, Bss](#text-data-bss)
+    - [Stack, Heap](#stack-heap)
+    - [Static / Dynamic Allocations](#static--dynamic-allocations)
+    - [Process Environment](#process-environment)
+    - [System Call](#system-call)
+    - [Invoking a Function](#invoking-a-function)
+    - [Invoking a System Call](#invoking-a-system-call)
+  - [Process Lifecycle](#process-lifecycle)
+    - [Process Creation](#process-creation)
+    - [Fork in Action](#fork-in-action)
+    - [fork()/exec() Model](#forkexec-model)
+    - [exec()](#exec)
+    - [Process Termination](#process-termination)
+    - [Detecting Process Termination](#detecting-process-termination)
+    - [More Environment](#more-environment)
+    - [current working directory](#current-working-directory)
+    - [Environment Variables](#environment-variables)
+    - [Files](#files)
+  - [Linking](#linking)
+    - [Why Linkers?](#why-linkers)
+    - [What Do Linkers Do?](#what-do-linkers-do)
+    - [Three kinds of Binary Files](#three-kinds-of-binary-files)
+    - [Executable and Linkable Format(ELF)](#executable-and-linkable-formatelf)
+    - [ELF object file Format](#elf-object-file-format)
+    - [Linker Symbols](#linker-symbols)
+    - [Sybmol Resolution](#sybmol-resolution)
+    - [Local Symbols](#local-symbols)
+    - [Linker Resolves Duplicate Symbol Definitions](#linker-resolves-duplicate-symbol-definitions)
+    - [Linker's Symbol Rules](#linkers-symbol-rules)
+    - [Global Variables](#global-variables)
+    - [Relocation Entries](#relocation-entries)
+    - [Packaging Commonly Used Functions](#packaging-commonly-used-functions)
+    - [old-fashioned Solution : Static Libraries](#old-fashioned-solution--static-libraries)
+    - [Modern Solution: Shared Libraries](#modern-solution-shared-libraries)
+  - [Library Interpositioning](#library-interpositioning)
+    - [Compile-time Interpositioning](#compile-time-interpositioning)
+    - [Link-time InterPositioning](#link-time-interpositioning)
+    - [Load/Run-time Interpositioning](#loadrun-time-interpositioning)
+  - [Input/Output](#inputoutput)
+    - [I/O Kernel Services](#io-kernel-services)
+    - [Everything is a File](#everything-is-a-file)
+    - [File Types](#file-types)
+    - [Regular Files](#regular-files)
+    - [Directories](#directories)
+    - [File Descriptors](#file-descriptors)
+    - [File Modes](#file-modes)
+    - [System Call Failures](#system-call-failures)
+    - [Opening Files](#opening-files)
+    - [Reading](#reading)
+    - [Writing](#writing)
+    - [Closing](#closing)
+    - [UNIX I/O Example](#unix-io-example)
+    - [UNIX I/O Example with perror()](#unix-io-example-with-perror)
+    - [Opening Streams](#opening-streams)
+    - [Binary I/O](#binary-io)
+    - [Reading and Writing](#reading-and-writing)
+    - [Errors and EOF](#errors-and-eof)
+    - [Standard I/O Example](#standard-io-example)
+    - [System Call Overhead](#system-call-overhead)
+    - [Buffering and Performance](#buffering-and-performance)
+    - [Buffer Example](#buffer-example)
+    - [Buffer Example2](#buffer-example2)
+  - [Pipes and Redirection](#pipes-and-redirection)
+    - [UNIX Pipes](#unix-pipes)
+    - [Creating a pipe](#creating-a-pipe)
+    - [Mechanism](#mechanism)
+    - [Buffer Capacity](#buffer-capacity)
+    - [Fork and Pipe](#fork-and-pipe)
+    - [More on File Descriptors](#more-on-file-descriptors)
+    - [How the Unix Kernel Represents Open Files](#how-the-unix-kernel-represents-open-files)
+    - [Fork and File Descriptors](#fork-and-file-descriptors)
+    - [Pipe File Descriptor Gotcha](#pipe-file-descriptor-gotcha)
+    - [Safe Pipe and Fork](#safe-pipe-and-fork)
+    - [Copying a Descriptor](#copying-a-descriptor)
+    - [Redirecting Standard Output](#redirecting-standard-output)
 # 시스템 프로그래밍
-## 1주차
+## C_POSIX
 ### POSIX
 - Portable Operating System Interface + X(UNIX)
   - 이식 가능 운영 체제 인터페이스
@@ -46,7 +145,6 @@
   - fputs와 fprintf는 stdout, stderr 중 선택 가능함
   - gets는 사이즈가 정의되어 있지 않아 위험함, 지양할 것
 
-## 2주차
 ### C ToolChain
 - ![image](https://user-images.githubusercontent.com/102513932/224871558-0dca4cc3-a277-45b3-9f99-af2e50004333.png)
   - CPP : C Preprocessor, 전처리기
@@ -107,7 +205,7 @@ int main(int argc, char *argv[]){
     - system libraries와 link
     - `ldd`를 통해 linkage 확인 가능
 
-## 3주차
+## Mem_representation
 ### Bit, Word
 - 컴퓨터에게 메모리는 단순 bits이고, 컴퓨터는 data type을 알 수 없음
 - 메모리를 단어(word)로 표현하는 것이 더 정확할 수 있음
@@ -272,7 +370,7 @@ int i = c;
   - 웬만큼 작은 부동 소수점이 아니라면 굳이 double을 쓸 필요는 없음
   - 정확도에서는 double을, memory 측면에서는 float 사용을 고려할 것
 
-## 4주차
+## Process v1
 ### Process
 - 프로세스는 실행되고 있는 프로그램을 뜻함
   - 프로그램이 단순 기계어의 집합이라면, process는 사용중인 memory 공간과 system resource등도 포함함
@@ -583,3 +681,691 @@ if (pid == 0){ //child에서 수행
 - 파일 디스크립터는 exec()에 의해 선택적으로 닫힐 수 있음
   - 새로운 프로그램이 실행되기 전 현재 프로세스의 파일 디스크립터를 닫을지 여부를 결정 할 수 있음
   - 자식 프로세스가 부모 프로세스의 파일 디스크립터를 상속받지 않고 새로운 실행 환경 설정 가능
+
+## Linking
+```c
+//main.c
+int sum(int *a, int n); // sum의 실제 정의는 다른 c 파일에 되어 있음
+
+int array[2] = {1,2};
+
+int main()
+{
+  int val = sum(array,2);
+  return val;
+}
+
+//sum.c
+int sum(int *a, int n)
+{
+  int i,s = 0;
+
+  for(i=0; i<n; i++){
+    s+= a[i];
+  }
+  return s;
+}
+```
+
+- ![image](https://user-images.githubusercontent.com/102513932/232183883-d382a2ec-214c-4f7d-a149-cce0de04cdac.png)
+  - source file은 전처리기, 컴파일러, 어셈블러에 의해 object파일이 됨
+  - 지금 main.o와 sum.o는 ELF 포맷을 따르지만 실행 가능한 오브젝트 파일은 아님 (relocatable object file임)
+  - prog는 ELF 포맷을 따르는 실행 가능한 파일
+    - 사실 binary도 일종의 object 파일이라 보는 것이 맞음
+  - 즉, 링킹 과정을 거치기 전에는 실행 불가능한 오브젝트 파일(== relocatable object file), 링킹 이후에는 실행 가능한 오브젝트 파일임
+
+
+### Why Linkers?
+- Modularity(모듈화)
+  - 프로그램을 작은 소스파일로 구성할 수 있음
+    - 코드의 복잡성이 줄어들고, 분업이 가능함
+  - 공통 기능을 모아 놓은 라이브러리를 만들 수 있음
+  - 코드 재사용 가능
+- Efficiency(효율성)
+  - 시간
+    - 별도의 컴파일 가능
+    - 변경 후 재 컴파일 불필요, 시간 절약 가능
+  - 공간
+    - 공통 함수를 하나의 파일(라이브러리)로 모을 수 있음
+      - 실행 파일의 크기를 줄일 수 있으며, 라이브러리의 복사본이 여러 번 저장되지 않아 저장 공간이 절약됨
+    - 실행 파일과 실행 중인 메모리 이미지에는 실제 사용되는 함수에 대한 코드만 포함됨
+      - 라이브러리에서 사용하는 함수가 호출되는 경우에만 해당 함수가 메모리에 로드됨
+
+
+### What Do Linkers Do?
+- Symblol resolution(심볼 해석)
+  - 심볼은 전역 변수와 함수와 같이 프로그램의 여러 부분에서 참조할 수 있는 식별자를 의미함
+  - static이 붙은 지역 변수도 가능함
+```c
+void swap() {…} /* 심볼 swap을 정의 */
+swap(); /* 심볼 swap을 참조 */
+int *xp = &x; /* 심볼 xp를 정의하고, x를 참조 */
+```
+  - 심볼 정의는 어셈블러에 의해 오브젝트 파일의 심볼 테이블에 저장
+    - 심볼 테이블은 구조체 배열로 구성됨
+    - 각 엔트리에는 심볼의 이름, 크기, 위치 등의 정보 포함
+  - During symbol resolution step, the linker associates each symbol reference with exactly one symbol definition
+    - 여러개의 symbol이 겹치는게 있을 때, 한 개로 정확히 mapping 해줌
+- Relocation(재배치)
+  - ELF Format을 따르는 여러개의 오브젝트 파일을 한 개의 ELF Format에 재배치함
+    - 이게 실행파일이 됨
+  - 여러 오브젝트 파일의 코드와 데이터 섹션을 하나의 섹션으로 병합함
+  - 각 심볼의 상대적 위치를 오브젝트 파일에서 최종 실행 파일의 절대 메모리 위치로 변경함
+  - 이러한 심볼들에 대한 모든 참조를 업데이트하여 새로운 위치를 반영하게 됨
+
+
+### Three kinds of Binary Files
+- Relocatable object file(.o file)
+  - 코드와 데이터를 포함, 다른 재배치 가능한 오브젝트 파일과 결합해 실행 가능한 오브젝트 파일을 생성할 수 있는 형태임
+  - 전처리, 컴파일, 어셈블 처리를 거친 후 상태 (링킹 이전)
+- Executable object file(a.out file)
+  - 코드와 데이터를 포함, 메모리에 직접 복사되어 실행될 수 있는 형태
+  - 링커를 통해 재배치 가능한 오브젝트 파일들과 라이브러리가 결합되어 생성됨
+- shared object file(.so file)
+  - 공유 오브젝트 파일
+  - 특수한 종류의 재배치 가능한 오브젝트 파일
+  - 메모리에 로드되어 로드 시간이나 실행 시간에 동적으로 연결될 수 있는 형태
+    - **load time, run-time**
+  - 실행중인 프로그램에 필요한 코드와 데이터를 제공함
+  - 여러 프로그램에서 동시 사용 가능
+  - 윈도우 시스템에서는 동적 링크 라이브러리(Dynmaic Link Libraries, DLLs)라고도 불림
+
+### Executable and Linkable Format(ELF)
+- ELF format은 object 파일의 표준 이진 형식임
+- .o 파일, .out 파일, .so 파일 모두 ELF format을 따름
+- ELF binaries라고도 칭함
+
+### ELF object file Format
+- ![image](https://user-images.githubusercontent.com/102513932/232185286-8b2711ea-8ef1-44b8-a067-57c045fce218.png)
+- Elf header
+  - word size, byte odering(엔디안), file type(.o, exec, .so), machine type
+- Segment header table
+  - Page size, virtual addresses memory segments, segment sizes
+- .text section
+  - code
+- .rodata
+  - data section 에서 문자열 literal, const 변수 등 상수
+- .data section
+  - 초기화된 전역 변수
+- .bss(Block started by symbol or Better Save Space) section
+  - 초기화되자 않은 전역 변수
+  - 프로그램이 실행되기 전에 어떤 값도 갖지 않으므로, 이 섹션은 디스크 상에서 공간을 차지 않음
+    - 대신 프로그램이 메모리에 로드될 때 운영 체제에 의해 자동으로 0으로 초기화 됨
+- ![image](https://user-images.githubusercontent.com/102513932/232186965-013cddd0-d764-4090-9193-19b1f21b31bc.png)
+  - .symbtab section
+    - symbol table section
+    - 함수 및 정적 변수 이름 포함
+    - 각 섹션의 이름 및 위치 정보 저장
+  - .rel.text section
+    - .text section의 relocation 정보 저장
+      - linker가 relocation 시 수정해야할 명령어의 주소와 수정 방법에 대한 정보 포함
+  - .rel.data section
+    - .data 섹션에 대한 재배치 정보를 저장함
+    - linker가 병합된 실행 파일에서 수정해야할 포인터 데이터의 주소와 수정 방법에 대한 정보 포함
+  - .debug 섹션
+    - 컴파일 시 `-g` 옵션 사용할 때, 디버깅 정보 포함
+  - section header table
+    - 각 섹션의 오프셋(상대 주소)과 크기 포함
+
+
+### Linker Symbols
+- Global symbols
+  - 모듈 m에 의해 정의되지만, 다른 모듈에서도 참조할 수 있는 심볼
+  - non-static c 함수와 non-static 전역 변수가 이에 해당
+- External symbol
+  - 모듈 m에서 참조되지만, 다른 모듈에서 정의되는 **전역 심볼**
+  - 다른 모듈에서 제공되는 기능이나 데이터에 대한 종속성을 지님
+- Local symbols
+  - 모듈 m에서만 정의되고 참조되는 심볼
+  - c 함수, 전역변수나 지역변수를 static 속성으로 정의한 경우에 해당됨
+  - 해당 모듈 내에서만 사용되고, 다른 모듈에서는 볼 수 없음
+  - 지역심볼과 지역 변수는 다른 개념임 주의
+
+### Sybmol Resolution
+- ![image](https://user-images.githubusercontent.com/102513932/232189104-b3e74591-271c-43bc-b814-f706385abd94.png)
+  - main.c 입장에서 symbol을 살펴봄
+  - array, main은 Global symbol
+    - main.c에 의해 정의되고, 다른 모듈에서도 참조할 수 있음
+  - sum은 External symbol임
+  - static이 붙은 함수나 전역변수, 지역변수가 없으니, Local symbol은 없겠지
+
+### Local Symbols
+- non-static C 변수 vs local static C 변수
+  - static이 붙지 않은 변수는 스택에 저장됨
+  - static이 붙은 변수는 .bss(초기화 되지 않은 변수인 경우)나 .data(초기화 된 전역인 경우)에 저장됨
+    - 여기서 만약 전역변수라면 symbol이고, 지역변수라면 symbol이 아님
+```c
+int f()
+{
+  static int x=0;
+  return x;
+}
+int g()
+{
+  static int x = 1;
+  return x;
+}
+// 컴파일러는 .data section에 각 x를 저장함
+// 또한, static이 붙은 지역변수는 local symbol로 처리되기 때문에
+// symbol table에 x.1 , x.2와 같이 unique한 name으로 저장하게 됨
+// 변수명을 달리해서 충돌을 피하기 위함임
+```
+
+### Linker Resolves Duplicate Symbol Definitions
+- Program sybols are either string or weak
+  - strong : 초기화된 전역 변수
+  - weak : 초기화되지 않은 전역 변수
+```c
+//p1.c
+int foo = 5; //strong
+
+p1(){ } //strong
+
+int foo; //weak
+p2() { } //strong
+//p2.c
+```
+
+### Linker's Symbol Rules
+- Rule 1
+  - Multiple strong symbols are not allowed
+    - strong symbol은 단 한번만 정의되어야 함
+    - 여러 번 정의되면 linked error
+- Rule 2
+  - strong symbol 하나와 다수의 weak symbol이 주어지면, strong symbol을 선택함
+    - 따라서 초기화되지 않은 변수는 초기화된 전역 변수에 잡아 먹힐 수 있음
+      - 따라서 웬만하면 전역 변수 사용을 권장하지 않음
+      - static 변수는 해당 함수 내에서만 접근 가능하니 괜찮음
+- Rule 3
+  - 다수의 weak symbol만 존재한다면, 무작위로 하나를 선정하게 됨
+    - ```gcc -fno-common`으로 변경할 수는 있음
+- 즉 전역변수는 이름이 같으면 서로 초기화가 되어있어도 문제이고, 한쪽만 초기화가 되어있어도 문제임
+
+### Global Variables
+- 가능하다면 사용을 피하라
+- 가능하다면 static을 사용하라
+- 전역 변수를 사용할 것이라면, 초기화를 해라
+  - strong symbol을 위해
+- 외부 전역 변수를 참조할 것이라면, extern을 사용하라
+  - 이를 통해 이름 충돌을 방지할 수 있음
+
+### Relocation Entries
+- ![image](https://user-images.githubusercontent.com/102513932/232197050-8d2cfee0-5b80-4dac-824d-caeef7b441cf.png)
+  - 아직 링킹을 하기 전이므로, 정확한 주소값을 넣지 않은 상황임
+    - relocate 시 주소가 바뀌기 때문
+- ![image](https://user-images.githubusercontent.com/102513932/232197098-d6e448fa-bc70-4ada-8d5d-e4c3398d6b0c.png)
+  - 실행 파일에서는 주소 값이 정확하게 들어가게 됨
+  - 4004e3과 4004e8의 차이는 pc값 차이임
+
+### Packaging Commonly Used Functions
+- 예전의 방식인 정적 링킹에 대한 내용임
+- How to package functions commonly used by programmers?
+- 1. 모든 함수를 하나의 소스 파일에 넣기
+  - 예전에는 하나의 binary에 모든 function의 정보를 넣음
+  - 장점 : librayr를 깔지 않아도 실행 가능함(이식성이 높음), 프로젝트 구조가 간단해짐
+  - 단점: 용량이 과도하게 커짐 -> 공간 및 시간 효율이 떨어짐, 커다란 파일은 가독성이 떨어지고 유지보수가 어려움
+- 2. 각 function을 각 소스 파일에 넣음
+  - 장점: 필요한 바이너리만 링크하여 공간 및 시간 효율이 향상됨
+  - 단점: 프로젝트 구조가 복잡해지고 관리가 어려워짐, 어차피 하나의 실행파일로 만들 것이라 효율이 떨어짐
+
+
+### old-fashioned Solution : Static Libraries
+- Static libraries(.a archive file)
+  - 예전에는 아카이브 파일(정적 라이브러리)에 common function을 다 넣어서 해결함
+  - linker가 각 오브젝트 파일에 아카이브 파일을 포함해서 실행파일을 만들게 됨
+  - 하지만 이 아카이브 파일이 점점 커져서 binary file이 너무 커지게 됨
+- 또한 더 큰 문제는
+  - cli에 순서를 바꿔 입력하면 에러도 생김
+    - 마지막에 static libraries를 넣었어야 했음
+  - ex) a.o b.o ... libc.a (O) , libc.a a.o b.o ... (X)
+- 따라서 현재는 **shared libraries**를 사용함  
+
+### Modern Solution: Shared Libraries
+- 정적 라이브러리 단점
+  - 저장된 실행 파일 중복: 각 실행 파일이 필요 함수에 대해 별도의 정적 라이브러리를 포함해야 함
+  - 실행 중인 실행 파일의 중복: 여러 프로그램이 동일한 라이브러리 사용 시, 각 프로그램의 메모리에 동일한 라이브러리 코드가 중복으로 로드됨
+  - 시스템 라이브러리가 업데이트 되면, 각 애플리케이션을 다시 링크해야함
+- 해결책으로 등장한 공유 라이브러리(Shared Libraries)
+  - 위에서 나온 공유 오브젝트 파일(.so(윈도우는 .dll 파일))과 일맥 상통함
+  - 코드와 데이터를 포함하는 오브젝트 파일로, 애플리케이션에 동적으로 로드 및 링크됨
+  - load time이나 run-time에 dynamically하게 로드 및 링크될 수 있음
+  - DLL(Dynamic Link Libraries)(in window), .so 파일(in UNIX)등의 다른 이름으로도 불림
+- 장점
+  - 디스크 공간 절약: 각 실행 파일이 동일한 라이브러리를 공유, 디스크 공간이 절약됨
+  - 라이브러리 업데이트 용이: 공유 라이브러리가 업데이트되면, 해당 라이브러리를 사용하는 모든 애플리케이션에 자동으로 적용됨
+    - 다시 링크할 필요가 없음
+- 링킹 시점에는 .so 파일의 정보만 갖고 있고, 코드를 갖고 있진 않음
+  - 즉, 실행 파일은 라이브러리에 대한 참조 정보만 포함됨
+  - 프로그램이 실행되는 시점에 라이브러리와 연결됨
+
+
+## Library Interpositioning
+- 강력한 linking과 관련된 기술로, function call을 임의의 다른 function으로 intercept 함
+- compile time, Link time, Load/run time에 가능
+- 주로 보안, 디버깅, 모니터링 및 프로파일링에서 사용
+  - 보안
+    - 중간에 interpositioning을 통해 코드 정보를 암호화
+  - 모니터링
+    - function의 호출 횟수를 새거나, Malloc을 tracing 하는 등
+```c
+// int.c
+#inlcude <stdio.h>
+#include <malloc.h>
+
+int main(){
+  int *p = malloc(32);
+  free(p);
+  return(0);
+}
+// 목적: **프로그램을 중단시키지 않고**
+// **소스 코드를 변경하지 않고** 
+// allocated adn freed blocks의 사이즈 측정
+
+// solution: malloc과 free 함수를 interpose 
+// in compile time, link time, load/run time
+```
+
+### Compile-time Interpositioning
+- ![image](https://user-images.githubusercontent.com/102513932/232274591-1bc3bb04-ec41-4599-82ae-370983251f63.png)
+  - printf부분이 각각 추가된 것을 알 수있음
+    - by Wrapper function
+- ![image](https://user-images.githubusercontent.com/102513932/232274609-19afc04b-8162-4a80-80ad-6a741129cce3.png)
+  - int.c의 코드를 수정하면 안되니, 매크로를 통해 redirection
+  - `-DCOMPILETIME`을 통해 1로 설정, ifdef 작동하게 함
+  - `-c`를 통해 오브젝트 파일 생성
+  - `-I.`을 통해 현재 directory로 path 포함
+- 정리
+  - function이 매크로를 통해 사용자 정의 함수로 전환됨
+
+### Link-time InterPositioning
+- ![image](https://user-images.githubusercontent.com/102513932/232274747-d85fb2a2-d786-4592-9d24-d95c8adda4a3.png)
+  - 언더바(__)는 그냥 prefix라 생각할 것
+  - compile-time 코드와 구조 자체는 같음
+  - `__real_malloc`을 `__wrap_malloc`으로 변경
+- ![image](https://user-images.githubusercontent.com/102513932/232274759-f28ee507-02c9-4a4e-9eaf-c26391e0873b.png)
+  - `-DLINKTIME`을 통해 `#ifdef` 동작
+  - `-Wl`은 linker에게 콤마 뒤에 있는 부분을 wrapping 하라고 명령
+  - `--wrap, <fucntion>`에 대한 설명 참조
+    - `<function>` -> `__wrap_<function>`
+- 정리
+  - 링커를 사용하여 특수한 이름 해석 적용(malloc ->__wrap_malloc, __real_malloc -> malloc)
+  - 이를 통해 링커가 사용자 정의 함수를 기존 라이버르리 함수와 교체하도록 지시
+
+### Load/Run-time Interpositioning
+- 실행파일이고, 이미 동작하고 있으니 Shared Object를 통해 해결
+- ![image](https://user-images.githubusercontent.com/102513932/232275139-1becd256-bf17-489a-b783-bbdc9ddaa562.png)
+  - 로더가 `"./mymalloc.so"` 파일을 올린 상태에서 `./intr` 실행
+- 정리
+  - 동적 링킹을 사용하여 다른 이름으로 라이브러리의 malloc과 free를 로드함
+  - dlsym 함수를 사용하여 실행 시간에 기존 라이브러리 함수를 다른 이름으로 가져옴
+
+## Input/Output
+### I/O Kernel Services
+- c standard library에 text I/O using을 지님
+  - fread(), fgets(), printf(),...
+  - 사실 이건 다 system call을 기반으로 하고 있음
+### Everything is a File
+- UNIX에서는, 모든 것이 파일임
+  - ex
+    - /proc/<pid>/stack
+      - 특정 process의 stack 정보까지 파일로 존재함
+    - /dev/null
+      - data를 포함하지 않으며, 뭘 써도 버려짐
+      - null을 위한 파일
+    - /dev/urandom
+      - 암호학적으로 안전한 파일, 읽을 때마다 랜덤 data를 내놓음
+    - 심지어 커널 그 자체도 파일임!
+  - 파일은 바이트의 나열임
+
+### File Types
+- Regular file
+- Directory
+- Socket
+- Symbolic links
+- Character and block devices
+
+### Regular Files
+- text file 과 binary 파일로 구분
+  - text file
+    - ASCII or Unicode characters
+    - sequence of text lines
+      - terminated by newline char('\n')
+      - Linux와 Mac OS: '\n'(0xa)
+      - wndows and internet protocols: `'\r\n'`(0xd 0xa)
+  - binary file(ELF header 존재)
+    - everything else
+  - 커널은 이 두 파일의 차이점을 모름(header로 구분)
+
+### Directories
+- link 배열로 구성
+  - 각 link는 filename과 매핑
+- 각 디렉토리는 최소 두 개의 entries를 지님
+  - `.`(dot)
+    - 자신에 대한 link
+  - `..`(dot dot)
+    - 상위 폴더에 대한 link
+- leaf node가 아닌 것은 다 디렉토리임
+  - leaf node여도, 마지막이 `/`로 끝나면 디렉토리임
+- 커널은 각 프로세스마다 current working directory(cwd)를 유지함
+
+### File Descriptors
+- 파일 디스크럽티너느 특정 프로세스에서 파일 오픈 시 오픈된 파일을 integer로 구분하는 것임
+- 0: standard input
+- 1: standard output
+- 2: standard error
+
+### File Modes
+- rwx(user)rwx(group)rwx(other permission)
+  - r: read, w: write, x: execute
+- chmod로 변경 가능
+- user: file's owner
+- group: apply to members of the file's group
+- other permission: apply to all other users
+- ex
+  - 750(111101000b):rwxr-x---
+
+### System Call Failures
+- System call은 실패 시 음수를 반환함
+- 실패 시, gloval variable errno가 이유로 설정됨
+  - errno.h에 errno가 정의되어 있음
+- `perror()`, `strerror()`을 통해 errno를 사람이 읽을 수 있는 형태로 변환 가능
+
+### Opening Files
+```c
+#include <fcntl.h>
+int open(const char *path, int flags, mode_t mode);
+int creat(const char *path, mode_t mode);
+
+// creat() 시스템 콜은
+// open(path, O_CREAT|O_WRONLY|O_TRUNC, mode);와 같음
+// 없으면 만들고, 쓰기 전용, 0byte부터 작성
+// 위 두개 함수는 성공 시 filedescriptor를 리턴함
+```
+- Flag
+  - ![image](https://user-images.githubusercontent.com/102513932/232278079-a09ccd29-8938-4b2e-83cc-cdc6687a9774.png)
+
+### Reading
+```c
+#include <unistd.h>
+int read(int fd, void *buffer, size_t bytes);
+// fd에서 읽어서 buffer에 byte만큼 저장함
+// open file 대상으로 동작 가능
+// string에서 마지막에 들어오는 null값은 안읽음
+// return value: 0(end of file), >0(bytes read), <0(error)
+```
+
+### Writing
+```c
+#include <unistd.h>
+int write(int fd, const void *buffer, size_t bytes);
+// buffer에서 byte만큼 fd에 작성함
+// return value: >=0 (bytes written), <0(error)
+```
+
+### Closing
+```c
+#include <unistd.h>
+int close(int fd);
+// free 처럼, open한 파일은 항상 close 해야함
+```
+
+### UNIX I/O Example
+- ![image](https://user-images.githubusercontent.com/102513932/232278319-94bef40e-4876-4b23-8e89-1b9e757352a4.png)
+  - `argv[1]` fd open, 0보다 작으면 에러 처리
+    - 0보다 크면, fd에 file descriptor 저장및 while문 실행
+  - buf의 크기가 1024 byte니, fd를 1024 byte만큼 읽어 buf에 저장함
+  - read가 정상 동작했으면, stdout에 buf 출력
+  - 정상 동작시 1(true) return, 아닌 경우 0(false) return
+
+### UNIX I/O Example with perror()
+```c
+if((bytes = read(fd, buf, sizeof(buf)))<0){
+  perror("read");
+  exit(1);
+}
+
+if((bytes = write(fd, buf, sizeof(buf)))<0){
+  perror("write");
+  exit(1);
+}
+// 둘 다 동작이 실패한 경우 perror을 통해 오류를 출력하고 실행을 종료함
+```
+- ![image](https://user-images.githubusercontent.com/102513932/232279141-88a87f0c-8ce5-4b5c-bd73-0c1fe75a137b.png)
+  - 실패했을 시 perror로 다 에러 출력 처리
+    - open의 flag 변경 시 에러 출력
+  - `lseek()`는 몇 번째 byte로 file pointer(offset)를 옮길 것인지 결정
+
+### Opening Streams
+- standard I/O는 엄밀히 말하면 file 이 아니라 stream을 향해 동작함
+```c
+FILE *fopen(const char *path, const char *mode);
+// ex) FILE *fp = fopen("file.txt", "r");
+// 파일을 열지 못할 경우 NULL 반환
+FILE *fdopen(int fd, const char *mode);
+// 이미 열린 파일 디스크립터를 기반으로 파일 포인터를 생성
+// ex) int fd = open("file.txt", O_RDONLY);
+// FILE *fp = fdopen(fd, "r"); // 권한 맞춰줘야함
+// 파일 디스크립터를 추가로 생성하는 것은 아님(다른 권한으로 열 수 없음)
+```
+- ![image](https://user-images.githubusercontent.com/102513932/232280082-2516a3de-34b2-4e88-8eb6-5b67037d046b.png)
+
+### Binary I/O
+- 윈도우 시스템에서는 개행 문자를 읽을 때 자동으로 '\r\n'으로 변환함
+  - 이러한 변환을 방지하고 이진 파일로 작업하기 위해서 fopen 모드 문자 뒤에 "b"를 붙여 사용함
+  - ex) FILE *fp = fopne("somefile", "rb"); 
+- POSIX 시스템에서는 "b" 플래그가 무시됨
+  - POSIX 시스템에서 커널은 텍스트 파일과 이진 파일을 구분하지 못하기 때문
+    - 어차피 header를 통해 파일의 종류를 구분함
+
+### Reading and Writing
+```c
+#include <stdio.h>
+size_t fread(void *dest, size_t size, size_t nmemb, FILE *fp);
+// dest: 데이터를 저장할 버퍼의 포인터
+// size: 각 데이터 항목의 크기
+// nmemb: 읽어들일 데이터 항목의 개수(count)
+// fp: 파일 스트림의 파일 포인터
+// ex) fread(buf, 1, sizeof(buf), fp)
+size_t fwrite(const void *buf, size_t size, size_t nmemb, FILE *fp);
+// buf에 저장된 데이터를 size 크기의 nmemb 개수만큼 fp에 씀
+// 물론 open으로 미리 열어놔야함
+// 위 함수는 binary data 기반으로 동작
+// printf, scanf는 text data 기반으로 동작
+// return value: number of items read/written
+// error나 파일 끝이면 0 return
+```
+
+### Errors and EOF
+- UNIX I/O와 다르게, standard I/O는 EOF와 error의 return value가 같음
+```c
+int feof(FILE *fp);
+int ferror(FILE *fp);
+// 파일 스트림에서 오류나 EOF를 감지하기 위한 두 가지 function
+// EOF에 도달하거나 에러가 발생한 경우, 0이 아닌 값을 반환함
+// 그렇지 않으면 0을 반환함
+
+void clearerr(FILE *fp);
+// 파일 스트림의 오류 및 EOF 상태를 재설정하는 데 사용됨
+// 이전에 발생한 오류 및 EOF 상태를 지울 수 있음
+// 단, 실제 오류가 해결되지 않았다면 동일 오류가 다시 발생할 수 있기 떄문에, 호출 전에 해당 오류를 적절히 처리할 수 있어야 함
+```
+
+### Standard I/O Example
+- ![image](https://user-images.githubusercontent.com/102513932/232280725-d41cad4f-b924-493a-9eac-dd0ef8bc2c61.png)
+  - 파일 open 실패 시 null 반환
+  - `!feof(fp)` -> 에러가 발생하지 않으면 0 return -> !0 -> true
+  - fp에서 sizeof(buf)만큼 (1024 Byte) 1Byte씩 읽어서 buf에 저장
+  - buf에서 bytes 만큼 1byte씩 가져와 stdout에 출력
+  - 파일 스트림 fp와 표준 출력에서 오류가 발생했는지 확인하고, 오류가 발생했다면 프로그램이 종료됨
+
+### System Call Overhead
+- 매번 UNIX I/O의 System Call을 사용하는 것은 성능적으로 안좋음
+  - syscall의 동작 과정을 기억하라
+    - protect domain을 바꾸고, 레지스터에 등록하고, 다시 바꾸고, .
+- standard I/O는 overhead를 줄이기 위해 **buffering(stream)**을 사용함
+  - ex, fread() for 1byte는 read a full disk block
+    - stream에 데이터를 다 올려놓고 거기서 1btye만 읽음
+  - 이는 성능 최적화를 위한 중요한 전략인건 맞지만, 경우에 따라 올바른 동작에 영향을 줄 수있음
+  - device I/O와 같이 정확한 읽기/쓰기 크기가 요구되는 경우 standard I/O의 버퍼링이 적절하지 않을 수 있음
+    - 버퍼링으로 인해 일부 데이터만 쓰여지는 short write 문제가 발생할 수 있음
+  - `int fflush(FILE *fp)`를 통해 해결 가능
+    - 파일 스트림의 버퍼를 비워 디스크에 직접 쓰게함
+
+### Buffering and Performance
+- ![image](https://user-images.githubusercontent.com/102513932/232290916-45ae5160-01c2-45d3-8d79-0143644932a4.png)
+  - User time used는 total += c 같은 작업
+  - System time used는 syscall이 불려오는 시간
+- ![image](https://user-images.githubusercontent.com/102513932/232290947-4b802415-b586-4446-8f78-8cef7101470d.png)
+  - 모든 분야에서 standard I/O가 UNIX I/O보다 빠른 작업 시간을 가짐
+
+### Buffer Example
+- ![image](https://user-images.githubusercontent.com/102513932/232291095-c8e4b959-e6ae-42e3-8358-342e5dadaa88.png)
+- ![image](https://user-images.githubusercontent.com/102513932/232291149-958606c3-6da4-41a5-8bf4-c881695c5b71.png)
+  - fread는 fp로부터 일정량의 data(512 byte 이상 큰 데이터)를 가져와 buffer에 채움
+- ![image](https://user-images.githubusercontent.com/102513932/232291177-084b5fcf-78e1-4d0e-8be2-fc9fe9631fd8.png)
+  - 그러고 버퍼로부터 sizeof(len) 1개를 읽어와서 len의 주소에 저장함
+- ![image](https://user-images.githubusercontent.com/102513932/232292747-c419bd63-17ec-4c29-b85c-b2ddd41ca632.png)
+  - 이후 fread()에서는 buffer에서만 데이터를 읽어와 data의 주소에 저장
+    - 1byte를 len 횟수만큼 읽겠지
+
+### Buffer Example2
+- ![image](https://user-images.githubusercontent.com/102513932/232293168-abb74cd3-fec5-4973-abf6-b3db89fee3e8.png)
+  - 버퍼는 다음과 같은 상황에 출력 파일 디스크립터로 flush됨
+    - 1. 개행문자를 만났을 때
+    - 2. fflush나 exit 명령어가 호출되었을 때
+    - 3. main 함수로 return 될 때
+- ![image](https://user-images.githubusercontent.com/102513932/232294166-da41df9b-05a8-45e4-a93e-06b70027f0a6.png)
+  - write는 한 번 사용됨
+  - `printf("\n");` 에서 작동하고, 이후 `fflush(stdout)`이나 `exit(0)` 에서는 버퍼가 이미 비어있기 때문에 호출되지 않음
+
+## Pipes and Redirection
+### UNIX Pipes
+- pipe는 process간 통신 시 사용함
+  - 단방향으로 동작하며, 한 쪽으로 write 반대쪽으로 read
+  - pipe도 file descriptor로 표현됨
+    - 따라서 any file descriptor와 연결될 수 있음
+    - 특히 표준 I/O 파일 디스크립터(0~2)에 주로 연결됨
+      - 파이프를 표준 I/O 파일 디스크립터에 연결하면 한 프로세스의 출력이 다른 프로세스의 입력으로 사용될 수 있음
+
+### Creating a pipe
+```c
+int pipefd[2]; 
+// pipe[0] : read port, pipe[1]: write port
+if(pipe(pipefd)<0){
+  perror("pipe");
+}
+// pipe() system call은 pipe를 한 쌍의 file descriptor로 생성함
+```
+- ![image](https://user-images.githubusercontent.com/102513932/232296907-116cd3b6-246e-4915-aa0c-91228196bec4.png)
+
+### Mechanism
+- 파이프는 커널 버퍼를 통해 데이터를 전송하는 방법임
+  - 데이터를 담는 커널 버퍼와 두 개의 파일 디스크립터로 구성됨
+- ![image](https://user-images.githubusercontent.com/102513932/232297111-d27d13fc-6b6c-417f-b324-f4dc7d61ff58.png)
+  - read file descriptor has a read pointer
+    - pipefd[0]
+- ![image](https://user-images.githubusercontent.com/102513932/232297195-30344c4d-abc8-4e74-a674-c6067115e489.png)
+  - write file descriptor has a write pointer
+    - pipefd[1]
+- ![image](https://user-images.githubusercontent.com/102513932/232297694-6000ccb8-2b89-413b-a6ff-f5e2c771db6f.png)
+  - write(pipefd[1], &wval, sizeof(wval));
+  - 4byte 만큼 write, buffer 채움
+    - write pointer는 4가 됨
+- ![image](https://user-images.githubusercontent.com/102513932/232297933-f3a83f73-7fa7-4eed-b0ef-aac429afa34c.png)
+  - read(pipefd[0], &rval, sizeof(rval));
+    - buffer에서 4byte만큼 읽음
+      - read pointer도 4가 됨
+      - write pointer와 동일한 위치가 된다는 것이 중요!
+
+### Buffer Capacity
+- 파이프를 사용하여 데이터를 전송할 때, 커널 버퍼가 비어있는 경우에는 읽기 연산이 blocking됨
+- 따라서 단일 프로세스(Single process) 내에서 파이프 통신을 사용할 경우 교착상태(deadlock)에 빠질 위험이 있음
+  - ex, 프로세스가 파이프에 커널 버퍼 크기보다 많은 바이트를 쓰려고 하면, 쓰기 연산도 블로킹되어 대기하게 됨
+  - 이 경우 다른 프로세스가 버퍼를 비워주는 읽기 연산을 수행하지 않기 때문에 파이프에 쓰려는 프로세스는 계속해서 대기하게 되고, 마찬가지로 deadlock에 빠짐
+  - 이러한 문제를 해결하기 위해 일반적으로 별도의 프로세스 또는 스레드를 사용하여 동시에 읽기와 쓰기 연산을 수행하도록 설계함
+
+
+### Fork and Pipe
+- ![image](https://user-images.githubusercontent.com/102513932/232300596-2009240d-f046-43c0-8070-7a5a18715298.png)
+  - process간 통신으로, 뭐가 먼저 동작할지는 모르지만 read를 먼저 하고 뒤늦게라도 write가 들어오면 아무런 문제 없음
+  - 단, 서로 다른 process의 pipefd가 제대로 닫혀있지 않기 때문에 pipefd[0]이 EOF를 반환하진 못함
+
+### More on File Descriptors
+- fd를 다루는 구조
+- FDT(File Descriptor Table)
+  - 모든 프로세스가 지님
+- OFT(Open File Table)
+  - open file에 대한 metadata를 지님
+  - Global한 Table
+  - FDT가 참조할 수 있는 Table임
+    - 파일의 직접적인 정보가 아닌, 파일의 위치나 어떤 권한으로 참조하는지, 몇개의 파일을 참조하는지 등의 정보를 지님
+- v-node Table
+  - 용량과 권한 같은 직접적인 정보는 이곳에 저장됨
+- ![image](https://user-images.githubusercontent.com/102513932/232302133-318535d7-9d87-445b-b474-b7fdbfc64a2f.png)
+
+### How the Unix Kernel Represents Open Files
+- ![image](https://user-images.githubusercontent.com/102513932/232302370-5e02c815-11d2-4441-a5da-c0147b759e22.png)
+  - 만약 똑같은 파일 이름으로 두 번 open 했어도, OFT에 서로 다른 table을 참조하는 것처럼 보임
+    - 만약, **권한**까지 같다면 같은 OFT를 참조하는 것처럼 보임
+
+### Fork and File Descriptors
+- fork()는 file descriptor table 까지 복사함
+  - 당연히 동일한 OFT를 참조함(권한 마저 같음)
+- Before fork
+  - ![image](https://user-images.githubusercontent.com/102513932/232302536-1e11346d-4b2f-40c8-be04-dc1d45bb9426.png)
+- After fork
+  - ![image](https://user-images.githubusercontent.com/102513932/232302542-e1019ba8-17fb-40f1-b11c-5fb08cc724a7.png)
+  - refcnt만 1 증가하게 됨
+
+### Pipe File Descriptor Gotcha
+- single process 상태에서도 write 부분(pipefd[1]) 닫고 read만 하면 deadlock 상태에 빠지지 않고 EOF를 return 함
+  - 이처럼 파이프의 읽기 끝(pipefd[0])은 쓰기 끝(pipefd[1])이 닫힐 떄 EOF를 반환함
+    - 이는 파이프에서 더 이상 읽을 데이터가 없음을 나타냄
+- 만약 fork()를 사용한다면, 부모 프로세스와 자식 프로세스 모두 동일한 파이프를 사용하게 됨
+  - 파일 디스크립터 중 하나라도 열려 있으면 계속 열린 상태로 유지됨
+  - 파이프의 쓰기 끝이 모두 닫혀야 읽기 끝에서 EOF를 반환할 수 있음
+- 따라서 파이프의 읽기 끝에서 EOF를 반환하려면 쓰기 끝 파일 디스크립터가 모두 닫혀야 함
+  - 쓰기 끝 파일 디스크립터가 열려있는 한, 파이프의 읽기 끝에서는 EOF를 반환하지 않음
+
+### Safe Pipe and Fork
+- ![image](https://user-images.githubusercontent.com/102513932/232304926-d94c540d-b139-462f-b9fe-7bf19a831013.png)
+  - 안쓰는 쪽을 닫아줌으로써 pipefd[1]이 닫히면 pipefd[0]에서 EOF를 올바르게 return 할 수 있음
+  - 만약 write와 read의 방향을 바꾸고 싶다면, 새로운 pipe를 생성해야 함
+
+### Copying a Descriptor
+```c
+#include <unist.h>
+int dup(int fd);
+// ex) fd2 = dup(fd1)
+// dup()는 file descriptor를 copy 하는 system call임
+// 열린 파일 디스크립터를 인수로 받아 새로운 파일 디스크립터에 복사본을 만듬
+// 새 파일 디스크립터는 가장 낮은 번호의 사용 가능한 파일 디스크립터를 사용하게 됨
+int dup2(int oldfd, int newfd);
+// dup2(fd1, fd2)
+// dup2(fd1, 1) -> 1번 파일 디스크립터가 가리키는 곳을 fd1이 가리키는 곳으로 바꿈
+// 첫 번째 인자로 원본 파일 디스크립터를, 두 번째 인자로 복사본을 만들어 사용하고자 하는 대상 파일 디스크립터를 받음
+
+// dup과 dup2() 모두 원본과 복사본 파일 디스크립터가 같은 파일 테이블 항목을 공유하게 되므로, 둘 중 하나를 수정하면 다른 하나도 영향을 받게 됨
+// 여기서 수정의 의미는, 오프셋 변경에 한정지음
+```
+
+### Redirecting Standard Output
+```c
+int fd;
+
+fd = open("output.txt", O_WRONLY|O_CREAT, 0666); //(1)
+dup2(fd,1); //(2)
+// 1번 파일 디스크립터가 fd를 가리키게 함
+close(fd); //(3)
+// fd를 닫음
+// fd를 닫는다고 해서 1번 파일 디스크립터도 닫히는건 아님
+
+puts("Redirected output!");
+// stdout인 터미널로 출력되는게 아닌, 1번 파일이 가리키는 "output.txt"로 해당 문장이 출력되게 됨
+
+// OFT에서 refcnt는 (1)에서 1, (2)에서 2, (3)에서 1이 됨
+```
+
+- ![image](https://user-images.githubusercontent.com/102513932/232307277-c5ba04b0-657b-4b1a-9bfc-512b44aa69ee.png)
+- ![image](https://user-images.githubusercontent.com/102513932/232307308-046ce9b7-3235-4f79-893c-e81d2bacd025.png)
+  - call dup2(4,1)의 경우
