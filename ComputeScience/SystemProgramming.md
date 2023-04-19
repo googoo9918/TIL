@@ -1369,3 +1369,4 @@ puts("Redirected output!");
 - ![image](https://user-images.githubusercontent.com/102513932/232307277-c5ba04b0-657b-4b1a-9bfc-512b44aa69ee.png)
 - ![image](https://user-images.githubusercontent.com/102513932/232307308-046ce9b7-3235-4f79-893c-e81d2bacd025.png)
   - call dup2(4,1)의 경우
+
