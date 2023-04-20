@@ -1,4 +1,18 @@
 # 자료구조
+## 강의안내
+### 자료구조란?
+- 코드의 효율성
+  - 프로그램의 코드를 개발하는 데 사용되는 안정성, 속도 및 프로그래밍 방법을 나타내는데 사용됨
+  - 소프트웨어의 런타임 실행 속도와 직접 연결됨
+  - **목적에 맞는 자료구조를 사용하는 것이 효율적임**
+- 데이터 추상화
+  - 시스템의 간략화 된 기술이나, 핵심적인 구조나 동작에만 집중
+- 재사용성
+  - 자료구조의 인터페이스만 이용하여 데이터를 처리
+    - 모듈화(재사용) 가능
+- 데이터를 체계적으로 저장하고, 효율적으로 관리
+- 선택 기준
+  - 자료의 크기, 처리 시간, 활용 빈도, 프로그램의 용이성
 ## 자료구조의 분류, 알고리즘, 추상자료형
 ### 자료구조의 분류
 - 단순 구조
@@ -1110,6 +1124,346 @@ int main(void)
   fref.FirstFunc();
   fref.SimpleFunc();
   //가상함수이니 Third's SimpleFunc() 출력됨
+  return 0;
+}
+```
+
+### 리스트
+- 구현 방법
+  - 배열 이용
+    - 구현 간단
+    - 삽입, 삭제 시 오버헤드 발생 가능
+    - 항목 개수에 제한이 생길 수 있음
+  - 연결 리스트 이용
+    - 구현 복잡
+    - 삽입, 삭제 효율적
+    - 크기가 제한되지 않음
+- 종류
+  - 단순 연결 리스트, 원형 연결 리스트, 이중 연결 리스트
+  - 단순 연결 리스트
+    - 하나의 방향으로만 연결되어 있어서, 맨 마지막 노드의 링크 필드는 NULL 값을 가짐
+  - 원형 연결 리스트
+    - 단순 연결 리스트와 같지만 맨 마지막 노드의 링크 값이 다시 첫 번째 노드를 가리킴
+  - 이중 연결 리스트
+    - 각 노드마다 링크 필드(포인터)가 2개씩 존재함
+    - 각각의 노드는 선행 노드와 후속 노드를 모두 가리킬 수 있음
+
+## 리스트와 연결리스트 구현
+- ![image](https://user-images.githubusercontent.com/102513932/233055595-8b48b25a-80e6-48e9-af84-d29c8bbe9283.png)
+- ![image](https://user-images.githubusercontent.com/102513932/233345501-6ccf86ef-7f61-4a23-bf93-129acb55b2e1.png)
+
+```cpp
+typedef int Element;
+Element data[Max_LIST_SIZE]
+int length =0;
+//length는 새 요소가 리스트의 맨 뒤에 추가될 때 삽입되어야 하는 위치를 나타냄
+//0이면 공백상태, length == MAX_LIST_SIZE면 포화상태
+```
+
+```cpp
+//배열을 이용한 리스트 클래스 구현
+#include <iostream>
+#define MAX_LIST_SIZE 100
+
+inline void error(char *str){
+    cout << stderr <<str <<endl;
+
+    exit(1);
+};
+
+class ArrayList
+{
+    int data[MAX_LIST_SIZE];
+    int length; 
+public:
+    ArrayList(void){length =0;}
+
+    void insert(int pos, int e){ //POS 번째에 e 추가
+        if(!isFull() && pos>=0 && pos<=length){
+            for(int i= length; i>pos; i--){
+                data[i] = data[i-1];
+            }
+            data[pos] = e;
+            length++;
+        }
+        else error("포화상태 오류 또는 삽입 위치 오류");
+    }
+
+    void remove(int pos){
+        if(!isEmpty() && 0<= pos && pos<length){
+            for(int i=pos+1; i<length; i++){
+                data[i-1] = data[i]
+            }
+            length--;
+        }
+        else error("공백상태 오류 또는 삭제 위치 오류");
+    }
+
+    //pos번째 항목 반환
+    int gerEntry(int pos){return data[pos];} 
+
+    //공백 상태 검사
+    bool isEmpty(){return length ==0;}
+    //포화 상태 검사
+    bool isFull(){return length==MAX_LIST_SIZE;}
+
+    bool find(int item){
+        for(int i=0; i<length; i++){
+            if(data[i] == item) return true;
+        }
+        return false;
+    }
+
+    void replace(int pos, int e){
+        data[pos] = e;
+    }
+
+    int size(){return length;}
+
+    void clear(){length =0;} //모든 요소 제거
+}
+```
+- ![image](https://user-images.githubusercontent.com/102513932/233348994-b9c8813a-fe33-4c71-87f8-7e741fe063dc.png)
+
+### 연결 리스트로 구현된 리스트
+- 단순 연결 리스트 사용
+  - 마지막 노드 링크 값은 NULL
+- 삽입 연산
+  - ![image](https://user-images.githubusercontent.com/102513932/233349372-9be54af5-a9a2-4b5d-8171-a59c2b406844.png)
+- 삭제 연산
+  - ![image](https://user-images.githubusercontent.com/102513932/233349492-383eb7fd-229b-4b76-b9e3-f518b91ef5a1.png)
+- 연결리스트에서는 시작 노드의 주소만을 관리
+
+```cpp
+#include <iostream>
+#define MAX_LIST_SIZE 100
+using namespace std;
+
+inline void error( char* str){
+  cout << stderr << str << endl;
+  exit(1);
+};
+
+class Node
+{
+  Node* link; 
+  //다음 노드를 가리키는 포인터 변수
+  int data; 
+  // 노드의 데이터 필드
+
+public:
+  // 생성자에서 data가 0으로 초기화된다
+  Node(int val=0) :data(val), link(NULL) {}
+  Node* getLink() {return link; }
+  void setLink(Node* next) {link = next;}
+  void display() {cout << data << endl;}
+  bool hasData(int val){ return data == val;}
+
+  void insertNext(Node *n){  
+    //다음에 새로운 노드 n을 삽입
+    if(n!=NULL){
+      n->link = link;
+      link = n;
+    }
+  }
+
+  //자신의 다음 노드를 리스트에서 삭제함
+  Node* removeNext(){
+    Node* removed = link;
+    if( removed != NULL){
+      link = removed-> link;
+    }
+    return removed;
+  }
+};
+
+class LinkedList
+{
+  Node org; 
+  //헤드 노드(헤드 포인터 아님 주의)를 가리키는 노드
+  //링크 필드에 헤드 포인터 소유
+
+public:
+  LinkedList(): org(0) {}
+  //생성자, null값으로 초기화(nullptr도 가능)
+  ~LinkedList(){ clear(); }
+
+  void clear() { while(!isEmpty()) delete remove(0);}
+  Node* getHead() { return org.getLink();}
+  bool isEmpty() { return getHead()==NULL;}
+
+//pos 번째 항목 반환
+Node* getEntry(int pos){
+  Node* n = &org;
+  for(int i=-1; i<pos ; i++, n=n->getLink())
+    if(n==NULL) break;
+  return n;
+}
+
+//리스트의 특정 위치에 항목 삽입
+void insert(int pos, Node *n){
+  Node* prev = getEntry(pos-1);
+  if( prev != NULL)
+    prev -> insertNext(n);
+}
+
+Node* remove(int pos){
+  Node* prev = getEntry(pos-1);
+  return prev -> removeNext();
+}
+
+//탐색 함수
+Node* find(int val){
+  for(Node *p = getHead(); p != NULL; p = p->getLink())
+    if(p->hasData(val)) return p;
+  return NULL;
+}
+
+//list의 pos번째 노드를 다른 노드로 교체
+void replace(int pos, Node *n){
+  Node* prev = getEntry(pos-1);
+  if(prev != NULL){
+    delete prev -> removeNext();
+    prev->insertNext(n);
+  }
+}
+
+int size(){
+  int count = 0;
+  for( Node *p = getHead(); p !=NULL; p = p->getLink())
+    count++;
+  return count;
+}
+
+void display(){
+  cout << "단순연결리스트 항목 수 = " << size() << endl;
+  for(Node *p = getHead(); p !=NULL; p = p->getLink())
+    p->display();
+  cout<<endl;
+}
+};
+
+int main()
+{
+  LinkedList list;
+
+  list.insert(0, new Node(10)); //10
+  list.insert(0, new Node(20)); //20 10
+  list.insert(1, new Node(30)); //20 30 10
+  list.insert(list.size(), new Node(40));//20 30 10 40
+  list.insert(2, new Node(50)); //20 30 50 10 40
+  list.display();
+
+  list.remove(2);//20 30 10 40
+  list.remove(list.size()-1);//20 30 40
+  list.remove(0);//30 40
+  list.replace(1, new Node(90));//30 90
+  list.display();
+
+  list.clear();
+  list.display();
+}
+```
+
+## 이중 연결 리스트, 원형 연결 리스트, 스택(1)
+### 원형 연결 리스트
+- 리스트의 마지막 노드의 링크가 첫 번재 노드를 가리키는 연결 리스트
+- 마지막 노드의 링크가 NULL이 아닌 첫 번째 노드 주소가 되는 리스트
+```cpp
+#include <iostream>
+
+using namespace std;
+
+//원형 연결 리스트 노드 클래스
+class Node{
+public:
+  int data;
+  Node* next;
+  
+  //위와 다르게 daat가 0으로 초기화되지 않는다.
+  Node(int value){
+    data = value;
+    next = NULL;
+  }
+};
+
+//원형 연결 리스트 클래스
+class CircularLinkedList{
+private:
+
+  //리스트의 마지막 노드를 가리키는 포인터
+  Node* tail;
+
+  //리스트의 크기를 저장하는 변수
+  int size;
+public:
+  CircularLinkedList(){
+    //생성자를 통해 리스트 초기화
+    tail=NULL;
+    size =0;
+  }
+
+  void add(int value){
+    Node* new_node = new Node(value);
+    if(tail == NULL){
+      tail = new_node;
+      tail-> next = tail;
+    } else{
+      new_node->next = tail->next;
+      tail->next = new_node;
+      tail = new_node;
+    }
+    size++;
+  }
+
+  void remove(int value){
+    if(tail == NULL){
+      return;
+    }
+    Node* current = tail->next;
+    Node* prev = tail;
+    do{
+      if(current->data == value){
+        prev->next = current->next;
+        if(current == tail){
+          tail = prev;
+        }
+        delete current;
+        size--;
+        return;
+      }
+      prev = current;
+      current = current->next;
+    }while(current != tail->next);
+  }
+
+  void display(){
+    if(tail==NULL){
+      return;
+    }
+    Node* current = tail->next;
+    do{
+      cout << current->data <<" ";
+      current = current->next;
+    }while(current != tail->next);
+    cout << endl;
+  }
+
+  int get_size(){
+    return size; 
+  }
+};
+
+int main(){
+  CircularLinkedList myList;
+  myList.add(1);
+  myList.add(2);
+  myList.add(3);
+  myList.display();
+  myList.remove(2);
+  myList.display();
+  cout << myList.get_size() << endl;
+
   return 0;
 }
 ```
