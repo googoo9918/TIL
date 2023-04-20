@@ -1,3 +1,60 @@
+## 목차
+- [자료구조](#자료구조)
+  - [강의안내](#강의안내)
+    - [자료구조란?](#자료구조란)
+  - [자료구조의 분류, 알고리즘, 추상자료형](#자료구조의-분류-알고리즘-추상자료형)
+    - [자료구조의 분류](#자료구조의-분류)
+    - [추상 자료형과 c++](#추상-자료형과-c)
+  - [알고리즘의 성능분석, 자료의 표현](#알고리즘의-성능분석-자료의-표현)
+  - [이름공간, 입출력 형식, 함수 오버로딩, 매개변수, 인라인 함수](#이름공간-입출력-형식-함수-오버로딩-매개변수-인라인-함수)
+    - [이름공간](#이름공간)
+    - [입출력](#입출력)
+    - [함수 오버로딩](#함수-오버로딩)
+    - [디폴트 매개변수](#디폴트-매개변수)
+    - [인라인 함수](#인라인-함수)
+  - [C와 C++의 문법구조, 참조자(레퍼런스)](#c와-c의-문법구조-참조자레퍼런스)
+    - [switch문](#switch문)
+    - [const](#const)
+    - [참조자](#참조자)
+    - [참조자와 함수](#참조자와-함수)
+    - [const 참조자](#const-참조자)
+    - [new \& delete](#new--delete)
+    - [포인터를 사용하지 않고 힙에 접근](#포인터를-사용하지-않고-힙에-접근)
+    - [C++에서 C언어의 표준함수 호출](#c에서-c언어의-표준함수-호출)
+  - [구조체와 클래스, 객체](#구조체와-클래스-객체)
+    - [구조체](#구조체)
+    - [객체와 클래스](#객체와-클래스)
+    - [접근제어 지시자](#접근제어-지시자)
+  - [생성자, 소멸자, 객체배열 friend 선언, static](#생성자-소멸자-객체배열-friend-선언-static)
+    - [생성자](#생성자)
+    - [소멸자](#소멸자)
+    - [객체 배열](#객체-배열)
+    - [객체 포인터 배열](#객체-포인터-배열)
+    - [this 포인터](#this-포인터)
+    - [self-reference의 반환](#self-reference의-반환)
+    - [클래스의 friend 선언](#클래스의-friend-선언)
+    - [Static](#static)
+  - [연산자 오버로딩, 상속](#연산자-오버로딩-상속)
+    - [연산자 오버로딩](#연산자-오버로딩)
+    - [상속](#상속)
+  - [상속(2)](#상속2)
+    - [protected 선언](#protected-선언)
+    - [상속의 정리](#상속의-정리)
+    - [객체 포인터](#객체-포인터)
+    - [객체 포인터 + 함수 오버라이딩](#객체-포인터--함수-오버라이딩)
+  - [가상 함수와 다형성](#가상-함수와-다형성)
+    - [다형성](#다형성)
+    - [가상 소멸자](#가상-소멸자)
+    - [참조자의 참조 가능성](#참조자의-참조-가능성)
+    - [리스트](#리스트)
+  - [리스트와 연결리스트 구현](#리스트와-연결리스트-구현)
+    - [연결 리스트로 구현된 리스트](#연결-리스트로-구현된-리스트)
+  - [이중 연결 리스트, 원형 연결 리스트, 스택(1)](#이중-연결-리스트-원형-연결-리스트-스택1)
+    - [원형 연결 리스트](#원형-연결-리스트)
+    - [이중 연결 리스트](#이중-연결-리스트)
+    - [스택](#스택)
+  - [스택(2)](#스택2)
+    - [스택(2)](#스택2-1)
 # 자료구조
 ## 강의안내
 ### 자료구조란?
@@ -254,7 +311,7 @@ int main(){
 }
 ```
 
-### 참조조와 함수
+### 참조자와 함수
 - CallByValue & CallByReference
   - 값에 의한 호출, 참조에 의한 호출
   - 참조에 의한 호출은 주소값 전달과 참조자 활용 두 가지 방법으로 가능함
@@ -1307,6 +1364,7 @@ void insert(int pos, Node *n){
     prev -> insertNext(n);
 }
 
+//pos위치 node 삭제
 Node* remove(int pos){
   Node* prev = getEntry(pos-1);
   return prev -> removeNext();
@@ -1403,35 +1461,43 @@ public:
     size =0;
   }
 
+  //새로운 노드를 리스트의 끝에 추가
   void add(int value){
     Node* new_node = new Node(value);
-    if(tail == NULL){
+    if(tail == NULL){ //리스트에 노드가 없는 경우
       tail = new_node;
       tail-> next = tail;
-    } else{
+    } else{ //리스트에 노드가 있는 경우
       new_node->next = tail->next;
       tail->next = new_node;
       tail = new_node;
     }
-    size++;
+    size++; //size 1증가
   }
 
+  //리스트에서 특정 값이 있는 노드 삭제
   void remove(int value){
-    if(tail == NULL){
+    if(tail == NULL){ //리스트에 노드가 없는 경우
       return;
     }
     Node* current = tail->next;
+    //리스트의 첫 번째 노드부터 탐색 시작
     Node* prev = tail;
     do{
       if(current->data == value){
+        //삭제하고 싶은 데이터를 찾으면
         prev->next = current->next;
+        //link 필드 변경
         if(current == tail){
+            //만약 current가 tail이면 tail도 변경
           tail = prev;
         }
-        delete current;
-        size--;
+        delete current; //삭제
+        size--; //size 1 감소
         return;
       }
+      //삭제하고 싶은 데이터를 찾지 못한 경우
+      //한 단계씩 증가
       prev = current;
       current = current->next;
     }while(current != tail->next);
@@ -1456,14 +1522,347 @@ public:
 
 int main(){
   CircularLinkedList myList;
-  myList.add(1);
-  myList.add(2);
-  myList.add(3);
-  myList.display();
-  myList.remove(2);
-  myList.display();
-  cout << myList.get_size() << endl;
+  myList.add(1); //1
+  myList.add(2); //1 2 
+  myList.add(3); //1 2 3
+  myList.display(); //1 2 3
+  myList.remove(2); // 1 3
+  myList.display(); // 1 3
+  cout << myList.get_size() << endl; //2
 
   return 0;
+}
+```
+
+### 이중 연결 리스트
+- 이전 노드와 다음 노드를 가리키는 두 개의 링크를 지님
+  - 양쪽 방향 탐색 가능
+- 어느 위치에서나 특정 노드를 검색하는 데 효율적임
+- 공간을 많이 차지하고 코드가 복잡해진다는 단점
+- 첫 번째 노드는 헤드 포인터가 가리키고, 마지막 노드의 마지막 링크 필드는 NULL 값
+- 삽입
+  - ![image](https://user-images.githubusercontent.com/102513932/233376643-3e88d636-b049-470c-9e4c-2a40900f4a51.png)
+```cpp
+void insertNext(Node2 *n){
+    if( n!=NULL){
+        n->prev = this; //(1)
+        n->next = next; //(2)
+        if(next !=NULL) next->prev =n; //(3)
+        next = n; //(4)
+    }
+}
+```
+- 삭제
+  - ![image](https://user-images.githubusercontent.com/102513932/233377208-6997337d-4f55-49f0-b243-b0b65ddd9153.png)
+```cpp
+Node2* remove(){
+    if(prev != NULL) prev -> next = next;
+    if(next != NULL) next -> prev = prev;
+    return this;
+}
+```
+
+```cpp
+#include <iostream>
+#define MAX_STACK_SIZE 100
+
+using namespace std;
+
+inline void error(char* str){
+  cout << str << endl;
+  exit(1);
+};
+
+class Node2{
+  Node2* prev; //선행 노드를 가리킴
+  Node2* next; //후속 노드를 가리킴
+  int data; //데이터 필드
+
+public:
+  Node2(int val =0) : data(val), prev(nullptr), next(nullptr){}
+Node2* getPrev() {return prev;}
+Node2* getNext() {return next;}
+void setPrev(Node2* p){prev = p;}
+void setNext(Node2* n){next = n;}
+void display() {cout << " <" << data << ">";}
+bool hasData(int val){return data == val;}
+
+//자신 다음에 새로운 노드 n을 삽입
+void insertNext(Node2* n){
+  if(n != nullptr){
+    n->prev = this;
+    n->next = next;
+    if(next != nullptr) next ->prev = n;
+    next = n;
+  }
+}
+
+//현재 노드를 연결 리스트에서 제거
+Node2* remove(){
+  if(prev!=nullptr) prev->next = next;
+  if(next!=nullptr) next->prev = prev;
+  return this;
+}
+};
+
+class DbLinkedList{
+  Node2 org; 
+public:
+  DbLinkedList() : org(0){}
+  ~DbLinkedList() { clear(); }
+
+  void clear() { while(!isEmpty()) delete remove(0);}
+  Node2* getHead() { return org.getNext(); }
+  bool isEmpty() {return getHead() == nullptr;}
+
+  //pos 번째 노드 반환
+  Node2* getEntry(int pos){
+    Node2* n = &org;
+    for (int i = -1; i< pos; i++, n = n->getNext())
+      if(n == nullptr) break;
+    return n;
+  }
+
+  //pos 위치에 노드 삽입
+  void insert(int pos, Node2* n){
+    Node2* prev = getEntry(pos-1);
+    if(prev != nullptr)
+      prev -> insertNext(n);
+  }
+
+  //pos 위치 노드 삭제
+  Node2* remove(int pos){
+    Node2* n = getEntry(pos);
+    return n-> remove();
+  }
+
+  //값이 val인 노드 삭제
+  Node2* find(int val){
+  for(Node2* p = getHead(); p!=nullptr; p = p->getNext())
+    if(p->hasData(val)) return p;
+    return  nullptr;
+}
+  
+  //pos 위치의 노드 교체
+  void replace(int pos, Node2* n){
+    Node2* prev = getEntry(pos-1);
+    if(prev != nullptr){
+      delete prev->getNext()->remove();
+      prev->insertNext(n);
+    }
+  }
+
+  //리스트의 전체 노드 수 반환
+  int size(){
+    int count = 0;
+    for(Node2* p = getHead(); p!=nullptr; p = p->getNext())
+      count++;
+    return count;
+  }
+  void display(){
+    cout<<"[이중연결리스트 항목 수 =" << size() << "] : ";
+    for(Node2* p = getHead(); p!= nullptr; p = p->getNext())
+      p->display();
+    cout << endl;
+  }
+};
+
+int main(){
+  DbLinkedList list;
+
+  list.insert(0, new Node2(10)); //10
+  list.insert(0, new Node2(20)); //20 10
+  list.insert(1, new Node2(30)); //20 30 10
+  list.insert(list.size(), new Node2(40)); //20 30 10 40
+  list.insert(2, new Node2(50)); //20 30 50 10 40
+  list.display();
+
+  list.remove(2); //20 30 10 40
+  list.remove(list.size()-1); // 20 30 10
+  list.remove(0); // 30 10
+  list.replace(1, new Node2(90)); // 30 90
+  list.display();
+
+  list.clear(); //모든 항목 삭제
+  list.display();
+  return 0;
+}
+```
+- 단순 연결 리스트
+  - 구현이 간단하고 쉬움, 메모리 사용이 이중 연결 리스트보다 적음
+  - 뒤로 이동하는 것이 어려움, 삭제 작업 시 이전 노드에 접근이 필요하기 때문에 추가적인 순회가 필요함
+- 원형 연결 리스트
+  - 순환적인 구조를 가지기 때문에, 시작과 끝에서 작업을 수행할 때 효율적임
+  - 구현이 복잡함, 리스트의 끝에 도달한 경우 별도 처리를 해줘야함
+- 이중 연결 리스트
+  - 양방향 순회가 가능하고, 삭제 작업이 단순 연결 리스트보다 효율적임
+  - 구현이 복잡함, 메모리 사용이 단순 연결 리스트보다 많음
+### 스택
+- 한 쪽 끝에서만 자료를 넣거나 뺄 수 있는 제한적인 구조
+- 후입선출
+  - LIFO
+```cpp
+#include <iostream>
+#define MAX_STACK_SIZE 100
+using namespace std;
+
+inline void error(const char* str){
+  cout << str << endl;
+  exit(1);
+};
+
+class ArrayStack{
+//요소의 배열
+int data[MAX_STACK_SIZE];
+//요소의 개수
+int top;
+
+public: 
+  ArrayStack(){top = -1;}
+ ~ArrayStack(){}
+  bool isEmpty(){return top == -1;}
+  bool isFull() {return top == MAX_STACK_SIZE -1;}
+
+  //맨 위에 항목 삽입
+  void push(int e){
+    if(isFull()) error("스택 포함 에러");
+    data[++top] = e;
+  }
+
+  //맨 위의 요소를 삭제하고 반환
+  int pop(){
+    if(isFull()) error("스택 공백 에러");
+    return data[top--];
+  }
+
+  //맨 위의 요소를 삭제하지 않고 요소 반환
+  int peek(){
+    if(isEmpty()) error("스택 공백 에러"));
+    return data[top];
+  }
+
+  //스택 내용 화면 출력
+  void display(){
+    cout << "[스택 항목의 수 = " << top +1 << "] ==> ";
+    for(int i =0; i<= top; i++)
+        std::cout << "<" << data[i] << "> ";
+    cout << endl;
+  }
+};
+
+int main(){
+  ArrayStack stack;
+  for(int i =1; i< 10; i++){
+    stack.push(i);
+  }
+  //1 2 3 4 5 6 7 8 9
+
+  stack.display();
+  stack.pop(); //1 2 3 4 5 6 7 8
+  stack.pop(); //1 2 3 4 5 6 7
+  stack.pop(); //1 2 3 4 5 6
+  stack.display();
+
+  return 0;
+}
+```
+
+## 스택(2)
+
+### 스택(2)
+```cpp
+//연결리스트를 이용한 스택 구현
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Node{
+
+public:
+    char data;
+    Node* next;
+    Node(char data) : data(data), next(nullptr){}
+};
+
+class Stack{
+private:
+  Node* top;
+public:
+    Stack() : top(nullptr){}
+    ~Stack(){
+        Node* cur = top;
+    while(cur != nullptr){
+        Node* temp = cur;
+        cur = cur -> next;
+        delete temp;
+        }
+    }
+
+    //새 노드를 스택의 top에 추가
+    void push(char data){
+        Node* node = new Node(data);
+        node->next = top;
+        top = node;
+    }
+
+    //top에 있는 노드 제거 후 값 리턴
+    char pop(){
+        if(isEmpty()){
+            cout << "스택이 비어있습니다." << endl;
+            exit(1);
+        }
+        char temp = top->data;
+        Node* node = top;
+        top = top->next;
+        delete node;
+        return temp;
+    }
+
+    //top에 있는 데이터를 반환만 함
+    char peek(){
+        if(isEmpty()){
+            cout << "스택이 비어있습니다." << endl;
+            exit(1);
+        }
+        return top->data;
+    }
+
+    bool isEmpty(){
+        return top ==nullptr;
+    }
+};
+
+//괄호의 짝이 맞는지 검사
+bool checkBracket(string str){
+    Stack stack;
+    for(int i =0; i< str.length(); i++){
+        char ch = str[i];
+        if(ch == '(' || ch == '{' || ch == '['){
+            //여는 괄호면 스택에 넣기
+            stack.push(ch);
+        }
+        else if(ch == ')' || ch == '}' || ch ==']'){
+            //닫는 괄호 확인
+            if(stack.isEmpty()) return false;
+            //닫는 괄호 전에 아예 여는 괄호가 안들어가 있는 경우
+            char openCh = stack.pop();
+            if((ch == ')' && openCh != '(') || (ch == '}' && openCh != '{') || (ch==']' && openCh !='[')){
+                //짝이 다른 경우
+                return false;
+            }
+        }
+    }
+    return stack.isEmpty();
+}
+
+int main(){
+    string str = "{(a+b)*c}-d";
+    if(checkBracket(str)){
+        cout << str << " : 괄호가 맞습니다." << endl;
+    }
+    else{
+        cout << str << " : 괄호가 틀렸습니다."<< endl; 
+    }
+    return 0;
 }
 ```
