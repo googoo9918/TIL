@@ -97,6 +97,30 @@
     - [Safe Pipe and Fork](#safe-pipe-and-fork)
     - [Copying a Descriptor](#copying-a-descriptor)
     - [Redirecting Standard Output](#redirecting-standard-output)
+  - [Virtual Memory](#virtual-memory)
+    - [A System Using Physical Addressing, Virtual Addressing](#a-system-using-physical-addressing-virtual-addressing)
+    - [Virtual Memory](#virtual-memory-1)
+    - [Process, Physical Layout](#process-physical-layout)
+    - [Memory Management Unit(MMU)](#memory-management-unitmmu)
+    - [VM as a Tool for Caching](#vm-as-a-tool-for-caching)
+    - [DRAM Cache Organization](#dram-cache-organization)
+    - [Enabling Data Structure: Page Table](#enabling-data-structure-page-table)
+    - [Demand paging](#demand-paging)
+    - [Localiy to the Rescue Again](#localiy-to-the-rescue-again)
+    - [Virtual Memory as a Tool for Memory Management](#virtual-memory-as-a-tool-for-memory-management)
+    - [VM as a Tool for Memory Protection](#vm-as-a-tool-for-memory-protection)
+  - [Memory mapping and Copy-on-Write(CoW)](#memory-mapping-and-copy-on-writecow)
+    - [Sharing Revisited: Shared Objects](#sharing-revisited-shared-objects)
+    - [Copy-on-Write(CoW)](#copy-on-writecow)
+    - [fork Function Revisited](#fork-function-revisited)
+    - [Copy-on-Write the Resque!](#copy-on-write-the-resque)
+    - [The fork Function Revisited](#the-fork-function-revisited)
+    - [execve Function Revisited](#execve-function-revisited)
+    - [User\_Level Memory Mapping](#user_level-memory-mapping)
+    - [Example: Using mmap to Copy Files](#example-using-mmap-to-copy-files)
+    - [mmap vs malloc](#mmap-vs-malloc)
+    - [Advantages of using mmap](#advantages-of-using-mmap)
+    - [The C stack](#the-c-stack)
 # 시스템 프로그래밍
 ## C_POSIX
 ### POSIX
@@ -1370,3 +1394,257 @@ puts("Redirected output!");
 - ![image](https://user-images.githubusercontent.com/102513932/232307308-046ce9b7-3235-4f79-893c-e81d2bacd025.png)
   - call dup2(4,1)의 경우
 
+
+## Virtual Memory
+### A System Using Physical Addressing, Virtual Addressing
+- 실제 주소 mapping으로 프로그램을 그대로 memory에 올리는 방식
+  - 보안 취약성, 정보 노출 위험성 존재
+  - 여러 프로세스가 하나의 cpu 사용 시 메모리 관리가 어려움
+  - 옛날 차량이나, 엘리베이터 등 굉장히 단순한 시스템이나 예전 시스템에 사용
+- MMU(memory management unit)사용, virtual memory로 상대주소 사용
+  - 여러 프로세스 구동 및 보안 용이
+
+### Virtual Memory
+- progrram의 address space와 memory의 physical layout을 분리
+  - virtual address는 프로그램 주소공간에 위치
+  - physical address는 DRAM과 같은 hardware에 위치
+- virtual memory 사용 시 위 2개는 같을 필요 없음
+- Why?
+  - DRAM을 virtual address의 캐시로 사용, main memory를 효율적으로 쓸 수 있음
+    - physical memory보다 virtual memory 공간이 훨씬 더 큼
+  - 각 프로세스가 자신만의 linear address space를 갖기 때문에 메모리 운영이 쉬움
+  - 주소 공간을 독립시켜서 프로세스 간 간섭이 불가하게 함
+
+### Process, Physical Layout
+- Process Layout
+  - 모든 프로세스는 NULL을 가리키는 unmapped memory를 지님
+  - 모든 address space(virtual address)에 접근 가능
+  - 각 프로세스는 다른 프로세스의 메모리에 접근 불가능함
+  - 이 개념들은 서로 모순적이지만, virtual 메모리가 이를 가능하게함
+- Physical Layout
+  - RAM은 머신마다, 플랫폼마다 서로 다르며 OS마다 제한된 영역도 다름
+  - 따라서 역사적으로 프로그램들은 여러 제한을 겪었음
+  - 현재는 가상 메모리가 이러한 문제를 해결함
+  - 그렇다고 kernel이 physical layout을 몰라도 된다는건 아님
+
+### Memory Management Unit(MMU)
+- MMU는 address를 translate함
+  - cpu가 virtual address를 통해 메모리를 사용하려고 함
+  - mmu가 virtual address를 받아서 physical address로 변환
+  - 변환한 주소로 physical memory로 접근
+- virtual address로 DRAM에 바로 접근한다는 것은 틀린 표현임(Physical address로만 접근 가능)
+
+### VM as a Tool for Caching
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/4ffaad1e-c693-4b88-9884-5f7cf3e4b405)
+  - cpu는 mmu를 통과하기 전까지 Virtual Address 사용
+  - Main memory(Physical memory)는 Physical Address 사용
+  - MMU가 관리하는 page map(page table)존재
+    - virtual address와 physical address의 호환에 대한 정보가 담겨있음
+    - 모든 virtual address가 translation을 갖고 있지 않을 수도 있음
+  - 모든 data가 DRAM(Main memory)에 있는게 아니라, disk에도 존재함
+  - 서로 다른 VP가 같은 PP를 가리킬 수도 있음 (ex, shared library)
+
+### DRAM Cache Organization
+- DRAM은 virtual memory의 cache 형태로 사용됨
+  - DRAM은 SRAM보다 50~ 100배 느림
+  - Disk는 DRAM보다 10000배 느림
+- 결과
+  - 4KB ~ 4MB에 해당하는 Large page size
+    - 큰 페이지 크기 사용으로 메모리 관리에 필요한 오버헤드를 줄임
+  - Fully associative(완전 연관성)
+    - 가상 페이지를 물리 페이지에 자유롭게 매핑할 수 있게함
+    - 다만, 이로 인해 mapping function이 복잡해짐
+  - 정교하고 비싼 교체 알고리즘
+    - 어떤 페이지를 교체할 것인지 결정
+  - Write-back rather than wirte-through
+    - Write-back
+      - 수정된 데이터가 캐시에만 반영, 비교적 늦게 메인 메모리에 반영
+      - 메모리 버스의 트래픽을 줄임
+    - write-through
+      - 데이터가 수정될 때마다 캐시와 메인 메모리 모두 반영
+      - 트래픽 증가
+
+### Enabling Data Structure: Page Table
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/5e386fdb-44cf-4e49-9bc8-bb649a0b133a)
+  - VP는 Virtual Page, PP는 Physical Page
+  - Page table은 page table entries의 배열임
+  - page table entriy에는 virtual address를 physical address로 변환하는 정보가 들어있음
+    - Phsyical **Physical page number**나 disk 주소를 지님
+  - physical memory 순서 상관없음(어차피 fully-associate)
+  - Page hit
+    - VP1,2,7,4
+    - CPU가 참조하려는 Virtual Page가 Physical memory에 로드된 페이지(Physical page)에 해당하는 경우
+    - MMU가 빠르게 가상 주소를 물리 주소로 변환할 수 있음
+    - Valid값이 1임
+  - Page fault
+    - Physical memory에 로드되지 않은 Virtual Page에 엑세스하려고 할 때 발생
+    - VP3, 6
+    - Physical memory에 없는 경우
+    - Valid값이 0임
+  - Handling Page Fault
+    - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/b798d8a9-2a02-40d5-a329-8a6d83768cd6)
+    - MMU가 페이지 폴트를 감지하고 운영체제에 알림
+    - 운영체제는 필요한 페이지를 디스크에서 찾고, 이 페이지를 물리 메모리의 사용 가능한 공간에 로드함
+    - 마지막으로 운영 체제는 Page Table을 업데이트함 
+    - Page fault handler가 victim을 고름
+      - 교체될 대상, 현재 VP4
+      - valid와 mapping 변환, Disk에서 값 가져옴
+      - 재시도 -> hit
+
+### Demand paging
+- 필요할 때(page fault가 발생했을 때)만 Virtual Page를 Physical memory로 올림, 우선적으로 올리지 않음
+- 전체 프로세스를 메모리에 올리는 것이 아닌, 필요한 페이지만 Physical memory로 가져옴 
+
+### Localiy to the Rescue Again
+- 가상 메모리는 비효율적으로 보이지만, locality로 인해 잘 동작할 수 있음
+- 프로그램은 working set이라 불리는 virtual page 집합에만 접근하는 경향이 있음
+  - 만약, 더 작은 temporal locality(시간적 지역성)을 가지면 더 작은 working set을 가질 것임
+    - 시간적 지역성: 최근 접근한 데이터의 주변 공간에 다시 접근하는 소프트웨어의 패턴
+- working set의 크기가 main memory의 크기보다 작으면, 처음에 데이터를 올릴 때를 제외하면(compulsory misses) 좋은 성능을 지닐 것임
+  - 그만큼 더 작은 시간적 지역성을 갖고 있다는 뜻
+- working set 크기의 총합이 main memory의 크기보다 크다면, page가 많이 swap(page fault)될 것이고 많은 성능 패널티가 읶을 것임
+  - 이를 Thrashing이라 지칭
+
+### Virtual Memory as a Tool for Memory Management
+- 각 프로스세는 고유의 virtual address space를 지님
+  - 각 프로세스는 메모리를 단순한 linear array로 볼 것임
+  - 향상된 mapping을 통해 VP를 물리 메모리 전체에 분산 시키고, 지역성을 향상 시킬 수 있음
+- 메모리 할당 단순화
+  - 각 가상 페이지는 어느 물리페이지에든 매핑될 수 있음
+- 프로세스 간 코드와 데이터 공유
+  - 서로 다른 Virtual Page를 동일한 Physical Page에 저장할 수 있음
+    - ex, shared library
+- 링킹과 loading입장에서도, linear memory space로 접근하면 되기 때문에 매우 간편함
+  - shared libraries를 위한 Memory-mapped region이 stack과 heap 사이에 존재
+  - .text와 .data섹션이 page 단위로 존재
+    - 사용될 때마다 로드(demanding page)
+
+### VM as a Tool for Memory Protection
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/f404c42f-f460-492c-9a4f-e0ec7e8ad6b6)
+  - Page Table entries에 여러 permission bit가 존재하고, mmu가 이를 체크함
+  - 마치 memory protection처럼 동작
+
+## Memory mapping and Copy-on-Write(CoW)
+### Sharing Revisited: Shared Objects
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/ba9ecb6b-df66-49c7-97a8-bf20a73c0c58)
+  - Shared object는 physical memory에서 공통된 부분으로 나타날 수 있음
+  - process1에서 data를 변경했을 때, process2에서도 변경된 부분이 보일 수 있음
+    - 혹은 덮어썼을 때 문제 발생 가능
+### Copy-on-Write(CoW)
+- common data로 메모리를 효율적으로 운영할 수 있는 것은 맞음
+  - 변경 부분이 공통된 process에 보이게 하고 싶지 않을 때 CoW 사용
+  - 읽을 때는 상관 없고, 데이터를 변경할때만 사용됨
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/874e6f0b-4e80-4f7d-b825-157a9195e80d)
+  - 데이터를 변경하고자 할 때, 변경하고자 하는 Page를 copy해서 physical memory에 새로 load함
+  - process2는 copy하지 않은 data를 계속 가리킴
+
+### fork Function Revisited
+- fork() 사용 시, 자식은 부모와 같은 virtual memory와 page table을 갖게됨
+  - 처음에는 동일하지만, 디스크에서 페이지를 스왑하는 과정에서 서서히 다르게 변화하게 됨
+  - 일부 변경 사항은 두 프로세스 모두에게 보일 수 있지만, 이는 일반적으로 좋지 않기 때문에 CoW를 통해 이를 해결함
+    - Physical page의 매핑도 늘어나게 됨
+
+### Copy-on-Write the Resque!
+- 공유하는 것이 메모리 효율측면에서는 좋지만, 변경된 data를 공유하고 싶지 않을 떄 CoW 사용
+- page table은 프로세스마다 존재
+  - fork에서 page table 복제 시, 모든 page를 read-only로 복사함
+  - 그리고 Data section같이 쓸 수 있는 영역은 copy-on-write 상태로 놔둠
+  - 이에 대해 쓰기 작업을 시도할 때, CoW를 적용해 복사본을 만들게 됨
+
+### The fork Function Revisited
+- fork 시스템 호출 시
+  - mm_struct, vm_area_struct, page table의 복사본을 만듬
+    - mm_struct: 리눅스 커널에서 프로세스의 메모리 관리 정보를 저장하는 구조체
+    - vm_area_struct: 가상 메모리 영역의 정보를 나타냄
+  - 두 프로세스의 각 페이지를 읽기 전용으로 표시
+  - vm_area_struct를 cow로 표시
+- 각 프로세스는 virtual memory의 정확한 복사본을 갖게됨
+- 후속 쓰기 작업은 CoW에 의해 새로운 페이지를 생성
+- mm_struct
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/1cbaf083-316c-47bc-8b57-5329b5687930)
+    - 프로세스 메모리 레이아웃이 구조체의 형태로 존재
+    - 각각 프로세스 마다 존재
+- vm_area_struct
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/18c0242f-8f08-4e38-9ad5-2569b1561e99)
+    - 각각의 세그먼트가 저장되어 있음
+    - 링크드리스트로 존재하며, 권한에 대한 내용 존재
+    - memory mapping같이 .so 파일이 저장되는 부분은 file 형태로 존재함
+
+### execve Function Revisited
+- execve 사용 시, 다른 프로그램을 실행하고 자신을 종료함
+- vm_area_struct를 전부 반환하고 새로 할당 받음
+- 새로운 text의 시작 포인트로 pc값이 이동하고, main function이 실행됨
+
+### User_Level Memory Mapping
+- `void *mmap(void *addr, size_t length, int prot, int flags, int fd, off_t offset)`
+  - 가상 메모리를 관리하는데 사용되는 시스템 콜
+    - 파일이나 장치를 메모리에 매핑하거나 프로세스 간 공유 메모리를 생성하는 등의 목적으로 사용
+  - 첫 인자는 addr이나 start
+    - null값으로 넣으면 커널이 알아서 시작 주소를 설정함
+  - prot: Protection 관련 권한 설정
+  - flags: 특정 파일 매핑 가능
+  - fd: anynomous는 -1로 설정 가능
+  - 매핑 영역의 시작 주소를 리턴함
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/98229269-eba7-4df3-90bb-d2198601edaa)
+
+### Example: Using mmap to Copy Files
+```C
+void mmapcopy(int fd, int size){
+/* Ptr to memory mapped area */
+char *bufp;
+bufp = mmap(NULL, size,PROT_READ,MAP_PRIVATE,fd, 0);
+write(1, bufp, size);
+return;
+}
+//mmap()은 매핑된 메모리 영역의 시작 주소를 반환함
+//이후 write를 이용하여 이 메모리 영역의 내용을 표준 출력으로 전송함 
+//데이터를 사용자 공간으로 복사할 필요 없이 파일의 내용을 표준 출력으로 직접 전송
+```
+
+```c
+/* mmapcopy driver */
+int main(int argc, char **argv)
+{
+struct stat stat;
+int fd;
+
+/* Check for required cmd line arg */
+if (argc != 2) {
+printf("usage: %s <filename>\n",
+argv[0]);
+exit(0);
+}
+
+/* Copy input file to stdout */
+fd = Open(argv[1], O_RDONLY, 0);
+Fstat(fd, &stat);
+mmapcopy(fd, stat.st_size);
+exit(0);
+}
+
+//open으로 읽고
+//Fstat으로 파일 정보를 struct stat 타입의 변수에 저장함
+//stat.st_size는 파일의 크기를 나타내게 됨
+//mmapcopy를 통해 열려있는 파일의 파일 디스크립터와 파일 크기를 인수로 넣고
+//파일의 내용을 메모리에 매핑하고, 매핑된 내용을 표준 출력으로 전송함 
+```
+
+### mmap vs malloc
+- mmap은 system call이고, malloc은 그냥 interface임
+- mmap은 큰 메모리 할당, malloc은 작은 memory 할당
+  - malloc에서 할당된 data는 heap에만 저장되는게 아니라, threshold(128KB)를 넘어가게 되면 Memory mapped region에 할당됨
+  - mmap은 Memory mapped region에 할당됨
+
+### Advantages of using mmap
+- Lazy loading
+  - 필요할 때까지 Virtual Page를 Physical memory에 로드하지 않음
+- Memory management
+  - munmap()은 메모리를 즉시 운영체제에 반환하지만 free()는 메모리를 OS에 반드시 반환하는 것은 아님
+  - 예를 들어, free()로 반환하는게 100Byte라 가정
+    - Physical Page의 단위는 4KB이기 때문에 100 Byte를 해제한다 하더라도 나머지 페이지가 아직 비어있지 않다면 이 페이지는 반환되지 않고 남아있게 됨, 이는 효율적이지 않음
+    - 다만 munmap()은 page를 그대로 os에 반환함
+
+### The C stack
+- 프로그램의 스택은 커널이 관리한다고 배웠지만, 더 정확하게는 kernel은 스택을 관리하기 위해 mmu를 구성함
+- 커널은 스택의 크기를 결정하고, 아직 물리 메모리에 로딩되지 않은 Virtual Page들을 읽기와 쓰기가 가능한 상태로 설정함
+- Physical memory에 올라가 있는 Virtual Page보다 더 많은 공간이 스택에 필요해지면, 마찬가지로 page fault가 발생하고 새로운 page가 할당됨.
