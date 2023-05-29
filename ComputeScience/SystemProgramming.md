@@ -121,6 +121,22 @@
     - [mmap vs malloc](#mmap-vs-malloc)
     - [Advantages of using mmap](#advantages-of-using-mmap)
     - [The C stack](#the-c-stack)
+  - [Address Translation](#address-translation)
+    - [Address Translation With a Page Table](#address-translation-with-a-page-table)
+    - [Address Translation: Page Hit](#address-translation-page-hit)
+    - [Page tables in memory, like other data](#page-tables-in-memory-like-other-data)
+    - [Speeding up Translation with a TLB](#speeding-up-translation-with-a-tlb)
+    - [Multi Level Page Tables](#multi-level-page-tables)
+    - [Cute Trick for Speeding Up L1 Access](#cute-trick-for-speeding-up-l1-access)
+  - [Functions and Stack](#functions-and-stack)
+    - [Stack](#stack)
+    - [Stack Operation](#stack-operation)
+    - [Variable Declarations](#variable-declarations)
+    - [Automatic Variable](#automatic-variable)
+    - [Function Call Nesting](#function-call-nesting)
+    - [Stack Frames](#stack-frames)
+    - [Example Stack Frame](#example-stack-frame)
+    - [A Call Stack](#a-call-stack)
 # 시스템 프로그래밍
 ## C_POSIX
 ### POSIX
@@ -1439,6 +1455,7 @@ puts("Redirected output!");
   - cpu는 mmu를 통과하기 전까지 Virtual Address 사용
   - Main memory(Physical memory)는 Physical Address 사용
   - MMU가 관리하는 page map(page table)존재
+    - MMU는 보통 CPU 내부에 위치하고, Page Table은 보통 메인 메모리에 위치함
     - virtual address와 physical address의 호환에 대한 정보가 담겨있음
     - 모든 virtual address가 translation을 갖고 있지 않을 수도 있음
   - 모든 data가 DRAM(Main memory)에 있는게 아니라, disk에도 존재함
@@ -1468,7 +1485,7 @@ puts("Redirected output!");
 - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/5e386fdb-44cf-4e49-9bc8-bb649a0b133a)
   - VP는 Virtual Page, PP는 Physical Page
   - Page table은 page table entries의 배열임
-  - page table entriy에는 virtual address를 physical address로 변환하는 정보가 들어있음
+  - page table entry에는 virtual address를 physical address로 변환하는 정보가 들어있음
     - Phsyical **Physical page number**나 disk 주소를 지님
   - physical memory 순서 상관없음(어차피 fully-associate)
   - Page hit
@@ -1648,3 +1665,241 @@ exit(0);
 - 프로그램의 스택은 커널이 관리한다고 배웠지만, 더 정확하게는 kernel은 스택을 관리하기 위해 mmu를 구성함
 - 커널은 스택의 크기를 결정하고, 아직 물리 메모리에 로딩되지 않은 Virtual Page들을 읽기와 쓰기가 가능한 상태로 설정함
 - Physical memory에 올라가 있는 Virtual Page보다 더 많은 공간이 스택에 필요해지면, 마찬가지로 page fault가 발생하고 새로운 page가 할당됨.
+
+## Address Translation
+### Address Translation With a Page Table
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/99e23eaa-eb05-449b-a997-299c4f138081)
+  - VPN(Virtual Page Number)
+    - 페이지 테이블에서 해당 페이지를 찾는 데 사용되는 인덱스
+    - VPN을 통해 page table에 접근하여 PPN(Physical Page Number)로 변환
+      - 이후 PPN로 Physical Memory로 접근
+    - 이 과정에서 PTBR 이용
+  - PTBR(Page Table Base Register)
+    - 현재 프로세스의 Physical page table의 address를 지님
+    - TLB miss가 난 경우 사용하여 Page table로 접근
+  - VPO(Virtual Page Offset)
+    - 패이지 내에서 특정 바이트를 찾는데 사용되는 인덱스
+    - 4KB(2^12 Byte) Page 단위에서, 총 12bit 차지
+    - VPO는 PPO로 그대로 사용됨
+
+
+### Address Translation: Page Hit
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/e299fa52-832f-4835-b7e4-a4fa3977b597)
+  - CPU에서 Virtual Addtrss를 MMU로 보냄
+    - MMU는 CPU안에 존재함
+  - PTBR에서 얻은 PTEA(Page Table Entries address)를 통해 Page Table에 접근하여 PTE(Page Table entry)를 얻어옴
+    - 이때, Page Table은 main memory에 있음
+    - PTE에는 virtual address를 physical address로 변환하는 정보가 들어있음 기억하라
+  - PTE의 valid bit이 1이면 hit, VPN을 PPN으로 변환하여 Physical Address를 얻음
+    - 이때부터는 L1 Cache ~ main memory에 접근
+
+### Page tables in memory, like other data
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/4efe0121-2dd1-4f31-aa89-18e8bb9c55fd)
+  - 만약에 PTE가 다른 메모리처럼 캐시에서 관리된다고 가정
+  - 데이터를 넣기에도 모자란 캐시에, PTE까지 넣으면 용량이 아까움
+  - PTE에서 fault 발생 시, 오버헤드가 중첩될 가능성 또한 존재함
+
+### Speeding up Translation with a TLB
+- TLB(Translation Lookaside Buffer)
+  - 실제 MMU는 TLB를 통해 address translation를 캐싱하고 있음
+    - 여기서 address translation은 vm->pm이므로, PTE를 캐싱한다고 봐도 무방함
+- TLB Hit
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/9a577349-cd9c-4509-8a92-387a14c5eb54)
+  - TLB도 CPU에 있음 주의
+  - MMU가 VA를 받으면 바로 main memory의 page table로 access 하는게 아닌, TLB에 VPN이 있는지 확인함
+  - 있다면 TLB에서 PTE를 반환 후 바로 cache로 접근
+  - 즉, Page Table로 접근하지 않아도 되기 때문에 Main memory에 접근하지 않아도 됨
+- TLB Miss
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/d8d26b41-3ab2-4d79-bb7f-83a1fdff4113)
+    - TLB Miss가 발생한 경우 Page Table(Main memroy)로 접근하여 PTE를 가져옴
+    - 가져온 PTE를 TLB에 저장하고, MMU에도 전달함
+    - 가져온 PTE를 바탕으로 PA로 변환, cache에 접근함
+- cf
+  - TLB 크기가 작아도 90% 이상의 address translation을 커버할 수 있음
+
+### Multi Level Page Tables
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/9e3d7b6e-c0d2-4ef8-b2a3-33327f95bfac)
+  - 각 프로세스마다 page table을 지님
+  - 따라서 Page Table은 단순 array 형태로 저장되지 않고 tree 형태로 저장됨
+  - 멀티 레벨로 관리됨
+    - 주로 4~5 level이 있으며 각 level이 같은 크기를 지님
+    - 이를 통해 계층적 접근
+  - 따라서 virtual address는 48~57 bit를 지님
+    - VPO(12 bit) + VPN(9bit *4~5)
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/b52a11eb-27c0-4c37-9b0c-e29461665c73)
+  - VPO는 PPO로 바로 변환됨
+  - VPN은 TLB Hit 시에는 TLB를 통해 PPN으로 변환되고
+    - TLB Miss 시에는 계층별로 4단계로 나눠져서, 단계별로 PTE를 찾게됨
+
+### Cute Trick for Speeding Up L1 Access
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/dd4ad21c-8916-4572-adda-628e9e5393c1)
+  - 그런데 VPN이 PPN으로 변환되기 전, 미리 cache를 조회할 수 있는 방법이 있음
+  - VPO와 PPO는 같기 때문에 이를 이용하여 cache를 미리 조회하는 것(Virtually indexed)
+    - 캐시 라인은 고유한 인덱스를 갖는데, 이 인덱스를 결정하는 데 필요한 비트를 VPO가 포함하고 있기 때문에 VPO만으로 캐시 라인의 위치를 결정할 수 있음
+    - 이를 통해 CPU Cycle을 1 Cycle 줄일 수 있고, 5~10퍼 정도의 성능 향상을 꾀할 수 있음
+    - 다만, VPO의 12bit 안에 Cache index가 있어야 가능함
+      - 즉, 캐시의 크기가 페이지 크기 이하여야 함
+    - 따라서 L1 Cache를 무작정 늘리면, 오히려 성능이 안좋아질 수 있음
+  - 이를 통해 주소 변환 과정의 시간을 단축할 수 있지만, 다른 가상 주소가 동일한 물리적 주소를 가리킬 수 있음
+    - 이를 해결하기 위해 캐시 항목에 태그를 붙여 관리함(Physically Tagged)
+      - 캐시 태그(CT)를 통해 구분
+    - 즉, 실제 캐시 항목의 유효성 검사는 물리 주소를 사용해 이뤄짐
+  - 결국 tag를 확인할 때 Physical address에 대한 정보가 있어야 되기 때문에 똑같은 시간을 기다려야 하는 것이 아닌가 하는 의문점이 들 수 있음
+    - 가상 주소를 사용한 캐시 접근과 주소 변환이 병렬적으로 이뤄지기 때문에, 캐시를 조회하는 시간을 줄일 수 있음
+
+
+## Functions and Stack
+### Stack
+- automatic variable은 그냥 local variable이라 생각
+- stack도 platform에 따라 구현하는 방식이 달라짐
+- stack은 메모리에서 아래 방향으로 grow 함을 기억하라
+  - base가 high address
+  - top이 lower address임
+  - 데이터가 들어올 수록 높은 메모리 주소에서 낮은 메모리 주소로 향함
+    - ex) base의 주소: 31
+  - push는 top을 아래방향으로 증가, pop은 top을 윗 방향으로 증가
+### Stack Operation
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/91034c4c-62ee-495b-89fb-2dc765243364)
+  - `push int i=42;`
+    - 4 byte만큼 저장, top 위치 변동
+  - `push double d = 2.0;`
+    - alignment를 위해 padding 추가(4 Byte)
+    - 8 byte만큼 저장, top 위치 변동
+  - `push struct{ int x=3; int y=5; }`
+    - y가 먼저 저장되고 x가 나중에 저장됨
+    - stack에서는 마지막에 사용할 데이터를 먼저 저장하기 때문
+      - x를 먼저 선언했으므로, x를 먼저 사용할 것이라 판단하고 x를 마지막에 저장하는 것
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/bbd32f2b-8327-4425-988a-51899e07b3b3)
+  - d 주소를 access 하려면 top+8을 하면 됨
+  - top은 register에 저장되어 있고, 이를 stack pointer라고 지칭함
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/d04fa87d-14c1-4395-bfca-c345d9be4545)
+  - function 종료 시, stack이 다 반환되고 top이 그만큼 올라옴
+
+### Variable Declarations
+- 변수 선언 시
+  - 컴파일러가 data를 위해 stack 공간을 예약함(메모리 할당)
+  - 데이터의 메모리 공간에 이름을 부여
+    - 프로그래머가 데이터를 참조하고 조작 가능하게 함
+
+### Automatic Variable
+- 모든 로컬 변수는 자동 변수임
+  - 함수나 메서드의 호출이 종료되면 자동 해제
+  - 코드 블록 내에서만 유효함
+  - 사용되기 전에 allocation 되있어야 함
+  - function이 끝날 때 까지는 valid 해야함
+- 지역변수에 관해서는 프로그래머가 순서나 위치에 대해 예측할 수 없음
+  - 컴파일러가 알아서 지정하기 때문
+  - 보통 register를 이용해 function 동작 시 사용됨
+- 그렇다고 구조체 내부 순서까지 변동되진 않음
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/4c0200f2-5ddd-4d04-94f4-3c247353ae44)
+
+### Function Call Nesting
+- 함수 호출 중첩
+  - 한 번에 2개의 함수를 부를 수는 없음
+  - can call only one function at a time
+- Function call simplify
+  - 새로운 function location(Program Counter)로 jump
+  - function code 실행
+  - 이전 pc값(pc+4)으로 돌아옴
+- complicated
+  - automatic variable 할당
+  - 다른 function call(pc값 저장)
+  - register값 일시 저장
+    - 함수가 레지스터를 사용하려고 하는데, 다른 값으로 이미 채워져 있을 때
+    - 레지스터의 현재 값을 스택에 push하고, 작업을 완료하고 다시 pop하여 복원
+  - 이러한 경우 함수가 스택 프레임을 필요로 함
+    - 스택 프레임은 함수의 실행 상태를 유지하는데 필요한 모든 정보를 보관
+    - argument, automatic(local) variables, return address, temporarlly save register..
+ 
+### Stack Frames
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/27cd522b-5702-49d7-bfe9-be4d2f09ef01)
+- 스택이 증가하는 방향으로 function 마다 stack frame이 잡히게 됨
+  - processor registers
+    - 위 설명처럼 스택을 이용하여 register를 자신만의 것처럼 사용 가능
+  - local variables 저장
+    - 모든 local variable이 한 번에 stack에 allocate됨
+    - 컴파일러가 만들어낸 명령어에 따라 stack pointer의 증가분으로 size를 유추하는 것이지 size가 실제로 저장되진 않음
+  - 호출된 함수의 인수
+    - 호출하는 함수는 호출되는 함수에게 인수를 전달해야 하기 때문
+    - 6개 이상 사용 시 성능이 안좋아짐
+      - 보통 register를 6개 정도 이용하기 때문
+    - 구조체가 저장하는 논리처럼, 스택에 push될 때 reverse order로 push됨
+  - 호출된 함수의 반환 위치
+    - program counter값 저장(사실+4가 저장)
+    - 프로세서에 있는 machine instruction의 주소
+
+### Example Stack Frame
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/27cd522b-5702-49d7-bfe9-be4d2f09ef01)
+  - exactly which elements are part of which frame is negotiable
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/c75105bf-470c-4fba-b841-e12ea3f6e858)
+  - 할당 시
+    - Set-up code
+    - `call` instructions
+  - 해제 시
+    - Finish code
+    - `ret` instructions
+  - `RBP`
+    - Base Pointer 레지스터
+    - 현재 실행중인 함수의 Base 스택 프레임을 가리킴
+  - `RSP`
+    - Stack Pointer 레지스터
+    - 현재 스택의 Top을 가리킴
+      - 가장 최근에 스택에 push된 요소
+- Example
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/e3a380ea-abbc-457f-a7e9-0838ca6cc5b5)
+
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/59878784-b431-4374-bdab-e293f3e82d38)
+
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/c377aa34-ecbf-4183-8f8c-e88c02ee2559)
+
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/f30f3dbb-4fe9-4e2e-8bf7-e843ce215a35)
+
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/802fd5a3-8976-4bda-bd89-7c58c698961c)
+
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/21a15658-d766-45c8-8308-0e550e02c1ff)
+
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/82501eab-8bb0-4296-9435-298ebffae648)
+
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/fc13b4e6-70ab-493f-8ac2-920f2b058765)
+
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/6ba19b2d-00a4-40cd-93ed-ce2492c64ded)
+
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/8249c9da-efe2-4ec3-b245-2574ad4a86d4)
+
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/43948ba2-f96b-4650-a378-472eef9f5195)
+  -  function return이 일어나면 스택이 없어지는데, 스택 포인터만 옮겨온거지 메모리에 데이터가 남아있을 수는 있음
+
+### A Call Stack
+
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/df38a69c-9150-4c9e-b748-58009c8f70e4)
+  - pc값 저장
+
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/7c8bf11f-07cf-4be7-bfd8-caef83cf932e)
+  - i variable 저장(stack pointer 이동)
+
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/794ec100-e2cc-4cef-9b02-65c72211a980)
+  - foo 실행
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/57cb6047-9900-4d4e-bb66-f29a66075452)
+  - bar()를 위한 준비
+  - 여기서 두 개의 i는 서로 다른 i임
+  - 다른 주소 공간에 저장됨 주의 
+
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/8e81431c-8a4e-4d08-bb5e-999db3077ec4)
+  - 반환을 위해 foo pc값 저장
+
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/b1715876-2f94-4f10-a3fb-0365f7f4b4ea)
+  - 함수 실행을 위한 메모리 할당
+  - j값 저장 
+
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/0095f166-1c59-4805-a291-6179782aaeea)
+  - bar() 실행
+
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/0bddb8ad-5631-4be5-aa62-920a7dc8217e)
+  - bar() 실행, i값 변경
+  - 어디에 저장된 i값이 변경되는지 잘 확인할 것
+
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/44e02c87-768f-45bb-9d31-40971e0f2034)
+  - bar이 사용했던 스택 모두 반환
+  - 완전 clear된 것은 아니고 스택 포인터가 달라진 것일 수 있음
+    - 메모리에 값이 남아있을 수 있다.
+
