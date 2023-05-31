@@ -137,6 +137,17 @@
     - [Stack Frames](#stack-frames)
     - [Example Stack Frame](#example-stack-frame)
     - [A Call Stack](#a-call-stack)
+    - [Memory alignment code](#memory-alignment-code)
+  - [POSIX Signals](#posix-signals)
+    - [POSIX Signals](#posix-signals-1)
+    - [Multitasking / Concurrency](#multitasking--concurrency)
+    - [Signal](#signal)
+    - [Asychronous Reception](#asychronous-reception)
+    - [Signal List](#signal-list)
+    - [Signal Concepts](#signal-concepts)
+    - [Sending Signals](#sending-signals)
+    - [Example](#example)
+    - [Signal Handler](#signal-handler)
 # 시스템 프로그래밍
 ## C_POSIX
 ### POSIX
@@ -1902,4 +1913,390 @@ exit(0);
   - bar이 사용했던 스택 모두 반환
   - 완전 clear된 것은 아니고 스택 포인터가 달라진 것일 수 있음
     - 메모리에 값이 남아있을 수 있다.
+
+### Memory alignment code
+**시험에 나옴 중요**
+```c
+#include <stdio.h>
+
+// size is 8, 4 + 1, then round to multiple of 4 (int's size),
+struct stu_a {
+    int i; // 4 bytes
+    char c; // 1 byte
+    // char pad[3]; // 3 bytes padding
+    // 가장 크기가 큰 변수를 기준으로 alignment 진행
+    // 3byte padding
+    // 따라서 총 size가 8byte가 됨
+};
+
+// size is 16, 8 + 1, then round to multiple of 8 (long's size),
+struct stu_b {
+    long l; // 8 bytes
+    char c; // 1 byte
+    // char pad[7]; // 7 bytes padding
+    // 총 size가 16byte가 됨
+};
+
+// size is 24, l need padding by 4 before it, then round to multiple of 8 (long's size),
+struct stu_c {
+    int i; // 4 
+    // char pad[4]; // 4 bytes padding after int var
+    long l; // 8
+    char c; // 1
+    // char pad[7]; // 7 bytes padding
+    // 4byte와 7byte 패딩이 추가되어 총 사이즈가 24byte가 됨
+};
+
+// size is 16, 8 + 4 + 1, then round to multiple of 8 (long's size),
+struct stu_d {
+    long l; // 8 
+    int i; // 4
+    char c; // 1
+    // char pad[3];
+    // 선언되는 순서를 바꿔주게 되면, 3byte 패딩만 들어가게 됨
+    // 총 size 16 byte
+};
+
+// size is 16, 8 + 4 + 1, then round to multiple of 8 (double's size),
+struct stu_e {
+    double d; // 8
+    int i; // 4
+    char c; // 1
+    // char pad [3];
+    // stu_d와 같음
+};
+
+// size is 24, d need align to 8, then round to multiple of 8 (double's size),
+struct stu_f {
+    int i; // 4
+    // char pad[4];
+    double d; // 8
+    char c; // 1
+    // char pad[7];
+    // stu_c와 같음
+};
+
+// size is 4,
+struct stu_g {
+    int i; //4
+};
+
+// size is 8,
+struct stu_h {
+    long l; // 8
+};
+
+// test - padding within a single struct,
+// struct의 size 호출
+int test_struct_padding() {
+    printf("%s: %ld\n", "stu_a", sizeof(struct stu_a));
+    printf("%s: %ld\n", "stu_b", sizeof(struct stu_b));
+    printf("%s: %ld\n", "stu_c", sizeof(struct stu_c));
+    printf("%s: %ld\n", "stu_d", sizeof(struct stu_d));
+    printf("%s: %ld\n", "stu_e", sizeof(struct stu_e));
+    printf("%s: %ld\n", "stu_f", sizeof(struct stu_f));
+
+    printf("%s: %ld\n", "stu_g", sizeof(struct stu_g));
+    printf("%s: %ld\n", "stu_h", sizeof(struct stu_h));
+
+    return 0;
+}
+
+// test - address of struct,
+int test_struct_address() {
+    printf("%s: %ld\n", "stu_g", sizeof(struct stu_g));
+    printf("%s: %ld\n", "stu_h", sizeof(struct stu_h));
+    printf("%s: %ld\n", "stu_f", sizeof(struct stu_f));
+
+    struct stu_g g;
+    struct stu_h h;
+    struct stu_f f1;
+    struct stu_f f2;
+    int x = 1;
+    long y = 1;
+
+    //시작주소 출력
+    printf("address of %s: %p\n", "g", &g);
+    printf("address of %s: %p\n", "h", &h);
+    printf("address of %s: %p\n", "f1", &f1);
+    printf("address of %s: %p\n", "f2", &f2);
+    printf("address of %s: %p\n", "x", &x);
+    printf("address of %s: %p\n", "y", &y);
+
+    // g is only 4 bytes itself, but distance to next struct is 16 bytes(on 64 bit system) or 8 bytes(on 32 bit system),
+    printf("space between %s and %s: %ld\n", "g", "h", (long)(&h) - (long)(&g));
+
+    // h is only 8 bytes itself, but distance to next struct is 16 bytes(on 64 bit system) or 8 bytes(on 32 bit system),
+    printf("space between %s and %s: %ld\n", "h", "f1", (long)(&f1) - (long)(&h));
+
+    // f1 is only 24 bytes itself, but distance to next struct is 32 bytes(on 64 bit system) or 24 bytes(on 32 bit system),
+    printf("space between %s and %s: %ld\n", "f1", "f2", (long)(&f2) - (long)(&f1));
+
+    // x is not a struct, and it reuse those empty space between structs, which exists due to padding, e.g between g & h,
+    printf("space between %s and %s: %ld\n", "x", "f2", (long)(&x) - (long)(&f2));
+    printf("space between %s and %s: %ld\n", "g", "x", (long)(&x) - (long)(&g));
+
+    // y is not a struct, and it reuse those empty space between structs, which exists due to padding, e.g between h & f1,
+    printf("space between %s and %s: %ld\n", "x", "y", (long)(&y) - (long)(&x));
+    printf("space between %s and %s: %ld\n", "h", "y", (long)(&y) - (long)(&h));
+
+    return 0;
+}
+
+int main(int argc, char * argv[]) {
+    test_struct_padding();
+// stu_a: 8
+// stu_b: 16
+// stu_c: 24
+// stu_d: 16
+// stu_e: 16
+// stu_f: 24
+// stu_g: 4
+// stu_h: 8
+
+    test_struct_address();
+// stu_g: 4
+// stu_h: 8
+// stu_f: 24
+// address of g: 0x7ffeb4c353c8
+// address of h: 0x7ffeb4c353d0
+// address of f1: 0x7ffeb4c353e0
+// address of f2: 0x7ffeb4c35400
+// address of x: 0x7ffeb4c353cc
+// address of y: 0x7ffeb4c353d8
+// space between g and h: 8
+// g가 4바이트고 h가 8바이트 이기 때문에 4바이트 패딩이 생김
+
+// space between h and f1: 16
+// h는 8바이트고 f1은 24바이트.
+// f가 double형을 포함하고 있기 때문에 이 간격을 맞추기 위해
+// 8바이트 패딩이 생긴다고 생각하자. 
+
+// space between f1 and f2: 32
+// 쨌든 str_f의 시작주소는 8바이트 경계에 맞춰져있어야 한다.
+// 8바이트 패딩이 생김
+
+// space between x and f2: -52
+// space between g and x: 4
+// space between x and y: 12
+// space between h and y: 8
+
+// 흠.. 너무 깊게 생각하지 말 것
+    return 0;
+}
+```
+
+
+```c
+#include <stdio.h>
+
+struct A {
+    double d1;  // 8
+    char c1;    // 1 // PAD[3]
+    int i1;     // 4
+    char c2;    // 1 // PAD[7]
+    // 총 24Byte
+};
+
+// 이는 완전 연속된 주소로 들어감
+// 메모리를 훨씬 적게 쓸 수 있음
+// 혹은 #pragma pack(1) 사용
+struct __attribute__((packed)) A_packed {
+    double d1;  
+    char c1;    
+    int i1;
+    char c2;
+    //총 14Byte
+};
+
+int main()
+{
+    struct A a;
+    struct A_packed a_p[2];
+    
+    
+    printf("sizeof A = %ld\n", sizeof(a));
+    printf("address of a.d1 = %08x\n", &a.d1);
+    printf("address of a.c1 = %08x\n", &a.c1);
+    printf("address of a.i1 = %08x\n", &a.i1);
+    printf("address of a.c2 = %08x\n", &a.c2);
+    
+    printf("sizeof A_packed = %ld\n", sizeof(a_p));
+
+    printf("address of a_p[0].d1 = %08x\n", &(a_p[0].d1));
+    printf("address of a_p[0].c1 = %08x\n", &(a_p[0].c1));
+    printf("address of a_p[0].i1 = %08x\n", &(a_p[0].i1));
+    printf("address of a_p[0].c2 = %08x\n", &(a_p[0].c2));
+
+    printf("address of a_p[1].d1 = %08x\n", &(a_p[1].d1));
+    printf("address of a_p[1].c1 = %08x\n", &(a_p[1].c1));
+    printf("address of a_p[1].i1 = %08x\n", &(a_p[1].i1));
+    printf("address of a_p[1].c2 = %08x\n", &(a_p[1].c2));
+    
+// sizeof A = 24
+// address of a.d1 = e213e760
+// address of a.c1 = e213e768
+// address of a.i1 = e213e76c
+// address of a.c2 = e213e770
+// sizeof A_packed = 28
+// 배열로 선언해도 둘이 완전 붙어서 선언됨!
+// 패딩을 없앨 수는 있지만, 정렬되지 않은 data이기 때문에 조심해야 함
+// address of a_p[0].d1 = e213e780
+// address of a_p[0].c1 = e213e788
+// address of a_p[0].i1 = e213e789
+// address of a_p[0].c2 = e213e78d
+// address of a_p[1].d1 = e213e78e
+// address of a_p[1].c1 = e213e796
+// address of a_p[1].i1 = e213e797
+// address of a_p[1].c2 = e213e79b
+// 주소값을 잘 살펴보면, 패딩이 없는 것을 알 수 있다.
+    
+    
+    
+    return 0;
+}
+```
+
+## POSIX Signals
+### POSIX Signals
+- pipe와 같은 interprocess communication임
+- 프로그램에서 concurrency(동시성)을 만들 수 있음
+
+### Multitasking / Concurrency
+- 여러 syscall을 기억해보자
+- fork() -> 새 process 생성
+- exit() -> 현재 process terminate
+- wait(), waitpid() -> wait, reap terminated children
+- execve() -> 현재 process에서 새 program 실행
+
+### Signal
+- signal은 process에게 특정 이벤트를 알리는 small message임
+  - signal은 id를 제외한 data를 delivery 하지 않음
+    - 갖는 정보는 id와 signal이 도착했다는 사실임
+  - signal은 integer로 구성되어 있음
+  - 커널에 의해 보내짐
+    - 다른 프로세스의 요청에 따라 생길 수 있는데, 이 경우에도 커널을 통함
+  - asynchronous(비동기, 동시에 똑같이 진행되지 않음)
+    - 언제든지 수신될 수 있음
+    - 단, 명령어의 동작은 보장하기 때문에 명령어의 동작 이후 작동
+
+
+### Asychronous Reception
+- signal은 block될 수도 있고 ignore될 수도 있음
+  - 블록하는 경우, 시그널을 받지 않게 됨
+  - 무시하는 경우, 도착했음을 알지만 따로 동작을 취하지 않음
+- 시그널은 두 프로세스의 instruction 사이에서도 수신될 수 있음
+  - 비동기적이기 때문
+- 사용자 정의 signal handler
+  - 프로세스는 signal을 수신했을 때 실행할 함수인 signal handler를 정의할 수 있음
+  - 특정 시그널에 대한 응답으로서 실행됨
+
+### Signal List
+- ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/66bd9012-b008-474f-92f8-3feb197076bb)
+  - SIGKILL이나 SIGSTOP은 process를 강제로 종료시키거나 멈추는 signal 이므로, caught되거나 block되거나 ignore되지 않음
+- `man 7 signal`을 통해 system 기준 signal 메뉴얼 페이지를 볼 수 있음
+  - 아키텍쳐, 시스템에 따라 signal이 달라질 수 있음
+
+### Signal Concepts
+- Sending a signal
+  - 커널이 목표 프로세스의 특정 상태를 업데이트 함으로써 signal을 send(deliver)함
+  - 내부적으로 생성된 signal
+    - SIGFPE(0으로 나누려고 할 때, 부동 소수점 예외)
+    - SIGCHILD(자식 프로세스가 종료될 때)
+  - 외부적으로 생성된 시그널
+    - ctrl+c나, kill 시스템 호출, 네트워크 끊김
+  - 이처럼 프로세스 내, 외부에서 발생한 이벤트에 대한 정보를 전달함
+
+- Receiving a signal
+  - 시그널을 수신하는 것은 목표 프로세스가 커널이 보낸 시그널에 어떤 방식으로든 반응할 때 발생
+  - 시그널 명시적 무시
+    - 메시지는 받지만 어떠한 행동도 취하지 않을 수 있음
+  - 기본 동작 실행
+    - 가장 기본인 default action 수행
+  - 시그널 핸들러 함수 호출
+    - 사용자 정의 함수를 통해 특정한 반응을 정의함
+- Default actions
+  - Abort
+    - Process 종료
+  - Dump
+    - 프로세스 종료 및 코어 덤프
+    - 코어 덤프는 프로세스의 메모리 상태를 기록한 파일, 원인 디버깅 시 사용
+  - Ignore
+    - 시그널이 무시됨
+  - Stop
+    - 프로세스 정지
+  - Continue
+    - 프로세스가 stop 됐을 때, 다시 running state로 변경
+- Signal semantics
+  - 시그널이 보내졌지만 아직 받지 않은 경우, 그 시그널은 대기 중(pending)임
+  - signal이 pending(보류)되는 경우, 특정 signal은 최대 한 개만 pending 되어 있을 수 있음
+    - 시그널이 큐에 쌓이지 않고, 무시됨
+  - 서로 다른 signal은 pending 중첩 가능
+  - 시그널의 블록
+    - 프로세스는 특정 시그널의 수신을 차단할 수 있음
+      - 전달될 수는 있지만, 시그널이 차단 해제 될 때까지 수신되진 않음
+    - 물론, SIGKILL과 SIGSTOP은 block 할 수 없음
+
+### Sending Signals
+- SIGINT
+  - ctrl-c로 주로 사용되는 시그널
+  - default action -> terminate process
+- SIGTSTP
+  - ctrl-z로 주로 사용되는 시그널
+  - default action -> suspend process
+- `int kill(pid_t pid, int sig)`
+  - process에서 직접 signal을 보낼 수 있음
+  - pid에 sig를 보냄
+
+### Example
+```c
+#include <stdio.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+#include <signal.h>
+
+#define N (10)
+
+int main(void)
+{
+	pid_t pid[N];
+	int i, child_status;
+	for (i = 0; i < N; i++) { 
+		if ((pid[i] = fork()) == 0) {
+			while (1); /* Child infinite loop */
+      // N개의 child process를 만들고, id값을 pid[i]에 저장함
+      // child process는 무한 루프를 돌게 됨
+		}
+	}
+	/*Parent terminates the child processes */
+		for (i = 0; i < N; i++) {
+			printf("Killing process %d\n", pid[i]);
+			kill(pid[i], SIGINT);
+      //자식 프로세스를 다 종료시킴
+		}
+
+	/*Parent reaps terminated children */
+		for (i = 0; i < N; i++) {
+			pid_t wpid = wait(&child_status);
+			if (WIFEXITED(child_status)) //정상 종료시
+				printf("Child %d terminated with exit status %d\n",
+					wpid, WEXITSTATUS(child_status));
+			else //비정상 종료시(SIGINT로 종료도 비정상 종료로 판단)
+				printf("Child %d terminated abnormally\n", wpid);
+		}
+	return 0;
+}
+```
+- 결과
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/416ebcfe-7f94-4231-80b0-aa3dfcc817ab)
+  - signal을 받아서 처리하는 순서와 child가 죽는 순서는 무관함
+  - 따라서 위와 아래의 출력 순서가 다름
+
+
+### Signal Handler
+- default action이 아닌 사용자 정의 action이 가능
+- SIGKILL이나 SIGSTOP은 signal handler로 catch할 수 없음
+- `sighandler_t signal(int sig, sighandler_t handler)`
+  - sig를 받았을 때 handler에 해당하는 function을 수행하겠다는 의미
 
