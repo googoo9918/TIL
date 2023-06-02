@@ -148,6 +148,13 @@
     - [Sending Signals](#sending-signals)
     - [Example](#example)
     - [Signal Handler](#signal-handler)
+    - [Example2](#example2)
+    - [Handling Signals](#handling-signals)
+    - [Example 3](#example-3)
+    - [Example 3\_2](#example-3_2)
+    - [Signal Reception](#signal-reception)
+    - [Shared Data](#shared-data)
+    - [Example 4](#example-4)
 # 시스템 프로그래밍
 ## C_POSIX
 ### POSIX
@@ -2299,4 +2306,224 @@ int main(void)
 - SIGKILL이나 SIGSTOP은 signal handler로 catch할 수 없음
 - `sighandler_t signal(int sig, sighandler_t handler)`
   - sig를 받았을 때 handler에 해당하는 function을 수행하겠다는 의미
+  - sighandler_t는 보통 void로 선언
+  - 주의점
+    - 모든 system이 `signal()`을 사용하는건 아니므로 확인해야함
+  - handler
+    - SIG_IGN
+      - 특정 시그널 무시
+      - `signal(SIGINT, SIG_IGN)` -> 프로세스가 SIGINT 시그널을 받아도 무시하도록 설정
+    - SIG_DFL
+      - 기본 동작을 수행하도록 설정
+    - 그 외의 값
+      - 특정 시그널 핸들러의 주소
+      ```c
+      void my_handler(int signum){
+        printf("Received signal %d\n", signum);
+        exit(1);
+      } 
 
+      int main(){
+        signal(SIGINT, my_handler);
+      }
+      ```
+
+### Example2
+```c
+void int_handler(int sig)
+{
+	printf("Process %d received signal %d\n", getpid(), sig);
+	exit(22);
+}
+int main(void)
+{
+	pid_t pid[N];
+	int i, child_status;
+	signal(SIGINT, int_handler);
+	for (i = 0; i < N; i++) {
+		if ((pid[i] = fork()) == 0) {
+			while (1); /* Child infinite loop */
+		}
+	}
+	/
+		*Parent terminates the child processes * /
+		for (i = 0; i < N; i++) {
+			printf("Killing process %d\n", pid[i]);
+			kill(pid[i], SIGINT);
+      //여기서 signal(SIGINT, int_handler)에 의해 SIGINT는
+      // int_handler에 의해 관리됨
+      // -> process getpid() receiver signal sig
+      // -> Child wpid teminate with exit status 22로 동작
+      // exit(22)라서 22가 출력된 거임
+		}
+	/
+		*Parent reaps terminated children * /
+		for (i = 0; i < N; i++) {
+			pid_t wpid = wait(&child_status);
+			if (WIFEXITED(child_status))
+				printf("Child %d terminated with exit status %d\n",
+					wpid, WEXITSTATUS(child_status));
+			else
+				printf("Child %d terminated abnormally\n", wpid);
+		}
+	return 0;
+}
+```
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/3cd850ec-901a-4134-b66b-7fb3d6c42c2d)
+
+
+### Handling Signals
+- Pending signals are not queued
+  - 동일한 타입의 signal이 여러 번 발생하면 그 중 하나만 기록됨
+  - 시그널 핸들러가 실행중일 때, 새로 도착한 시그널은 block됨
+  - 시스템 호출이 시그널에 의해 중단된 후, 자동으로 재시작되지 않는 경우가 있음
+    - read()와 같은 시스템 호출은 시그널 전달로 인해 중단되면 자동으로 재시작되지 않을 수 있음
+    - 이 경우, error condition을 반환
+      - 오류 코드는 EINTR임
+
+### Example 3
+```c
+#define N (10)
+pid_t pid[N];
+int ccount = 0;
+void handler (int sig) {
+pid_t id = wait(NULL);
+ccount--;
+printf ("Received signal %d from pid %d\n", sig, id);
+//SIGCHLD 시그널 발생 시, wait으로 상태값 받아와서 print 출력
+}
+int main(void) {
+int i;
+ccount = N;
+signal (SIGCHLD, handler);
+// 자식 프로세스가 종료되면 부모프로세스에게 SIGCHLD 시그널을 보내게 됨
+for (i = 0; i < N; i++) {
+if ((pid[i] = fork()) == 0) {
+exit(0); /* child */
+//자식 프로세스를 종료시킴
+}
+}
+while (ccount > 0)
+//종료되지 않은 자식 process가 있을 때
+sleep (5);
+return 0;
+}
+
+// 여러개의 child process가 exit할 때 SIGCHLD라는 동일 signal을 보내게 될 것임
+// 동일 signal이라서 pending 될 수 없고, 모든 child에 대해서 signal이 처리되지 않음
+// wait()은 blocking 함수, 자식 process가 return값을 반환하기 전이라면
+// stuck 상태로 남아있음
+// 즉, signal handler가 끝나고 나서 다음 signal이 도착하면 문제가 없지만,
+// signal handler가 작업중일 때 다음 signal(SIGCHLD)가 도착하면 block 되는 것임
+// 실제로 실행해보니 8개의 결과만 나왔음(정상 10개)
+
+// cf
+// 만약 while((id=wait(NULL))>0) 을 사용해도 결과가 10개가 다 출력된다
+// SIGCHLD signal은 씹힐 수 있지만,
+// wait function이 종료된 자식 process를 다 찾아서 signal handling을 마무리한다.
+// handler 호출 자체는 8번일 수 있겠으나, while문에 의하여 마무리가 가능한 것
+```
+
+### Example 3_2
+```c
+#define N (10)
+pid_t pid[N];
+int ccount = 0;
+void handler (int sig) {
+pid_t id;
+while((id=waitpid(-1, NULL, WNOHANG))>0) {
+ccount--;
+printf ("Received signal %d from pid %d\n", sig, id);
+}
+}
+int main(void) {
+int i;
+ccount = N;
+signal (SIGCHLD, handler);
+for (i = 0; i < N; i++) {
+if ((pid[i] = fork()) == 0) {
+exit(0); /* child */
+}
+}
+while (ccount > 0)
+sleep (5);
+return 0;
+}
+// WNOHANG: 기다리는 PID가 종료되지 않아 
+// 즉시 종료 상태를 회수할 수 없는 상황에서
+// 호출자는 차단되지 않고 반환값으로 0을 받음
+// 따라서 while((id=waitpid(-1, NULL, WNOHANG))>0) 으로 처리
+// 아직 처리되지 않은 종료된 자식 프로세스가 있으면 계속 반복함
+// SIGCHLD 시그널 핸들러가 호출될 때마다 종료된 모든 자식 프로세스를 확인
+// 모두 처리할 때까지 반복함
+// WNOHANG을 사용하지 않으면, 지정된 자식 프로세스가 종료될 때까지 block 상태가 됨
+// 한 자식 프로세스의 종료를 기다리는 동안 다른 자식 프로세스가 종료되면
+// 그에 대한 SIGCHLD 시그널을 놓칠 수 있음
+// WNOHANG 옵션을 사용하면 waitpid()가 block되지 않고 바로 반환되므로
+// 여러 개의 SIGCHLD 시그널이 발생해도 무시되지 않고 모두 처리할 수 있게 됨
+// while문을 사용하고, 첫 번째 인자인 -1이 임의의 자식 프로세스를 대상으로
+// 하기 때문에 가능한 것도 유의하자.
+```
+
+### Signal Reception
+- 커널은 시그널을 언제든 전달할 수 있음
+  - 시그널을 전달 받았을 때 프로세스는
+    - pc를 스택에 넣음
+    - signal handler로 jump
+    - signal handler 실행
+    - pc값 pop해서 반환받음
+- function과 동일
+
+### Shared Data
+- signal이 언제 전달될지 모름
+  - signal handler에서 shared data에 접근하는 것은 피하는게 좋음
+  - 만약 shared data가 다른 프로세스에 의해 수정중일 때 signal handler가 데이터를 읽거나 쓴다면 데이터 오염이나 프로그램 오류가 발생할 수 있음
+
+### Example 4
+```c
+void foo(int signum){
+    int status;
+    while(wait(&status) > 0){
+        printf("status: %d\n", status);
+    }
+}
+
+int main(){
+    signal(SIGCHLD, foo);
+    int i;
+    pid_t pid;
+    
+    for(int j=0; j<30; ++j){
+        pid = fork();
+        if(pid == 0){ //child process이면
+            for(i =0; i<3; ++i){
+                printf("child process..\n");
+                if(j>5){
+                    sleep(1);
+                }
+            }
+            exit(0);
+        }
+    }
+    for(i=0; i<30; ++i){
+        printf("parent procss..%d\n", i);
+        sleep(1);
+    }
+    exit(0);
+}
+// status를 반환할 때, while이 한 번 끝나고
+// child process가 return 된게 없으면 handler function이 종료되고
+// parent process..%d의 문장들이 출력되어야 함
+// 그런데, wait 함수는 main function을 block한 상태로 기다리기 때문에
+// child process가 전부 exit 할 때(status : %d가 30번 출력 된 후)까지 
+// main이 권한을 얻지 못함 따라서 다 출력된 후 parent process..%d 가 다 출력됨
+// status : %d가 출력되기 전에 parent process..%d가 출력될 수는 있는데,
+// 이는 어떤 child process도 아직 exit을 호출하지 않은 상태이기 때문이다.
+
+// 만약 여기서 while(wait)이 아니라 while(waitpid(0, &status, WNOHANG)>0)을
+// 사용하면 main을 blocking 하지 않기 때문에 status : %d 사이에 parent process..%d
+// 가 계속해서 출력될 수 있다.
+
+// status: %d가 연속으로 출력되는 경우는, waitpid를 하고 출력하는 도중에 새로 exit
+// 한 child가 있는 경우겠지??
+```
