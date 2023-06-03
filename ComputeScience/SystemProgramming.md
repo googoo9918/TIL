@@ -155,6 +155,18 @@
     - [Signal Reception](#signal-reception)
     - [Shared Data](#shared-data)
     - [Example 4](#example-4)
+    - [Signal Concurrency](#signal-concurrency)
+  - [Unix Shell](#unix-shell)
+    - [Shell](#shell)
+    - [Words](#words)
+    - [Statements](#statements)
+    - [Builtin Commands](#builtin-commands)
+    - [External Commands](#external-commands)
+    - [Variables](#variables)
+    - [Command Interpolation](#command-interpolation)
+    - [Environment](#environment)
+  - [Globbing](#globbing)
+    - [Pipes and Redirection](#pipes-and-redirection-1)
 # 시스템 프로그래밍
 ## C_POSIX
 ### POSIX
@@ -2527,3 +2539,234 @@ int main(){
 // status: %d가 연속으로 출력되는 경우는, waitpid를 하고 출력하는 도중에 새로 exit
 // 한 child가 있는 경우겠지??
 ```
+
+### Signal Concurrency
+```c
+//list 앞에 node를 하나 덧붙이는 function
+void prepend(struct ListNode *node){
+  node->next = list;
+  list = node;
+}
+
+void handler(int sig){prepend(new_listnode());}
+
+int main(int argc, char *argv[]){
+  signal(SIGINT, &handler);
+  prepend(new_listnode());
+  // 현재 시그널 핸들러와 main함수가 둘 다 prepend()를 수행하고 있음
+  // 이 경우, 결과를 예상할 수 있는가?
+  return 0;
+}
+
+//1 void prepend(struct ListNode * node){
+//2   node->next = list;
+//3   list = node;
+//4 }
+
+//시그널이 도착하는 순간에 따라 결과가 다 달라짐
+
+//line 2전에 signal이 올때, list는 2 items를 다 contain함
+//아직 node->next를 list에 연결하지 않았기 때문에,
+//handler가 먼저 prepend 함수 flow를 실행하게 됨
+//이후 Main이 prepend를 실행하게 됨
+//M(by Main)->H(by Handler..)->N->N->N->...
+
+//line 2~3 사이에 올 때
+//list는 main node만 contaion 하게 됨
+//main의 line2에 의해 M 노드의 next는 list(이 전 리스트의 시작지점)을 가리키게 됨
+//Handler의 line2에 의해 H 노드의 next도 list를 가리키게 됨
+//Handler의 line3에 의해 list의 시작 주소가 H 노드가 됨
+//Main의 line3에 의해 list의 시작 주소가 M 노드가 됨
+//따라서 H와의 연결은 없어지고.. M->N->N->N...이 됨
+//첫 N에 H가 연결은 되어 있겠지만, 접근할 수 있는 방법이 없음
+//따라서 memory leaked(누수) 발생
+
+//line 3 이후에 올 때
+//M이 먼저 연결되고, 이후에 H가 연결되기 때문에
+//H->M->N->N->N->...이 되겠지
+```
+
+## Unix Shell
+### Shell
+- Shell은 사용자가 시스템에 주로 접근하는 인터페이스
+- system call에 대한 직접적이고 안정적인 접근을 제공
+- interactive
+  - command aliasing
+    - `alias l = 'ls -CF`
+    - l을 ls -CF의 역할을 하도록 만들 수 있음
+  - Recall and modification of recent commands
+    - 최근 command 호출
+    - history or 방햔키 사용
+  - program environment로 사용 가능
+    - 권장하는 방법은 x, 애플리케이션을 만들기보다는 data를 정리하는 script 용도로 사용할 것
+    - 변수, 조건문, 반복문, 프로시저, 예외 처리 가능
+      - `NAME=DONG`
+      - `echo $NAME` -> DONG 출력
+### Words
+- Everything in the shell is a string
+  - shell은 이 string을 단어 단위로 쪼갬, 단어는 whitespace로 구분
+  - 명령어에서 first word는 어떤 작업을 수행할지 알려줌
+  - 공백을 단어에 포함하려면
+    - `'`, `''`, '\' 사용
+      - single, double quote 쌍 잘 맞춰줘야함
+      - 특수문자 앞에는 backslash 사용
+        - `echo hello\?`
+
+### Statements
+- Single statement
+  - 단일 명령문은 이전 명령어가 끝나고 시작
+  - newline, ;, && 로 끝나고 이는 명령어의 종료를 표시함
+    - `ls;ls;ls;ls` 로 한 enter에 명령어 4개 실행 가능
+    - `echo a && echo b`로 명령어 2개 실행 가능
+      - 앞 명령어가 제대로 실행되면 뒤 명령어도 실행
+      - `a \n b`로 출력됨
+
+### Builtin Commands
+- shell이 자체적으로 갖고있는 command
+  - 외부 프로그램을 실행하지 않고, 명령어에 대한 내부 코드를 실행함
+    - 새 프로세스를 생성하거나 외부 프로그램을 실행하는 오버헤드 없이 즉시 실행
+  - shell의 내부 상태 변경
+    - 일부 명령어는 shell의 내부 상태(internal state)를 변경해야 되는데, 이런 작업은 외부 프로그램을 통해 진행할 수 없음
+      - fork 이후에는 shell의 internal state를 변경할 수 없으므로, cd와 같은 shell의 현재 작업 디렉토리를 변경하는 명령어는 내장 명령어로 구현되어야 함 
+
+### External Commands
+- builtin command를 제외하면 모두 external command임 
+- `fork()`, `exec()`
+  - 외부 명령어를 실행하기 위해 `fork` 호출 후 `exec`를 호출하여 외부 명령어 실행
+  - 명령어의 first word는 실행할 binary file의 이름임
+  - 나머지 단어는 이진 파일에 전달되는 argument 임
+
+### Variables
+- shell에서도 변수 사용 가능함
+- `VAR=value`
+  - `=` 앞뒤로 white space가 존재하면 안됨
+- Special Variables
+  - `$0`
+    - first word, binary file의 이름
+  - `$1-$9`
+    - argument, 1~9까지 순서대로 저장됨
+    - 두자리 숫자부터는 제대로 인식하지 못함
+  - `$#`
+    - argument 개수 저장
+  - `$@, $*`
+    - 전체 argument 출력
+  - `$?`
+    - 이전 명령어의 return값
+  - `$!`
+    - 이전 명령어의 process id
+  - `$$`
+    - 현재 명령어의 process id
+  - `$IFS`
+    - Input field seperator
+      - string 입력 시, 기준이 되는 단어 설정
+      - default는 white space
+- IFS
+  - 변경 가능
+  - `IFS=X` , `var="AXBXCXDX"`
+    - X가 공백이니까 double quote가 들어가야함
+  - `echo $var`
+    - A B C D 출력됨
+  - 당연히 함부로 바꾸면 안되겠지?
+- 변수 삽입
+  - `$VAR`
+    - 단순 변수 삽입 시
+    - ex `Hello $VAR` -> `Hello world`
+  - `${VAR}`
+    - 복잡한 변수 이름이나, 추가적인 작업 수행 시
+    - `${VAR}_file` -> `log_file`
+      - `VAR`값 뒤에 _file 문자열을 추가함
+    - 만약 `$VAR_file`로 사용하면, VAR_file 자체를 변수로 해석하게됨
+
+### Command Interpolation
+- 명령어의 출력을 다른 명령어의 삽입
+- `$(command)`
+  - 괄호 안의 명령어를 실행하고 출력을 삽입할 수 있음
+  - ex
+    - `current_dir=$(pwd)`
+    - pwd는 변수가 아니라 명령어니까 소괄호를 사용함에 주의하자!!
+    - pwd 명령어를 실행하여 현재 작업 디렉토리의 경로를 current_dir에 저장
+
+### Environment
+- POSIX 시스템에서 모든 프로세스는 환경을 가짐
+  - 환경은 키-값 쌍의 집합
+  - 환경은 부모 프로세스로부터 자식 프로세스로 상속됨
+- shell 변수를 환경에 추가하기 위해서 `export` 사용
+  - `export VAR [VAR2 ...]`
+  - `export VAR="hello, world"`
+  - `export PATH=$PATH:/my/new/directory`
+- `env`를 통해 현재 환경 변수 확인 가능
+- shell은 환경 조작을 위해 `setenv()`, `putenv()` 등의 함수를 사용함
+
+## Globbing
+- shell은 파일의 패턴 매칭을 통해 file 탐색이 가능함
+  - `*`
+    - 0개 이상의 문자열 일지시킴
+    - ex `*.txt` -> .txt로 끝나는 모든 파일
+  - `?`
+    - 정확히 하나의 문자를 일치시킴
+    - ex `?.txt` -> .txt 앞에 한 글자만 오는 모든 파일
+  - `[]`
+    - 대괄호 안 문자 중 하나와 일치시킴
+    - 범위를 지정하여 여러 문자 일치시킬 수 있음
+    - ex `[a-z].txt` -> .txt 앞에 a~z 중 한 글자가 오는 모든 파일
+  - ex
+    - `touch file1.txt file2.txt file3.txt`
+    - `for file in * do echo "$file" done`
+      - 파일 전체 출력
+    - `for file in file* do echo "$file" done`
+      - file로 시작하는 모든 파일 출력
+    - `for file in ????????? do echo "$file" done`
+      - 9글자로 구성된 모든 파일 출력
+      - `.`이나 txt 같은 확장자도 글자 개수에 포함됨
+    - `for file in ????[0-9]* do echo "$file" done`
+      - 4글자 + 0~9까지의 숫자 한개로 시작하는 모든 파일 출력
+    - `for file in *.[ch] do echo "$file" done`
+      - .c나 .h로 끝나는 모든 파일 출력
+
+### Pipes and Redirection
+- 파일 디스크럽터와 파이프를 조작 가능함
+  - `|`를 통해 파이프 생성 가능
+    - `pipe()` 사용
+  - 파일 디스크립터에 파일 열기
+    - `<`, `>`, `<<`, `>>` 사용
+    - `< file` : 표준 입력을 해당 파일에 연결
+    - `> file` : 표준 출력을 해당 파일에 연결
+    - `2> file` : 표준 오류를 해당 파일에 연결
+    - `N> file` , `N< file` : 해당 파일을 N번 파일 디스크립텅 ㅔ연결
+    - `>>`` 사용시, 기존 파일에 append함
+      - `>`는 overwrite임
+    - `dup2()` syscall 사용
+  - 파일 디스크립터의 내용 복사
+    - `>&`
+    - `dup2()` syscall 사용
+  - ex
+    - `echo "Hello,World" > input.txt`
+      - 문자열을 input.txt에 저장
+    - `cat input.txt | wc -l`
+      - pipe를 이용하여 파일의 라인 개수를 count함
+    - `cat input.txt | wc -l > output.txt`
+      - 파일의 라인 개수를 output.txt에 저장
+    - `wc -w < /usr/share/dict/words`
+      - 우측 파일 경로의 파일에서 단어 개수를 count함
+    - `cut -d` ` -f5 > totals.txt`
+      - 명령어의 출력을 totals.txt에 저장
+    - `stats -bmean variant-a.txt > means.txt`
+      - overwrite
+    - `stats -bmean variant-b.txt >> means.txt`
+      - append
+      - 두 개의 다른 명령의 출력을 `means.txt`에 저장
+- 파이프라인
+  - 파이프 라인은 파이프(`|`)로 연결된 일련의 명령어임
+  - 각 명령어는 표준 출력에 작성하고, 표준 입력에서 읽음
+- `cmd1 | cmd2`
+  - `pipe()`를 사용하여 파이프 생성
+  - 각 명령어에 대해 `fork()` 실행
+  - `dup2()`를 사용해 파이프의 fd(file descriptor)와 명령어의 표준 입출력 연결
+    - `pipefd[1]`을 `cmd1`의 표준 출력에, `pipefd[0]`을 `cmd2`의 표준 입력에 연결함
+    - cmd1의 출력이 cmd2의 입력이 되겠지
+- 새 파일을 열지 않고 fd 복제 가능
+  - `N>&M`은 dup2(N,M)과 동일함
+    - dup2(N,M)은 M이 가리키는 곳을 N이 가리키는 곳으로 변경함을 기억하라.
+  - ex
+    - `echo Could not open file 1>&2`
+    - `Could not open file`이라는 에러 메시지를 표준 출력에서 표준 에러로 리다이렉션
