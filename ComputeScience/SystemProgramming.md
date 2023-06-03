@@ -167,6 +167,18 @@
     - [Environment](#environment)
   - [Globbing](#globbing)
     - [Pipes and Redirection](#pipes-and-redirection-1)
+  - [Concurrency](#concurrency)
+    - [Concurrency](#concurrency-1)
+    - [Process](#process-1)
+    - [Threads](#threads)
+    - [Normal function call vs Threaded function call](#normal-function-call-vs-threaded-function-call)
+    - [Multitasking](#multitasking)
+    - [Indepnedent, (Un)related Tasks](#indepnedent-unrelated-tasks)
+    - [Thread](#thread)
+    - [Pthreads(POSIX threads)](#pthreadsposix-threads)
+    - [Example1](#example1)
+    - [Example2](#example2-1)
+    - [Example3](#example3)
 # 시스템 프로그래밍
 ## C_POSIX
 ### POSIX
@@ -2770,3 +2782,202 @@ int main(int argc, char *argv[]){
   - ex
     - `echo Could not open file 1>&2`
     - `Could not open file`이라는 에러 메시지를 표준 출력에서 표준 에러로 리다이렉션
+
+## Concurrency
+### Concurrency
+- 하나 이상의 logical control flow가 시스템에 존재할 때 Concurrency가 존재
+  - logical control flow는 pc값들의 집합
+  - 특정 시간을 기준으로 봤을 때는 하나의 쓰레드만 동작
+  - 시간을 범위로 놓고 본다면 여러 쓰레드가 동작
+    - 따라서 실행이 overlap될 수 있음
+- Concurrent flow는 시간에 따라 overlap되는 logical control flow를 뜻함
+  - 단일 프로세서만 있어도 concurrent flow가 존재할 수 있음
+  - 멀티태스킹을 통해 단일 프로세서에서 여러 흐름이 공존할 수 있기 때문
+- 멀티태스킹은 여러 logical control flow에서 시간을 분할함
+  - 각 흐름은 잠시 동안 실행되고, 이후에 interrupt가 발생
+  - context switch가 발생하면 제어권이 다른 흐름으로 넘어감
+- 비슷한 개념으로 parallelism이 있는데, 이는 병렬성임
+  - 병렬성은 여러 작업이 실제로 동시에 실행되는 것임
+  - 이를 위해서 여러 프로세서 혹은 멀티코어 프로세스가 필요
+- 동시성은 여러 작업이 overlap되어 수행되고, 병렬성은 여러 작업이 실제로 동시에 수행되는 것이 가장 큰 차이점임
+- 멀티태스킹과 멀티프로세싱
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/7474ae46-a124-4982-a0d3-c60724623cfd)
+  - 일반적으로 멀티 태스킹을 concurrency와, 멀티 프로세싱을 parallelism과 연관지음
+
+### Process
+- logical control flow의 abstraction이 process임
+  - 프로세스는 일련의 명령어, 메모리, 시스템 리소스등을 포함
+  - 프로세스가 스스로 관리하고 분리된 공간에서 실행
+    - 다른 프로세스와의 독립성 보장
+- 프로세스간 interaction은 모두 OS를 통해 이뤄짐
+  - 서로 다른 virtual memory를 사용하기 때문
+  - process는 온전히 내가 이 코어를 점유하고 있다고 생각하기 때문에, OS가 이를 스케줄링 해야함(deicated computer model)
+
+### Threads
+- 쓰레드는 개연적으로는 프로세스와 비슷함
+  - 다만, 쓰레드는 메모리 영역을 프로세스 안에서 공유하는 구조
+    - 따라서 프로세스 여러개보다 쓰레드 여러개가 메모리 오버헤드 측면에서 훨씬 좋음
+  - 쓰레드는 프로세스의 subset
+  - 프로세스에 여러 개의 쓰레드 존재 가능
+
+### Normal function call vs Threaded function call
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/80d47927-27c4-4748-865c-b66cc60c3a85)
+  - 기존에 흔히 알던 function call은 logical control flow가 하나로 수행
+  - threaded function call은 쓰레드를 새로 생성해서 수행
+    - logical control flow가 2개
+    - 선후관계가 없다면, concurrent하게 동작할 수 있음
+
+### Multitasking
+- 멀티태스킹에서 concurrent flow는 동시에 수행되는게 아님
+- 특정 시간 범주를 놓고 봤을 때 여러 개의 task가 ovelap되며 수행됨
+  - ovelap되는 순간을 context switch라 지칭
+- 쓰레드로 멀티태스킹이 진행된다면, 메모리를 공유하는 부분이 있기 때문에 적은 메모리 오버헤드로 실행 가능함
+
+### Indepnedent, (Un)related Tasks
+- 관련 없는 task를 수행하고 있다면, 프로세스를 나눠서 별도의 리소스를 갖게 하는게 좋음
+- 프로그램간 선후관계가 존재하거나 데이터가 공유되는 상황이라면 공유 메모리 공간을 사용하는 시스템으로 설계하는 것이 보다 일반적임
+  - 다만, 관련된 작업을 수행하지만 각각의 작업은 독립적인 프로세스로 실행될 수도 있음
+    - ex
+      - shell pipeline
+        - 여러 명령어를 이어서 실행, 각 명령어는 독립적 프로세스로 실행
+      - Make와 compiler
+        - 여러 코드를 gcc하나로 컴파일
+- 각 프로세스 간 메모리 영역이나 하드웨어 리소스를 보호하고 싶을 때는 multiple process로 작성하는게 맞음
+  - 다만, Inter Process Communication(IPC)가 system call의 도움을 받아야 하기 때문에 kernel과 OS등이 사용되고, 따라서 일반적으로 더 큰 오버헤드를 가짐
+- IPC(Inter Process Communication)
+  - Process exit status, Pipes, Signals, Files, Sockets, Shared memory, Message queues, semaphores..
+
+### Thread
+- 쓰레드는 거의 모든걸 공유하는 프로세스라고 생각
+  - 메모리, system resource, executable code를 공유함
+  - kenrnel과 permission도 공유함
+  - 따라서 context switch 시 오버헤드가 적음
+- Process vs Thread
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/173ee3db-6868-4dfc-b973-c7699de64b76)
+    - register, 독자적 stack, counter는 공유하지 않음을 기억하라
+    - 프로세스는 IPC로만 통신이 가능하지만, 쓰레드는 전역변수와 같이 쉽게 데이터를 처리할 수 있음
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/b56f389a-0b00-495e-87a4-40a14f2a6798)
+  - 쓰레드별 스택이 따로 존재할 수도 있음
+- 장점
+  - 메모리 공간 뿐 아니라 kernel 영역도 공유하기 때문에, 먼저 받아놓은 permission 같은 것도 공유할 수 있음
+  - context switch에서 system call을 사용하지 않기 때문에 훨씬 빠름 + 메모리를 공유하고 있어서 훨씬 빠름
+- 단점
+  - shared resource에 동시 접근이 일어날 때, 예상하지 않았던 동작이 일어날 수 있음
+  - 많은 API는 thread-safe를 보장하지 않음
+- Threading은 언제 사용해야 하는가?
+  - task간 빠른 control change가 있어야 하는 경우
+  - 많은 데이터가 shared data인 경우
+  - 더 빠른 계산을 필요로 할 경우
+  - 한 스레드가 블로킹 작업(I/O 작업)을 수행하는 동안, 다른 스레드는 계속해서 작업을 수행할 수 있음
+- ITC(Inter Thread Communication)
+  - IPC 방식을 ITC에서도 사용할 수는 있음
+  - kill()이 아니라 pthread_kill()을 사용
+### Pthreads(POSIX threads)
+  - 원래는 hardware vendor마다 다른 thread 제어 방식을 사용했음
+  - 시간이 지나고 표준이 생겼고, 이를 pthread라 칭함
+- Why Pthreads? (fork() vs pthread_create()) 
+  - 프로세스에 비해 더 적은 운영 체제 오버헤드를 가짐
+    - 새 프로세스를 만들려면 OS와 kernel이 많이 힘써야 되니까..
+  - 운용 측면에서 더 적은 system resource를 사용함
+    - 공유하는 부분이 많기 때문
+  - 프로세스 내의 모든 쓰레드는 같은 주소 공간을 공유함
+  - 통신
+    - 스레드 간 통신은 프로세스 간 통신보다 빠르고 사용하기 쉬움
+    - 스레드가 같은 주소 공간을 공유하기 때문
+    - 프로세스 간 통신은 syscall을 이용하기 때문
+- `int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void * (*start_routine)(void *), void *arg)`
+  - 새로운 스레드를 생성(마치 fork()처럼 동작)
+  - thread
+    - 새 스레드의 id를 저장
+  - attr
+    - 스레드의 속성 정의
+  - start_routine
+    - 새로운 스레드에서 실행할 함수의 포인터
+  - arg
+    - start_routine 함수에 전달할 인수
+- `int pthread_join(pthread_t thread, void **thread_return);`
+  - thread
+    - 기다릴 스레드의 ID
+  - thread_return
+    - pthread_exit()에 의해 반환된 스레드 종료 상태를 받는 포인터
+    - 종료 상태가 필요하지 않으면 NULL이 될 수 있음
+- `gcc -o a.out pthread.c -pthread`
+
+### Example1
+```c
+void *mythread(void *arg) {
+    printf("%s", (char *) arg);
+    pthread_exit(0); // or return NULL;
+}
+
+int main(int argc, char *argv[]) {
+    pthread_t p[10];
+    printf("Expected: SYSTEMPROG\n");
+    printf("Result  : ");
+    // Create thread
+    pthread_create(&p[0], NULL, mythread, "S");
+    pthread_create(&p[1], NULL, mythread, "Y");
+    pthread_create(&p[2], NULL, mythread, "S");
+    pthread_create(&p[3], NULL, mythread, "T");
+    pthread_create(&p[4], NULL, mythread, "E");
+    pthread_create(&p[5], NULL, mythread, "M");
+    pthread_create(&p[6], NULL, mythread, "P");
+    pthread_create(&p[7], NULL, mythread, "R");
+    pthread_create(&p[8], NULL, mythread, "O");
+    pthread_create(&p[9], NULL, mythread, "G");
+    // Wait for threads to exit
+    pthread_join(p[0],NULL);
+    pthread_join(p[1],NULL);
+    pthread_join(p[2],NULL);
+    pthread_join(p[3],NULL);
+    pthread_join(p[4],NULL);
+    pthread_join(p[5],NULL);
+    pthread_join(p[6],NULL);
+    pthread_join(p[7],NULL);
+    pthread_join(p[8],NULL);
+    pthread_join(p[9],NULL);
+    printf("\n");
+    return 0;
+}
+//실행결과
+// Expected: SYSTEMPROG
+// Result  : SSYTPROGME
+// 쓰레드의 스케쥬ㅜㄹ링 기준이 다 다르기 때문에 결과가 다름
+// join도 응답을 기다리는건 아님, 27~36도 동시에 수행됨
+```
+### Example2
+```c
+int i=0; // shared data among threads
+int sum=0;
+void* print(void* arg) {
+    while (i<100){
+        printf("%s", (char*)arg);
+        sum+=atoi(arg);
+        i++;
+        usleep(1);
+    }
+}
+
+int main(int argc, char** argv) {
+    pthread_t thd1, thd2;
+    printf("Expected: ");
+    for (int a=0; a<50; a++)
+        printf("01");
+    printf("\n");
+    printf("Result  : ");
+    pthread_create(&thd1, NULL, print, "0");
+    pthread_create(&thd2, NULL, print, "1");
+    void* result;
+    pthread_join(thd1, &result);
+    pthread_join(thd2, &result);
+    printf("\n");
+    printf("sum = %d\n",sum);
+}
+// Expected: 01이 50번 반복되길 기대
+// Result  : 0과 1이 무질서하게 나오게 됨
+// sum = 38
+//
+```
+### Example3
+```c
+```
