@@ -179,6 +179,7 @@
     - [Example1](#example1)
     - [Example2](#example2-1)
     - [Example3](#example3)
+    - [Problems on thread scheduling](#problems-on-thread-scheduling)
 # 시스템 프로그래밍
 ## C_POSIX
 ### POSIX
@@ -2942,7 +2943,7 @@ int main(int argc, char *argv[]) {
 //실행결과
 // Expected: SYSTEMPROG
 // Result  : SSYTPROGME
-// 쓰레드의 스케쥬ㅜㄹ링 기준이 다 다르기 때문에 결과가 다름
+// 쓰레드의 스케줄링 기준이 다 다르기 때문에 결과가 다름
 // join도 응답을 기다리는건 아님, 27~36도 동시에 수행됨
 ```
 ### Example2
@@ -2976,8 +2977,58 @@ int main(int argc, char** argv) {
 // Expected: 01이 50번 반복되길 기대
 // Result  : 0과 1이 무질서하게 나오게 됨
 // sum = 38
-//
+// 마찬가지로 스케줄링에 따라서 결과가 달라지게 때문, 이를 예측할 수는 없음
+// 그런데, example3과 마찬가지로 이 경우에도 값이 씹혀서 문장이 더 길게 나올 수 있는거 아닌가??
+// 아무리 실행을 해도 i의 값이 계속 
 ```
 ### Example3
 ```c
+static volatile int counter = 0;
+
+void *mythread(void *arg) {
+    printf("%s: begin\n", (char *) arg);
+    int i;
+    for (i = 0; i < 1000000; i++){
+        counter += 1;
+    }
+    printf("%s: done\n", (char *) arg);
+    return NULL;
+}
+
+int main(int argc, char *argv[]) {
+    pthread_t p1, p2;
+    printf("Counter = %d\n", counter);
+    pthread_create(&p1, NULL, mythread, "A");
+    pthread_create(&p2, NULL, mythread, "B");
+
+    pthread_join(p1,NULL);
+    pthread_join(p2,NULL);
+
+    printf("Counter = %d\n",counter);
+    return 0;
+}
+// Counter = 0
+// A: begin
+// B: begin
+// B: done
+// A: done
+// Counter = 1118507
+// A Begin -> A Done / B Begin -> B done 의 순서만 존재
+// 뭐가 먼저 시작할지, 뭐가 먼저 끝날지 알 수 없음
+// 또한 Counter에 A와 B가 동시에 접근하는 경우,
+// 값이 씹혀서 기대했던 값인 2000000이 아닌 더 적은 값이 나올 수 있음 
 ```
+
+### Problems on thread scheduling
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/e08c0f43-291c-4cc2-a12b-30b1f4584de8)
+  - eax register에 값을 옮기고
+  - eax에 1을 추가한 뒤
+  - eax의 값을 counter에 저장하려고 하는데
+    - 여기서 interrupt가 발생함
+  - interrupt에 따라 Thread1의 eax를 저장하고
+  - Thread2로 넘어가서 Thread1에서 하려는 작업을 그대로 수행하고 저장
+  - Thread1으로 다시 넘어와서 아까 마저 못한 eax의 값을 counter로 옮김
+    - 이때 문제가 발생함
+    - counter값이 이미 T2에서 증가된 상황이라 증가 연산이 씹히게 됨
+  - 실제로 기대했던 값은 52지만, 51이 저장됨
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/35b838d2-b3ec-42ed-a6f1-cb96b2fdd4f5)
