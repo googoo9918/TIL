@@ -180,6 +180,19 @@
     - [Example2](#example2-1)
     - [Example3](#example3)
     - [Problems on thread scheduling](#problems-on-thread-scheduling)
+  - [Race ans Synchronization](#race-ans-synchronization)
+    - [Races](#races)
+    - [Race Example](#race-example)
+    - [Atomic Opertions](#atomic-opertions)
+    - [Mutual Exclusion(Mutex)](#mutual-exclusionmutex)
+    - [lock vs trylock Example](#lock-vs-trylock-example)
+    - [Condition Variables](#condition-variables)
+    - [Mutex with Condition Variables Example](#mutex-with-condition-variables-example)
+    - [Semaphore](#semaphore)
+    - [Semaphore Example](#semaphore-example)
+    - [Semaphore Example 2](#semaphore-example-2)
+    - [Semaphore vs mutex](#semaphore-vs-mutex)
+    - [Deadlock](#deadlock)
 # 시스템 프로그래밍
 ## C_POSIX
 ### POSIX
@@ -3032,3 +3045,443 @@ int main(int argc, char *argv[]) {
     - counter값이 이미 T2에서 증가된 상황이라 증가 연산이 씹히게 됨
   - 실제로 기대했던 값은 52지만, 51이 저장됨
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/35b838d2-b3ec-42ed-a6f1-cb96b2fdd4f5)
+
+## Race ans Synchronization
+### Races
+- race condition(경쟁 상태) 발생 시점
+  - 두 개 이상의 이벤트가 서로 dependent 할 때
+  - 이벤트가 다른 순서로 발생하거나 동시에 발생할 때
+  - 이벤트의 일부 순서가 잘못될 때
+- race condition 결과
+  - output이 이벤트 순서에 따라 달라질 수 있음
+  - 원치 않은 output이 생성될 수 있음
+- Synchronization
+  - Race condition이 발생하지 않도록 하기 위해 동기화 필요
+  - event 순서대로 동작하도록, 혹은 동시에 동작하지 않도록 작업
+- Data races
+  - 두개 이상의 concurrent flows가 shared state에 접근할 때 발생
+  - shared state를 modify하려고 할 때 순서가 매우 중요함
+    - 단순 read는 상관없음
+  - 다만, 쓰레드 중 뭐가 먼저 수행될지는 OS가 스케쥴링 하는 것이기에 프로그램에서 컨트롤 할 수 없음
+
+### Race Example
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/fb4a475c-d21e-4e80-8435-6e37aed5c03f)
+  - Thread1이 먼저 실행
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/4c86812f-d187-40ea-bb3d-9caa3355a85b)
+  - Thread2가 다음으로 실행
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/65a8a134-3d82-4a41-b2d1-ddd8e438fae3)
+  - T2 data가 먼저 저장됨
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/d276e8a8-bde5-4aa3-85e9-c6961152f980)
+  - T1이 data를 덮어쓰게 됨
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/31825bd1-931b-436b-8136-db6068ea6925)
+  - T1의 배열 주소 증가연산
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/71b1ee31-62be-4b39-8e0c-16dcb6f6601f)
+  - T2의 배열 주소 증가연산
+```C
+void setstring(char *str){
+  int index = nstrings;
+  strings[index] = str;
+  nstrings++;
+}
+// 이런 상황이 발생할 수 있는 section을 critical section이라 지정함
+// 이 섹션에서는 반드시 하나의 쓰레드가 동작하는 동안 다른 쓰레드는 진입하지 못하도록 설정해야함
+// 다만, critical section이 너무 커지면, 프로그램 성능이 안좋아질 수 있음
+// (8차선 중 1차선만 사용)
+// 동시에 수행할 수 있는 부분까지 하나의 쓰레드만 동작하도록 만들면 당연히 성능이 안좋아지겠지
+// 단순 read는 제외하고, modify하는 부분만 관리하는 게 좋음
+```
+### Atomic Opertions
+- 동기화를 위한 매커니즘
+  - 이 operation 에서는 interrupt할 수 ㅇ벗음
+  - Atomic 
+    - 성공 or 실패
+    - 부분적 성공은 존재하지 않음
+    - 중간에 실패하면 아예 초기 상태로 돌아감
+- 다만, C 자체 지원은 없고 라이브러리를 사용하여 커널과 컴파일러의 도움을 받아야 함
+
+### Mutual Exclusion(Mutex)
+- 상호 배제
+- 코드에서 특정 영역(critical section)을 보호할 수 있는 라이브러리
+  - 하나의 쓰레드만 진입할 수 있도록 지정
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/1b2a2557-be1b-45f8-a9f4-0facdc436edb)
+  - t1이 lock을 건 상태에서 t2가 lock을 시도하게 되면
+    - lock을 할 수 있을때까지 대기하다가, unlock되면 lock을 하게됨
+    - 물론 t1의 비정상적 종료로 unlock을 하지 못하게 되면, 마찬가지로 deadlock 상태에 빠짐
+  - t1이 lock을 건 상태에서 다시 t1이 lock을 시도하면
+    - deadlock 상태에 빠짐
+      - 물론 플랫폼마다 다르므로, deadlock에 빠지지 않을 수도 있음
+  - 정상 동작
+    - lock -> execute -> unlock
+```c
+#include <pthread.h>
+//pthread 구조체
+pthred_mutex_t mymutex = PTHREAD_MUTEX_INITALIZER;
+pthread_mutex_init(&mymutex, NULL);
+
+int pthread_mutex_init(pthread_mutex_T *mutex, const pthread_mutexattr_t *mutexattr);
+int pthread_mutex_lock(pthread_mutex_t *mutex);
+int pthread_mutex_trylock(pthread_mutex_t *mutex);
+int pthread_mutex_unlock(pthread_mutex_t *mutex);
+//trylock은 unlock될 때 까지 기다리는 것이 아닌, 즉시 return됨(마치 waitpid)
+//mutex가 unlock되어 있으면 리턴값 0
+```
+
+### lock vs trylock Example
+```c
+/******************************************************************************
+
+                            Online C Compiler.
+                Code, Compile, Run and Debug C program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
+#include <errno.h>
+
+pthread_mutex_t mutex;
+
+void* routine_lock(void* arg) {
+    pthread_mutex_lock(&mutex);
+    printf("Got lock\n");
+    sleep(1);
+    pthread_mutex_unlock(&mutex);
+}
+
+void* routine_trylock(void* arg) {
+    if (pthread_mutex_trylock(&mutex) == 0) {
+        printf("Got lock\n");
+        sleep(1);
+        pthread_mutex_unlock(&mutex);
+    } else {
+        printf("Didn't get lock\n");
+    }
+}
+
+int main(int argc, char* argv[]) {
+    pthread_t th[4];
+    pthread_mutex_init(&mutex, NULL);
+    for (int i = 0; i < 4; i++) {
+        if (pthread_create(&th[i], NULL, &routine_trylock, NULL) != 0) { // change the function name 
+            perror("Error at creating thread");
+        }
+    }
+    for (int i = 0; i < 4; i++) {
+        if (pthread_join(th[i], NULL) != 0) {
+            perror("Error at joining thread");
+        }
+    }
+    pthread_mutex_destroy(&mutex);
+    return 0;
+}
+//현재 thread 4개
+//trylock은 처음 mutex에 들어간 쓰레드가 unlock되기 전에
+//나머지 쓰레드는 Didn't get lock을 반환함
+//trylock 시 결과
+// Got lock
+// Didn't get lock
+// Didn't get lock
+// Didn't get lock
+
+//lock은 즉시 반환이 아닌, unlock을 기다렸다가 lock을 진행
+//lock 시 결과
+// Got lock
+// Got lock
+// Got lock
+// Got lock
+
+//주의점
+//init과 더불어 destroy도 꼭 사용해줘야함
+//mutex가 lock되어 있으면 error를 발생시키게 되는데
+//mutex가 unlock되었음을 보장하기 위해 destroy
+//모든 쓰레드에서 동작이 다 수행되었음을 보장한다
+```
+
+### Condition Variables
+- trylock을 하려면 while문 등을 이용하여 다시 lock 반복하게 만들어야 함
+  - 이는 비효율적임
+- Condition Varibles를 대기하는 스레드는 반드시 mutex에 대한 소유권이 있는 상태여야 함
+- 작동 순서
+  - mutex unlock
+    - 이를 통해 다른 스레드가 mutex에 접근
+  - puths the thread to sleep
+    - 신호를 받을때 까지 대기 상태로 유지시킴
+- pthread_cond_signal
+  - 이를 이용해 하나의 쓰레드만 깨울 수 있음
+- pthread_cond_broadcast
+  - 이를 이용해 모든 쓰레드를 깨울 수 있음
+
+### Mutex with Condition Variables Example
+```c
+pthread_mutex_t mutexFuel;
+pthread_cond_t condFuel;
+int fuel = 0;
+
+void* fuel_filling(void* arg) {
+    for (int i = 0; i < 5; i++) {
+        pthread_mutex_lock(&mutexFuel);
+        fuel += 15;
+        printf("Filled fuel... %d\n", fuel);
+        pthread_mutex_unlock(&mutexFuel);
+        pthread_cond_signal(&condFuel);
+        //얘는 unlock을 하고 signal을 보내줘야되는 것 항상 조심!!!!!!
+        sleep(1);
+    }
+}
+
+void* car(void* arg) {
+    pthread_mutex_lock(&mutexFuel);
+    while (fuel < 40) {
+        printf("No fuel. Waiting...\n");
+        pthread_cond_wait(&condFuel, &mutexFuel);
+        //wait function이 자동으로 unlock하고 sleep 시킨다
+        // Equivalent to:
+        // pthread_mutex_unlock(&mutexFuel);
+        // wait for signal on condFuel
+        // pthread_mutex_lock(&mutexFuel);
+    }
+    fuel -= 40;
+    printf("Got fuel. Now left: %d\n", fuel);
+    pthread_mutex_unlock(&mutexFuel);
+}
+
+int main(int argc, char* argv[]) {
+    pthread_t th[2];
+    //mutex 영역 시작
+    pthread_mutex_init(&mutexFuel, NULL);
+    //cond 영역 시작
+    pthread_cond_init(&condFuel, NULL);
+    for (int i = 0; i < 2; i++) {
+        if (i == 1) {
+            if (pthread_create(&th[i], NULL, &fuel_filling, NULL) != 0) {
+                perror("Failed to create thread");
+            }
+        } else {
+            if (pthread_create(&th[i], NULL, &car, NULL) != 0) {
+                perror("Failed to create thread");
+            }
+        }
+    }
+
+    for (int i = 0; i < 2; i++) {
+        if (pthread_join(th[i], NULL) != 0) {
+            perror("Failed to join thread");
+        }
+    }
+    pthread_mutex_destroy(&mutexFuel);
+    pthread_cond_destroy(&condFuel);
+    //destroy 조심
+    return 0;
+}
+// main for문의 i=0에서 t0이 car 실행
+// No fuel. Waiting...을 출력하고 unlcok 후 sleep에 빠짐
+// main for문의 i=1 실행, t1 생성하고 fuel_filling 실행
+// fuel_filling for문 i=0에서 뮤텍스 실행 -> fuel 15 더하고 출력
+// signal 보내서 대기하던 t0 깨움 
+// t0은 while문 다시 실행, 다시 No fule 실행..
+// 이런식으로 반복되다가 fuel 40 넘어가면 Got fule. Now left 출력하고
+// fuel_filling이 두번 남았으니 Filled fuel 두번 더 실행되고 종료
+
+// No fuel. Waiting...
+// Filled fuel... 15
+// No fuel. Waiting...
+// Filled fuel... 30
+// No fuel. Waiting...
+// Filled fuel... 45
+// Got fuel. Now left: 5
+// Filled fuel... 20
+// Filled fuel... 35
+
+// 만약 condition variable이 없다면
+// t0이 mutex를 계속 소유하고 있을 것
+// t0이 unlock되지 않으니 t1은 실행될 일 없겠지? -> deadlock에 빠짐
+```
+- Condition variables 동작 과정
+  - 루프에서 조건 변수 대기
+  - 깨어났을 때 조건 테스트
+  - 조건 충족 시 루프 종료
+- 조건
+  - 대기중인 스레드는 뮤텍스를 소유한 상태여야 함
+  - 뮤텍스는 조건 확인에 사용되는 데이터를 보호해야함
+  - 대기 상태에 들어갈 때 뮤텍스는 잠금 해제됨
+    - pthread_cond_wait() 호출 시 -> unlock -> sleep
+  - 깨어나면 스레드는 mutex를 다시 lock함
+
+### Semaphore
+- mutex와 다르게 semaphore는 숫자와 연관되어 있음
+  - 음수는 없음
+- P(lock) V(unlock)
+- P 사용 시 decrement, V 사용 시 increment
+  - 0까지 감소하면 접근할 수 없음
+- 쓰레드 혹은 프로세스 간 사용할 수 있는 방식
+  - mutex와 다르게 두 개 이상에서 사용 가능
+```c
+#include <semaphore.h>
+int sem_init(sem t *sem, int pshared, unsigned int value);
+//sem: 세마포어 변수의 주소
+//pshared: 프로세스 간 공유 여부
+// (0이 아니면 세마포어는 여러 프로세스 간 공유, 0이면 동일 프로세스 내 쓰레드 간 공유)
+// 프로세스 간 세마포어 공유 시에는 세마포어는 반드시 공유 메모리 영역에 위치해야함
+//value: 세마포어 초기 값
+```
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/89f7f831-41e5-476d-936a-3eb3a90361be)
+
+### Semaphore Example
+```c
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <semaphore.h>
+
+#define THREAD_NUM 4
+
+sem_t semaphore;
+
+void* routine(void* args) {
+    sem_wait(&semaphore);
+    sleep(1);
+    printf("Hello from thread %d\n", *(int*)args);
+    sem_post(&semaphore);
+    free(args);
+}
+
+int main(int argc, char *argv[]) {
+    pthread_t th[THREAD_NUM];
+    sem_init(&semaphore, 0, 4);
+    int i;
+    for (i = 0; i < THREAD_NUM; i++) {
+        int* a = malloc(sizeof(int));
+        *a = i;
+        if (pthread_create(&th[i], NULL, &routine, a) != 0) {
+            perror("Failed to create thread");
+        }
+    }
+
+    for (i = 0; i < THREAD_NUM; i++) {
+        if (pthread_join(th[i], NULL) != 0) {
+            perror("Failed to join thread");
+        }
+    }
+    sem_destroy(&semaphore);
+    return 0;
+}
+
+// Hello from thread 0
+// Hello from thread 2
+// Hello from thread 1
+// Hello from thread 3
+// 순서는 OS가 스케쥴링 함으로 예측할 수 없음
+
+// Thread_NUM 개수만큼 생성 -> 세마포어의 허용 수량(4)에 도달때 까지 대기(sem_wait)
+// semaphore가 4개니까 4개 단위로 출력이 나옴
+// 그리고 반환 sem_post를 통해 숫자를 낮춰서 다른 쓰레드가 들어올 수 있도록 설정해줌
+// 메인에서는 모든 쓰레드가 완료될 때까지 대기(pthread_join)
+// 세마포어 destroy
+```
+
+### Semaphore Example 2
+```c
+#include <pthread.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <semaphore.h>
+
+#define THREAD_NUM 10
+
+sem_t semaphore;
+
+void* routine(void* args) {
+    printf("(User %d) Waiting in the login queue\n", *(int*)args);
+    sem_wait(&semaphore);
+    printf("(User %d) Logged in\n", *(int*)args);
+    sleep(rand() % 5 + 1);
+    printf("(User %d) Logged out\n", *(int*)args);
+    sem_post(&semaphore);
+    free(args);
+}
+
+int main(int argc, char *argv[]) {
+    pthread_t th[THREAD_NUM];
+    sem_init(&semaphore, 0, 4);
+    int i;
+    for (i = 0; i < THREAD_NUM; i++) {
+        int* a = malloc(sizeof(int));
+        *a = i;
+        if (pthread_create(&th[i], NULL, &routine, a) != 0) {
+            perror("Failed to create thread");
+        }
+    }
+
+    for (i = 0; i < THREAD_NUM; i++) {
+        if (pthread_join(th[i], NULL) != 0) {
+            perror("Failed to join thread");
+        }
+    }
+    sem_destroy(&semaphore);
+    return 0;
+}
+
+// (User 0) Waiting in the login queue
+// (User 0) Logged in
+// (User 1) Waiting in the login queue
+// (User 1) Logged in
+// (User 2) Waiting in the login queue
+// (User 2) Logged in
+// (User 7) Waiting in the login queue
+// (User 7) Logged in
+// (User 9) Waiting in the login queue
+// (User 6) Waiting in the login queue
+// (User 5) Waiting in the login queue
+// (User 4) Waiting in the login queue
+// (User 8) Waiting in the login queue
+// (User 3) Waiting in the login queue
+// (User 7) Logged out
+// (User 9) Logged in
+// (User 1) Logged out
+// (User 6) Logged in
+// (User 2) Logged out
+// (User 5) Logged in
+// (User 6) Logged out
+// (User 4) Logged in
+// (User 0) Logged out
+// (User 8) Logged in
+// (User 5) Logged out
+// (User 3) Logged in
+// (User 9) Logged out
+// (User 4) Logged out
+// (User 3) Logged out
+// (User 8) Logged out
+
+// 세마포어 초기화로 동시 로그인 수 4로 설정
+// sem_wait() 함수는 쓰레드가 세마포어를 획득하려고 할 때 사용
+// 세마포어의 값이 0이 아니라면, 세마포어의 값을 하나 감소시키고 쓰레드 계속 진행
+// 세마포어의 값이 0이면, 쓰레드를 차단하고 세마포의 값이 0이 아닌 값으로 증가할 때까지 기다림
+```
+
+### Semaphore vs mutex
+- Semaphore의 value값을 1로 설정하면 mutex처럼 사용 가능함
+- 그러나 완전히 동일하다고 볼 수는 없음
+  - Semaphore는 number로만 관리하는 시그널링 매커니즘
+  - mutex는 locking 매커니즘임
+  - mutex는 오너쉽을 갖지만, semahore는 오너쉽을 갖지못함
+
+### Deadlock
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/8812b53a-f412-4f5c-abc1-5c0de0242627)
+  - mutex가 2개 이상인 경우 deadlock 예시
+  - t1이 m0에 접근, t2가 m1에 접근
+  - 이후 t1이 m1에 접근 시도, t2가 m0에 접근 시도
+  - lock이 걸린 mutex에 lock을 시도하고, 아무도 unlock을 하진 않으니 deadlock에 빠지게 됨
+- mutex가 하나만 있는 경우 
+  - 예기치 못한 상황으로 오너쉽을 가진 쓰레드가 unlock을 하지 않은 경우
+  - 오너쉽을 가진 쓰레드가 같은 mutex에 lock을 다시 시도하는 경우
+- mutex가 여러개 있는 경우
+  - 여러 모듈이 복잡하게 연결됐을 때, 다수의 모듈이 서로 데이터를 기다리는 상황이 발생할 수 있음
+- deadlock을 피하는 방법
+  - ordering
+    - ordering을 통해 deadlock을 피할 수는 있겠지만, lock을 건 순서대로 unlock 되어야 하기 때문에 성능저하를 피할 수는 없음
