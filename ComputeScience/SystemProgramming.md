@@ -1571,10 +1571,10 @@ puts("Redirected output!");
 ### Localiy to the Rescue Again
 - 가상 메모리는 비효율적으로 보이지만, locality로 인해 잘 동작할 수 있음
 - 프로그램은 working set이라 불리는 virtual page 집합에만 접근하는 경향이 있음
-  - 만약, 더 작은 temporal locality(시간적 지역성)을 가지면 더 작은 working set을 가질 것임
+  - 만약, 더 높은 temporal locality(시간적 지역성)을 가지면 더 작은 working set을 가질 것임
     - 시간적 지역성: 최근 접근한 데이터의 주변 공간에 다시 접근하는 소프트웨어의 패턴
 - working set의 크기가 main memory의 크기보다 작으면, 처음에 데이터를 올릴 때를 제외하면(compulsory misses) 좋은 성능을 지닐 것임
-  - 그만큼 더 작은 시간적 지역성을 갖고 있다는 뜻
+  - 그만큼 더 높은 시간적 지역성을 갖고 있다는 뜻
 - working set 크기의 총합이 main memory의 크기보다 크다면, page가 많이 swap(page fault)될 것이고 많은 성능 패널티가 읶을 것임
   - 이를 Thrashing이라 지칭
 
