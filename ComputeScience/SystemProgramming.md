@@ -1579,7 +1579,7 @@ puts("Redirected output!");
   - 이를 Thrashing이라 지칭
 
 ### Virtual Memory as a Tool for Memory Management
-- 각 프로스세는 고유의 virtual address space를 지님
+- 각 프로세스는 고유의 virtual address space를 지님
   - 각 프로세스는 메모리를 단순한 linear array로 볼 것임
   - 향상된 mapping을 통해 VP를 물리 메모리 전체에 분산 시키고, 지역성을 향상 시킬 수 있음
 - 메모리 할당 단순화
