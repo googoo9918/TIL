@@ -25,6 +25,14 @@
   - [23. Draw a Class Diagram + Define their relationships ansd their cardinalities](#23-draw-a-class-diagram--define-their-relationships-ansd-their-cardinalities)
   - [24. Sequence Diagram의 상호 작용 연산자에 대해 설명하라](#24-sequence-diagram의-상호-작용-연산자에-대해-설명하라)
   - [25. Activity Diagram의 key elements는 무엇인가? 최소한 5개 이상 설명하라](#25-activity-diagram의-key-elements는-무엇인가-최소한-5개-이상-설명하라)
+  - [기말 정리](#기말-정리)
+  - [Cyclomatic Complexity](#cyclomatic-complexity)
+  - [Class Diagram](#class-diagram)
+  - [Define a set of test cases for applying Blackbox testing](#define-a-set-of-test-cases-for-applying-blackbox-testing)
+  - [Whitebox에서는 나오고, Blackbox testing에서는 나오지 않는 에러](#whitebox에서는-나오고-blackbox-testing에서는-나오지-않는-에러)
+  - [Error Index(EI)](#error-indexei)
+  - [Function Point-based Estimation](#function-point-based-estimation)
+  - [Use Case/Object/Dynamic Model 간 Consistency](#use-caseobjectdynamic-model-간-consistency)
 # 소프트웨어공학
 ## 1. SW Engineering
 - 소프트웨어 엔지니어링은 컴퓨터 소프트웨어를 개발, 운영 및 유지 관리하기 위한 체계적이고 정형화된 접근 방법을 연구하는 것
@@ -468,3 +476,124 @@
 ![image](https://user-images.githubusercontent.com/102513932/233553049-3cf4a2be-5655-49d2-998c-749c5b120615.png)
 ![image](https://user-images.githubusercontent.com/102513932/233553129-e6a41fc7-d977-474d-88be-96e43a67ede7.png)
 ![image](https://user-images.githubusercontent.com/102513932/233553186-b8054995-b744-469c-9f5f-c2d8749ef8df.png)
+
+
+## 기말 정리
+![image](https://github.com/googoo9918/TIL/assets/102513932/50df307b-0963-43c0-a28c-c1724543befa)
+![image](https://github.com/googoo9918/TIL/assets/102513932/53b12a5a-e559-49ea-8c8c-51f403041403)
+![image](https://github.com/googoo9918/TIL/assets/102513932/d2e9bdaf-b2f0-4df5-bf4a-8f54a379378b)
+![image](https://github.com/googoo9918/TIL/assets/102513932/a2eb4351-c732-4a73-b72c-e2005b7ef3db)
+![image](https://github.com/googoo9918/TIL/assets/102513932/4797e3a8-c298-49bc-a69b-c37a755904fb)
+![image](https://github.com/googoo9918/TIL/assets/102513932/e426cd2d-c31c-45f3-af38-8f66c13e20a6)
+![image](https://github.com/googoo9918/TIL/assets/102513932/57e38534-4f6f-4020-bfd6-1b7c2f2592ab)
+![image](https://github.com/googoo9918/TIL/assets/102513932/3b8b7bf2-17e9-497c-843b-4452b08ee03e)
+
+## Cyclomatic Complexity
+- 소스 코드의 복잡도를 나타내는 지표로, 프로그램의 제어 흐름을 그래프로 표현하고 이 그래프에 복잡도 계산식을 적용하여 산출할 수 있음 
+- V(g) = E(Edge) - N(Node) +2
+- P(분기문) + 1
+  - if, while, case 처럼 조건문이 들어가면 분기임 
+- 이게 업글돼서 단순히 분기점을 세는게 아니라 Boolean operator의 수를 더하는 지표가 Extend Cyclomatic Complexity임
+- case 문의 개수와 상관없이 switch 문으로 수를 1 증가 -> Modified Cyclomatic Complexity
+
+## Class Diagram
+- 객체지향 모델링 시 구성요소간 정적인 관계를 표현한 다이어그램
+  - 사용자가 요구한 기능을 구현하는데 필요한 자료들의 논리적인 구조 표현
+  - 객체들 사이에 어떤 관련이 있는지를 구조적 관점(View)에서 표현
+  - 정적 모델링은 객체들을 클래스로 추상화하여 표현
+- 구성요소
+  - 클래스 이름
+  - 속성(Attribute)
+  - 연산(Operation)
+  - 접근 제어자
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/458cc76b-3e74-47bc-a8b2-a9a0359c1df7)
+- Dependency
+  - ![image](https://user-images.githubusercontent.com/102513932/232039420-17d632ac-bc56-4049-9086-af6b8d2e180c.png)
+    - 한 클래스가 다른 클래스의 기능이나 특성에 의존하는 경우
+      - 한 클래스의 변경이 다른 클래스에 영향을 줄 수 있는 상황을 의미함
+      - 주로 메서드의 매개변수나 로컬 변수로 다른 클래스의 인스턴스를 사용할 때 발생
+- Association(연관 관계)
+  - ![image](https://user-images.githubusercontent.com/102513932/232039012-5429132d-0091-4113-af0f-daa6c397277f.png)
+  - 두 클래스가 서로 상호작용하거나 참조하는 경우
+  - 관계의 방향과 다중성(ex: 1:1, 1:N, N:M)을 명시할 수 있음
+- Aggregation(집합 관계)
+  - ![image](https://user-images.githubusercontent.com/102513932/232039476-4ae68b78-aad4-4540-bd9f-512487ece60b.png)
+  - 집합 관계는 전체 클래스와 부분 클래스 간의 관계를 나타냄
+    - 전체 객체가 부분 객체를 포함하는 것을 의미함
+    - 전체 클래스가 소멸되더라도 부분 클래스는 독립적으로 존재할 수 있음
+- Composition
+  - ![image](https://user-images.githubusercontent.com/102513932/232039556-0e5fd61f-f6c2-4618-9f9a-69beb0c6a90e.png)
+  - 합성 관계는 전체 클래스와 부분 클래스 간의 강한 종속관계를 나타냄
+    - 전체 객체가 소멸될 때 부분 객체도 함께 소멸됨(부분 클래스는 전체 클래스의 생명 주기에 종속적)
+- Inheritance(Generalization)
+  - ![image](https://user-images.githubusercontent.com/102513932/232039637-60d1118d-6067-46ab-92e4-eca22ad96f19.png)
+  - 하위 클래스가 상위 클래스의 특성과 기능을 상속받는 경우
+    - 코드 재사용과 객체 지향 프로그래밍의 다형성을 지원함
+
+## Define a set of test cases for applying Blackbox testing
+- Black-box testing은 소프트웨어의 기능에 초점을 맞춘 테스트 방법론
+  - 내부 구조나 작동 원리에 대한 지식 없이도 수행 가능
+  - 사용자의 관점에서 소프트웨어를 테스트
+  - 시스템 요구사항에 따라 테스트 케이스 생성
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/f51e26b9-ad86-4f4b-96fc-944985fbcedc)
+  - 혹은 공백 입력
+  - 혹은 문자열이나 숫자 입력
+
+## Whitebox에서는 나오고, Blackbox testing에서는 나오지 않는 에러
+- 화이트박스 테스팅은 소프트웨어의 내부 구조와 작동 방식을 검사하는 테스팅 방법
+- 1. 로직 오류
+- 2. 코드의 경로 오류
+- 3. 응답 시간과 성능 오류
+- 4. 보안 취약점
+- 5. 데이터 구조의 오류
+- 화이트박스 테스팅은 코드의 내부 로직을 검사하는 반면 블랙박스 테스팅은 특정 입력에 대한 출력만을 검사하기 때문 
+- 반대로, 사용자 인터페이스 오류, 데이터 입력 및 출력 오류 등은 블랙박스 에서만 발생할 수도 있음
+
+## Error Index(EI)
+- Interpret the following metric for computing Error Index.
+  - EI = ∑(i *PI(i)) / PS
+  - 에러 인덱스는 소프트웨어 개발 과정의 여러 단계에서 발견된 결함의 분포ㅡㄹ 정량화하는 소프트웨어 품질 관리의 척도임
+    - 개발 과정에서 발생하는 오류의 분포와 그 중요성을 이해하고 개선을 위한 조치를 취함
+  - i는 개발 단계 
+  - Pi(i)는 i단계에서 발견된 오류의 수
+  - PS는 소프트웨어 개발 전체 단계에서 발견된 총 오류의 수
+- Explain how to compute the Phase Index (PI).
+  - 단계 인덱스는 특정 개발 단계에서 발견된 오류의 수를 나타냄
+  - 각 개발단계가 완료될 때마다 계산되어야 하며, 각 단계가 진행됨에 따라 계속해서 갱신되어야 함
+  - 따라서 개발 과정의 각 단계에서 발생하는 오류를 추적하고 기록해야함
+
+## Function Point-based Estimation
+- Interpret the following formulae for Function Point in details.
+  - FP = Count_Total * [0.65 + 0.01 * sum(F(i))], i = 1 to 14
+  - Count_Total
+    - 비즈니스 요구 사항을 충족하는 데 필요한 기능의 수
+    - 입력, 출력, 조회, 인터페이스, 데이터 파일에 대한 각 항목의 가중치를 곱한 후 합산하여 계산
+  - F(i)
+    - i는 1에서 14까지의 값을 가짐
+    - 각각은 시스템의 14가지의 일반 시스템 특성을 나타냄
+    - 데이터 통신, 분산 처리, 성능, 재사용성 등이 포함됨
+    - 각 특성은 0부터 5까지의 값으로 평가됨, 합산해서 사용 가능
+-  What are the pros and cons of FP-based estimation?
+   -  Pros
+      - 기능 포인트 분석은 요구 사항에 기반한 비용 추정을 가능하게 하므로, 초기 단계에서 프로젝트 비용을 더 정확히 예측할 수 있음
+      - 사용자가 요구하는 기능에 초점을 맞추므로, 사용자와 개발자 간의 이해도가 향상됨
+      - 사용하는 언어나 기술에 독립적이므로, 다양한 프로젝트와 기술에서 사용할 수 있음
+   -  Cons
+      -  FP 분석에는 광범위한 경험과 전문 지식이 필요하므로, 분석가에 따라 추정치가 다르게 나올 수 있음
+      -  FP 분석은 프로젝트의 복잡성을 정확히 반영하지 못할 수 있음
+         -  특히 시스템의 비기능적 요구사항(ex 보안, 확장성)은 FP에 직접 반영되지 않음
+      - FP 분석은 상당한 시간과 노력을 필요로 함
+        - 분석 자체의 비용이 증가할 수 있음
+
+## Use Case/Object/Dynamic Model 간 Consistency
+- 이들 각 모델은 시스템의 다른 관점을 제공하며, 일관성을 유지하려면 모델 간 충돌이나 모순이 없어야 함
+- Use Case와의 일관성
+  - 사용 사례는 시스템이 수행해야 하는 기능을 기술하며, 사용자가 시스템과 상호작용하는 방법을 보여줌
+  - 객체와 동적 모델이 이 기능을 어떻게 지원하는지에 대한 일관성을 유지해야 함
+- Object와의 일관성
+  - 객체 모델은 시스템 내의 개별 객체와 그들이 어떻게 상호작용하는지를 보여줌
+- Dynmaic Model과의 일관성
+  - 동적 모델은 시스템의 실행 동작을 표현
+  - 시스템이 어떻게 동작하는지 보여주며, 시간에 따른 시스템의 변화, 이벤트의 발생 순서, 상태 변화등을 포함함
+- 이 세 모델 간 일관성은 정확성과 완성도를 보장하는 데 중요함
+  - Use Case에서 설명된 기능이 object 모델과 Dynmaic 모델에서 제대로 반영되어야 하며, Object 모델에서 정의된 객체가 Dynamic 모델에서 올바르게 동작해야 함
