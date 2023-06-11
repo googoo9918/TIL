@@ -45,6 +45,13 @@ Insert into CSProfessor values('255', 'Brown', 'EE', 100000);
 -- 따라서 with check option을 통해 deptName이 'EE'일 때만 값을 넣을 수 있게 함
 with check option;
 -- 마지막에 붙여주면 된다.
+
+-- with force, read only
+create or replace force view view_name
+with read only
+-- create or replace 형식을 사용하면 기존에 존재하는 view_name 정의를 수정하기 수월함
+-- force 옵션을 사용하면, 베이스 테이블 존재 여부와 상관없이 뷰 생성 가능(defaultnoforce)
+-- with read only 옵션 사용 시, 뷰에 대해 검색만 가능하고 뷰를 통한 베이스 테이블 변경은 불가능함
 ```
 - 뷰 제약
   - 뷰에 대한 색인(index) 불가
@@ -119,6 +126,8 @@ on update cascade
       - for **deletes** and updates
     - `referencing new row as`
       - for **inserts** and updates
+- **데이터베이스에 대한 변경 연산이 발생할 때마다 DBMS에 의해 자동적으로 호출, 수행되는 명령 문장들을 트리거라고 함**
+  - **ECA(Event, Condition, Action)룰을 가짐.**
 ```sql
 -- 학점 취득 시 학생이 취득한 총학점을 변경하는 트리거
 -- 사건 : takes의 grade를 update
@@ -231,6 +240,10 @@ Grant update(balance) on acoount to teller;
 Grant references (deptName) on department to Lee;
 -- Lee에게 department 테이블의 deptName 속성을 참조하는 외래키를 생성하는 권한 부여
 -- Lee 사용자는 본인 소유 테이블에서 department(deptName)을 참조할 수 있음
+
+Grant create session to user1 with admin option;
+-- 시스템 권한 부여 시 사용, with admin option은 부여 권한도 같이 부여한다.
+-- 이 예제 말고 다른 예제는 객체 권한 부여시에 사용함
 ```
 
 - Revoke 문장
@@ -342,7 +355,7 @@ Grant teller to manager;
   - replace('jack and jue', 'j', 'bl') -> black and blue
   - length('abc') -> 3
   - concat('a', 'b') -> ab
-  - substr('abcde', 2, 3) -> 1번째 위치에서 두글자 반환 -> bcd
+  - substr('abcde', 2, 3) -> 2번째 위치에서 세글자 반환 -> bcd
 - 숫자형 처리 함수
   - round(456.789, 2)
     - 소수 셋째자리에서 반올림(2자리가 되도록..) -> 456.79
@@ -404,7 +417,214 @@ where rownum > 1;
 -- where절을 지난 터플이 없으니 다 0임
 ```
 
-### 트리거
+### 동의어
 ```sql
-
+-- user 1
+Grant select on student to user2;
+-- user 2
+Select * from user1.student;
+-- sys
+Grant create synonym to user2;
+-- user 2
+Create synonym myStudent for user1.student;
+-- user 2
+Select * from myStudent;
+-- 스키마 명시 없이 user1 소유 테이블 접근 가능
 ```
+## 응용 개발
+### 내장(embedded) SQL
+- direct SQL 방식
+  - 사용자가 화면상에서 SQL 문장 입력 시 결과를 화면에 보이게함
+- Embedded SQL 방식
+  - 호스트 언어 중간 중간에 SQL을 직접 삽입하는 형식
+  - 전처리 과정을 꼭 거쳐야함
+
+### 커서(cursor)
+- sql문의 결과를 일반 pl 변수가 직접 받을 수 없음
+- 불일치 해소를 위해 cursor기능 제공
+- **Embedded SQL에서 호스트 언어와 SQL 간의 불일치, 즉 SQL의 레코드 집합 단위 처리와 호스트 언어의 레코드 단위 차이 사이에 교량적 역할을 하는 것을 cursor이라 한다**
+
+### Dynamic SQL
+- 동적 SQL은 프로그램 run time에 SQL 문장이 생성되는 SQL임
+- 정적 SQL은 DBMS가 전처리 단계 혹은 컴파일 단계에서 작업이 가능하나
+  - 동적 SQL은 이러한 작업이 불가능함
+
+### ODBC, JDBC
+- 동적 방식의 ODBC, JDBC는 응용 프로그램에서 데이터베이스 시스템에 연결하여 데이터베이스 연산을 요청하고, 이에 대한 결과를 받는 방식을 제공하는 API임
+- ODBC는 기본적으로 동적 SQL 접근 방식을 제공함
+- SQL injection이란 데이터 침입 및 해킹을 목적으로 SQL 코드를 악의적으로 삽입하는 기술임
+  - prepare 기능을 사용하여 미리 컴파일 작업을 하는 등으로 방지할 수 있음
+- ODBC는 메타 데이터에 대한 접근 기능을 제공
+  - DB에 저장된 관계 및 속성에 대한 질의 가능
+- ODBC 트랜잭션
+  - 트랜잭션의 기본 값은 각 SQL 문장을 트랜잭션으로 취급
+  - 각 SQL 문장 수행이 완료되면 트랜잭션이 commiit 된 것으로 처리함(AutoCommit)
+  - off된 상태에서는 여러 개의 SQL 문장으로 트랜잭션 구성
+    - SQLTransact()로 트랜잭션 종료해야함
+- JDBC
+  - 자바 언어에서 DB 서버를 연결하게 하는 API
+  - SQLJ
+    - 자바 언어에서 내장 SQL 기능 제공
+    - SQLJ 프로그램 컴파일 이전에 반드시 전처리 과정을 거쳐야 함
+- ADO.NET
+  - 관계형 DB, 비관계형 시스템에 대한 접근 가능
+- Static VS Dynamic
+  - Embedded SQL, SQLJ는 static
+  - 전처리 과정이 필요함
+    - 전처리 과정에서 구문검사, 권한 검사, 실행 계획 수립 등이 가능하며 그 결과로 DB 연산이 신속하게 수행할 수 있는 장점 존재
+    - 실행 코드 작성 시 두 단계를 거쳐야 하는 번거로움
+
+### 응용 구조
+- Two-tier vs Three-tier
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/5ab272ed-8ef7-466a-b840-173bc66b4483)
+  - two-tier구조
+    - 응용 프로그램이 클라이언트에 존재
+    - 서버는 DB만 관리
+    - 클라이언트는 ODBC/JDBC등을 이용하여 DB에 접근
+    - 응용프로그램 변경 시 바꿀게 많음
+  - three-tier 구조
+    - 응용 프로그램이 클라이언트와 서버에 분배되어 존재
+    - 비즈니스 로직 변경 시 서버에 존재하는 응용 프로그램만 수정 및 보완
+    - 대규모 응용 환경이나 웹 환경에서 적합
+- Three-layer Web vs Two-Layer Web
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/9b5e5739-778b-4c18-a277-f392506e92f5)
+  - 3층 웹 구조
+    - 웹 <-> 응용 서버 <-> DB 서버
+      - 오버헤드 다소 존재
+  - 2층 웹 구조
+    - DB 서버 독립적 운용, 웹 서버와 응용 서버가 결합된 서버 형태로 운영
+- 쿠키
+  - HTTP 프로토콜은 통신 연결이 유지되지 않는 connection-less 통신을 함
+  - DB 환경에서 클라이언트가 서버와 연결을 하는 경우, 서버와의 연결이 일정시간 동안 유지되기를 원함
+    - 클라이언트가 SQL문장에 대핸 결과를 손쉽게 받을 수도 있고, 사용자의 응답에 따라 다른 SQL 문장을 서버로 손쉽게 보낼 수 있기 때문
+    - 이러한 DB 요구사항을 해결하는 것이 쿠키
+
+## SQL 확장
+### SQL 절차적 확장
+- SQL/PSM
+  - DB의 임의 연산을 수행하는 함수를 개발할 수 있음
+  - 외부 프로그래밍 언어를 이용하여 함수와 프로시저 개발
+```sql
+Create function deptCountProc(deptName varchar(20))
+reutrns integer
+language C
+external name 'usr/shlee/bin/deptCount`;
+```
+  - 장단점
+    - 외부언어를 사용하는 함수는 효율적으로 실행되어 시스템 전체적으로 성능향상은 기대할 수 있지만
+    - 사용자 프로그램에 오류가 있는 경우, DB 시스템의 오류가 될 수 있음(시스템 보안 문제)
+  - 보안 이슈 해결
+    - 자바나 C#같은 안전한 언어로 외부 함수(프로시저)를 작성
+      - 코드를 DB query 실행 프로세스 자체 내에 있는 샌드박스에서 실행
+      - 샌드박스는 자바나 C#코드가 자신이 갖고 있는 메모리 영역으로 접근하는 것은 허용하지만
+      - 질의 실행 프로세스의 메모리를 읽거나 갱신하는 등, 파일 시세틈에 접근하는 것은 허용하지 않음
+- 저장 프로시저
+  - 데이터베이스 시스템 서버에서 데이터 베이스 객체(테이블, 뷰, sequence 등)로 관리됨
+  - 장점
+    - SQL 문장 묶음이 서버에서 실행 -> 네트워크 부하 감소
+    - 미권한 데이터 접근 가능
+
+### SQL::1999
+- SQL 함수 예제
+```sql
+Create function profC(deptName varchar(20)) returns integer
+begin
+    Declare pCount integer;
+    Select count(*) into pCount
+    form professor
+    where professor.deptName = profC.deptName;
+    Return pCount;
+end;
+
+Select deptName, budget
+from department 
+where profC(deptName) > 5;
+```
+- 테이블 함수 예제
+```sql
+Create function myProf(deptName varchar(20))
+  returns table(pID char(5),
+                name varchar(20),
+                deptName varchar(20),
+                salary numeric(10,2))
+  return table(select pID, name, deptName, salary
+                from professor
+                where professor.deptName =
+                myProf.deptName);
+
+Select * from table(myProf('CS'));
+-- returns는 함수 선언 헤드에 나오는 키워드
+-- return은 함수 몸체에 나오는 키워드
+-- 테이블 함수 호출 시 테이블 키워드를 사용하고 있음을 주목하라
+```
+
+- SQL 프로시저
+  - SQL 함수와는 다르게 인자에 대해 입력 및 출력을 명시함
+  - 출력 인자가 2개 이상인 경우에는 SQL 프로시저를 사용해야 함
+  - 인자 개수와 인자 타입으로 오버라이딩 가능함
+```sql
+Create procedure profC2(in deptName varchar(20), out pCount integer)
+begin
+  Select count(*) into pCount from professor
+  where professor.deptName = profC2.deptName;
+end
+
+Declare myProcCount integerm
+Call profC2('CS', myProcCount);
+```
+
+- 절차 생성자
+  - PSM(persistent storage module)은 SQL의 절차적 요소 확장에 관한 표준을 정의함
+- for 루프
+```sql
+Declare n integer default 0;
+For r as
+        select totalCredit from student
+        where deptName = 'CS'
+do
+        set n = n + r.totalCredit
+end for;
+```
+
+- 조건식
+```sql
+If Boolean expression
+  then statement
+elseif Boolean expression
+  then statement
+else statement
+end if
+```
+- 함수 연습
+  - 정원 내에서 학생을 과목에 수강 신청하는 연산을 수행하는 함수
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/dabb6c52-aca2-418a-9b21-a473ae6f27e6)
+
+### PL/SQL
+- Procedure Language extension to SQL
+  - 블룩 구조로 사용됨
+  - 각 문장은 ;로 끝남
+  - 프로그램의 마짐가은 END로 끝남
+- 선언부
+  - `height integer := 2;`
+  - `width integer;`
+  - `sName student.name%type;`
+    - name과 같은 타입 사용
+- 조건 로직
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/ae4dadd9-50dc-40f1-b377-428ce67eb085)
+- 간단한 루프
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/d21292c5-a435-49b5-9dfc-887cdd530bf6)
+- WHILE 루프
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/ff7ab3d5-dc8c-4a75-9aaf-aa1e9d0a919f)
+- for 루프
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/1bc3e9d0-eb6b-4aa3-855d-00f8533a2922)
+- 예외 예제
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/248c421c-71a6-40a3-88e9-a4f2dbe6e565)
+  - 0으로 나눔, studnet.sID에 중복값 나옴, 다른 예외 시
+- 커서 예제
+  - select 문장이 하나 이상의 터플을 반환하는 경우
+  - Select문장이 반환하는 속성을 저장하는 변수 선언 -> 커서를 선언 -> 커서를 오픈 -> 커서로부터 터플을 fetch -> 커서를 닫음
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/bc40855c-8846-40c9-a4e0-b6b495fa1495)
+  - for 루프와 커서를 함께 사용 시
+    - 커서 오픈 및 닫기 연산을 명시적으로 할 필요가 없음, for 루프에서 fetch 연산을 자동적으로 해줌
+- Package
+  - 서로 관련이 되는 함수 및 프로시저를 묶어 Package를 생성할 수 있음
