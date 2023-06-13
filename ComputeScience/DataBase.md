@@ -1047,6 +1047,7 @@ Create table myStudent (
         - 공급자가 마지막 부품 공급을 삭제하면 City정보도 삭제되게 됨
   - ![image](https://github.com/googoo9918/TIL/assets/102513932/85ec9412-895e-43a1-933f-cf98866e1abb)
     - Second는 비주요 속성이 후보키에 완전 의존되므로 제2정규형임
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/ba1294ce-a13c-42ee-9e3a-e802dc70bf09)gi
 - 제3정규형
   - 제2정규형 중에서 비주요 속성이 모든 후보 키에 이행적으로 의존적이 아니면 제 3정규형이다
   - 즉, 모든 의미 있는 함수 종속성 A->B에서 A가 슈퍼 키이거나 B가 주요 속성이어야 한다
