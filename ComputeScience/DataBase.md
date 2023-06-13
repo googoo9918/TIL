@@ -628,3 +628,498 @@ end if
     - 커서 오픈 및 닫기 연산을 명시적으로 할 필요가 없음, for 루프에서 fetch 연산을 자동적으로 해줌
 - Package
   - 서로 관련이 되는 함수 및 프로시저를 묶어 Package를 생성할 수 있음
+
+## 개체-관계성 데이터 모델
+### 개체 및 관계성
+- ER 데이터 모델링
+  - 데이터베이스를 개체와 관계로 모델링함
+  - 원소: 개체, 관계
+    - 개체와 관계는 속성만을 가짐
+  - 객체 관계형 데이터 모델은 객체만 존재함
+    - 객체는 속성, 관계성, 메서드를 가짐
+- 개체(entity)
+  - 개체는 구별이 가능한 객체를 의미함
+  - 개체는 속성(특성)을 가짐
+  - 개체 집합 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/afcdcb37-c10b-4edf-8df3-0a6ca87d1088)
+- 관계성
+  - 개체집합 내 개체는 다른 개체집합의 개체와 연관성이 있을 수 있으며, 의미는 무수함
+  - 관계성 집합 예시(takes)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/c1416811-d936-48ce-86cf-00aab81ced16)
+    - '과목 조교를 하다'등 다른 의미를 갖는 관계성 집합이 존재할 수 있음
+  - 관계성 집합은 개체 집합과 마찬가지로 속성을 가질 수 있음
+    - ex) takes 관계성 집합이 '수강 학기', '연도'를 속성으로 가질 수 있음
+  - 관계성 집합 차수
+    - 관련되는 개체의 개수를 의미함
+    - binary가 가장 흔하며, 3진(tenary), 4진(quaternary), 5진(quinary)등의 차수도 가능함
+- 속성
+  - 개체 또는 관계성이 갖는 특성
+  - 단순 속성과 복합 속성으로 구분 가능
+  - 단일 값 속성과 다수 값 속성으로도 구분 가능
+  - Derived attributes(유도된 속성)
+    - 다른 속성을 이용하여 속성 값을 구할 수 있는 속성
+    - 생년월일 속성 -> 나이 속성을 구할 수 있음
+      - 나이는 Derived attributes임
+  - 복합 속성 예제
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/39ad8553-b048-4fbc-8ea4-710ddf99814d)
+      - 이름은 이름, 중간이름, 성으로 구성
+      - 주소는 거리, 도시, 도, 우편번호로 구성
+        - 거리는 거리번호, 거리명, 아파트번호로 구성
+      - 복합속성은 이름, 주소, 거리
+  - 카디날리티 제약(Cardinality Constraints)
+    - 일대일, 일대다, 다대일, 다대다
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/e1890d84-785d-4a03-a7bc-d9f19bb6f0d8)
+- 키
+  - 개체에 대한 슈퍼 키, 후보 키, 주 키에 대한 개념은 테이블에 대한 개념과 동일함
+
+### ER 다이어그램
+- **E-R(Entity-Relationship) 데이터 모델에서는 실세계의 데이터를 '개체(Entity)'와 '관계(Relationship)'의 관점으로 표현**
+- ER 다이어그램은 ER 모델의 결과물임
+  - 사각형은 개체 집합, 마름모형은 관계성 집합, 밑줄은 주 키 속성을 의미, 속성은 사각형 안에 나열
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/0014e0ae-01ce-4af3-af0c-f01d2be1f378)
+- 복합 속성을 가진 개체
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/2a61f7d5-1244-4248-9b6e-8919caa0eb65)
+  - name, address, street은 복합 속성
+  - phoneNumber는 하나 이상의 값을 가진 다수값 속성
+  - age는 dateOfBirth로 부터 유도된 속성임
+- 속성을 가진 관계성 집합
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/3292a022-cd89-40e7-812f-15736d9c798d)
+    - date 속성을 가진 관계성 집합 takes
+- 카디날리티 제약
+  - 화살표가 일(one)을 의미, 화살표가 없으면 다(many)를 의미함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/8ebcaff7-d75d-43a2-aec7-1cd6b63871a5)
+    - 교수가 다, 학생이1인 erd 예시
+- 참여 제약
+  - 단일선은 부분 참여, 이중선은 전체 참여를 의미함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/cd9721a8-1e57-4598-ab71-851a95b1d5ff)
+    - 학생 1명은 여러개의 수업 수강 가능, 1개의 수업의 여러 학생 수강 가능 -> 다대다 카디날리티 제약
+    - student 개체는 부분 참여
+      - 학생 중에는 수업을 수강하지 않는 학생도 있음
+    - course는 전체 참여
+      - 모든 과목은 학생이 수강하고 있음(학생이 수강하지 않는 과목은 없음)
+- **카디날리티 제약 예시**
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/4a8902c9-a940-48e6-ba86-ef9117a408c1)
+- 3진 관계성 ER 다이어그램
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/419d287a-51ff-4950-bee3-c59132c3a114)
+  - 3진 관계성 집합 카디날리티 제약
+    - 일에 대응이 되는 개체 집합을 최대 하나만 허용함
+- 롤
+  - 개체 집합이 관계성 집합에 참여할 때, 반드시 한 번만 참여하지 않아도 됨
+  - 동일 개체 집합이 두 번 이상 관계성 집합에 참여 하는 경우 참여에 대한 의미를 구분하기 위해 롤 표시를 해야함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/63d7e93f-be07-4d34-8263-af47cce295c7)
+    - 한 번은 과목으로, 다른 한 번은 선수 과목으로 참여
+    - 과목 참여는 일에 대응, 선수 과목 참여는 다에 대응
+      - 한 과목에 여러 개의 선수 과목이 존재
+    - 모든 참여가 부분 참여
+      - 모든 과목에 선수 과목이 있지 않음, 모든 과목이 선수 과목으로 참여하지 않음
+  - 예제
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/b6fab680-dd86-4b5c-a536-9c4cf3707a56)
+      - people 개체는 spouse 관계성에 1:1 제약으로 부분 참여
+      - people 중 배우자가 없는 사람도 존재
+      - 배우자가 있다면, 배우자는 한 명만 존재
+  - **다대다 롤 변환 예제**
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/a08885ee-7aaa-40d8-aed5-94bbb63afeae)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/5c95c860-3359-48d8-8c92-7fd13c75a5d6)
+      - `ship(sID, name, plant, weight)`
+      - `sister-of(ship-id, sister-id)`
+  - **다대일 롤 변환 예제**
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/decd5303-170f-49da-a418-9e8b09a276a0)
+    - `people(ID(pk), name, address, phone)`
+    - `fatherhood(father-id,children-id(pk))`
+- 약한 개체 집합
+  - **E-R 다이어그램에서 약한 개체 집합(weak entity set)이 포함되면, 약한 개체 집합과 연결된 관계 집합(relationship set)의 차수(mapping cardinality)는 항상 '다대일(many-to-one)'이고, 참여(participation)는 항상 '전체(total)'이다.**
+  - 여태 본 개체는 자체적으로 주 키를 갖고 있었음
+  - 주 키가 없는 개체 집합을 약한 개체 집합이라고 칭함
+  - 약한 개체 존재는 이를 구분하는 강한 개체(identifying entity)에 의존적
+    - 약한 개체는 강한 개체 존재 없이 존재할 수 없음
+  - 관계성(identifying relationship) 구성
+    - 약한 개체는 반드시 전체 참여
+    - 구분하는 강한 개체가 일에 대응, 약한 개체가 다에 대응
+  - 약한 개체 집합 내에서는 부분 키가 존재할 수 있음
+    - 약한 개체 집합의 주 키는 구분하는 개체의 주 키와 약한 개체 집합의 부분 키의 결합임
+  - 예제
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/2964932f-2127-4048-96d9-a8dcf4f959e8)
+      - 과목(course)에는 과목명, 학점등의 속성을 지님
+      - 학생들이 수강하고 교수들이 강의하는 것은 분반(section) 개체임
+      - 분반의 분반 번호, 연도, 학기는 과목 하나 안에서는 유일하나 분반 전체에서는 유일하지 않음
+        - 이 경우, 분반은 주 키를 갖지 못하는 약한 개체임
+      - 분반 개체는 과목 개체 존재에 의존적, 과목 개체에 연관이 없는 분반 개체는 존재할 수 없음
+        - 따라서 분반은 전체참여 제약
+      - 과목 개체 하나에 분반 개체 다수 존재 -> 1:N 카디날리티 제약
+      - 만약 과목 cID를 분반의 속성으로 추가하게 되면, 분반 개체도 강한 개체가 되며 과목과 분반 간의 관계성은 불필요하게 됨
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/3861cd18-585a-4d25-882e-c1319ca353bd)
+      - ERD 조건 맞춰서 그릴 수 있지?
+
+### 관계형 스키마로 변환
+- 개체 집합과 관계성 집합은 각각 테이블로 속성과 함께 변환됨
+- 약한 개체 변환 예제
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/0476b6bd-d2d3-49f4-99f9-d78af04b69e2)
+  - 약한 개체를 변환할 때 강한 개체의 주 키를 포함함 주의
+  - 약한 개체를 구분하는 관계성은 테이블로 변환되지 않음
+- 다대다 관계성 집합
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/97275e10-1b8e-4312-be5b-c76769cf644d)
+  - 다대다 관계성은 반드시 독립적인 테이블로 변환됨
+  - 속성은 관여하는 개체 집합의 주 키를 포함함
+- 다대일 관계성 집합
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/d38d826c-a017-40a5-82a2-a1038dd4f79e)
+    - 독립적인 테이블로 변환하는 경우
+      - own 테이블의 주 키는 다(many)측의 주 키만 포함하면 됨
+        - car 개체의 주 키만으로 구분할수 있기 때문
+    - 다(many)측 개체로 병합되어 테이블로 변환되는 경우
+      - 이때, car 개체는 pID를 포함해야함 주의
+        - car 개체의 주 키는 vehicleId임
+        - 관계성에 참여하지 않는 car 터플의 pID값은 널값이 됨
+  - **다대일 관계성 집합 변환 예제**
+    - - ![image](https://github.com/googoo9918/TIL/assets/102513932/edaa9103-b367-41bc-8d44-a5f32ae7e285)
+```sql
+Create table myStudent (
+		sID	varchar(20) primary key,
+		sname	varchar(20),
+		time 	varchar(20),
+		pID	varchar(20) not null
+    );
+```
+- 일대일 관계성 집합
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/e6d02318-4cb8-458e-846b-652cb8690ff9)
+    - 독립적인 테이블로 변환
+      - 이 방식에서 own 테이블의 주 키는 pID 또는 vehicleID임
+    - 한쪽(1)에 병합
+      - car에 병합
+      - 이 경우, car에 own의 속성과 people의 주 키 포함
+    - 한쪽(2)에 병합
+      - people에 병합
+      - 이 방식에서 people에 own의 속성과 car의 주 키 포함
+- 복합 속성
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/e9618f96-6f21-4880-a891-65a979b9edd0)
+    - 복합 속성 name, address, street은 하위 속성으로 바뀜(상위 복합 속성은 들어가지 않음)
+    - 다수 값을 가지는 phoneNumber는 결과 테이블 스키마에 포함되지 않으며, 독립 테이블로 변환됨
+    - 유도된 속성 age()는 스키마에는 명시적으로 포함됨
+      - 객체지향 데이터 모델에서 유도된 속성은 메서드로 변환할 수 있음
+      - 혹은 객체 관계형 데이터 모델에서는 속성 값으로 집합을 허용하므로, 속성 값으로 남아있을 수 있음
+- 다수값 속성
+  - `employeePhone(ID,phoneNumber)`
+    - 다수값 속성은 단일 테이블로 변환될 때 관련 개체의 주 키 속성을 포함하게됨
+- **관계형 스키마 변환 예제**
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/31dca8ba-9346-4952-98d3-a542c2f2cc7e)
+    - 교수(교수번호(pk), 이름, 학과)
+    - 지도(교수번호, 학번(pk))
+      - 현재 교수와 학생은 다대일 -> 관계를 테이블로 만들려면 연결된 테이블의 pk를 속성으로 가져오고, 그 중 '다' 속성을 pk로 설정
+    - 학생(학번(pk), 이름, 우편번호, 집주소)
+      - 주소는 복합 속성이기 때문에, 우편번호와 집주소로 변환된다
+    - 수강(학번(pk), 성적, 과목번호(pk))
+      - 다대다는 관계된 테이블의 pk의 집합을 pk로 설정
+    - 교과목(과목번호(pk), 과목이름)
+      - 선수과목은 list라 제외됨
+    - 강의(교수번호(pk), 과목번호(pk))
+      - 수강의 논리와 동일
+- **최소한의 스키마 변환 예제**
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/1c34f729-0f53-443f-a264-8a1bf27c5162)
+  - `branch(bname, city, assets)`
+  - `loan(loan-number, amount, bname)`
+  - `payment(loan-number, sequence, date, amount)`
+
+### 설계 이슈
+- 개체 대 속성
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/d3bba1db-b59e-4d4f-8884-807f9c6f25a8)
+    - 개체로 저장할 것인가, 속성으로 표현할 것인가?
+    - 전화번호에 대한 다양한 정보가 함께 저장된다면 테이블로 빼는게 맞고, 아니면 속성 값으로 냅두는게 맞음
+- 개체 대 관계성
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/2dd8fe4c-9248-4293-8f6e-a81fb8fd555c)
+    - 일반적으로 명사는 개체로 표현, 명사 간 동사는 관계성으로 표현됨
+    - 위 그림에서는 첫 erd가 적합
+- 속성 위치
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/417713ce-b18d-465d-a87a-a449518e779b)
+    - 단일 아이디어는 단일 개체 또는 단일 관계성으로 표현해야함
+    - 관계성의 속성 위치는 다대다 카디날리티 제약에서는 관계성에 반드시 위치해야함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/1c106fe6-cc82-4fd8-ba0e-c69e67d1b459)
+    - 일대일인 경우에는 관계성 속성은 임의의 관련 개체에 위치할 수 있음
+    - 위 그림처럼 일대 다인 경우에는 관계성 속성은 다(many)쪽 개체에 위치할 수 있음
+    - `people(ID, name, address, age)`
+    - `car(vehicleId, make, model, year, color, registrationDate, pID)`
+- 중복 속성
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/8aa21e1b-ea9e-4886-a588-3f168de330c5)
+    - professor 개체의 deptName은 중복되는 속성으로, 제거되어야 함
+    - 다대다니까 스키마로 변환하면 `belongs(pID,dName)`이 될텐데, dName이 deptName과 중복되는 상황
+- 이진 관계성 대 다진 관계성
+  - Binary vs Non-binary Relationships
+  - 다진 관계성이 다수 개체 간의 관계를 명확히 표현함
+  - 다진 관계성을 다수 개의 이진 관계성으로 변환은 가능
+    - 다만, 변환 시 다진 관계성의 모든 정보가 완전히 변환되지 않고 일부 정보가 유실되는 경향이 있음
+- 이진 관계성 대 삼진 관계성
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/196379b9-4fc4-4288-8118-1b07167af91a)
+    - 삼진 관계성
+      - parenthood 관계성은 아버지/어머니/자식에 대한 정보가 정확히 기록되어야 함
+      - 아버지/어머니/자식 정보를 반드시 함께 기록할 때 사용
+      - 삼진 관계성은 fatherhood 관계성과 motherhood 관계성을 동시에 표현함
+    - 이진 관계성
+      - fatherhood와 motherhood 관계성은 서로 관련이 없으므로 아버지 정보만 기록이 가능함
+      - 부분 정보만이라도 표현할 시 사용
+      - 이진 관계성 2개가 반드시 삼진 관계성을 표현하지는 않음
+- 다진 관계성 변환
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/ea195ba7-8965-4ec8-88c7-0e7d58244bd5)
+  - 이러한 변환의 문제점은 다진 관계성에 존재하는 제약 사항을 새로운 다이어그램에서 정확히 표현하지 못하는 것임
+
+## 데이터베이스 설계 이론
+### 좋은 스키마와 나쁜 스키마
+- 나쁜 스키마 예시
+  - 나쁜 스키마는 **Update anomaly(갱신 이상), Delete anomaly(삭제 이상), Insert anomaly(입력 이상)**를 지님
+  - `mybadtable1(cID(pk), title, deptName, credit, chairman, building, budget)`
+    - course 테이블과 department 테이블 자연 조인으로 생성
+  - 테이블 인스턴스
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/0f7fa0c4-9167-4831-b0e6-c21730276339)
+    - 갱신 이상(Update anomaly)
+      - `department(deptName(pk), chairman, building, budget)`
+        - chariman, building, budget은 deptName에 의존적임
+        - deptName에 갱신이 생기면, 의존적인 나머지 속성을 동시에 갱신해야함
+    - 삭제 이상(Delete anomaly)
+      - CS 부서에서 마지막으로 제공하는 과목 삭제 시 학과 정보도 함께 삭제됨
+    - 입력 이상(Insert anomaly)
+      - 새 학과가 창설되어 학과에 대한 정보를 DB에 입력하고자 해도, 그 확과개 개설하는 과목이 없으면 주 키가 cID이기 때문에 학과 정보를 입력할 수 없음
+  - `mybadtable2(cID(pk), title, deptName, credit, roomId(pk), building, capacity)`
+    - course 테이블과 room 테이블을 합성하여 생성
+    - 갱신 이상
+      - 한 cID에 대해 roomID가 반복적으로 나타남(building과 capacitiy도..)
+      - 갱신 시 반복되는 모든 값을 동시에 갱신해야함
+    - 삭제 이상
+      - 마지막 cID가 삭제되면 서로 관련없는 roomID도 함께 삭제됨
+    - 입력 이상
+      - 서로 관련 없는 cID와 roomID값이 동시에 있어야 입력 가능함
+
+### 설계 목표
+- 목적
+  - 주어진 관계 스키마가 좋은 스키마인지 결정
+  - 좋지 않은 스키마이면, 다수의 다른 관계 스키마로 분해
+    - 분해된 스키마는 좋은 형태여야 하고, 분해 과정은 무손실 조인 분해여야 함
+  - 함수 종속성과 다치 종속성을 이용하여 정규화 이론 설명
+
+### 함수 종속성 이론
+- 함수 종속성(Functional Dependencies)
+  - 유효한 관계 인스턴스에 대한 제약(키 개념의 일반화)
+  - 일부 속성의 값이 다른 속성의 값을 유일하게 결정
+- 함수 종속성 정의
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/785a7524-4494-4e5e-a4a1-7700456e8a80)
+  - 관계 인스턴스에서 A 속성 값이 동일한 임의의 터플 두 개에서 B 속성 값이 항상 동일하면
+    - A는 B를 함수정으로 결정(B는 A에 함수적으로 의존)한다고 함
+  - 예제에서 A는 B를 함수적으로 결정, B는 A를 함수적으로 결정하지 않음
+- 함수 종속성과 키
+  - 슈퍼 키는 관계 속성의 일부분으로서 전체 속성을 함수적으로 결정하는 속성을 의미함
+  - 후보키는 슈퍼 키 중에서 필요한 속성만을 가짐
+  - ex
+    - `professor(pID(pk), name, deptName, salary)`
+      - pID가 후보키이면, pID 속성은 모든 속성을 결정함
+  - 함수 종속성은 주어진 관계 인스턴스의 유효성을 검사하는데 사용할 수 있음
+  - 테이블의 제약 조건을 명시하는 데 함수 종속성을 사용할 수 있음
+- 일반적으로 설계자에 의해 함수 종속성 결정
+- 무의미(trivial) 함수 종속성
+  - 함수 종속성이 테이블의 모든 인스턴스에 대해 만족이 되는 경우가 있음
+  - 이러한 경우 무의미(trivial)하다 함
+  - AB->A , A->A, ABC->BC 와 같이 오른쪽에 있는 속성이 종속성의 왼쪽에 있는 속성 집합에 항상 포함되는 경우
+- 함수 종속성 폐포(closure)
+  - 함수 종속성은 다른 함수 종속성으로부터 유추할 수 있음
+  - A->B , B->C 이면 A->C를 유추할 수 있음
+
+### 암스트롱 공리
+- 암스트롱 공리
+  - 암스트롱 공리는 새로운 함수 종속성을 유추할 수 있는 추론 규칙임
+  - 세가지 추론 규칙으로 구성
+    - 재귀성(reflexivity) 규칙
+      - 무의미한 함수 종속성을 생성
+    - 부가성 규칙(augmentation)
+      - 주어진 함수 종속성에 동일한 속성을 양쪽에 추가하여도 됨
+    - 이행성(transivity) 규칙
+      - 추론의 이행성을 설명
+- 암스트롱 공리 예제
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/9835076d-e522-447f-9e26-086bb05802b0)
+  - A->H
+    - A->B, B->H --> A->H
+  - AG->I
+    - A->C -->  AG->CG, CG->I --> AG->I
+  - CG->HI
+    - CG->H --> CG->CGH
+    - CG->I --> CGH->HI
+    - --> CG->HI
+  - A->BC
+    - A->B --> A->AB
+    - A->C --> AB->BC
+    - --> A->BC
+    - 합성 규칙을 기억! X->Y, X->Z 일때 X->YZ가 참임
+- 암스트롱 공리는 건전하고 완전함
+  - 건전성(sound)
+    - 새롭게 생성되는 함수 종속성이 유효하므로, 암스트롱 공리는 건전함
+  - 완전함(complete)
+    - 모든 유효한 함수 종속성을 암스트롱 공리를 이용하여 생성할 수 있음
+- 추가 추론 규칙
+  - 합성 규칙(union)
+    - 왼쪽 속성이 동일하면 오른쪽 속성의 합집함을 결정하는 함수 종속성 생성 가능
+    - A->B, A->C --> A->BC
+  - 분해 규칙(decomposition)
+    - 왼쪽 속성이 오른쪽 속성의 일부분도 각각 결정함
+    - A->BC --> A->B, A->C
+  - **분해 규칙 증명**
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/a1dd47b1-fc04-4f45-baaf-039cec3288b2)
+      - a->By에서 재귀성(reflexivity rule)을 이용하여 By->B를 유도할 수 있고, 이행성(transitivity rule)을 이용하여 a->B를 유도할 수있음
+      - a->By에서 재귀성을 이용하여 By->y를 유도할 수 있고, 이행성을 이용하여 a->y를 유도할 수 있음
+  - Pseudotransitivity
+    - A->B, BC->D --> AC->D
+
+### 속성 폐포
+- 속성 폐포(closure of attributes)
+  - 주어진 속성이 함수적으로 결정할 수 있는 모든 속성을 속성 폐포(closure of attributes)라고 함
+    - 주어진 속성에 주어진 함수 종속성을 적용하여 함수적으로 결정할 수 있는 모든 속성
+  - 속성 폐포와(Closure of Attribute Sets) 함수 종속성 폐포(Closure of set of functional dependencies)는 다름
+- **암스트롱의 공리를 이용하여 주어진 함수종속 집합 F를 최대한 확장시켰을 때, 그 최종 함수 종속 집합을 F의 '함수 종속성 폐포'라고 하며, 또한 주어진 속성집합 a로 시작되는 모든 함수속성 a->B를 구하였을 때 a가 결정하는 모든 B들의 집합을 a의 '속성 폐포'라고 한다.**
+- 속성 폐포 예제
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/2146fcab-cb10-48b8-91bd-3e42f34a9f66)
+  - AG의 폐포((AG)*)를 구하시오
+    - AG
+    - AG->BG, AG->CG, AG->AG --> AG->ABCG
+    - BG->HG, AG->BG --> AG->HG, AG->ABCG --> AG->ABCGH
+    - AG->ABCGH, AG->CG->I --> AG->ABCGHI
+      - 그냥 AG->ABCGH이고, CG->I 인데, CG를 ABCGH에서 포함하니까 AG-> ABCGHI라고 볼 수 있음
+  - AG는 후보키인가?
+    - AG가 모든 속성을 결정하므로 슈퍼 키 조건을 만족함
+    - AG의 부분집합이 슈퍼 키 조건을 만족하는가?
+      - A 또는 G 모두가 슈퍼 키 조건을 만족하지 않으므로
+      - AG는 후보키임
+  - 즉, AG는 슈퍼키이면서 후보키임
+- **후보키 예시**
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/3a210037-8e06-428d-86bb-233fa453d2ab)
+- 속성 폐포 사용
+  - 주어진 속성이 슈퍼 키인지 검증할 때 사용
+    - 위 예시를 참고하라
+  - 주어진 함수 종속성이 유효한지 검증
+  - 속성 폐포를 이용하요 함수 종속성의 폐포를 구할 수 있음
+  
+### 정규 커버(최소 커버)(Canonical Cover)
+- 함수 종속성 집합에는 중복되는 함수 종속성이 존재하기도 하고, 개별 함수 종속성에도 불필요한 속성을 가지기도 함
+  - `A->B, B->C, A->CD` can be simplified to `A->B, B->C, A->D`
+    - A->CD에서 A->C 및 A->D 유추 가능
+    - A->C는 중복적으로 유추가 가능하여 필요 없음
+  - `A->B, B->C, AC->D` can be simplified to `A->B, B->C, A->D`
+    - AC->D에서 A->D, C->D 는 분해 규칙이 아님!! 정신차려!
+    - A->B, B->C에서 A->C가 유추됨
+      - 따라서 제외됨(중복 뿐 아니라 함수 종속성 폐포로 유추 가능하면 제외)
+    - A->C에서 A->AC이므로 A->D가 유추됨
+      - 따라서 AC->D 에서 C가 필요 없음이 자명함
+- 정규 커버 계산 예제
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/f30cb0c2-0e42-4a5b-bc91-9484b65d8840)
+    - A->B가 있으니 A->BC는 필요없음
+    - B->C가 있으니 AB->C도 필요없음
+    - 따라서 canonical cover는 `A->B, B->C`
+
+### 정규형
+- 정규화형
+  - 제1정규형(1NF), 제2정규형(2NF), 제3정규형(3NF), 제4정규형(4NF), 제5정규형(5NF), BCNF(Boyce/Codd Normal Form)
+    - 1,2,3 BCNF는 함수 종속성을 이용하여 정의
+    - 제4정규형은 다치 종속성을 이용하여 정의
+- 제1정규형
+  - 도메인의 모든 값이 원자 값이면 제1정규형
+    - 원자값이 아닌 값
+      - 집합, 리스트, 백, 복합 속성
+- 다양한 함수 종속성
+  - 임의의 후보 키에 속하는 속성은 주요 속성(prime attribute)
+    - 테이블에 다수 개의 후보 키가 존재하는 경우, 최소한 하나 후보 키에 속해도 주요 속성임
+  - 그렇지 않은 속성은 비주요 속성(nonprime attribute)
+  - 완전 함수 종속성
+    - A->B(학번을 통해 이름이 결정될 때)에서 A(학번)의 부분집합 R(학번 앞 2자리)에 대하여 R->B가 성립하지 않으면(학번 앞 2자리로 이름이 결정되지 않으면) 이 함수 종속성은 완전 함수 종속성임
+  - 부분 함수 종속성
+    - A의 부분집합 R로도 B를 결정할 수 있을 때
+      - 즉, A->B 외에도 R->B가 성립하는 경우
+  - 이행(Transitive) 함수 종속성
+    - A->B, B->R이 존재하는 경우 A는 R을 이행적으로 결정
+- 제 2정규형
+  - 제1정규형(모든 값이 원자값) 중에서 모든 비주요 속성이 모든 후보 키에 완전 의존적이어야 함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/aec90e08-d763-4517-a10a-0899b50f39fe)
+    - 이와 같은 함수 종속성에서
+      - 비주요 속성인 eName이 후보 키에 부분적으로 의존함으로, 테이블 R은 제 2정규형이 아님
+        - SSN에만 완전 의존하고, pNumber에 의존하지 않기 때문
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/5d39071a-33a3-4154-a263-37dee440afc3)
+      - 위 3개의 테이블은 모든 비주요 속성이 후보 키에 완전 희존하므로, 모두가 제 2정규형에 속함
+- 제1정규형, 제2정규형 예제
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/eeae0b6b-97e5-4b0f-b64b-c41130234ea5)
+    - 이 테이블은 비주요 속성인 city가 후보 키에 부분적으로 의존하므로 제2정규형이 아님
+    - 나쁜 스키마임, 따라서 세 가지 Anomalies 발생
+      - Insert
+        - City 속성은 S#에만 의존적이어서, 공급자는 S#(부품 번호)가 없으면 공급자의 City(도시)를 입력할 수 없음
+      - Update
+        - City 속성은 S#에만 의존적이어서, S#번호가 반복되면 동일한 City 속성 값이 반복적으로 나타나고, 갱신 시 이 모든게 갱신되어야함
+      - Deletion
+        - 공급자가 마지막 부품 공급을 삭제하면 City정보도 삭제되게 됨
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/85ec9412-895e-43a1-933f-cf98866e1abb)
+    - Second는 비주요 속성이 후보키에 완전 의존되므로 제2정규형임
+- 제3정규형
+  - 제2정규형 중에서 비주요 속성이 모든 후보 키에 이행적으로 의존적이 아니면 제 3정규형이다
+  - 즉, 모든 의미 있는 함수 종속성 A->B에서 A가 슈퍼 키이거나 B가 주요 속성이어야 한다
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/461857f2-b982-424f-8420-f31bc6180062)
+    - 현재 비주요속성 Dname과 Dmgr은 이행적으로 후보 키 SSN에 의존적이므로
+    - 2정규형은 되지만, 3정규형은 되지 않음
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/5a5a249b-271e-428c-bf33-6caa30809a4c)
+    - 이와 같이 분해해야 제3정규형임
+  - 제2정규형 및 제3정규형 예제
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/735dd6e8-42e8-4a90-8b88-9bddf4f234c9)
+      - status는 S#에 직접적으로 의존적이지만, 이행적 종속도 이뤄지고 있음
+      - 모든 비주요 속성이 기본 키에 대해 이행적 종속이 없어야 되므로, 제3정규형이 아님
+      - 따라서 잘못된 스키마로 인해 세 가지 Anomalies 발생
+        - Insert
+          - S# 없이는 City에 대한 Status 정보를 입력할 수 없음
+        - Update
+          - City가 반복될 때마다 Status값이 반복적으로 나오게 됨
+          - City에 대한 Status 값의 변경이 있으면 다수개의 값을 동시에 갱신해야 되는 상황 초래
+        - Deletion
+          - 마지막 S#을 삭제하면 S#과 관련 없고 City에 관련이 있는 Status값도 함께 삭제되는 현상
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/94945a08-a993-4dc3-910d-b365f450cd29)
+      - 이렇게 분해해야 제3 정규형임
+- BCNF
+  - 관계형 스키마가 모든 의미 있는 함수 종속성 A->B에서 A가 슈퍼 키이면 BCNF 정규형이 됨
+  - 즉, 모든 속성이 기본 키에 의존해야 한다!
+- 제3정규형과 BCNF 예제
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/caca663b-d4f0-412b-9599-82e75f7c7d95)
+    - 이행적 종속 -> 제3정규형 아님
+    - studioName이 슈퍼키가 아님
+      - BCNF 아님 
+    - 제2정규형임
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/266cac0d-50fd-436e-8a9f-332bf7dcd56a)
+    - 이렇게 분리해야 BCNF임
+    - 모든 속성이 기본 키에 의존하고 있음
+  - 속성이 두 개인 테이블은 모두 BCNF임
+    - 함수 종속성이 없거나, 단방향으로 있거나, 양방향으로 있거나 다 BCNF임
+- 연습1
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/bb225917-0a92-40d9-b5b0-94567a47e748)
+    - 정규형을 결정하라
+    - 후보키 : AB
+    - 주요 속성: A, B
+    - 비주요 속성: C, D, E, F
+    - 비주요 속성이 후보키에 부분적으로 의존하므로 1NF임
+    - 나쁜 스키마의 전형적인 사례, ACD와 BEF는 전혀 관련이 없음
+      - --> 어떤 anomaly가 생길까?
+- 연습2
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/3ff3431d-b43e-4b0f-a80e-507dc33181a5)
+    - 후보키: AB
+    - 비주요 속성끼리 함수 종속성을 가지는 것은 2NF에서는 상관없음
+    - 2NF임
+    - 마찬가지로 여러 anomaly를 발생시킴
+      - 속성 D는 속성 C에만 의존적
+        - 속성 D 값이 반복되면 속성 C 값도 반복됨(갱신 이상)
+        - 속성 AB 값이 없으면 속성 C에만 의존적인 속성 D 값을 테이블에 입력할 수 없음(입력 이상)
+        - 속성 C에 대한 마지막 터플이 삭제되면 속성 D 값도 함꼐 삭제(삭제 이상)
+- 연습3
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/3ef57ee1-4b3d-4799-81fa-273e0726df7e)
+    - 후보키가 A인 2NF
+    - 2NF에서는 이행적 종속이 가능하다.
+- 연습4
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/48d8db83-181f-4b0b-809d-fc2124546f03)
+    - 후보키가 AB인 3NF임
+    - 3NF에서는 비주요 속성이 주요 속성을 가리킬 수 있음
+- 연습5
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/432ddb2a-40a1-465d-98b5-4aed7ec3386a)
+  - 조심!! 후보키는 A와 D임
+  - 주요속성만 가리키고 있으니 BCNF임
+- 연습6
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/bdc328fe-a7d7-48c4-9656-412e5c8cf3c4)
+  - 말할 것도 없이 BCNF, 후보키는 A임
+- 연습7
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/3079836a-a1f6-4a1a-9836-f866ccfec420)
+  - A~D에 순환이 형성되어 있음
+  - A,B,C,D 모두 후보키
+  - 비주요 속성은 E밖에 없음
+  - 후보키만 가리키고 있으니, BCNF임
