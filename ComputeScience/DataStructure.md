@@ -68,6 +68,14 @@
   - [트리](#트리)
     - [트리](#트리-1)
     - [이진 트리](#이진-트리)
+    - [배열을 이용한 이진 트리](#배열을-이용한-이진-트리)
+    - [링크를 이용한 이진 트리 및 전중후 순회](#링크를-이용한-이진-트리-및-전중후-순회)
+  - [트리(2)](#트리2)
+    - [레벨 순회](#레벨-순회)
+  - [이진 탐색 트리](#이진-탐색-트리)
+    - [탐색](#탐색)
+    - [삽입 연산](#삽입-연산)
+    - [삭제 연산](#삭제-연산)
 # 자료구조
 ## 강의안내
 ### 자료구조란?
@@ -2444,6 +2452,7 @@ int main(){
     - 임의의 두 노드 간의 경로도 유일
   - 한 개의 루트 노드만이 존재, 모든 자식 노드는 한 개의 부모 노드만을 가짐
 ### 이진 트리
+- 이진 트리
   - 자식 노드를 최대 2개 까지만 가질 수 있는 트리
   - 이진 트리의 모든 노드는 차수가 2 이하임
   - 이진 트리는 노드를 하나도 갖지 않을 수 있음
@@ -2453,3 +2462,335 @@ int main(){
   - 높이가 h -> 최소 h개 ~ 최대 2^h-1개의 노드를 가짐
   - n개 노드의 이진 트리 높이 -> 최소, 최대 다 그려보자
     - [로그2(n+1)]~ n개임
+- 포화 이진 트리
+  - 트리의 각 레벨에 노드가 꽉 차 있는 이진 트리
+  - 레벨 단위로 왼쪽 -> 오른쪽으로 번호 부여
+- 완전 이진 트리
+  - 모든 레벨에서 노드가 왼쪽 -> 오른쪽으로 순차적으로 채워져 있는 이진 트리
+  - 포화 이진 트리도 완전 이진 트리의 한 종류겠지
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/e3c683e8-ee1a-4a99-8203-737a633cefcd)
+
+### 배열을 이용한 이진 트리
+- 모든 이진 트리를 포화 이진 트리라 가정
+  - 각 노드에 번호를 붙여서 배열의 인덱스로 사용
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/f58587f3-c111-4130-b31c-5df8e9aec7fa)
+
+### 링크를 이용한 이진 트리 및 전중후 순회
+- 더블링크드리스트를 이용해 부모 노드가 자식 노드를 가리키게 함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/c120f0de-b8c5-4a0a-8ed4-26ce301515ab)
+- 전위 순회
+  - 루트 -> 왼쪽 자식 -> 오른쪽 자식
+- 중위 순회
+  - 왼쪽 자식 -> 루트 -> 오른쪽 자식
+- 후위 순회
+  - 왼쪽 자식 -> 오른쪽 자식 -> 루트
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/ad3b25dc-eeb1-49f8-a77a-b863980f1ebc)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/08f17d59-eb13-4320-88aa-1f1926cd321e)
+  - 전위 순회: A, B, D, H, P, Q, I, R, S, E, J, K, C, F, L, M, G, N, O
+
+  - 중위 순회: P, H, Q, D, R, I, S, B, J, E, K, A, L, F, M, C, N, G, O
+
+  - 후위 순회: P, Q, H, R, S, I, D, J, K, E, B, L, M, F, N, O, G, C, A
+
+
+
+
+
+
+```cpp
+#include <iostream>
+using namespace std;
+
+//이진 트리 노드 클래스
+class BinaryNode 
+{
+protected:
+	int data;
+	BinaryNode* left;
+	BinaryNode* right;
+
+public:
+	BinaryNode(int val=0, BinaryNode *l=NULL, BinaryNode *r=NULL)
+		: data(val), left(l), right(r){}
+	~BinaryNode() { }
+	
+	void setData(int val) { data = val; }
+	void setLeft(BinaryNode* l) { left = l; }
+	void setRight(BinaryNode* r) { right = r; }
+	int getData() { return data; }
+	BinaryNode* getLeft() { return left; }
+	BinaryNode* getRight() { return right; }
+	bool isLeaf() { return left == NULL && right == NULL; }
+};
+
+
+//이진 트리 클래스
+class BinaryTree
+{
+	BinaryNode* root;
+public:
+	BinaryTree(): root(NULL){ }
+	~BinaryTree() { }
+
+	void setRoot(BinaryNode* node) { root = node; }
+	BinaryNode* getRoot() { return root; }
+	bool isEmpty() { return root == NULL; }
+	
+	void display() {
+		cout << "Binary Tree:" << endl;
+		if (isEmpty()) {
+			cout << "Empty tree." << endl;
+		}
+		else {
+			display(root, 0);
+		}
+	}
+  //트리의 현재 상태 출력
+	void display(BinaryNode* node, int depth) {
+		if (node == NULL) {
+			return;
+		}
+		for (int i = 0; i < depth; i++) {
+			cout << "  ";
+		}
+		cout << "- " << static_cast<char>(node->getData()) << endl;
+
+		display(node->getLeft(), depth + 1);
+		display(node->getRight(), depth + 1);
+	}
+
+//중위순회
+	void inorder() { cout << "\n inorder: "; inorder(root); }
+	void inorder(BinaryNode* node) {
+		if (node != NULL) {
+			inorder(node->getLeft());
+			cout << "[" << static_cast<char>(node->getData()) << "] ";
+			inorder(node->getRight());
+		}
+	}
+
+//전위순회
+	void preorder() { cout << "\n preorder: "; preorder(root); }
+	void preorder(BinaryNode* node) {
+		if (node != NULL) {
+			cout << "[" << static_cast<char>(node->getData()) << "] ";
+			preorder(node->getLeft());
+			preorder(node->getRight());
+		}
+	}
+
+//후위순회
+	void postorder() { cout << "\n postorder: "; postorder(root); }
+	void postorder(BinaryNode* node) {
+		if (node != NULL) {
+			postorder(node->getLeft());
+			postorder(node->getRight());
+			cout << "[" << static_cast<char>(node->getData()) << "] ";
+		}
+	}
+};
+
+
+int main()
+{
+	BinaryTree tree;
+
+	BinaryNode* d = new BinaryNode('D', NULL, NULL);
+	BinaryNode* e = new BinaryNode('E', NULL, NULL);
+	BinaryNode* b = new BinaryNode('B', d, e);
+	BinaryNode* f = new BinaryNode('F', NULL, NULL);
+	BinaryNode* c = new BinaryNode('C', f, NULL);
+	BinaryNode* a = new BinaryNode('A', b, c);
+
+	tree.setRoot(a);
+
+	tree.display();
+
+	tree.inorder();
+	tree.preorder();
+	tree.postorder();
+	return 0;
+}
+```
+
+## 트리(2)
+### 레벨 순회
+- 레벨 순회
+  - 이진 트리의 노드를 레벨별로 순서대로 방문하는 방법
+  - 큐로 구현
+- 1. 트리의 루트 노드를 큐에 삽입
+- 2. 큐가 빌 때 까지 다음 작업 반복
+  - 큐에서 노드를 하나 꺼내서 방문, 꺼낸 노드의 자식 노드들을 큐에 순서대로 삽입
+- 3. 트리의 모든 노드를 방문할 때 까지 반복
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/1fdddd2a-5357-4007-a5f9-8238a654b240)
+- 레벨 순회 알고리즘
+```cpp
+void levelorder(){
+  cout << "\n levelorder: ";
+  if(!isEmpty()){
+    CircularQueue q;
+    q.enqueue(root);
+    while(!q.isEmpty()){
+      BinaryNode* n = q.dequeue();
+      if(n!= NULL){
+        cout << "[" << static_cast<char(n->getData()) << "] " ;
+        q.enqueue(n->getLeft());
+        q.enqueue(n->getRight());
+      }
+    }
+  }
+  cout << "\n";
+}
+```
+
+## 이진 탐색 트리
+### 탐색
+- 탐색 관련 용어
+  - 컴퓨터의 탐색은 레코드의 집합에서 특정 레코드를 찾아내는 작업을 의미
+  - 레코드
+    - 트리에 저장되는 개별 항목이나 데이터 단위
+  - 필드
+    - 특정 데이터 유형을 나타내는 값
+  - 테이블
+    - 레코드의 모음
+  - 키
+    - 각 레코드를 고유하게 식별하는 값
+  - 주요키
+    - 테이블 내에서 각 레코드를 고유하게 식별하는 키
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/2752d571-2045-4839-9f23-b39ea56ba54c)
+- 이진 탐색 트리
+  - 이진 트리 기반의 탐색을 위한 자료 구조
+  - 모든 노드는 유일한 키를 가짐
+  - 왼쪽 서브 트리의 키들은 루트의 키보다 작음
+  - 오른쪽 서브 트리의 키들은 루트의 키보다 큼
+  - 왼쪽과 오른쪽 서브 트리도 이진 탐색 트리임
+    - 이진 탐색을 중위 순회화면 오름차순으로 정렬된 값을 얻을 수 있음
+- 탐색 연산
+  - 루트 노드부터 시작하여 특정 값을 찾을 때까지 왼쪽 또는 오른쪽 자식 노드로 이동하며 수행
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/c9c358dd-1941-44e7-b629-9deb4c9d9bf1)
+- 탐색 연산 구현
+```cpp
+//n에는 root를 넣어줘야겄제
+BinaryNode* search(BinaryNode* n, int key) {
+		if (n == NULL) return NULL;
+
+		if (key == n->getData())
+			return n;
+		else if (key < n->getData())
+			return search(n->getLeft(), key);
+		else
+			return search(n->getRight(), key);
+	}
+```
+
+### 삽입 연산
+  - 이진 탐색 트리에 원소를 삽입하기 위해 탐색이 선행되어야 함
+  - 탐색에 실패한 위치가 새로운 노드를 삽입하는 위치
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/16e0fff4-319a-4c08-b2d9-583858aa8c63)
+- 삽입 연산
+```cpp
+//insert(root,n)으로 사용
+void insert(BinaryNode* r, BinaryNode* n) {
+		if (n->getData() == r->getData())
+			return;
+		else if (n->getData() < r->getData()) {
+			if (r->getLeft() == NULL)
+				r->setLeft(n);
+			else
+				insert(r->getLeft(), n);
+		}
+		else {
+			if (r->getRight() == NULL)
+				r->setRight(n);
+			else
+				insert(r->getRight(), n);
+		}
+	}
+```
+
+### 삭제 연산
+- 삭제할 값을 가진 노드를 탐색, 찾지 못한 경우 연산 중단
+- 삭제할 노드의 유형에 따른 처리
+  - 단말 노드인 경우
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/c3a0f597-55d8-4011-8569-07c3563fab8f)
+  - 자식이 하나인 노드일 경우
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/2c54a2cb-00d3-4250-86e4-3dab00582a23)
+  - 자식이 두 개인 노드일 경우
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/1dfb6f50-f63b-49d9-9f20-06251a1319eb)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/f7088b91-4090-4450-b06f-efca714308b7)
+  - 삭제후 재정렬
+```cpp
+void remove(int data) {
+		if (isEmpty()) return;
+		
+		BinaryNode* parent = NULL;
+		BinaryNode* node = root;
+		while (node != NULL && node->getData() != data) {
+			parent = node;
+			node = (data < node->getData())
+				? node->getLeft()
+				: node->getRight();
+		}
+
+		if (node == NULL) {
+			printf(" Error: key is not in the tree1\n");
+			return;
+		}
+		else remove(parent, node);
+	}
+
+	void remove(BinaryNode* parent, BinaryNode* node) {
+
+		//case 1(leaf 노드인 경우)
+    //부모 노드를 찾아서 연결을 끊어주면 된다
+		if (node->isLeaf()) {
+			if (parent == NULL) root = NULL;
+			else {
+				if (parent->getLeft() == node)
+					parent->setLeft(NULL);
+				else
+					parent->setRight(NULL);
+			}
+		}
+
+		// case 2(자식이 하나인 노드일 경우)
+    // 노드는 삭제하고 서브 트리는 부모 노드에 붙여준다
+		else if (node->getLeft() == NULL || node->getRight() == NULL) {
+			BinaryNode* child = (node->getLeft() != NULL)
+				? node->getLeft()
+				: node->getRight();
+			if (node == root)
+				root = child;
+			else {
+				if (parent->getLeft() == node)
+					parent->setLeft(child);
+				else
+					parent->setRight(child);
+			}
+		}
+
+    //case 3(자식이 두 개인 노드일 경우)
+		else {
+			BinaryNode* succp = node;
+			BinaryNode* succ = node->getRight();
+			
+      //오른쪽 서브 트리에서 제일 작은 값 succ에 저장
+      //succp는 오른쪽 서브 트리에서 제일 작은 값(후계 노드)의 부모 노드임
+      while (succ->getLeft() != NULL) {
+				succp = succ;
+				succ = succ->getLeft();
+			}
+
+      //while문이 한 번도 실행되지 않은 경우, if문이 false일 수 있음
+			if (succp->getLeft() == succ)
+				succp->setLeft(succ->getRight());
+			else //succp의 right를 오른쪽 서브트리 가장 높은 레벨 오른쪽 노드와 연결
+				succp->setRight(succ->getRight());
+
+			node->setData(succ->getData());
+
+			node = succ;
+		}
+		delete node;
+	}
+```
