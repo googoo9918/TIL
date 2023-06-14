@@ -55,6 +55,18 @@
     - [스택](#스택)
   - [스택(2)](#스택2)
     - [스택(2)](#스택2-1)
+  - [큐(선형 큐, 원형 큐)](#큐선형-큐-원형-큐)
+    - [큐](#큐)
+    - [선형 큐(linear queue)](#선형-큐linear-queue)
+    - [원형 큐(Circular queue)](#원형-큐circular-queue)
+    - [배열을 이용한 원형 큐 구현](#배열을-이용한-원형-큐-구현)
+    - [연결 리스트를 이용한 큐](#연결-리스트를-이용한-큐)
+  - [덱](#덱)
+    - [덱](#덱-1)
+    - [배열을 이용한 원형 덱 구현](#배열을-이용한-원형-덱-구현)
+    - [이중 연결 리스트를 이용한 덱](#이중-연결-리스트를-이용한-덱)
+  - [트리](#트리)
+    - [트리](#트리-1)
 # 자료구조
 ## 강의안내
 ### 자료구조란?
@@ -1866,3 +1878,543 @@ int main(){
     return 0;
 }
 ```
+
+
+## 큐(선형 큐, 원형 큐)
+### 큐
+- 큐(Queue)
+  - 뒤에서 새로운 데이터가 추가, 앞에서 데이터가 하나씩 삭제
+  - FIFO
+  - 전단에서 삭제, 후단에서 삽입이 일어남
+    - 각각 독립적으로 이뤄지므로 두 개 변수 필요
+### 선형 큐(linear queue)
+- 선형 큐
+  - 큐의 시작(front)과 끝(rear)을 나타내는 포인터 2개 사용
+    - front는 데이터가 처음 들어간 공간 바로 앞 자리를 가리키고 있음
+  - 초기상태는 모두 `-1`로 설정
+  - 삽입 시 rear +1 , 삭제 시 front +1
+  - 단점
+    - front와 rear의 위치 정해져 있어서 메모리가 낭비될 수 있음
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/922c89dd-9c92-46b4-a4f4-ad7502eff856)
+      - (1)큐가 가득 찬 경우
+        - 더 이상 데이터를 삽입할 수 없음
+      - (2)가득 찬 건 아니지만, rear가 마지막 인덱스를 가리키고 있고 앞의 공간이 비어있는 경우
+        - 이를 메모리 단편화 문제라 칭함
+        - 데이터를 넣을 공간을 마련하기 위해 데이터를 전체적으로 앞으로 이동시켜야 함
+        - 비효율적인 작업이 생김
+### 원형 큐(Circular queue)
+- 선형 큐의 문제를 해결한 큐
+- 큐의 처음(front)와 끝(rear)가 연결되어 있는 구조
+  - 선형 큐의 단점 (2)를 생각해보자
+    - 더 이상 삽입할 수 없는 상황이 되더라도, 큐의 끝이 다시 큐의 시작 부분으로 이어지기 때문에 추가적으로 데이터를 삽입할 수 있음
+- front와 rear의 초기값은 0임
+- 마찬가지로 삽입 시 rear+1, 삭제 시 front+1
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/b95affac-9d82-4656-800e-878bc34940ed)
+  - 정확히 말하자면, rear = (rear+1)%M(큐 크기)
+  - front = (front+1)%M
+- 나머지 연산을 사용하여 front와 rear의 위치 계산
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/8e88a42f-babd-4771-9dff-b8a4184a376d)
+    - 공백상태: front == rear
+    - 포화상태: front % M(큐의 크기) == (rear+1)%M(큐의 크기)
+    - 공백과 포화를 구분하기 위해, 항상 한 칸의 차이를 둬야함
+
+### 배열을 이용한 원형 큐 구현
+```cpp
+#include <iostream>
+
+inline void error(const char* str) {
+	std::cerr << str << std::endl;
+	exit(1);
+};
+
+#define MAX_QUEUE_SIZE 100
+
+class CircularQueue {
+	int front;
+	// 첫 번째 요소 앞에 위치
+	int rear;
+	// 마지막 요소의 위치
+	int data[MAX_QUEUE_SIZE];
+public:
+	CircularQueue() {
+		front = rear = 0;
+	}
+	~CircularQueue(){}
+
+	bool isEmpty() {
+		return front == rear;
+	}
+
+	bool isFull() {
+		return (rear + 1) % MAX_QUEUE_SIZE == front;
+	}
+
+	void enqueue(int val) {
+		if (isFull())
+			error("error:큐가 포화상태입니다\n");
+		else {
+			rear = (rear + 1) % MAX_QUEUE_SIZE; 
+			//인덱스가 큐의 최대 크기를 넘어가지 않도록 나눠줌
+			data[rear] = val;
+			//마지막의 위치에 데이터 넣어주기!
+		}
+	}
+
+	int dequeue() {
+		if (isEmpty())
+			error("Error:큐가 공백상태입니다\n");
+		else {
+			front = (front + 1) % MAX_QUEUE_SIZE;
+			//인덱스가 큐의 최대 크기를 넘어가지 않도록 나눠줌
+			return data[front];
+		}
+	}
+
+	int peek() {
+		if (isEmpty())
+			error("Error:큐가 공백상태입니다\n");
+		else
+			return data[(front + 1) % MAX_QUEUE_SIZE];
+		//인덱스가 큐의 최대 크기를 넘어가지 않도록 나눠줌
+	}
+
+	void display() {
+		std::cout << "큐 내용 : ";
+		int maxi = (front < rear) ? rear : rear + MAX_QUEUE_SIZE;
+
+		for (int i = front + 1; i <= maxi; i++)
+			std::cout << "[" << data[i % MAX_QUEUE_SIZE] << "] ";
+		std::cout << std::endl;
+	}
+};
+
+int main() {
+	CircularQueue que;
+
+	for (int i = 1; i < 10; i++)
+		que.enqueue(i);
+
+	que.display();
+	que.dequeue();
+	que.dequeue();
+	que.dequeue();
+	que.display();
+	return 0;
+}
+// 큐 내용: 1 2 3 4 5 6 7 8 9
+// 큐 내용: 4 5 6 7 8 9
+// 공백 상태와 포화 상태에 대해 정확히 인지?
+// 삽입, 삭제시?
+// 초기값?
+```
+
+### 연결 리스트를 이용한 큐 
+- 장점
+  - 선형 큐의 메모리 단편화 문제 해결 가능
+  - 크기가 제한되지 않고 필요한 메모리만 사용할 수 있음
+- 단점
+  - 코드가 더 복잡하고 링크 필드 때문에 메모리 공간을 더 사용하게 됨
+- front: 가장 먼저 삽입된 노드
+- rear: 가장 최근에 삽입된 노드
+- 삽입
+  - 공백 상테에서의 삽입
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/ce67c1bf-f20e-45fd-ae1e-24aae2b3f96b)
+      - front와 rear 모두 새로운 노드 p를 가리킴
+  - 비 공백상태에서의 삽입
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/9337e2e5-0ef9-40d5-8e65-a273086fe60f)
+    - `rear->link = p;`
+    - `rear = p;`
+- 삭제
+  - 노드가 두 개 이상인 경우
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/a305e4d2-204b-4821-ba3c-a016c2d0f80e)
+    - front가 가리키는 노드 A를 p가 가리키도록 함
+      - `p = front;`
+    - front가 다음 노드 B를 가리키도록 함
+      - `front = p->link;`
+  - 노드가 하나인 경우
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/848734ec-db21-4a70-b376-f84f34d62ba0)
+      - rear도 NULL로 만들어 줘야함
+
+```cpp
+#include <iostream>
+
+class Node
+{
+	Node* link;
+	int data;
+public:
+	Node(int val =0) : data(val), link(NULL) {}
+	Node* getLink() { return link; }
+	void setLink(Node* next) { link = next; }
+	void display() { std::cout << " <" << data << ">"; }
+};
+
+class LinkedQueue
+{
+	Node* front;
+	Node* rear;
+public:
+	LinkedQueue() : front(NULL), rear(NULL) {} //둘 다 null로 초기화
+	~LinkedQueue() { while (!isEmpty()) delete dequeue(); }
+	// 다 없어질 때 까지 delete
+
+	bool isEmpty() { return front == NULL; }
+
+	void enqueue(Node* n) {
+		if (isEmpty()) front = rear = n;
+		// 비어있었으면, fornt와 rear 모두 n에 할당
+		else {
+			rear->setLink(n);
+			//rear의 링크 필드를 n으로 설정
+			rear = n;
+			//rear를 n으로 설정(마지막 노드니까!!)
+		}
+	}
+
+	Node* dequeue() {
+		if (isEmpty()) return NULL;
+		Node* temp = front;
+		front = front->getLink();
+		if (front == NULL) rear = NULL;
+		//노드가 하나일때 dequeue를 진행한 경우임, front뿐 아니라 rear도 null로 만들어줌
+		return temp;
+	}
+
+	Node* peek() { return front; }
+
+	void display() {
+		std::cout << "[큐 내용] : ";
+		for (Node* p = front; p != NULL; p = p->getLink())
+			p->display();
+		std::cout << std::endl;
+	}
+};
+
+int main()
+{
+	LinkedQueue que;
+	for (int i = 1; i < 10; i++)
+		que.enqueue(new Node(i));
+
+	que.display();
+	delete que.dequeue();
+	delete que.dequeue();
+	delete que.dequeue();
+	que.display();
+
+	return 0;
+}
+// 삽입 - 공백, 비공백
+// 삭제 - 노드 2개 이상, 노드 1개
+```
+
+## 덱
+### 덱
+- 덱(Double-Ended Queue, Deque)
+  - 전단(front)과 후단(rear)에서 모두 삽입과 삭제가 가능한 큐
+  - 양쪽 끝에서 높은 효율성으로 데이터 처리 가능
+- 추가 연산
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/26159bc0-2df0-4af2-bf6d-cafbf405fb4c)
+    - 음수가 되지 않기 위해 `+MAX_QUEUE_SIZE`가 있음을 기억하라 
+    - `delete_rear(), add-front(), get_real()`
+    - 후단에서 삭제, 전단으로 삽입, 마지막으로 들어온 값 확인
+    - 원래 peek은 처음으로 들어온 값을 확인했었음
+
+### 배열을 이용한 원형 덱 구현
+```cpp
+#include <iostream>
+
+inline void error(const char* str) {
+	std::cerr << str << std::endl;
+	exit(1);
+};
+
+#define MAX_QUEUE_SIZE 100
+
+class CircularQueue {
+protected:
+	int front;
+	// 첫 번째 요소 앞에 위치
+	int rear;
+	// 마지막 요소에 위치
+	int data[MAX_QUEUE_SIZE];
+public:
+	CircularQueue() {
+		front = rear = 0;
+	}
+	~CircularQueue() {}
+
+	bool isEmpty() {
+		return front == rear;
+	}
+
+	bool isFull() {
+		return (rear + 1) % MAX_QUEUE_SIZE == front;
+	}
+
+	void enqueue(int val) {
+		if (isFull())
+			error("error:큐가 포화상태입니다\n");
+		else {
+			rear = (rear + 1) % MAX_QUEUE_SIZE;
+			//인덱스가 큐의 최대 크기를 넘어가지 않도록 나눠줌
+			data[rear] = val;
+			//마지막의 위치에 데이터 넣어주기!
+		}
+	}
+
+	int dequeue() {
+		if (isEmpty())
+			error("Error:큐가 공백상태입니다\n");
+		else {
+			front = (front + 1) % MAX_QUEUE_SIZE;
+			//인덱스가 큐의 최대 크기를 넘어가지 않도록 나눠줌
+			return data[front];
+		}
+	}
+
+	int peek() {
+		if (isEmpty())
+			error("Error:큐가 공백상태입니다\n");
+		else
+			return data[(front + 1) % MAX_QUEUE_SIZE];
+		//인덱스가 큐의 최대 크기를 넘어가지 않도록 나눠줌
+	}
+
+	void display() {
+		std::cout << "큐 내용 : ";
+		int maxi = (front < rear) ? rear : rear + MAX_QUEUE_SIZE;
+		//maxi가 의미하는 바는?
+
+		for (int i = front + 1; i <= maxi; i++)
+			std::cout << "[" << data[i % MAX_QUEUE_SIZE] << "] ";
+		std::cout << std::endl;
+	}
+};
+
+class CircularDeque : public CircularQueue {
+public:
+	CircularDeque(){ }
+	void addRear(int val) { enqueue(val); }
+	int deleteFront() { return dequeue(); }
+	int getFront() { return peek(); }
+	void addFront(int val) {
+		if (isFull())
+			error(" error: 덱이 포화상태입니다\n");
+		else {
+			data[front] = val;
+			front = (front - 1 + MAX_QUEUE_SIZE) % MAX_QUEUE_SIZE;
+		}
+	}
+
+	int deleteRear() {
+		if (isEmpty())
+			error("Error: 덱이 공백상태입니다\n");
+		else {
+			int ret = data[rear];
+			rear = (rear - 1 + MAX_QUEUE_SIZE) % MAX_QUEUE_SIZE;
+			return ret;
+		}
+	}
+
+	int getRear() {
+		if (isEmpty())
+			error(" Error: 덱이 공백상태입니다\n");
+		else return data[rear];
+	}
+
+	void display() {
+		std::cout << "덱의 내용: ";
+		int maxi = (front < rear) ? rear : rear + MAX_QUEUE_SIZE;
+		for (int i = front + 1; i <= maxi; i++)
+			std::cout << "[" << data[i % MAX_QUEUE_SIZE] << "] ";
+		std::cout << std::endl;
+	}
+};
+
+int main() {
+	CircularDeque deq;
+
+	for (int i = 1; i < 10; i++) {
+		if (i % 2) deq.addFront(i);
+		else deq.addRear(i);
+	}
+
+	deq.display();
+
+	deq.deleteFront();
+	deq.deleteRear();
+	deq.deleteFront();
+	deq.display();
+
+	return 0;
+  // 9 7 5 3 1 2 4 6 8 
+  // 5 3 1 2 4 6 
+}
+//addRear()(enqueue 사용)과 deleteFront()(dequeue 사용)는 CircularQueue와 같음
+//addRear()는 rear를 +1(%M), deleteFront()는 front+1(%M)
+//addFront()는 전단으로 데이터 삽입, deleteRear()는 후단에 데이터 삭제
+//새롭게 추가된 메서드 2개에서는, rear와 front 감소 연산이 두번째줄에 있다는 사실을 명심하라
+//또한, front는 데이터 앞에 위치하고, rear는 데이터의 마지막에 위치함을 명심하라
+//getRear()는 후단에서 peek이다.
+```
+
+### 이중 연결 리스트를 이용한 덱
+- 이중 연결 리스트
+  - 하나의 노드가 이전 노드와 다음 노드를 가리키는 두 개의 링크를 가짐
+```cpp
+#include <iostream>
+#define MAX_STACK_SIZE 100
+
+using namespace std;
+
+inline void error(char* str){
+  cout << str << endl;
+  exit(1);
+};
+
+class Node2{
+  Node2* prev;
+  Node2* next;
+  int data;
+
+public:
+  Node2(int val =0) : data(val), prev(nullptr), next(nullptr){}
+  Node2* getPrev() {return prev;}
+  Node2* getNext() {return next;}
+  void setPrev(Node2* p){prev = p;}
+  void setNext(Node2* n){next = n;}
+  void display() {cout << " <" << data << ">";}
+  bool hasData(int val){return data == val;}
+
+//자신의 다음에 새로운 노드 삽입
+void insertNext(Node2* n){
+  if(n != nullptr){
+    n->prev = this;
+    n->next = next;
+    if(next != nullptr) next ->prev = n;
+    next = n;
+  }
+}
+
+Node2* remove(){
+  if(prev!=nullptr) prev->next = next;
+  if(next!=nullptr) next->prev = prev;
+  return this;
+}
+};
+
+class DbLinkedList{
+  Node2 org;
+public:
+  DbLinkedList() : org(0){}
+  ~DbLinkedList() { clear(); }
+
+  void clear() { while(!isEmpty()) delete remove(0);}
+  Node2* getHead() { return org.getNext(); }
+  bool isEmpty() {return getHead() == nullptr;}
+
+  Node2* getEntry(int pos){
+    Node2* n = &org;
+    for (int i = -1; i< pos; i++, n = n->getNext())
+      if(n == nullptr) break;
+    return n;
+  }
+
+  void insert(int pos, Node2* n){
+    Node2* prev = getEntry(pos-1);
+    if(prev != nullptr)
+      prev -> insertNext(n);
+  }
+
+  Node2* remove(int pos){
+    Node2* n = getEntry(pos);
+    return n-> remove();
+  }
+
+  Node2* find(int val){
+  for(Node2* p = getHead(); p!=nullptr; p = p->getNext())
+    if(p->hasData(val)) return p;
+    return  nullptr;
+}
+
+  void replace(int pos, Node2* n){
+    Node2* prev = getEntry(pos-1);
+    if(prev != nullptr){
+      delete prev->getNext()->remove();
+      prev->insertNext(n);
+    }
+  }
+
+  int size(){
+    int count = 0;
+    for(Node2* p = getHead(); p!=nullptr; p = p->getNext())
+      count++;
+    return count;
+  }
+  void display(){
+    cout<<"[이중연결리스트 항목 수 =" << size() << "] : ";
+    for(Node2* p = getHead(); p!= nullptr; p = p->getNext())
+      p->display();
+    cout << endl;
+  }
+};
+
+int main(){
+  DbLinkedList list;
+
+  list.insert(0, new Node2(10));
+  list.insert(0, new Node2(20));
+  list.insert(1, new Node2(30));
+  list.insert(list.size(), new Node2(40));
+  list.insert(2, new Node2(50));
+  list.display();
+
+  list.remove(2);
+  list.remove(list.size()-1);
+  list.remove(0);
+  list.replace(1, new Node2(90));
+  list.display();
+
+  list.clear();
+  list.display();
+  return 0;
+}
+```
+
+## 트리
+### 트리
+- 트리
+  - 하나의 루트 노드에서 시작해 여러 개의 자식 노드들로 이어짐
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/09ce8a3c-54a3-4d27-8366-c5587f2c0e42)
+  - 노드
+    - 트리의 구성요소
+  - 간선
+    - 노드 연결 선
+  - 루트 노드
+  - 서브 트리
+    - 하나의 노드와 자손들
+  - 단말 노드
+    - 자식이 없는 노드(E,F,G,H,I,J)
+  - 비단말노드
+    - 자식을 갖는 노드(A,B,C,D)
+  - 형제 노드
+    - 같은 부모를 갖는 노드
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/e70c27ee-05b9-4acb-844a-a8e2faeb1b80)
+  - 노드의 크기
+    - 자신을 포함한 모든 자손 노드의 개수
+      - 노드 A의 크기 : 10
+  - 노드의 레벨
+    - 트리의 특정 깊이를 갖는 노드의 집합(깊이의 최대치)
+  - 노드의 깊이
+    - 루트에서 어떤 노드에 도달하기 위해 거쳐야 하는 간선의 수(조상의 수)
+    - 노드 J의 깊이: 2
+  - 노드의 차수
+    - 노드의 자식 노드 수
+    - A:3, C:1, D:2
+  - 트리의 차수
+    - 트리의 최대 차수
+    - A와 B가 자식 노드를 가장 많이 가짐, 3
+  - 트리의 높이
+    - 루트 노드에서 가장 깊숙이 있는 노드의 깊이
+    - 
