@@ -67,6 +67,7 @@
     - [이중 연결 리스트를 이용한 덱](#이중-연결-리스트를-이용한-덱)
   - [트리](#트리)
     - [트리](#트리-1)
+    - [이진 트리](#이진-트리)
 # 자료구조
 ## 강의안내
 ### 자료구조란?
@@ -2360,25 +2361,46 @@ public:
   }
 };
 
+class LinkedDeue : public DbLinkedList
+{
+  public:
+      void addFront(Node2* n){
+        insert(0,n);
+        }
+      Node2* deleteFront( ) {
+        return remove(0);
+        }
+      Node2* getFront( ){
+        return getEntry(0);
+      }
+      void addRear(Node2* n){
+        insert(size(),n);
+      }
+      Node2* deleteRear(){
+        return remove(size()-1;)
+      }
+      Node2* getRear(){
+        return getEntry(size()-1);
+      }
+}
 int main(){
-  DbLinkedList list;
+  LinkedDeque deq;
+  for(int i=1; i<10; i++){
+    if(i%2)
+      deq.addFront(new Node2(i));
+    else deq.addRear(new Node2(i));
+  }
+  deq.display();
+  delete deq.deleteFront();
+  delete deq.deleteRear();
+  delete deq.deleteFront();
+  deq.display();
 
-  list.insert(0, new Node2(10));
-  list.insert(0, new Node2(20));
-  list.insert(1, new Node2(30));
-  list.insert(list.size(), new Node2(40));
-  list.insert(2, new Node2(50));
-  list.display();
-
-  list.remove(2);
-  list.remove(list.size()-1);
-  list.remove(0);
-  list.replace(1, new Node2(90));
-  list.display();
-
-  list.clear();
-  list.display();
-  return 0;
+  //1 -> 1 2 -> 3 1 2 -> 3 1 2 4 -> 5 3 1 2 4
+  // .... 9 7 5 3 1 2 4 6 8 
+  // 7 5 3 1 2 4 6 8
+  // 7 5 3 1 2 4 6
+  // 5 3 1 2 4 6
 }
 ```
 
@@ -2406,6 +2428,7 @@ int main(){
       - 노드 A의 크기 : 10
   - 노드의 레벨
     - 트리의 특정 깊이를 갖는 노드의 집합(깊이의 최대치)
+    - 0~2
   - 노드의 깊이
     - 루트에서 어떤 노드에 도달하기 위해 거쳐야 하는 간선의 수(조상의 수)
     - 노드 J의 깊이: 2
@@ -2416,5 +2439,17 @@ int main(){
     - 트리의 최대 차수
     - A와 B가 자식 노드를 가장 많이 가짐, 3
   - 트리의 높이
-    - 루트 노드에서 가장 깊숙이 있는 노드의 깊이
-    - 
+    - 노드 높이의 최대값
+  - 트리에서 루트에서 특정 노드로 가는 경로는 유일
+    - 임의의 두 노드 간의 경로도 유일
+  - 한 개의 루트 노드만이 존재, 모든 자식 노드는 한 개의 부모 노드만을 가짐
+### 이진 트리
+  - 자식 노드를 최대 2개 까지만 가질 수 있는 트리
+  - 이진 트리의 모든 노드는 차수가 2 이하임
+  - 이진 트리는 노드를 하나도 갖지 않을 수 있음
+    - 서브 트리가 공집합일 수 있음
+  - 이진 트리에는 서브 트리 간의 순서가 존재
+  - 노드의 개수가 n개이면 간선의 개수는 n-1
+  - 높이가 h -> 최소 h개 ~ 최대 2^h-1개의 노드를 가짐
+  - n개 노드의 이진 트리 높이 -> 최소, 최대 다 그려보자
+    - [로그2(n+1)]~ n개임
