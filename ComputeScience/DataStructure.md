@@ -76,6 +76,9 @@
     - [탐색](#탐색)
     - [삽입 연산](#삽입-연산)
     - [삭제 연산](#삭제-연산)
+  - [그래프](#그래프)
+    - [인접 행렬을 이용한 그래프](#인접-행렬을-이용한-그래프)
+    - [인접 리스트로 표현한 그래프](#인접-리스트로-표현한-그래프)
 # 자료구조
 ## 강의안내
 ### 자료구조란?
@@ -2793,4 +2796,255 @@ void remove(int data) {
 		}
 		delete node;
 	}
+```
+
+## 그래프
+- 그래프
+  - 연결되어 있는 객체 간 관계를 표현하는 자료구조
+- 오일러 정리
+  - 모든 정점에 연결된 간선의 수가 짝수이면 오일러 경로 존재
+- 그래프 G는 (V,E)로 표시
+  - 정점 또는 노드
+    - V(G)는 그래프 G의 정점들의 집합
+  - 간선 또는 링크
+    - E(G)는 그래프 G의 간선들의 집합
+- 무방향 그래프
+  - 두 정점을 연결하는 간선에 방향이 없음
+  - (A,B)로 표현
+- 방향 그래프
+  - 간선에 방향이 있는 그래프
+  - <A,B>로 표현
+- 가중치 그래프
+  - 정점을 연결하는 간선에 가중치를 할당한 그래프
+- 부분 그래프
+  - 기존 그래프에서 일부 정점이나 간선을 제외해서 만든 그래프
+- 그래프 표현 예시
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/30814cad-5630-42f6-b209-38acef0f2b0c)
+    - V(G1) = {0, 1, 2, 3}
+    - E(G1) = {(0,1), (0,2), (0,3), (1,2), (2,3)}
+    - V(G2) = {0, 1, 2, 3}
+    - E(G2) = {(0,1),(0,2)}
+    - V(G3) = {0,1,2}
+    - E(G3) = {<0,1>, <1,0>, <1,2>}
+- 그래프 용어
+  - 인접 정점
+    - 하나의 정점에서 간선에 의해 직접 연결된 정점
+  - 정점의 차수
+    - 무방향 그래프에서 하나의 정점에 인접한 정점의 수
+      - 무방향 그래프에 존재하는 정점의 모든 차수의 합
+        - 그래프의 간선 수의 2배
+  - 진입 차수
+    - 외부에서 오는 간선의 수
+  - 진출 차수
+    - 외부로 나가는 간선의 수
+  - 그래프의 경로
+    - v1에서 vj까지 간선으로 연결된 정점을 순서대로 나열한 리스트
+  - 단순 경로
+    - 모두 다른 정점으로 구성된 경로
+  - 사이클
+    - 시작 지점과 종료 지점이 동일한 경로
+  - 경로의 길이
+    - 경로를 구성하는데 사용된 간선의 수
+  - 연결 그래프
+    - 모든 정점 쌍에 대한 경로 존재
+  - 트리
+    - 그래프의 특수한 형태, 사이클을 갖지 않는 연결 그래프
+  - 완전 그래프
+    - 모든 정점이 연결되어 있는 그래프
+    - n개 정점을 가진 무방향 완전 그래프의 간선 수 = n(n-1)/2
+
+### 인접 행렬을 이용한 그래프
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/b3e7efa7-7323-4b6d-aa23-c5afb1d2910b)
+```cpp
+#include <iostream>
+
+#define MAX_VTXS 256
+//표현 가능한 최대 정점 개수
+
+class AdjMatGraph
+{
+protected:
+	int size; //정점 개수
+	char vertices[MAX_VTXS]; //정점 이름
+	int adj[MAX_VTXS][MAX_VTXS]; //인접 행렬
+
+public:
+	AdjMatGraph() { reset(); }
+	~AdjMatGraph() { }
+
+	char getVertext(int i) { return vertices[i]; }
+	int getEdge(int i, int j) { return adj[i][j]; }
+	void setEdge(int i, int j, int val) { adj[i][j] = val; }
+	bool isEmpty() { return size == 0; }
+	bool isFull() { return size >= MAX_VTXS; }
+
+  //그래프 초기화 -> 공백 상태 그래프
+	void reset() {
+		size = 0;
+		for (int i = 0; i < MAX_VTXS; i++)
+			for (int j = 0; j < MAX_VTXS; j++)
+				setEdge(i, j, 0);
+	}
+
+  //정점 삽입 연산
+	void insertVertex(char name) {
+		if (!isFull()) vertices[size++] = name;
+		else std::cout << "Error: 그래프 정점의 개수 초과" << std::endl;
+	}
+
+  //간선 삽입 연산(무방향 그래프인 경우)
+	void insertEdge(int u, int v) {
+		setEdge(u, v, 1);
+		setEdge(v, u, 1);
+    //(방향 그래프인 경우 v,u는 삭제됨)
+	}
+
+	void display() {
+		std::cout << size << std::endl;
+		for (int i = 0; i < size; i++) {
+			std::cout << getVertext(i) << " ";
+			for (int j = 0; j < size; j++)
+				std::cout << " " << getEdge(i, j);
+			std::cout << std::endl;
+		}
+	}
+};
+
+int main()
+{
+	AdjMatGraph g;
+
+	for (int i = 0; i < 4; i++) {
+		g.insertVertex('A' + i);
+	}
+
+	g.insertEdge(0, 1); //a b 연결
+	g.insertEdge(0, 3); //a d 연결
+	g.insertEdge(1, 2); //b c 연결
+ 	g.insertEdge(1, 3); //b d 연결
+	g.insertEdge(2, 3); //c d 연결
+
+	std::cout << "인접 행렬로 표현한 그래프" << std::endl;
+
+	g.display();
+}
+```
+
+### 인접 리스트로 표현한 그래프
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/b1412455-a81c-49b7-a52a-0139702dbe2f)
+  - 각 정점이 연결 리스트를 가짐
+  - 인접한 정점들을 연결리스트로 표현
+```cpp
+#include <iostream>
+#include <fstream>
+
+#define MAX_VTXS 256
+
+class Node
+{
+protected:
+	int id; //정점의 id
+	Node* link; //정점의 이름
+public:
+	Node(int i, Node* l = NULL) : id(i), link(l) { }
+	~Node(void) {
+		if (link != NULL)
+			delete link;
+	}
+
+	int getId() {
+		return id;
+	}
+	Node* getLink() {
+		return link;
+	}
+	void setLink(Node* l) {
+		link = l;
+	}
+
+};
+
+class AdjListGraph
+{
+	int size; //정점 개수
+	char vertices[MAX_VTXS]; //정점 정보
+	Node* adj[MAX_VTXS]; //각 정점의 인접 리스트
+
+public:
+		AdjListGraph(void) : size(0){}
+		~AdjListGraph(void) { reset(); }
+
+		void reset(void) {
+			for (int i = 0; i < size; i++)
+				if (adj != NULL) delete adj[i];
+			size = 0;
+		}
+		bool isEmpty() { return(size == 0); }
+		bool isFull() { return(size >= MAX_VTXS); }
+		char getVertex(int i) { return vertices[i]; }
+
+		void insertVertex(char val) { //정점 삽입 연산
+			if (!isFull()) {
+				vertices[size] = val;
+				adj[size++] = NULL;
+			}
+			else std::cout << "Error: 그래프 정점 개수 초과" << std::endl;
+		}
+
+    //간선 삽인 연산
+		void insertEdge(int u, int v) {
+			adj[u] = new Node(v, adj[u]);
+			adj[v] = new Node(u, adj[v]);
+		}
+
+		void display() {
+			std::cout << size << std::endl;
+			for (int i = 0; i < size; i++) {
+				std::cout << getVertex(i) << " ";
+
+				for (Node* v = adj[i]; v != NULL; v = v->getLink())
+					std::cout << "  " << getVertex(v->getId());
+				std::cout << std::endl;
+			}
+		}
+
+		void load(const std::string& filename) {
+			std::ifstream file(filename);
+
+			int n;
+			file >> n;
+			for (int i = 0; i < n; i++) {
+				char str[80];
+				int val;
+				file >> str;
+				insertVertex(str[0]);
+				for (int j = 0; j < n; j++) {
+					file >> val;
+					if (val != 0)
+						insertEdge(i, j);
+				}
+			}
+		}
+};
+
+
+int main()
+{
+	AdjListGraph g;
+
+	for (int i = 0; i < 4; i++) {
+		g.insertVertex('A' + i);
+	}
+
+	g.insertEdge(0, 1);
+	g.insertEdge(0, 3);
+	g.insertEdge(1, 2);
+	g.insertEdge(1, 3);
+	g.insertEdge(2, 3);
+
+	std::cout << "인접 리스트로 표현한 그래프" << std::endl;
+
+	g.display();
+}
+// 조금 더 자세히 살펴보도록 할 것
 ```
