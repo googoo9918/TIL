@@ -2273,6 +2273,8 @@ int main() {
 - LR 회전
   - ![image](https://github.com/googoo9918/TIL/assets/102513932/ad1cd293-4419-4e4c-89d8-a037b6b16b63)
 ### AVL 예시 및 구현
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/27b31054-663a-4f1c-9125-fb9047ec68f5)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/58242e32-8be5-4c26-a173-9f170d09727e)
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/5af0b2bf-4088-4cb5-8590-b496531b1536)
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/a1ff336a-5780-440b-92f1-12f3f1d9d988)
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/680d711e-e3bd-4fc8-b772-98770efb0ec6)
