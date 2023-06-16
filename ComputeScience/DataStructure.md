@@ -74,6 +74,7 @@
     - [레벨 순회](#레벨-순회)
   - [이진 탐색 트리](#이진-탐색-트리)
     - [탐색](#탐색)
+    - [이진 탐색 트리](#이진-탐색-트리-1)
     - [삽입 연산](#삽입-연산)
     - [삭제 연산](#삭제-연산)
   - [그래프](#그래프)
@@ -107,6 +108,16 @@
   - [정렬(2)](#정렬2)
     - [셀 정렬](#셀-정렬)
     - [합병 정렬](#합병-정렬)
+    - [퀵 정렬](#퀵-정렬)
+    - [기수 정렬](#기수-정렬)
+  - [탐색](#탐색-1)
+    - [탐색](#탐색-2)
+    - [이진 탐색](#이진-탐색)
+    - [색인 순차 탐색](#색인-순차-탐색)
+    - [보간 탐색](#보간-탐색)
+    - [AVL 트리](#avl-트리)
+    - [AVL 트리 삽입 연산](#avl-트리-삽입-연산)
+    - [AVL 예시 및 구현](#avl-예시-및-구현)
 # 자료구조
 ## 강의안내
 ### 자료구조란?
@@ -2689,7 +2700,7 @@ void levelorder(){
   - 주요키
     - 테이블 내에서 각 레코드를 고유하게 식별하는 키
   - ![image](https://github.com/googoo9918/TIL/assets/102513932/2752d571-2045-4839-9f23-b39ea56ba54c)
-- 이진 탐색 트리
+### 이진 탐색 트리
   - 이진 트리 기반의 탐색을 위한 자료 구조
   - 모든 노드는 유일한 키를 가짐
   - 왼쪽 서브 트리의 키들은 루트의 키보다 작음
@@ -2699,6 +2710,10 @@ void levelorder(){
 - 탐색 연산
   - 루트 노드부터 시작하여 특정 값을 찾을 때까지 왼쪽 또는 오른쪽 자식 노드로 이동하며 수행
   - ![image](https://github.com/googoo9918/TIL/assets/102513932/c9c358dd-1941-44e7-b629-9deb4c9d9bf1)
+- 이진 탐색과 차이점
+  - 이진 탐색은 자료들이 배열에 저장되어 있어 삽입/삭제가 매우 비효율적
+    - 자료의 삽입/삭제 시 원소들을 모두 이동시켜야 함
+  - 이진 탐색 트리는 빠르게 삽입/삭제를 수행할 수 있음
 - 탐색 연산 구현
 ```cpp
 //n에는 root를 넣어줘야겄제
@@ -3878,7 +3893,7 @@ void merge(vector<int> A, int left, int mid, int right) {
 		}
 		else {
 			sorted[k++] = A[j++];
-		}
+		} 
 	}
 
 	while (i <= mid) { //첫 번째 부분 배열의 나머지 원소 추가
@@ -3915,3 +3930,218 @@ int main(){
   return 0;
 }
 ```
+
+### 퀵 정렬
+- 분할 정복법을 사용하며, 평균적으로 가장 빠른 정렬 방식
+  - 하나의 리스트를 피벗을 기준으로 2개의 비 균등한 크기로 분할
+  - 분할된 부분 리스트를 정렬한 다음 합하여 전체가 정렬된 리스트가 되게 함
+- 시간 복잡도
+  - 최악의 경우: O(n^2)
+  - 최선의 경우: O(nlongn)
+  - 평균적인 경우: O(nlogn)
+  - 퀵 정렬의 성능은 피벗의 선택에 크게 영향을 받음
+    - 최선: 분할을 균등하게 하는 피벗을 선택
+    - 최악: 이미 정렬된 배열에서 가장 작거나 가장 큰 값을 피벗으로 선택
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/57803244-818f-49ca-9a14-0b56d4d91b58)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/d1c7ea93-7de6-4cc0-bc41-f5c0c866fd1b)
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+int partition(vector<int>& A, int left, int right) {
+	int low = left + 1;
+	int high = right;
+	int pivot = A[left]; //피벗 설정
+
+	while (low < high) { //low와 high가 역전되지 않는 한 반복
+		for (; low <= right && A[low] < pivot; low++);
+		for (; high >= left && A[high] > pivot; high--);
+		if (low < high)
+			swap(A[low], A[high]);
+	}
+
+	swap(A[left], A[high]);
+	return high;
+}
+
+void quickSort(vector<int>& A, int left, int right) {
+	if(left < right) {
+		int pivot = partition(A, left, right);
+		quickSort(A, left, pivot - 1);
+		quickSort(A, pivot + 1, right);
+	}
+}
+
+int main() {
+	vector<int> A = { 5, 3, 8, 4, 9, 1, 6, 2, 7 };
+	quickSort(A, 0, A.size() - 1);
+
+	for (int num : A) {
+		cout << num << " ";
+	}
+
+	return 0;
+}
+```
+
+### 기수 정렬
+- 기수 정렬
+  - 비교 기반 정렬 알고리즘이 아닌, 자릿수를 기준으로 정렬하는 정렬 알고리즘
+  - 각 원소의 자릿수를 비교하여 정렬을 수행함
+- 구조
+  - 각 자릿수에 따라 여러 번의 반복을 통해 전체 원소들을 정렬
+- 과정
+  - 가장 작은 자릿수부터 시작하여 각 자릿수를 기준으로 그룹화
+    - 일의 자리부터 시작하여 각 원소를 0부터 9까지의 그룹으로 나눔
+  - 그룹화된 원소들을 순서대로 다시 배열에 저장
+  - 가장 낮은 자릿수에 대한 그룹화와 정렬 완료 시, 다음으로 높은 자릿수로 이동하여 과정 반복
+- 시간 복잡도 : O(n)
+  - n개의 레코드, d개의 자릿수로 이루어진 키를 기수 정렬
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/2a1ccbb4-f8ec-4f1d-8964-6ef3de4aebaa)
+  - 버킷 개수는 키의 표현 방법과 밀접한 관계를 가짐
+```cpp
+#include <iostream>
+#include <vector>
+#include <queue>
+
+const int BUCKETS = 10;
+const int DIGITS = 10;
+
+void radixSort(std::vector<int>& list) {
+	std::queue<int> queues[BUCKETS];
+	int factor = 1; //현재 정렬 중인 자릿수를 나타내는 데 사용
+	int n = list.size();
+
+	for (int d = 0; d < DIGITS; d++) {
+		for (int i = 0; i < n; i++) //리스트의 모든 요소를 해당 자릿수에 따라 적절한 버킷에 배치
+			queues[(list[i] / factor) % 10].push(list[i]);
+
+		for(int b=0, i=0; b< BUCKETS; b++) //버킷의 요소를 순서대로 다시 리스트로 복사
+			while (!queues[b].empty()) {
+				list[i++] = queues[b].front();
+				queues[b].pop();
+			}
+
+		factor *= 10; //다음 자릿수로 이동
+	}
+}
+
+int main() {
+	std::vector<int> A = { 28, 93, 39, 81, 62, 72, 38, 26 };
+	radixSort(A);
+	for (int i = 0; i < A.size(); i++)
+		std::cout << A[i] << " ";
+	std::cout << "\n";
+	return 0;
+}
+```
+
+## 탐색
+### 탐색
+- 맵
+  - 맵은 키를 가진 레코드 또는 엔트리라 불리는 키-값 쌍을 테이블에 저장함
+- 순차 탐색
+  - 탐색 방법 중에서 가장 간단하고 직접적인 탐색 방법
+- 평균 비교 횟수
+  - 탐색 성공: (n+1)/2번 비교
+  - 탐색 실패: n번 비교
+- 시간복잡도: O(n)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/8907fd42-07c7-41b3-bcd8-e0efef5a1174)
+- 개선된 순차 탐색
+  - 리스트 끝에 탐색 키를 저장함으로써, 배열 인덱스 조건을 무시할 수 있음
+
+### 이진 탐색
+- 정렬된 배열의 탐색에 적합
+  - 반드시 배열이 정렬되어 있어야 함
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/164cb6e5-f7f5-4f48-9ab2-e3c271cf6381)
+```cpp
+#include <iostream>
+
+using namespace std;
+
+int binarySearchIter(int list[], int key, int low, int high)
+{
+	int middle;
+	while(low <= high) {
+		middle = (low + high) / 2;
+		if (key == list[middle])
+			return middle;
+		else if (key > list[middle])
+			low = middle + 1;
+		else
+			high = middle - 1;
+	}
+	return -1;
+}
+
+int main() {
+	int list[] = { 1, 3, 5, 7, 9, 11, 13, 15, 17, 19 };
+	int size = sizeof(list) / sizeof(list[0]);
+	int key = 7;
+
+	int result = binarySearchIter(list, key, 0, size - 1);
+
+	if (result != -1)
+		cout << "Element found at index: " << result << endl;
+	else
+		cout << "Element not found in the array." << endl;
+	return 0;
+}
+```
+
+### 색인 순차 탐색
+- 인덱스를 사용하여 그룹을 나눠 탐색의 효율을 높임
+  - 주 자료 테이블에서 일정 간격으로 발췌한 자료 저장
+  - 주 자료 테이블과 인덱스 테이블은 모두 정렬된 상태
+- 시간 복잡도: O(m+n/m)
+  - 인덱스 테이블 크기:m, 주 자료 리스트 크기:n
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/e89704d7-cd84-4ff7-bfce-0a29bbecf232)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/75d0cefe-cb2e-4ce2-8cc8-1344cf0ae918)
+
+### 보간 탐색
+- 탐색키 값의 위치를 예측하여 탐색을 진행
+- 시간 복잡도: O(log(n))
+- 이진 탐색과 유사하나 리스트를 불균등 분할하여 탐색
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/b2ecf25c-772b-45e4-88d0-64c8ce026ea3)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/4f9844fb-1d15-4466-a103-c688df00bd8f)
+- 구현
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/f7a915b5-a6d5-4b7a-a72d-9bc2349f27f2)
+
+### AVL 트리
+- 모든 노드의 왼쪽과 오른쪽 서브 트리의 높이 차가 1 이하인 이진 탐색 트리
+- 시간 복잡도: O(log(n))
+- 균형 인수
+  - 왼쪽 서브트리 높이 - 오른쪽 서브 트리 높이
+  - 모든 노드의 균형 인수가 +-1 이하이면 AVL 트리임
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/1407069d-fcd3-4d3f-b51a-487cbeb47358)
+- 탐색 연산은 이진 탐색 트리와 동일
+- 삽입 연산과 삭제 연산 시 균형 상태가 깨질 수 있음
+
+### AVL 트리 삽입 연산
+- 균형이 깨지는 4가지 경우
+- 삽입된 노드 N으로부터 가장 가까우면서 균형인수가+-2가 된 조상 노드가 A라 할 대
+  - LL타입: N이 A의 왼쪽 서브트리의 왼쪽 서브 트리에 삽입
+  - LR타입: N이 A의 왼쪽 서브 트리의 오른쪽 서브 트리에 삽입
+  - RR타입: N이 A의 오른쪽 서브 트리의 오른쪽 서브 트리에 삽입
+  - RL타입: N이 A의 오른쪽 서브 트리의 왼쪽 서브 트리에 삽입
+- 타입별 재균형 방법
+  - LL회전: A부터 N까지의 경로상 노드의 오른쪽 회전
+  - LR회전: A부터 N까지의 경로상 노드의 왼쪽-오른쪽 회전
+  - RR회전: A부터 N까지의 경로상 노드의 왼쪽 회전
+  - RL회전: A부터 N까지의 경로상 노드의 오른쪽-왼쪽 회전
+- LL 회전
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/41299afb-e604-4a88-9c39-285ae9f695b0)
+- RR 회전
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/24f1b574-386e-477a-8929-7b4e16468175)
+- RL 회전
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/32111b32-39f7-42cb-8e94-6ac2a31d06f7)
+- LR 회전
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/ad1cd293-4419-4e4c-89d8-a037b6b16b63)
+### AVL 예시 및 구현
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/5af0b2bf-4088-4cb5-8590-b496531b1536)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/a1ff336a-5780-440b-92f1-12f3f1d9d988)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/680d711e-e3bd-4fc8-b772-98770efb0ec6)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/a8e3aa7c-ef5a-4533-be51-d09f173da8df)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/dfe80d89-5500-4cc9-91d1-020346ed02a7)
