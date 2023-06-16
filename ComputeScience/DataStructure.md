@@ -79,6 +79,34 @@
   - [그래프](#그래프)
     - [인접 행렬을 이용한 그래프](#인접-행렬을-이용한-그래프)
     - [인접 리스트로 표현한 그래프](#인접-리스트로-표현한-그래프)
+  - [그래프(2)](#그래프2)
+    - [DFS(깊이 우선 탐색)](#dfs깊이-우선-탐색)
+    - [BFS(너비 우선 탐색)](#bfs너비-우선-탐색)
+    - [신장 트리](#신장-트리)
+    - [위상 정렬](#위상-정렬)
+  - [template, pair](#template-pair)
+    - [템플릿](#템플릿)
+    - [함수 템플릿](#함수-템플릿)
+    - [클래스 템플릿](#클래스-템플릿)
+    - [템플릿 구현](#템플릿-구현)
+    - [STL](#stl)
+    - [Pair](#pair)
+  - [최소 비용 신장 트리](#최소-비용-신장-트리)
+    - [최소 비용 신장 트리(MST)](#최소-비용-신장-트리mst)
+    - [Kruskal 알고리즘](#kruskal-알고리즘)
+    - [Prim의 MST 알고리즘](#prim의-mst-알고리즘)
+  - [최단 경로](#최단-경로)
+    - [최단 경로](#최단-경로-1)
+    - [Floyd의 최단경로 알고리즘](#floyd의-최단경로-알고리즘)
+    - [Dijkstra vs Floyd](#dijkstra-vs-floyd)
+  - [정렬](#정렬)
+    - [선택 정렬](#선택-정렬)
+    - [삽입 정렬](#삽입-정렬)
+    - [버블 정렬](#버블-정렬)
+    - [선택 정렬 vs 삽입 정렬 vs 버블 정렬](#선택-정렬-vs-삽입-정렬-vs-버블-정렬)
+  - [정렬(2)](#정렬2)
+    - [셀 정렬](#셀-정렬)
+    - [합병 정렬](#합병-정렬)
 # 자료구조
 ## 강의안내
 ### 자료구조란?
@@ -3046,5 +3074,844 @@ int main()
 
 	g.display();
 }
-// 조금 더 자세히 살펴보도록 할 것
+// 간선을 추가하는 메서드가 잘 이해가 안될 수 있는데
+// 순서에 맞춰 잘 이해해보자.
+```
+
+## 그래프(2)
+
+### DFS(깊이 우선 탐색)
+- DFS(depth-first search)
+  - 한 정점에서 시작해 다음 분기로 넘어가기 전에 해당 분기를 완전히 탐색
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/b53df2cf-1aa1-4901-9cc4-78565aadf46c)
+
+### BFS(너비 우선 탐색)
+- BFS(breadth-first search)
+  - 한 정점에서 시작해 인접한 모든 정점을 우선 탐색
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/34b5ba68-813d-4a48-bab8-aca3e0c7efc2)
+
+### 신장 트리
+- 그래프에서 모든 정점을 포함하면서 사이클이 없는 부분 그래프
+- 모든 정점을 연결하면서 최소한의 간선만을 사용
+  - n-1개의 간선을 가짐
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/7c8e2f42-565f-4688-b0d8-ab00f135bfe0)
+
+### 위상 정렬
+- 방향 그래프에 대해 정점들의 선행 순서를 위배하지 않으면서 모든 정점을 나열
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/cdd9ae25-d7e2-4ba6-b5c6-fa3bf4ee5c77)
+    - 먼저 진입 차수가 0인 정점을 선택 후 정점과 연결된 모든 간선을 삭제
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/b44a3097-0929-4f28-91ff-f6deca69b5e1)
+
+## template, pair
+### 템플릿
+- 템플릿 함수는 한 번의 함수 정의로 서로 다른 자료형에 대해 유연하게 적용 가능
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/e6d7043f-4a2d-41ad-97ef-dd9a0e0089f5)
+    - 함수나 클래스를 개별적으로 다시 작성하지 않아도 여러 자료형으로 사용 가능
+    - 여러 자료형을 템플릿 인자로 받아 함수, 클래스, 구조체 내부에서 활용 가능
+### 함수 템플릿
+  - 함수의 일반화된 버전을 작성할 수 있게 해주는 기능
+  - 함수의 매개변수나 반환 값의 타입을 일반화된 형태로 선언
+    - 이후 특정한 타입으로 대체하여 함수를 인스턴스화
+```cpp
+template <typename T>
+T function(T arg1, T arg2)
+{
+  //함수 구현
+}
+```
+- 명시적 특수화
+  - 특정 타입에 대한 명시적 특수화를 제공, 해당 타입에 대한 특별한 동작을 정의 가능
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/a3f52560-85bb-4e04-8528-4cd7af05ee91)
+```cpp
+template <>
+return_type function_name<specific_type>(arguments)
+{
+  //특수화된 구현
+}
+```
+
+### 클래스 템플릿
+- 클래스의 일반화된 버전을 작성할 수 있게 해주는 기능
+  - 클래스의 멤버 변수, 멤버 함수, 타입 등을 일반화된 형태로 선언
+    - 이를 특정한 타입으로 대체하여 클래스를 인스턴스화
+```cpp
+template <typename T>
+class ClassName
+{
+  //클래스 멤버 선언
+}
+```
+- 중첩 클래스 템플릿
+  - 클래스 내부에 정의된 템플릿 클래스
+  - 클래스나 클래스 템블릿 내에 또 다른 템플릿을 중첩 정의 가능
+```cpp
+template <typename T>
+class OuterCalss
+{
+  template <typename U>
+  class InnerClass{
+    //중첩 클래스 템플릿의 정의
+  };
+};
+```
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/9a618f92-dd2b-4ddb-a184-6a3d4b8e4122)
+- 명시적 특수화
+  - 클래스 템플릿의 특정 템플릿 타입에 대해 특별한 동작을 정의할 수 있게 해줌
+```cpp
+template<>
+class TemplateClass<specific_type>
+{
+  //특수화된 클래스 정의
+}
+```
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/9558b366-7c8c-49f6-a8b5-a88ba68f47fe)
+
+### 템플릿 구현
+```cpp
+#include <iostream>
+
+template <typename T>
+class DynamicArray {
+private:
+	T* arr;
+	int size;
+
+public:
+	DynamicArray(int size) : size(size) {
+		arr = new T[size];
+		}
+
+	~DynamicArray() {
+		delete[] arr;
+	}
+
+	void setValue(int index, T value) {
+		arr[index] = value;
+	}
+
+	T getValue(int index) {
+		return arr[index];
+	}
+};
+
+int main() {
+	DynamicArray<int> intArray(5);
+	intArray.setValue(0, 10);
+	intArray.setValue(1, 20);
+
+	std::cout << "Value at index 0: " << intArray.getValue(0) << std::endl;
+	std::cout << "Value at index 1: " << intArray.getValue(1) << std::endl;
+  //Value at index 0: 10
+  //Value at index 0: 20
+
+	DynamicArray<double> doubleArray(3);
+	doubleArray.setValue(0, 3.14);
+	doubleArray.setValue(1, 2.17);
+	
+	std::cout << "Value at index 0: " << doubleArray.getValue(0) << std::endl;
+	std::cout << "Value at index 1: " << doubleArray.getValue(1) << std::endl;
+  //Value at index 0: 3.14
+  //Value at index 0: 2.71
+	return 0;
+}
+```
+
+### STL
+- Standard template librayr(STL)
+  - cpp 템플릿을 사용해 만든 표준 라이브러리
+  - 일반적인 자료 구조 컨테이너와 알고리즘이 구현되어 있음
+
+### Pair
+- pair 클래스
+  - 두 개의 값(쌍)을 담는 클래스 템플릿
+  - 두 값을 묶어 하나의 객체로 다룰 수 있으며, 보통 두 값의 쌍을 표현하거나 반환하기 위해 사용
+  - `#include<utility>` 헤더파일에 존재
+  - 선언 방식
+    - `pair<자료형, 자료형> p;`
+  - 생성 방식
+    - `std::pair(자료형, 자료형)`
+    - 두 개의 원소를 묶은 pair 생성
+  - 조회
+    - first: 첫 번째 인자 반환
+    - second: 두번째 인자 반환
+```cpp
+#include <iostream>
+#include <utility>
+
+int main() {
+	std::pair<int, double> myPair(10, 3.14);
+
+	std::cout << "First value " << myPair.first << std::endl;
+	std::cout << "Second value " << myPair.second << std::endl;
+
+	myPair.first = 20;
+	myPair.second = 2.71;
+
+	std::cout << "Modified First value: " << myPair.first << std::endl;
+	std::cout << "Modified Second value: " << myPair.second << std::endl;
+
+	return 0;
+}
+```
+
+## 최소 비용 신장 트리
+### 최소 비용 신장 트리(MST)
+- 최소 비용 신장 트리
+  - 트리를 구성하는 간선들의 가중치를 합한 값이 최소가 되는 신장 트리
+- 조건
+  - 간선의 가중치의 합이 최소여야 함
+  - n-1개의 간선만 사용해야 함
+  - 사이클이 포함되서는 안됨
+### Kruskal 알고리즘
+- greedy
+  - 최선의 답을 선택하는 과정을 반복
+  - 항상 최적의 해답을 주는지 검증 필요
+- Kruskal의 최소비용 신장 트리 알고리즘
+  - 1. 그래프의 모든 간선을 가중치에 따라 오름차순으로 정렬
+  - 2. 가장 가중치가 작은 간선 e를 뽑음
+  - 3. e를 신장 트리에 넣을 경우 사이클이 생기면 삽입하지 않고 2번으로 이동
+  - 4. 사이클이 생기지 않으면 최소 신장트리에 삽입
+  - 5. n-1개의 간선이 삽입될 때 까지 2번 반복
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/35d2e6a6-7a03-4fa4-bd73-ddb71d4f9954)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/05bf5ca4-4d94-455f-b655-01e5407bd587)
+- Union-Find 알고리즘
+  - 서로소 집합을 표현하는 자료구조
+  - Find: 집합 원소가 어떤 집합에 속해 있는지 찾는 연산
+  - Union: 서로 다른 두 집합을 병합하는 연산
+  - parent 배열
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/078de4b1-361b-450e-80ed-16dff06e38bf)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/9efd345a-954e-4868-84c4-36dfef53f32a)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/0ec73b8e-ec33-4886-8880-2eb14d5f6bc0)
+```cpp
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+#define MAX_VERTICES 100
+
+class Edge { //간선의 두 노드와 가중치를 저장
+public:
+	int node[2];
+	int weight;
+	Edge(int a, int b, int weight) { //간선의 생성자, 노드와 가중치 설정
+		this->node[0] = a;
+		this->node[1] = b;
+		this->weight = weight;
+	}
+
+	bool operator<(Edge& edge) { //연산자 오버로딩, 가중치 비교
+		return this->weight < edge.weight;
+	}
+};
+
+class VertexSets { 
+	int parent[MAX_VERTICES]; //부모 정점의 id
+	int size; //집합의 개수
+public:
+	VertexSets(int nSets) {
+		size = nSets;
+		for (int i = 0; i < nSets; i++)
+			parent[i] = -1; //초기값 설정
+	}
+	bool IsRoot(int i) { return parent[i] < 0; }
+
+	int findSet(int vertex) { //v가 속한 집합을 찾아 반환
+		int id = vertex;
+		while (!IsRoot(id)) id = parent[id];
+		return id;
+	}
+
+	void unionSets(int s1, int s2) { //집합 s1을 집합 s2에 합침
+		parent[s1] = s2;
+		size--;
+	}
+};
+
+class Kruskal {
+public:
+	VertexSets vs;
+	std::vector<Edge> edges;
+
+	Kruskal(int N) : vs(N){}
+
+  //간선 삽입
+	void insertEdge(int nodeA, int nodeB, int weight) {
+		edges.push_back(Edge(nodeA, nodeB, weight));
+	}
+
+  //크루스칼 알고리즘 실행
+	void execute() {
+    //간선을 기중치 기준으로 정렬
+		sort(edges.begin(), edges.end());
+
+		int totalWeight = 0;
+    //모든 간선에 대해
+		for (auto edge : edges) {
+			int set1 = vs.findSet(edge.node[0]);
+			int set2 = vs.findSet(edge.node[1]);
+
+      //두 노드가 다른 집합에 속해 있다면
+			if (set1 != set2) {
+				totalWeight += edge.weight; //가중치 더하기
+				vs.unionSets(set1, set2); //두 집합 합치기
+
+				std::cout << "Added edge " << edge.node[0] << " - " << edge.node[1]
+					<< " with weight " << edge.weight << std::endl;
+			}
+		}
+
+		std::cout << "Total weight: " << totalWeight << std::endl; //총 가중치 출력
+	}
+};
+
+int main() {
+	Kruskal kruskal(7);
+	kruskal.insertEdge(0, 1, 9);
+	kruskal.insertEdge(0, 2, 10);
+	kruskal.insertEdge(1, 3, 10);
+	kruskal.insertEdge(1, 4, 5);
+	kruskal.insertEdge(2, 4, 7);
+	kruskal.insertEdge(2, 5, 2);
+	kruskal.insertEdge(3, 6, 4);
+	kruskal.insertEdge(4, 6, 7);
+	kruskal.insertEdge(5, 6, 6);
+	kruskal.execute();
+	return 0;
+}
+```
+
+### Prim의 MST 알고리즘
+- 처음에는 시작 정점만이 신장 트리 집합에 포함
+- 시작 정점부터 신장 트리 집합을 단계적으로 확장
+- 현재의 신장 트리 집합에 인접한 정점 중 최저 간선으로 연결된 정점을 선택해 신장 트리집합에 추가
+- 이 과정을 n-1개의 간선을 가질 때까지 반복
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/b8943b49-1ca4-469f-8c85-282594689df3)
+
+```cpp
+#include <iostream>
+#include <vector>
+#include <queue>
+
+#define MAX_VERTICES 100
+
+class Edge {
+public:
+	int node;
+	int weight;
+	Edge(int node, int weight) {
+		this->node = node;
+		this->weight = weight;
+	}
+	bool operator<(const Edge& edge) const {
+		return this->weight > edge.weight;
+	}
+};
+
+class Prim {
+public:
+	int num_vertex;
+	std::vector<Edge> graph[MAX_VERTICES];
+
+	Prim(int num_vertex) {
+		this->num_vertex = num_vertex;
+	}
+
+	void addEdge(int nodeA, int nodeB, int weight) {
+		graph[nodeA].push_back(Edge(nodeB, weight));
+		graph[nodeB].push_back(Edge(nodeA, weight));
+	}
+
+	void execute(int start) {
+		std::vector<bool> selected(num_vertex, false); //정점의 선택 여부
+		std::priority_queue<Edge> Q; 
+    //우선순의 큐를 사용하여 간선을 저장하고 최소 가중치 간선을 선택
+		Q.push(Edge(start, 0));
+    //시작 정점을 큐에 삽입
+
+    //최소 비용의 합을 저장
+		int totalWeight = 0;
+		while (!Q.empty()) {
+			Edge cur = Q.top();
+			Q.pop();
+			if (selected[cur.node]) continue;
+      //이미 선택된 정점이면 스킵
+
+			selected[cur.node] = true;
+			//정점을 선택으로 표시
+      totalWeight += cur.weight;
+      //현재 간선의 가중치를 비용에 추가
+
+      //현재 정점과 연결된 간선들에 대해
+			for (Edge next : graph[cur.node]) {
+        //선택되지 않은 정점이면 큐에 삽입
+				if (!selected[next.node]) Q.push(next);
+			}
+		}
+
+    //최소 비용 출력
+		std::cout << "Total weight: " << totalWeight << std::endl;
+	}
+};
+
+int main() {
+	Prim prim(7);
+
+	prim.addEdge(0, 1, 9);
+	prim.addEdge(0, 2, 10);
+	prim.addEdge(1, 3, 10);
+	prim.addEdge(1, 4, 5);
+	prim.addEdge(2, 4, 7);
+	prim.addEdge(2, 5, 2);
+	prim.addEdge(3, 6, 4);
+	prim.addEdge(4, 6, 7);
+	prim.addEdge(5, 6, 6);
+	prim.execute(0);
+	return 0;
+}
+```
+
+## 최단 경로
+### 최단 경로
+- 정점 u와 정점 v를 연결하는 경로 중 간선들의 가중치 합이 최소가 되는 경로
+- 집합 S
+  - v에서부터의 최단경로가 이미 발견된 정점들의 집합
+- dist 배열
+  - 최단경로가 알려진 정점들을 이용한 다른 정점들까지의 최단경로 길이
+- 초기값
+  - dist[v] = 0
+  - dist[u] = 시작 정점 v와 u간의 가중치 값
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/b9331c22-71a6-4006-be14-cf78fe7f3c46)
+- 작동과정 
+  - 출발 노드 설정
+  - 출발 노드를 기준으로 각 노드의 최소비용 설정
+  - 방문하지 않은 노드 중 가장 비용이 적은 노드 선택
+  - 해당 노드를 거쳐서 특정한 노드로 가는 경우를 고려하여 최소 비용 갱신
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/6b0c1bb8-548b-4298-a5b0-d99d619ce658)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/661efc89-54f6-472f-a60f-1e04d62e3879)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/9436fdf1-34ab-477e-8fb9-d5f4e6062dc9)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/fefa73ab-2f8d-4bcc-b3b6-2f4da6d1fcdb)
+```cpp
+#include <iostream>
+#include <vector>
+
+#define INF 1000000000 //초기 비용 설정, 무한대
+
+using namespace std;
+
+int number = 6; //총 노드의 수
+int start = 1; // 시작 노드 번호
+bool visited[6]; // 방문한 노드를 표시하는 배열
+int dist[6]; // 최단 거리를 저장하는 배열
+vector<pair<int, int>> a[7]; // 각 노드와 연결된 다른 노드와 그 거리를 저장하는 배열
+
+void dijkstra(int start) {
+	dist[start] = 0; //시작 노드의 최단 거리는 0으로 초기화
+	for (int i = 0; i < number; i++) {
+		int current = -1; //현재 노드를 저장하는 변수
+		int minDist = INF; //최단 거리를 저장하는 변수
+
+		for (int j = 1; j <= number; j++) { //최단 거리의 노드 찾기
+			if (!visited[j] && minDist > dist[j]) {
+				minDist = dist[j];
+				current = j;
+			}
+		}
+
+		visited[current] = true; //현재 노드를 방문 표시
+		for (int j = 0; j < a[current].size(); j++) { //현재 노드와 연결된 다른 노드들의 거리 업데이트
+			int near = a[current][j].first; //연결된 노드
+			int nearDist = a[current][j].second; //해당 노드까지의 거리
+			if (dist[near] > dist[current] + nearDist) { //기존에 저장된 거리보다 더 짧은 거리라면 업데이트
+				dist[near] = dist[current] + nearDist;
+			}
+		}
+	}
+}
+
+int main(void) {
+	for (int i = 1; i <= number; i++) {
+		dist[i] = INF;
+	}
+	a[1].push_back(make_pair(2, 2));
+	a[1].push_back(make_pair(3, 5));
+	a[1].push_back(make_pair(4, 1));
+	a[2].push_back(make_pair(1, 2));
+	a[2].push_back(make_pair(3, 3));
+	a[2].push_back(make_pair(4, 2));
+	a[3].push_back(make_pair(1, 5));
+	a[3].push_back(make_pair(2, 3));
+	a[3].push_back(make_pair(4, 3));
+	a[3].push_back(make_pair(5, 1));
+	a[3].push_back(make_pair(6, 5));
+	a[4].push_back(make_pair(1, 1));
+	a[4].push_back(make_pair(2, 2));
+	a[4].push_back(make_pair(3, 3));
+	a[4].push_back(make_pair(5, 1));
+	a[5].push_back(make_pair(3, 1));
+	a[5].push_back(make_pair(4, 1));
+	a[5].push_back(make_pair(6, 2));
+	a[6].push_back(make_pair(3, 5));
+	a[6].push_back(make_pair(5, 2));
+
+	dijkstra(start);
+
+	for (int i = 1; i <= number; i++) {
+		if (dist[i] == INF) {
+			cout << "INF ";
+		}
+		else {
+			cout << dist[i] << " ";
+		}
+	}
+	return 0;
+}
+```
+
+### Floyd의 최단경로 알고리즘
+- 그래프의 모든 정점 쌍 사이의 최단 경로를 구하는 알고리즘
+  - 음수 가중치를 갖는 간선이 있어도 동작 가능
+  - 모든 정점에서 모든 정점으로의 최단 경로를 구하고 싶을 때
+  - **거쳐가는 정점**을 기준으로 최단거리를 구함
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/409e61a8-e316-4e8b-b3d8-bca27462fda8)
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+const int number = 4;
+const int INF = 10000000;
+
+vector<vector<int>> a = {
+	{0, 5, INF, 8},
+	{7, 0, 9, INF},
+	{2, INF, 0, 4},
+	{INF, INF, 3, 0}
+};
+
+void floydWarshall() {
+	vector<vector<int>> d(number, vector<int>(number));
+
+	for (int i = 0; i < number; i++) {
+		for (int j = 0; j < number; j++) {
+			d[i][j] = a[i][j];
+		}
+	}
+
+	for (int k = 0; k < number; k++) {
+		for (int i = 0; i < number; i++) {
+			for (int j = 0; j < number; j++) {
+				if (d[i][k] + d[k][j] < d[i][j]) {
+					d[i][j] = d[i][k] + d[k][j];
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < number; i++) {
+		for (int j = 0; j < number; j++) {
+			cout << d[i][j] << ' ';
+		}
+		cout << endl;
+	}
+}
+
+int main() {
+	floydWarshall();
+	return 0;
+}
+```
+
+### Dijkstra vs Floyd
+- Dijkstra
+  - 그래프의 한 노드에서 다른 모든 노드까지의 최단 경로를 찾는 알고리즘
+  - 가중치가 있는 그래프에서 사용되며, 가중치가 음수인 간선은 다루지 못함
+  - 각 단계에서 가장 거리가 짧은 노드를 선택하는 탐욕적인 방식
+- Floyd Warshall
+  - 그래프의 모든 노드 간 최단 경로를 찾는 알고리즘
+    - 각 노드에서 다른 모든 노드까지의 최단 경로를 꼐산
+  - 가중치가 양수이든 음수이든 상관 없이 모든 가중치를 처리할 수 있음
+  - 음수 사이클은 처리할 수 없음
+
+## 정렬
+- 일반적으로 정렬 대상은 레코드
+  - 레코드는 필드보다 작은 단위로 구성
+  - 정렬이란, **레코드를을 키 값의 순서로 재배열**
+  - 모든 경우에 대해 최적인 정렬 알고리즘은 없음
+  - **교환, 선택, 삽입** 알고리즘을 사용해 정렬을 완료
+- 내부 정렬
+  - 하나의 배열에서 작업할 수 있는 경우
+- 외부 정렬
+  - 하나보다 더 많은 배열에서 작업해야 하는 경우
+- 정렬 알고리즘의 안정성
+  - 안정적인 정렬
+    - 키 값이 같은 레코드의 순서가 정렬 후에도 유지됨
+  - 안정적이지 않은 정렬
+    - 정렬 후에도 유지된다는 보장이 없는 정렬
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/29be3203-1fb5-4bc3-9fc2-7097e2033292)
+
+### 선택 정렬
+- 가장 작은 원소부터 선택하여 알맞은 위치로 옮기는 작업을 반복하는 알고리즘
+  - 반복적으로 최소값을 찾아 정렬하는 방식
+  - 시간 복잡도 O(n^2)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/00c2b946-d425-46ff-bb1c-41365b9e4f08)
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void swap(int& a, int& b) {
+	int temp = a;
+	a = b;
+	b = temp;
+}
+
+void selectionSort(vector<int>& A) {
+	int n = A.size();
+	for (int i = 0; i < n - 1; i++) {
+		int least = i;
+		for (int j = i + 1; j < n; j++)
+			if (A[j] < A[least])
+				least = j;
+		swap(A[least], A[i]);
+	}
+}
+
+void printArray(vector<int>& arr) {
+	for(int i = 0; i < arr.size(); i++)
+		cout << arr[i] << " ";
+	cout << "\n";
+}
+
+int main() {
+	vector<int> arr = { 64, 34, 25, 12, 22, 11, 90 };
+
+	selectionSort(arr);
+	cout << "Sorted array using Selection Sort: \n";
+	printArray(arr);
+	return 0;
+}
+```
+
+### 삽입 정렬
+- 정렬대상에서 정렬 안 된 부분의 데이터를 정렬된 부분의 특정위치에 삽입하는 방식
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/0943be98-1fec-4c1f-af6e-e1ac8fdd9d44)
+  - 배열의 두 번째 원소부터 시작
+  - 현재 원소를 정렬된 부분 배열과 비교
+  - 정렬된 부분 배열에서 현재 원소보다 큰 원소를 찾을 때까지 왼쪽으로 이동
+  - 적절한 위치를 찾으면 해당 원소를 해당 위치에 삽입
+  - 시간 복잡도 O(n^2)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/329a8467-c211-4102-877c-f2b83e92031b)
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void insertionSort(vector<int>& A) {
+	int n = A.size(); //입력 배열 A의 크기를 n에 저장
+
+	for (int i = 1; i < n; i++) { //두 번째 원소부터 배열 전체를 순회
+		int key = A[i];
+		int j = i - 1;
+
+		while (j >= 0 && A[j] > key) { //key보다 큰 A[0..i-1]의 원소를 한 위치 앞으로 이동
+			A[j + 1] = A[j];
+			j = j - 1;
+		}
+		A[j + 1] = key; //key를 정학환 위치에 삽입
+	}
+}
+
+int main() {
+	vector<int> A = { 64, 34, 25, 12, 22, 11, 90 };
+
+	insertionSort(A);
+
+	cout << "Sorted array using Insertion Sort: \n";
+
+	for (int i = 0; i < A.size(); i++)
+		cout << A[i] << " ";
+	cout << endl;
+
+	return 0;
+}
+```
+
+### 버블 정렬
+- 버블 정렬
+  - 인접한 두 개의 데이터를 비교해 정렬을 진행하는 방식
+  - 인접한 두 요소를 비교하여 순서가 잘못되어 있다면 위치를 교환 
+  - 한 칸씩 이동하면서 요소를 비교하고 교환하는 과정 반복
+  - 가장 큰 값을 맨 오른쪽에 하나씩 미는 방법!
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/dbde56fd-b423-492c-b498-6c4fefdcaa74)
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void swap(int& a, int& b){
+	int tmp = a;
+	a = b;
+	b = tmp;
+}
+
+void bubbleSort(vector<int>& A){
+	int n = A.size();
+	for (int i = 0; i < n - 1; i++) {
+		for (int j = 0; j < n - 1 - i; j++) {
+			if (A[j] > A[j + 1]) {
+				swap(A[j], A[j + 1]);
+			}
+		}
+	}
+}
+
+int main() {
+	vector<int> A = { 64, 34, 25, 12, 22, 11, 90 };
+
+	bubbleSort(A);
+	cout << "Sorted array using Bubble Sort: \n";
+	for (int i = 0; i < A.size(); i++) {
+		cout << A[i] << " ";
+	}
+	cout << endl;
+	return 0;
+}
+```
+
+### 선택 정렬 vs 삽입 정렬 vs 버블 정렬
+- 선택 정렬
+  - 최솟값을 찾아 맨 앞으로 이동하는 방식
+- 삽입 정렬
+  - 앞에서부터 차례대로 이미 정렬된 부분과 비교하여 교환하는 방식
+  - 셋 중 제일 빠르지면 배열이 길어질수록 효율성 떨어짐
+- 버블 정렬
+  - 인접한 원소끼리 비교하여 교환하는 방식
+  - 셋 중 제일 느리지만 단순함
+
+## 정렬(2)
+
+### 셀 정렬
+- 삽입 정렬을 보완한 알고리즘
+  -  배열을 일정한 간격으로 나누어 부분적으로 정렬한 후 간격을 줄여가며 정렬을 반복하는 방식
+  -  gap값(k)을 줄여가며 부분적으로 정렬한 후 마지막에는 일반적인 삽입 정렬을 수행하여 전체 배열을 정렬함
+  - 시간 복잡도
+    - 최악 : O(n^2), 최선: O(n), 평균: O(n^1.5) 
+- 과정
+  - 1. 정렬할 배열을 일정한 간격으로 나눔
+    - 간격은 일반적으로 배열의 절반으로 시작하여 계속해서 반으로 줄여 나감
+  - 2. 나뉜 간격에 따라 여러 개의 부분 배열을 생성
+    - 각 부분 배열은 간격만큼 떨어진 요소들로 구성
+  - 3. 각 부분 배열에 대해 삽입 정렬을 수행
+    - 간격을 줄여가며 과정을 반복, 간격이 1이 될 때 까지 정렬 반복
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void sortGapInsertion(vector<int>& list, int first, int last, int gap)
+// gap 만큼의 간격으로 정렬하는 함수
+{
+	int i, j, key;
+	for (i = first + gap; i <= last; i = i + gap) {
+		key = list[i];
+		for (j = i - gap; j >= first && key < list[j]; j = j - gap)
+			list[j + gap] = list[j];
+		list[j + gap] = key;
+	}
+}
+
+void shellSort(vector<int>& list){
+	//셸 정렬을 수행하는 함수
+	int i, gap;
+	int n = list.size(); //벡터의 크기 저장
+	for (gap = n / 2; gap > 0; gap = gap / 2) {
+		if ((gap % 2) == 0) gap++;
+		//gpa이 짝수라면 홀수로 변경
+		for (i = 0; i < gap; i++)
+			sortGapInsertion(list, i, n - 1, gap);
+		//gap 간격으로 정렬
+	}
+}
+
+int main() {
+	vector<int> A = { 35, 33, 42, 10, 14, 19, 27, 44 };
+
+	shellSort(A);
+
+	for (int i = 0; i < A.size(); i++) {
+		cout << A[i] << " ";
+	}
+	return 0;
+}
+```
+
+### 합병 정렬
+- 분할 정봅 방식을 기반으로 한 정렬 알고리즘
+- 리스트를 절반으로 분할 후 각각 재귀적으로 정렬한 후에 합병하여 정렬된 리스트 생성
+  - 합병할 때 정렬 실행
+- 시간 복잡도 평균적으로 O(nlong)의 시간 복잡도를 가짐
+  - 입력 데이터의 크기에 무관하게 일정한 성능 보장
+  - 안정적이며 데이터의 초기 분산 순서에 영향을 덜 받음
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/02ac2078-1d4c-4664-829d-1cd13f42d743)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/24ca798d-3623-42fb-aa23-7c49a35a3913)
+```cpp
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+void merge(vector<int> A, int left, int mid, int right) {
+	vector<int> sorted(right - left + 1);
+	//병합된 결과를 임시로 저장할 배열
+	int i = left;
+	int j = mid + 1;
+	int k = 0;
+
+	while (i <= mid && j <= right) { //두 배열의 원소를 비교하며 병합
+		if (A[i] <= A[j]) {
+			sorted[k++] = A[i++];
+		}
+		else {
+			sorted[k++] = A[j++];
+		}
+	}
+
+	while (i <= mid) { //첫 번째 부분 배열의 나머지 원소 추가
+		sorted[k++] = A[i++];
+	}
+
+	while (j <= right) { //두 번째 부분 배열의 나머지 원소 추가
+		sorted[k++] = A[j++];
+	}
+
+	for (int idx = left, k = 0; idx <= right; ++idx, ++k) { 
+		//임시 배열의 원소를 원본 배열로 복사
+		A[idx] = sorted[k];
+	}
+}
+
+void mergeSort(vector<int>& A, int left, int right) { //병합 정렬 함수
+	if (left < right) {
+		int mid = (left + right) / 2;
+		mergeSort(A, left, mid);
+		mergeSort(A, mid + 1, right);
+		merge(A, left, mid, right);
+	}
+}
+
+int main(){
+  vector<int> A = {27, 10, 12, 20, 25, 13, 15, 22};
+  mergeSort(A, 0, A.size() -1);
+
+  for(int i=0; i<A.size(); i++){
+    cout<<A[i] << " ";
+  }
+
+  return 0;
+}
 ```
