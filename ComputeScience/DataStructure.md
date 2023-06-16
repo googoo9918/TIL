@@ -42,7 +42,7 @@
     - [Kruskal 알고리즘](#kruskal-알고리즘)
     - [Prim의 MST 알고리즘](#prim의-mst-알고리즘)
   - [최단 경로](#최단-경로)
-    - [최단 경로](#최단-경로-1)
+    - [dijkstra](#dijkstra)
     - [Floyd의 최단경로 알고리즘](#floyd의-최단경로-알고리즘)
     - [Dijkstra vs Floyd](#dijkstra-vs-floyd)
   - [정렬](#정렬)
@@ -1619,7 +1619,7 @@ int main() {
 ```
 
 ## 최단 경로
-### 최단 경로
+### dijkstra
 - 정점 u와 정점 v를 연결하는 경로 중 간선들의 가중치 합이 최소가 되는 경로
 - 집합 S
   - v에서부터의 최단경로가 이미 발견된 정점들의 집합
