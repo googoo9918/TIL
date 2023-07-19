@@ -50,7 +50,9 @@ public class Main {
             br = new BufferedReader(new FileReader(new File(s))); //txt 파일 읽을때 생성자
         }
         String next() { //String 입력 받아야될 때!
-            while (st == null || !st.hasMoreElements()) { // 하나만 입력 받기
+            while (st == null || !st.hasMoreElements()) {
+                // st==null은 st가 아직 초기화되지 않은 경우(next 첫 호출 시)
+                // 즉, st가 초기화되지 않았거나 st는 초기화되었으나, 더 이상 읽어올 토큰이 없는 경우에 해당함
                 try {
                     st = new StringTokenizer(br.readLine()); //
                     // StringTokenizer 클래스는 문자열을 우리가 지정한 구분자로 쪼개주는 클래스.
