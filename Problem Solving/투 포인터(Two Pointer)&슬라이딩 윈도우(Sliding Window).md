@@ -8,10 +8,9 @@
 - 반복문을 한 번만 돌게하는게 중요!!
 ### 2. 공통원소 구하기(투 포인터)
 - [정리](https://github.com/googoo9918/TIL/blob/main/Problem%20Solving/Inflearn/TwoPointer%26SlidingWindow/P2.md)
-- 반복문 한 번에 모든 것을 처리하려 하지 말 것
-  - 한 번에 한 단계씩만 처리하면 됨!! 
-  - 기준치보다 낮기만 하면 된다
-- 케이스 분류 확실히 해줄 것
+- 투 포인터에서는 while문을 이용
+- 확실한 케이스 분류 요망
+- 정렬하고 구할 것인가? 구하고 정렬할 것인가?
 ### 3. 최대 매출(슬라이딩 윈도우)
 - [정리](https://github.com/googoo9918/TIL/blob/main/Problem%20Solving/Inflearn/TwoPointer%26SlidingWindow/P3.md)
 - 어차피 연속된 배열.. 더할건 더하고 뺄건 빼주자
