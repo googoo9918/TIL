@@ -586,7 +586,7 @@
         - 분석 자체의 비용이 증가할 수 있음
 
 ## Use Case/Object/Dynamic Model 간 Consistency
--![image](https://github.com/googoo9918/TIL/assets/102513932/78876951-a408-4374-a4d7-ac2c67bc20e7)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/78876951-a408-4374-a4d7-ac2c67bc20e7)
 - 이들 각 모델은 시스템의 다른 관점을 제공하며, 일관성을 유지하려면 모델 간 충돌이나 모순이 없어야 함
 - Use Case와의 일관성
   - 사용 사례는 시스템이 수행해야 하는 기능을 기술하며, 사용자가 시스템과 상호작용하는 방법을 보여줌

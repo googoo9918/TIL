@@ -52,7 +52,7 @@ public class Main {
         String next() { //String 입력 받아야될 때!
             while (st == null || !st.hasMoreElements()) {
                 // st==null은 st가 아직 초기화되지 않은 경우(next 첫 호출 시)
-                // 즉, st가 초기화되지 않았거나 st는 초기화되었으나, 더 이상 읽어올 토큰이 없는 경우에 해당함
+                // 즉, st가 초기화되지 않았거나 st는 초기화되었으나, 더 이상 읽어올 토큰이 없는 경우에 br.readLine()을 통해 새로운 입력 줄을 읽어옴
                 try {
                     st = new StringTokenizer(br.readLine()); //
                     // StringTokenizer 클래스는 문자열을 우리가 지정한 구분자로 쪼개주는 클래스.
