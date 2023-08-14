@@ -422,7 +422,9 @@ map.replace(3,"단감","곶감");// 인자가 3개인 replace 메소드.
 // "단감"이 아니라면 false를 리턴한다.
 map.getOrDefault(key, 0);
 // key값이 없으면 0를 return
-
+map.containsKey(1);
+map.containsValue("사과");
+//--> boolean값 return
 if(!map.containsKey(2))	
 //키가 들어있는지 확인. 있으면 덮어쓰지 않는다.
 //containsValue도 마찬가지로 사용 가능.
