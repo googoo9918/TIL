@@ -23,6 +23,7 @@
 - 케이스만 잘 나눠준다면..
 - 사실 케이스를 나눌 필요가 없을 수도 있음
   - 정답 코드와 내 코드 비교해볼 것
+- 해당 챕터에서 무조건 while문을 고집하지 말 것, for문의 쓰임도 분명히 존재
 ### 5. 연속된 자연수의 합 (복합)
 - [정리](https://github.com/googoo9918/TIL/blob/main/Problem%20Solving/Inflearn/TwoPointer%26SlidingWindow/P5.md)
 - 4번과 다른 듯 같은 문제
