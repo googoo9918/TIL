@@ -44,7 +44,7 @@
   - 조건 빠트리지 말기!
 
 ### 8. 응급실
-- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Stack%26Queue/P7.md)
+- [정리](https://github.com/ssu18/TIL/blob/main/Problem%20Solving/Inflearn/Stack%26Queue/P8.md)
   - 사실 응급실에 가야하는건 나 아닐까.. 대가리 깨진 것 같네
   - 처음으로 객체를 사용하는 문제
   - 논리구조 자체는 어렵지 않으나..
