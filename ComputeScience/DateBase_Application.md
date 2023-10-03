@@ -155,7 +155,7 @@
 - 충돌 직렬가능 시험
   - 주어진 스케줄이 충돌 직렬가능 스케줄인지를 판별하기 위해서는 *선행 그래프*를 사용하면 됨
   - 여기서 노드는 트랜잭션을 표현함
-  - 동일한 데이터에 대해 충돌되는 연산이 존재 시
+  - 동일한 데이터에 대해 **충돌되는 연산**이 존재 시
     - 데이터 접근에 대한 선후 관계에 따라 에지(edge)를 생성함
 - 선행 그래프 예제1
   - ![image](https://github.com/googoo9918/TIL/assets/102513932/499017fb-0f0e-4ef3-8ec8-c09bf33f24d8)
@@ -188,7 +188,8 @@
 - 데이터를 읽은 트랜잭션(T1)은, 그 데이터를 쓴 트랜잭션(T2) 후에 완료(commit)해야 함
   - 만약 T2가 롤백 된다면, T1도 롤백 되어야 하기 때문
   - ![image](https://github.com/googoo9918/TIL/assets/102513932/a7c7c6ed-9e74-46f5-8b4c-e534c27d0430)
-    - 이 예제에서는 T9이 먼저 완료하였으므로, T8이 rollback 하였음에도 T9은 rollback 하지 못하고, 이는 트랜잭션의 Durable 성질을 위배함
+    - T9은 현재 완료되지 않은 값(A)를 읽고 있음, 그런데 먼저 커밋을 해버리니 만약 T8이 철회를하게 되면, 읽은 값이 잘못된 값이니 따라서 철회를 해야 하는데 이미 완료를 해버려서 철회를 못하는 상황이 되어버림
+    - 완료를 하고도 취소를 해야되니까 Durable 성질을 위배하고, Consistency 또한 위배함
 - 연쇄 철회(Cascading Rollbacks)
   - 트랜잭션 하나의 철회가 다른 트랜잭션 철회를 유도함
     - 이를 방지하려면 기본적으로 완료된 읽기만을 허용하여아 함
@@ -206,7 +207,7 @@
 - 스케줄 관계
   - ![image](https://github.com/googoo9918/TIL/assets/102513932/7170a61f-fc96-43b9-8860-5fc7ce3c1528)
   - RC(recoverable)
-    - 회복가능 스케줄, 데이터를 읽은 트랜잭션이 데이트를 쓴 트랜잭션 후에 완료(commit)하면 됨
+    - 회복가능 스케줄, 데이터를 읽은 트랜잭션이 데이터를 쓴 트랜잭션 후에 완료(commit)하면 됨
   - ACA(avoids cascading aborts)
     - 연쇄 철회를 방지하는 스케줄, 트랜잭션이 커밋되기 전에 다른 트랜잭션들이 해당 트랜잭션에 의해 변경된 데이터를 *읽지* 못하게 함
   - ST(strict)
@@ -227,3 +228,103 @@
   - isolation 관점에서의 판단 기준은 conflict serialization(직렬 가능)과 view serialization(뷰 직렬 가능)
   - 회복 관점에서는 recoverable, cascadeless, strict 존재
   - 각 차이점 명확히 인지할 것
+
+## 연습문제 1장
+### 1
+- Explain the ACID properties of transactions
+  - Atomicity(원자성)
+    - All-or-Nothing
+    - 연산 모두가 실행되거나, 어느 연산도 수행되지 않아야 함
+  - Consistency(일치성)
+    - 단일 트랜잭션의 수행은 데이터 무결성을 유지해야함
+      - 다만, 트랜잭션 수행 중간에는 무결성제약을 만족하지 않을 수 있음
+  - Isolation(독립성)
+    - 다수 개의 트랜잭션이 동시 수행되어도 사용자에게는 본인 트랜잭션만이 홀로 수행되고 있는 느낌을 줌
+  - Durability(지속성)
+    - 트랜잭션 완료 후 시스템에 오류가 생겨도, 데이터베이스 상태에 반영되어야 함
+### 2
+- Consider a file system in Unix
+- What are the steps involved in creation and deletion of files, and in writing data to a file(파일과 생성과 삭제, 파일에 데이터를 쓰는 과정에 관련된 단계를 설명하라)
+  - 파일 시스템에서 파일에 저장 영역이 할당되고, 파일에 고유한 i-number(파일 디스크립터)가 주어지며 i-list에 i-node 항목이 삽입됨
+  - 파일의 삭제는 정확히 반대의 단계를 포함함
+- Explain how the issues of atomicity and durability are relevant to the creation and delection of files and to writing data to files(원자성과 지속성 문제가 파일의 생성 및 삭제, 파일에 데이터를 쓰는 것과 어떻게 관련이 있는가?)
+  - 유닉스 파일 시스템의 *사용자*에게 지속성은 중요하지만, 파일 시스템이 트랜잭션을 지원하지 않기 때문에 원자성은 일반적으로 관련이 없음
+  - 그러나 파일 시스템을 *구현하는 사람*에게는 내부 파일 시스템 동작의 많은 부분이 트랜잭션 의미 체계를 가져야함
+    - 파일의 생성/삭제에 관련된 모든 단계는 원자적이어야 함
+    - 그렇지 않으면 파일 시스템에서 참조할 수 없는 파일이나 사용할 수 없는 영역이 생길 것
+
+### 3
+- Database-system implementers have paid much more attention to the ACID properties than have file-system implementers. Why might this be the case?(DB 시스템 구현자들은 파일 시스템 구현자들보다 ACID에 더 많은 주의를 기울였는데, 왜 그런지 설명하라)
+  - 데이터베이스 시스템은 원자적이고 지속적인 효과가 필요한 중요한 작업을 주로 수행
+  - 그 결과는 영구적인 방식으로 실제 세계의 영향을 미침
+    - ex) 금전거래, 좌석 예약
+  - 따라서 ACID 속성을 보장해야함
+  - 반면, 대부분의 파일 시스템 사용자들은 ACID 속성을 지원하는 데 필요한 비용(돈, 시간, 디스크 공간 등)을 지불하려고 하지 않을 것임
+    - 파일 수정과 같은 일상적인 작업이 비교적 ACID가 덜 중요하단 소리임
+### 4
+- Explain the distinction of the terms serial schedule and serializable schedule. Explain why the serial schedule is always correct too.(직렬 스케줄과 직렬 가능 스케줄이라는 용어의 구별에 대해 설명하고, 직렬 스케줄이 항상 올바르다는 것에 대해서도 설명하라)
+  - 직렬 스케줄
+    - 하나의 단일 트랜잭션에 속한 모든 명령이 함께 나타나는 스케줄
+  - 직렬 가능 스케줄
+    - 특정 직렬 스케줄과 결과 값이 동일해야함
+  - 충돌 직렬가능과 뷰 직렬가능성은 동등성에 대한 두 가지 정의
+  - 직렬 스케줄은 모든 트랜잭션의 연산이 연속적으로 실행되고, 다른 트랜잭션의 연산에 의해 방해 받지 않기 때문에 항상 올바름
+
+### 5
+- why do we emphasize conflict serializability rather than view serializability?(우리는 왜 뷰 직렬가능성보다 충돌 직렬가능성에 더 강조하는가?)
+  - 대부분의 동시성 제어 프로토콜(직렬 가능한 스케줄만 생성되도록 보장하기 위한 프로토콜)은 충돌 직렬 가능성을 기반으로 사용되고, 충돌 직렬 가능성 스케줄의 부분 집함만 허용함
+  - 뷰 직렬가능성은 일반적으로 테스트하는데 굉장히 까다로우며, 동시성 제어를 위해 매우 제한된 형태만이 사용됨
+  - 즉, 충돌 직렬 가능성이 보다 효율적으로 사용되기 떄문에 프로토콜 및 시스템 구현에 더 적합하고, 뷰 직렬가능성은 테스트 및 구현이 복잡하기 때문에 제한적으로 사용됨
+
+### 6
+- What do you think about the following statement. Justify the answer.
+- Concurrent execution of transactions is more important when data must be fetched from(slow) disk or when transactions are long, and is less important when data is in memory and transactions are short(트랜잭션이 동시에 실행되는 것은 데이터가(느린) 디스크에서 가져와야 할 때나 트랜잭션이 길 때 더 중요하고, 데이터가 메모리에 있고 트랜잭션이 짧을 때는 덜 중요하다)
+  - 트랜잭션이 매우 길거나, 느린 디스크에서 데이터를 가져올 때는 완료하는 시간이 오래 걸리기 때문에 동시성이 없는 경우 다른 트랜잭션이 더 오랜 시간 기다려야 하고 평균 응답시간이 증가함
+  - 또한 트랜잭션이 디스크에서 데이터를 읽을 때, CPU는 idle 상태가 됨
+    - 따라서 리소스가 제대로 활용되지 않고, 오버헤드가 크기 때문에 동시 실행이 중요해짐
+  - 그러나 트랜잭션이 짧거나 데이터가 메모리에 있을 때는 이런 문제가 발생하지 않아 동시성의 중요성이 상대적으로 줄어듬
+
+### 7
+- What is a recoverable schedule? Why is recoverability of schedules important?(회복 가능한 스케줄이 뭐고, 왜 스케줄의 회복 가능성이 중요한가?)
+  - 회복 가능한 스케줄은 T1과 T2 두 트랜잭션이 있을 떄, T2가 T1에 의해 쓰여진 데이터 항목을 읽는 경우, T1의 완료(커밋) 작업이 T2의 커밋 작업 이전에 나타나는 스케줄을 의미함
+    - 즉, 데이터를 읽은 트랜잭션의 커밋 시점은 데이터를 쓴 트랜잭션 커밋한 후임
+  - 중요한 이유는, 회복 가능하지 않으면 시스템을 rollback할 수 없는 불일치 상태가 될 수 있기 때문임
+
+### 8
+- Consider the precendence graph of Figure 1. Is the corresponding schedule conflict serializable?(선행 그래프를 봤을 때, 해당 스케줄은 충돌 직렬 가능 스케줄인가?)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/f04ef7ed-0cf4-41dd-9f36-047517cee0bb)
+    - 비순환적 그래프기 때문에 충돌 직렬화 가능한 스케줄이 존재함
+    - 위상 정렬에 의해, `<T1, T2, T3, T4, T5>`, `<T1, T2, T4, T3, T5` 가능
+
+### 9
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/ec647118-3f38-4eb7-bc01-b37728bca56b)
+  - Is the history recoverable and/or cascadeless?(회복가능 여부, 연속적 철회 필요 없는 스케줄 여부)
+  - 회복가능성
+    - 한 트랜잭션이 다른 트랜잭션에 의해 수정된 데이터 항목을 읽은 경우, 데이터를 읽은 트랜잭션이 더 늦게 commit 되어야 한다는 사실은 이미 알고있었음
+    - 그렇다면 abort에서는 어떻게 적용되는가?
+      - abort의 경우, 데이터를 쓴 트랜잭션인 경우 회복 가능하지 않음
+      - 위 스케줄의 경우, T2에서 write(B) 연산이 철회되므로, T3의 read(B)가 잘못된 연산이 되어버림.. 근데 commit을 진행했으니 회복 불가능함
+  - 연속적 철회가 필요 없는 스케줄 여부
+     - 연속적 철회가 필요 없으려면 완료된 값만을 읽어야함
+     - 그래서 아님, 커밋되지 않은 값 읽는중
+
+### 10
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/83775807-c767-41be-bcf8-e7a71f74d355)
+  - (A) Draw a precendence graph for T1, T2, T3 and T4 for the schedule. Label each edge with the data item that is accessed
+  - (b) is the schedule conflict serializable?(충돌 가능 스케줄인가?), if yes give all conflict-equivalent serial schedules(맞다면 직렬 가능한 스케줄 나열)
+    - ![KakaoTalk_20231003_192009602](https://github.com/googoo9918/TIL/assets/102513932/b0f6c56f-4a70-482c-9ef5-c6ea09f62128)
+
+
+### 11
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/b94d5ea4-92b5-414e-a156-c16cba9d1b3d)
+  - 상기 스케줄에 대한 선행 그래프를 작성하고, 충돌 직렬 가능성을 판별하라, 만약 맞다면 동등한 serial schedule을 모두 구할 것
+  - 상기 스케줄의 view serializable 여부를 판정하고, 이유를 기술할 것
+  - ![KakaoTalk_20231003_185951924](https://github.com/googoo9918/TIL/assets/102513932/6bf32bf2-f599-4516-86e8-e85cfe6ad8fb)
+
+
+### 12
+- 다음 문장의 참/거짓을 명시하고, 거짓일 경우 그 이유를 설명하라
+  - view serializable한 스케줄은 항상 confilict serializable 하다
+    - 거짓, Conflict serializable한 스케줄은 항상 view serializable 함
+  - view serializable한 스케줄 판발연 precedence graph를 사용하며 polynomial time에 가능하다
+    - 거짓, view serializable 스케줄 판단은 NP-complete 문제임
