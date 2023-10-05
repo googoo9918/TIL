@@ -844,6 +844,16 @@
       - 반면 다중 버전 타임스탬프 순서 지정은 트랜잭션 T1이 
       - 더 높은 타임스탬프를 가진 트랜잭션(new, T2)이 읽은 값을 다른 값으로 갱신하는 경우,
       - 허용하지 않고 T1을 록백함  
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/9172b71e-27ef-4557-ac8c-a2b2a783e480)
+    - 여기에 multiversion timestamp-ordering protocol을 적용해 보자
+    - T1 timestamp: 110, T2 timestamp: 120
+    - data A 
+      - value:10, R-timestamp: 5 -> 110 -> 120, W-timestamp: 5
+    - data B
+      - value: 20,  10 R-timestamp: 3-> 110 -> 120    120, W-timestamp: 3   120
+    - T1 write(A) 시점에서 A R-timestamp 값이 T1 timestamp 값보다 크므로, T1 aborts
+    - T2 write(B) 시점에서 B의 새로운 version이 생성됨
+      - 즉, snapshot isolation의 write skew 문제가 multiverstion timestamp ordering 방식에서는 발생하지 않음
 ### 17
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/0ef9b4b5-1510-4938-b87f-85bb1378cb6a)
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/1da4330c-ca9f-4cb3-bf50-fcdfb8bd08dc)
