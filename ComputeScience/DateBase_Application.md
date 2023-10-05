@@ -447,8 +447,8 @@
 - 의도 록 모드
   - 하위 노드에 대한 구체적인 미래 록 노드를 현재 노드에 표시
   - ex
-    - 임의 노드에 IS 록을 요구하는 것은 하위 노드 중 하나에서 S 모드 록을 후에 걸겠다는 의도
-    - 임의 노드에 IX 록을 요구하는 것은 하위 노드 중 하나에서 S모드 또는 X모드 록을 후에 걸겠다는 의도
+    - 임의 노드에 IS(Intention-shared) 록을 요구하는 것은 하위 노드 중 하나에서 S 모드 록을 후에 걸겠다는 의도
+    - 임의 노드에 IX(Intention-exclusive) 록을 요구하는 것은 하위 노드 중 하나에서 S모드 또는 X모드 록을 후에 걸겠다는 의도
   - SIX 모드 록은 S 모드 록과 IX 모드 록을 함께 표시하는 것
     - 즉, 해당 노드 전체에 대해 읽기 연산을 하고, 그 중 *일부* 데이터에 대해 후에 X록을 걸겠다는 의도
     - 트랜잭션이 테이블전체를 읽으면서 그 중 조건이 맞는 몇 개 레코드 값을 변경하고자 하는 연산에서 적합
@@ -507,8 +507,13 @@
     - 특정 트랜잭션 T1이 데이터 항목 X에 접근하려고 시도하고, X가 이미 다른 트랜잭션 T2에 의해 잠겨 있는 경우
       - T1의 타임스탬프가 T2보다 오래되었으면, T1은 wait
         - T1은 T2가 X의 잠금을 해제할 때까지 기다림
-      - T1의 타임스탬프가 T2보다 적다면, T1은 "Die"
+      - T1의 타임스탬프가 T2보다 크다면(비교적 최신의 것이라면), T1은 "Die"
         - T1은 중단되거나 롤백됨
+    - 특정 트랜잭션 T1이 록을 요청하고, 그 록이 다른 트랜잭션 T2가 보유하고 있을 때, T1과 T2의 타임스탬프 비교
+      - T1이 T2보다 오래된 경우, T1은 T2를 wound
+        - 이는 T2를 중단시키고 록을 해제하는 것을 의미함, 이후 T1은 요청한 록을 얻게 됨
+      - 반대로, T2이 T1보다 오래된 경우, T1은 대기(wait)상태로 들어감 
+    - 모든 행동은 T1이 하는 행동임을 기억하라
 - 교착상태 감지
   - 대기 그래프를 이용
     - 대기 그래프에서 노드는 트랜잭션을 표현, 에지는 트랜잭션 간 대기 상태를 의미
@@ -610,6 +615,7 @@
   - multiversion timestamp odering 방식, multiversion two-phase locking 방식으로 구분
   - timestamp는 date + time 형식을 가짐
     - 시간의 흐름에 따라 항상 값이 증가
+    - 엔티티의 id값으로 생각할 것
 - multiversion timestamp odering 기법
   - 트랜잭션(Ti)는 트랜잭션이 시작된 타임스탭프 값을 가짐
     - 이를 TS(Ti)로 표시
@@ -668,3 +674,135 @@
   - 이에 대한 해결 방법으로, 트랜잭션 분리도를 조정하거나, 특정 문장을 사용할 수 있음
   - `select ... for update`
     - 이 경우 DBS가 select하는 데이터를 갱신하는 데이터로 취급하므로, 해결할 수 있음
+
+## 연습문제 2장
+### 1
+- 2단계 록킹 규약은 항상 충돌 가능 스케줄을 생성함을 증명하라
+  - 2단계 록킹 규약이 충돌 가능성을 보장하지 않는다 가정하자
+  - 2PL을 준수하며, 비충돌가능한 스케줄을 생성하는 트랜잭션 집합 T0,T1,...,Tn이 존재한다 할 때
+  - 비충돌가능한 스케줄이란, 선행 그래프의 순환을 야기하므로 선행 그래프에 다음과 같은 순환이 존재한다 가정
+    - T0->T1->....->Tn-->T0
+    - 이때 Ai는 Ti가 마지막으로 록을 획득하는 시점
+  - 모든 트랜잭션에 대해, Ti->Tj인 경우, Ai < Aj가 성립
+    - Ti가 연산을 마치고 록을 해제하면, shirinking phase에 들어가는 것이므로
+  - 따라서 순환에 대해 A0 < A1 < .... < An < A0이다
+  - 그러나, A0 < A0은 모순이므로, 이러한 순환은 존재할 수 없다
+  - 따라서 2PL은 충돌가능하지 않은 스케줄을 생성할 수 없다.
+- 그렇다면 growing phase에서 록 하향변환을 허용하면 상기 증명에서 어떤 문제점이 발생하는가?
+### 2
+-  ![image](https://github.com/googoo9918/TIL/assets/102513932/d2960360-2a01-4f53-ab7d-522bb41b40db)
+  - 트랜잭션 T1과 T2에 록과 언록 명령을 추가하여 두 단계 록킹 프로토콜을 준수하도록 만들 것
+    - 추가적으로, 이 실행이 데드락을 초래할 수 있는가?
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/d595b51c-1cab-4aea-81c9-c4fc9158446e)
+
+### 3
+- What benefit does rigorous two-phase locking provide? How does it compare with other forms of two-phase locking?
+  - 엄증한 두 단계 록킹이 어떤 이점을 제공하고, 이것은 다른 형태의 두 단계 록킹과 어떻게 비교되는가?
+  - 그냥 2단계 록킹은 쓰기 록을 수정 후에 해제하지만, 이는 연쇄 철회 문제점이 남아있음
+  - strict 2단계 록킹은 쓰기 록을 트랜잭션 끝까지 보유하고
+  - rigorous 2단계 록킹은 읽기 록까지 트랜잭션 끝까지 보유함
+    - 또한 strict는 단순히 직렬 가능성만 보장하지만
+    - rigorous는 커밋 순서가 직렬화 가능한 순서와 같음을 보장함
+
+### 4
+- Show by example that there are schedules possible under the tree protocol that are not possible under the two-phase locking protocol, and vice versa.
+  - 트리 프로토콜 아래에서 가능한 스케줄 중에서 두 단계 록킹 프로토콜에서는 불가능한 스케줄이 있다는 것과 그 반대의 경우를 예시를 통해 보여라
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/9520a68f-f549-4297-802d-84e5a1517e16)
+    - 트리 프로토콜에서는 가능하지만 2PL에서는 불가능한 스케줄 예시
+      - 2PL에서는 unlock을 하고 다시 lock을 할 수 없기 때문에 불가능(감소 단계)
+    - 2PL에서는 가능하지만 트리 프로토콜에서는 불가능한 스케줄 예시
+      - 트리 프로토콜에서 lock(B)를 하기 위해서는 lock(A)가 선행되어야 하기 때문에 불가능
+
+### 5
+- In multiple-granularity locking, what is the difference between implicit and explicit locking?
+  - 다중 단위 크기 록킹에서, implict와 explict locking의 차이점은 무엇인가?
+  - 트랜잭션이 한 노드를 명시적으로(explict) lock하면, 노드의 하위 항목도 동일한 모드로 암시적(implicT)으로 잠김
+  - 트랜잭션에서는 하위 노드들을 명시적으로 잠글 필요가 없음
+
+### 6
+- Although SIX mode is useful in multiple-granularity locking, an exclusive and intend-shared (XIS) mode is of no use. Why is it useless?
+  - 다중 단위 크기 록킹에서 SIX 모드는 유용하나, XIS 모드는 쓸모가 없다. 왜인가?
+  - X(배타적 록)은 다른 모든 록 유형과 호환되지 않기 떄문
+    - 한 번 노드가 X모드로 록되면, 모든 트랜잭션은 어떤 모드에서도 해당 노드의 하위 항목에 접근할 수 없음
+    - 따라서 의미가 없음
+
+### 7
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/abbe7884-4807-4b52-a604-ce5ba0bb6d55)
+  - SIX-lock 을 설정하기 위해서는, 상위 노드에 IX 록을 걸어야 함
+
+### 8
+- Explain the reason for the use of degree-two consistency. What disadvantages does this approach have?
+  - 2단계 일치성의 사용 이유를 설명하고, 이 접근법에서 생기는 단점을 설명하라
+  - 2단계 일관성은 cascading abort를 방지하고, 읽기 록을 제한 없이 해제함으로써 동시성을 즐가시킴
+  - 단점은 직렬화를 보장하지 않는다는 것임
+
+### 9
+- Explain the phantom phenomenon. Why may this phenomenon lead to an incorrect concurrent execution despite the use of the two-phase locking protocol?
+  - 팬텀 현상에 대해 설명하라, 왜 이 현상은 2PL을 사용함에도 불구하고 잘못된 동시 실행을 초래할 수 있는가?
+  - 팬텀 현상은 다수 개의 트랜잭션이 삽입 또는 삭제 되는 터플에 의해 충돌이 발생하는 현상
+  - 관계 내의 튜프플 뿐 아니라 인덱스, 메타 데이터도 있기 때문에 인덱스나 메타데이터에도 잠금을 수행해야 하고, 이렇게 하면 팬텀 현상을 피할 수 있음
+
+### 10
+- SQL 표준에서 정하는 read-committed isolation level로 트랜잭션을 수행하는 경우, 생성되는 스케줄은 cascading aborts 현상이 발생 가능한가? (yes/no)  그 이유를 반드시 명시하시오. 
+  - read-comitted isolation level은 트랜잭션이 오직 커밋된 데이터만 읽도록 보장
+  - 트랜잭션 Ti는 아직 커밋되지 않고 동시 실행중인 트랜잭션 Tj에 의해 수정된 데이터 항목을 읽을 수 없음
+  - 따라서 트랜잭션 간 독립성이 보장되고, cascading aborts 현상이 발생하지 않음
+
+### 11
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/47b5a243-9f2a-4c77-8beb-ba865fbae6e3)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/1cfeac60-b610-445d-9caf-b86940878bc5)
+  - T4를 유의깊게 관찰할 것
+
+### 12
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/8652c974-2be9-437e-9b1d-df7e018be405)
+  - No, 감소 단계(Shrink phase)에서 lock(B)를 하였음
+  - No, 노드 C에 대해 록을 잡기 전에 B에 대해 록을 먼저 잡아야 함
+
+### 13
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/10efcf52-35cb-43ad-a329-2277aece8d2a)
+  - T1이 old, T2가 new
+    - 따라서 T1이 wait, T2는 계속 실행
+    - 따라서 false
+  - T2가 old, T3가 new
+    - 따라서 T2가 wound, T3가 wait
+    - 따라서 true, T2는 T3의 실행을 종료시키고 록을 가짐(록 기다림 없이 진행함)
+  - no, restart하는 transaction은 항상 원래 timestamp를 갖고 실행해야 함
+
+### 14
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/4f257e9f-e910-4208-b9b5-d770b0f483b2)
+  - (a) T1 트랜잭션이 T3가 갖고있는 데이터를 요청하는 경우, 록 충돌이 생김 wait-die 형식에서, T3는 abort 되자않고 실행되는가?
+    - T1이 old T3가 new
+    - 따라서 T1은 wait, T3의 실행이 끝나면 록을 얻게됨 
+    - 따라서 yes
+  - (b) T2 트랜잭션이 T3가 갖고있는 데이터를 요청, wound-wait 형식에서 T2는 abort 되지않고 실행하는가?
+    - T2가 old, T3가 new
+    - 따라서 T2는 wound, T3의 실행을 종료시키고 록을 얻게 됨
+    - 따라서 yes
+  - (c) T1이 T2 트랜잭션을 기다리고, T3가 T2 트랜잭션을 기다리는 경우 wait-for graph를 그려라, 또한 이 그래프는 T1, T2, T3간의 deadlock을 보이는가?
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/ed1474e1-ece8-4968-865f-7d7c7bcf615e)
+    - 화살표 방향을 잘 기억할 것
+
+### 15
+-  ![image](https://github.com/googoo9918/TIL/assets/102513932/e584decd-0a84-4429-8379-4d3a4afcd7a7)
+   -  (a) 결과가 이렇게 나왔는데, 어떤 레벨에서 이런 결과가 나올 수 있는지?
+      -  현재 avg와 sum 사이에서 동시성 이슈가 발생했음
+      -  이는 unrepeatable read임
+      -  따라서 이를 방지할 수 없는 **read comitted, read uncommitted**에서 발생 가능함
+   - (b) 그렇다면, 어떤 level에서 밑 결과가 같은지?
+     - **serializable, repeatable read**
+     - 터플이 삽입/삭제 되는 상황이 아니므로, phantom 현상은 일어나지 않음
+
+### 16
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/05089678-7758-4a42-9d62-92677fbd92d8)
+  - 다중 버전 타임스탬프 순서 지정 방식은 직렬가능성을 보장하나, 스냅샷 고립은 직렬가능성을 보장하지 않는다
+    - 이 차이를 초래하는 프로토콜 간 주요 차이점은 무엇인가?
+  - 타임스탬프 검증 단계는 트랜잭션 간 공통으로 작성된 데이터 항목의 존재를 확인하나,
+    - 스냅샷 고립 프로토콜에서는 읽기와 쓰기에 대한 검증이 없음
+    - 따라서 스냅샷 고립에서는 write skew 문제가 발생
+      - 반면 다중 버전 타임스탬프 순서 지정은 트랜잭션 T1이 
+      - 더 높은 타임스탬프를 가진 트랜잭션(new, T2)이 읽은 값을 다른 값으로 갱신하는 경우,
+      - 허용하지 않고 T1을 록백함  
+### 17
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/0ef9b4b5-1510-4938-b87f-85bb1378cb6a)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/1da4330c-ca9f-4cb3-bf50-fcdfb8bd08dc)
+  - 5, 6, 9 자세히 살펴볼 것!
