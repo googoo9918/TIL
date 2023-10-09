@@ -204,3 +204,303 @@ public class StaticTest{
 
 ### 정리
 ![image](https://github.com/googoo9918/TIL/assets/102513932/7339b748-7525-42b9-bf49-a52c6752f6e6)
+
+## Use Case Analysis
+### Unified Process for Developing OOSW
+- 객체지향 SW 개발 절차
+  - 소프트웨어 개발, 배포, 관리에 대한 체계적인 방법
+  - 폭포수 모델, Iterative model(에자일) 등
+- Unified Process(UP)
+  - 객체지향 SW를 개발할 때 주로 사용되는 반복적 SW 개발 절차
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/feed7997-2639-45f6-bef7-c37c914085f4)
+    - 고정된 기간 내에서 반복적으로 수행
+    - Agile 정신으로부터 영향을 받음
+  - 4 Phases of Unified Process
+    - Phase 1. Inception(도입부)
+      - 프로젝트의 방향(vision), 요구 및 사용사례(case), 범위(scope), 비용(cost)등을 *대략적*으로 파악
+    - Phase 2. Elaboration(세부화)
+      - Inception 단계에서 정의된 초기 계획과 개념을 *자세히 확장/명시화*
+      - 초기 설계 및 계획을 확립하고, risk를 관리
+    - phase 3. Construction(구축)
+      - 이전 단계에서 정의된 요구사항, 아킽텍처 및 설계를 기반으로 *SW 반복적 개발*
+    - phase 4. Transaction(전환)
+      - 사용자들이 소프트웨어를 사용할 수 있도록 준비하는 단계(테스트, 배포, 유지보수)
+  - Key practices of Unified Process
+    - 초기 단계에서 어떤 작업이 high-risk & high value 인지 파악
+    - 초기 단계에서 *핵심 아키텍처 구축* 및 이를 중점으로 개발
+    - UML 이용, *시각적 모델링*
+    - 사용자로부터 *지속적으로 평가와 피드백*
+    - 다양한 문서, 모델, 코드와 같은 *산출물(artifacts)* 생성되고 관리
+
+### OOAD with UML
+- Object-oriented analysis(OOA)
+  - Domain concepts 또는 objects를 파악 및 도출
+- Object-oriented desingn(OOD)
+  - SW objects를 정의(static)
+  - 요구사항을 만족할 수 있도록 객체 간 협력을 정의(dynamic)
+- Example with UML
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/07cbd115-f3ad-44a1-957e-1b7bc0368962)
+    - Use Case Diagram은 Behaviour(동적) Diagram
+- UML(Unified Modeling Language)
+  - 시스템의 설계를 시각화 하여 표준화된 방법론을 제공
+    - 설계를 표현하는 수단임
+
+### Requriement analysis
+- 요구 분석
+  - Requirements(요구)
+    - 시스템이 반드시 따라야하는 기능, 내부 성능, 조건 등을 말함
+  - Requirement analysis(요구 분석)
+    - 시스템이 정말 필요한 것이 무엇인지 찾고 정리하는 과정
+    - 고객 및 개발자에게 모두 명확히 표현되어야 함
+- 요구의 유형(FURPS)
+  - 기능적 요구(functional)
+    - Function(기능): 시스템이 외형적으로 나타내는 기능(일반적인 CRUD)
+      - ex) 사용자 인증, 데이터 검색 및 처리
+  - 비기능적 요구(non-functional)
+    - Usability(사용성): SW를 쉽게 이해/사용 하게 할 것
+      - ex) 사용자 인터페이스, 도움말 문서 등
+    - Reliability(신뢰성): SW가 안정적으로 동작하게 할 것
+      - ex) 오류 복구, 장애 안정성 등
+    - Performance(성능): SW의 성능에 관련된 사항
+      - ex) 응답 시간, 처리량, 대기 시간 등
+    - Supportability(지원성): SW 요지 보수 및 지원
+      - ex) 시스템 업그레이드, 기술 지원 등
+    - ex)
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/d2d619f6-c8d3-47d4-baa8-a09cc8fba342)
+- 요구를 정리하는 방법
+  - 요구 분석서(SRS)의 작성
+    - 문제, 배경, 환경 및 시스템, 기능적 요구, 비기능적 요구
+    - 기능적 요구는 시스템이 사용되는 시나리오를 기반으로 사용 사례(use-case)를 기술
+      - Use-case diagram/Use-case specification 작성
+    - 비기능적 요구는 시스템 설계에 부여되는 상세 및 제약 사항
+      - 보통 문서의 형태로 정리함
+
+### Use Case Analysis
+- 사용 사례 분석(use-case) 분석
+  - 시스템 사용에 대한 시나리오로 사용자 관점에서 시스템을 모델링
+  - 사용자가 시스템에 대하여 바라는 바를 표현
+  - 일반적으로 *기능적 요구*에 대해 사용 사례 분석
+- 사용 사례 분석 과정
+  - 시스템 요구 분석 -> System 및 actors 정하기 -> Use case 정하기 -> Use case diagram 그리기 -> Use case specification 문서 작성
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/3c2d1175-a9b3-431a-b9f9-c17b814b6d88)
+- Systems
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/8c25748d-5a43-4caf-88d0-c7cfee92a0fe)
+  - 만들려고 하는 대상
+  - 직사각형으로 표시
+    - 직사각형 내로 시스템의 범위를 정함
+- Actors
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/ac7a64c7-ea23-4318-92e4-5f39fbf57aa2)
+  - 시스템을 사용하려고 하는 대상
+  - 사람, 조직, 디바이스, 다른 시세틈 등등
+  - Stick figure로 표현
+    - 시스템 밖에 위치해야 함
+    - 카테고리로 표현 되어야 함
+  - Primary actors
+    - 시스템의 사용을 시작하는 actor, 왼쪽에 위치
+  - Secondary actors
+    - 요청에 반응하여 서비스를 제공하는 actor, 오른쪽에 위치
+- Use-case
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/f415c02f-f38f-4ecd-83b0-5904b3880773)
+  - 시스템이 제공하는 기능, *타원형*으로 표현
+    - 동사로 시작, 충분한 설명을 포함하되 최대한 간결하게 표현
+    - 논리적 순서로 use cases를 배치
+- Association Relationship
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/212f23e5-ef3c-43dc-88eb-3639199e3e37)
+  - Actor와 use-case 간의 상호 작용, 선으로 이어 표현
+- Inclusion Relationship
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/ea976f67-3bac-4579-9ffe-41ef26d589c2)
+  - Base use case가 수행되면 included use case는 반드시 수행되어야 하는 경우
+    - ex) 로그인 -> 비밀번호 인증 과정
+- Extension Relationship
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/fcb040ac-a75b-431c-b4c0-a005d4655062)
+  - Base use case가 수행되고 특정 조건을 만족하는 상황에 extension 수행
+    - ex) 로그인 <- 로그인 에러
+- Inclusion vs Extension
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/8d34aef6-6ed7-42fd-9a75-32fdb87b0282)
+  - Inclusion은 반드시 수반되어 수행
+  - extension은 수행 될 수도, 안될 수도 있음
+- Multiple Inclusions
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/0ba48da3-8391-4152-ae0f-8ea8502d563d)
+- Generalization Relationship
+  - 유사한 actor/use case에서 공통된 부분을 묶어 일반화한 관계
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/dd097aca-500f-40a1-af17-53b564362aa3)
+- Extension Points
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/430cdacb-1936-4bdc-b506-209a7b9bb3a3)
+  - 확장 관계의 detailed version
+    - 필요하면 조건에 대한 내용을 노트로 추가
+- 사용 사례 명세서(Specification)
+  - 사용자 시나리오와 요구 사항을 문서화
+  - 가이드 라인
+    - 사용 사례 이름, 액터, 목적, 시작 조건, 관련 사용 사례, 사건의 흐름, 종료 조건
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/bbd00f45-d17e-4052-98db-2866e3f28525)
+
+## Domain Model
+- 도메인 모델
+  - 도메인에서 상호 연결된 개념 또는 실세계 객체를 시각적으로 표현
+    - 도메인은 SW로 다루고자 하는 주제의 영역임 
+  - 초기 분석 단계에서 전체 도메인을 대략적으로 파악하는 용도로 수행
+    - 도메인 내의 개체, 속성, 관계 및 동작을 파악
+  - domain concepts을 분석하는 것이 목표
+  - Lower representation gap
+    - 분석 단계와 설계 단계의 표현적인 차이를 줄일 수 있음
+- Lower Representation Gap
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/6e86e5ae-534f-4583-96bb-f87008ea1fd5)
+    - 추상적 부분을 잘 만들어두면, 구체화가 용이함
+- Domain Modeling
+  - 도메인 모델 표현법
+  - 일반적으로 class diagram을 기반으로 하나, *단순화된 형태*로 표현
+    - 즉, 추상적인 class diagram임
+    - operation은 고려하지 않음
+    - Domain objects를 표현, 관계를 표현, 속성을 표현
+  - OOA에서 대략적인 클래스의 관계 도식화 --> OOD에서 상세한 class diagram을 작성
+  - 따라서 Domain model을 종종 conceptual calss diagram이라고도 칭함
+- Steps for Domain Modeling
+  - 1. 목표 도메인의 business concept를 나열
+  - 2. concept에 대응되는 domain object 정하기
+  - 3. object 간 연관 관계 파악
+  - 4. 각 관계에 대해 구체적 이름 부여
+  - 5. role/multiplicity 추가
+  - 6. arrtribute 추가
+  - 7. conceptuial class diagram 완성
+- Simple Case Study
+  - 1. Business concept 결정
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/58136788-0410-4f93-b934-d7b013dc3832)
+      - 요구에서 중점적으로 나오는 핵심 용어나 개념을 파악
+      - 구현적인 세부사항은 business concept가 될 수 없음
+      - Use-case 명세서에서 자주 등장 하는 용어일 수록 concept가 될 가능성이 있음
+        - 명사 또는 명사구의 형태로 간결히 추출
+  - 2. Concept에 대응되는 class 정하기
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/2c5f5ddf-e5bc-4613-8ffa-c13e0b125fb8)
+  - 3 & 4. object 간의 관계 파악 및 이름 부여
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/b154442c-3576-4b40-98a8-880919d814a4)
+    - type name `-` verb phrease `-` type name
+  - 5. role/multiplicity를 추가
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/d7e2815a-dd38-443d-af27-91f529aae474)
+  - 6. attribute를 추가
+    - 간단한 속성 또는 pure data value만 기재
+    - 만약 복잡한 속성이 존재한다면, Concept로 따로 분류하고 연관 시켜줄 것
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/343cbb7c-b47e-4184-afa2-40f7482300df)
+  - 7. conceptual class diagram 완성
+    - 이 단계에서 operation은 표현하지 않음
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/aa07c46b-c2ee-4bc6-9ad8-f6d89eeb4047)
+- Notes on Domain Model
+  - Domain model에서는 concept를 표현하는 것으로 설꼐 단계에서 software objects와는 *구별*되어야 함
+  - software objects
+    - software class, artifacts related to system implementation, Methods
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/6a46d421-7c24-418d-af2c-b63c2478d91d)
+  - Domain model은 하나의 정답으로 존재하는 것이 아닌, 여러 개의 모델과 표현을 가질 수 있음
+    - 누가 어떻게 분석했는지에 따라 달라질 수 밖에 없음
+    - Domain modle의 핵심적인 목적은 고객 & 개발진에서의 **문제 이해**와 **의사 소통**을 위함
+
+### Conceptual Class Diagram
+- Class Diagram
+  - 시스템을 구성하는 클래스와 그들 사이의 관계를 표현하는 UML diagram
+    - 분석 단계에서는 domain model을 표현할 때
+    - 설계 단계에서는 class diagram을 표현할 때 사용
+      - 각 class에 detail 정보가 추가적으로 표현
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/e50ae4bb-4eff-479b-8a27-7fd713de417f)
+- Conceptual Class Diagram
+  - Domain model을 표현하는 diagram
+  - Domain objects와 그들의 관계를 표현
+  - Domain objects, Attributes, Associations, Roles, Multiplicity
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/eb371546-8a4a-4e55-955f-cdb261ccc43e)
+- Association & Role
+  - 연관 관계
+    - 두 개념(클래스)가 연관되어 있을 때 선을 그어 표시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/a6edeb60-3886-4fbb-a602-3f483ab3bba2)
+  - 역할(role)
+    - 연관 관계를 가지면, 각 클래스의 객체는 해당 관계에서 *특정 역할*을 수행
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/24211bf1-3867-4797-b05b-163944569e0b)
+- Direction of Association
+  - 양방향 연관 관계
+    - 두 클래스의 객체들이 서로의 존재를 인식
+    - 연결한 선에 화살표 없이 표현
+  - 단방향 연관 관계
+    - 한쪽으로만 방향성이 있어서 한쪽만 상대방의 존재를 인식하는 경우
+    - 연결한 선에 화살표로 표현
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/52d1b840-185b-4a4b-8be2-9f14e15a18af)
+- Multiplicity
+  - 연관된 객체의 수(다중성)을 표현
+    - 연결 된 선 위에 표시하면, 단순 1인 경우는 생략하기도 함
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/c1da9393-2aab-413e-b955-fb60195a25d7)
+  - 다중성 표시의 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/08539922-99a8-4695-b3e3-14915ed96df6)
+
+## System Sequence Diagram & Contracts
+### System Sequence Diagram
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/b66aad07-c261-4e4d-9f80-e88f33baeccb)
+- 시스템 시퀀스 다이어그램(SSD)
+  - 하나의 사용 사례(use-case)의 특정 시나리오에 대해 외부 actor가 생성하는 이벤트와 시스템과의 상호작용을 순서대로 시각화한 것
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/ea959bea-d162-4cc6-9a12-85d0b278f515)
+    - SSD의 필요성
+      - 어떤 이벤트가 시스템에서 발생하는 파악/예측하기 위함
+      - 시스템의 동작을 블랙 박스로 생각
+        - Input/Output 판단
+      - 외부의 actor가 시스템에 요청 했을 때, 시스템의 동작을 표현
+- SSD는 사용 사례(use-case)로 부터 유도됨
+  - 한 actor는 시스템을 향해 시스템 이벤트들을 생성
+  - 일반적으로 SSD에서는 해당 사용 사례에서 main success 시나리오를 기반으로 작성
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/a7520742-391f-4193-a07d-cea45637bf10)
+- SSD vs Sequence Diagram
+  - 시스템 시퀀스 다이어그램
+    - 외부 actor와 시스템 간의 상호작용을 시간적 순서대로 표현
+    - **분석 단계**에서 수행, 시스템의 **외부** 동작에 집중
+  - 시퀀스 다이어그램
+    - 특정 operation을 수행하기 위해 actor 및 내부 객체간 메시지 흐름을 나타냄
+    - **설계 단계**에서 수행, 시스템의 **내부** 동작을 설명하고 모델링
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/636bcc82-b84d-4139-b4a1-d73c4b26c5f4)
+- 시스템 시퀀스 다이어그램의 구성 요소
+  - 시스템(black box로 간주)
+    - conceptual class name System
+  - 시스템과 직접적으로 상호작용하는 외부 actors(stick figure)
+  - 시스템 이벤트
+    - 시스템과 actors 간 상호작용(순차적으로 표현)
+- Notations in SSD
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/c92bd107-c4ad-4100-864d-095c4d89e44a)
+- System operations의 의미
+  - system이 public interface를 통해 제공하는 operations
+    - System은 black box로 간주, 외부 actor에 의해 생성되는 event에 의해 호출됨
+    - Operations는 system에 할당
+    - system operations의 전체 집합을 *system interface*라 칭함
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/df1b8271-cce6-447a-8498-75a59dae2643)
+- Example of SSD
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/41313146-36a4-4c89-8fb4-f2756759efe9)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/193bef3e-85c3-4fec-b95a-e15c489aa772)
+
+### Operation Contracts(작업 규약)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/808475a2-22f4-4972-bd5c-dfa1cfa58c21)
+- Operation Contract(작업 규약)
+  - System operation의 *동작 및 제약 조건*을 기술
+  - Use-case보다 더 세밀한 설명
+  - 설계 단계에서 객체의 method를 설계할 때 operation contract가 활용됨
+  - 특정 system operation이 수행되고, domain 모델에서 객체의 세부 변화를 기술하는 데 사용됨
+    - Pre-condition: opertaion이 실행되기 전에 필요한 조건/제약사항
+    - Post-condition: operation이 완료된 후 기대되는 결과와 시스템의 상태 변경
+  - Format of Operation Contract
+    - System operation 별로 작성
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/279d02bc-38df-4a16-b036-ee90c3b67c61)
+- Example
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/38a6bc30-86d4-4833-8f1c-b361020537f9)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/7168b8ce-8153-44db-a7ca-2302c9bf5727)
+  - Notes on Postconditions
+    - Postcondition은 domain model에서 객체의 상태 변화를 기술
+      - db에 반영되는 결과
+      - 해당 system operation이 수행하는 *도중*에 발생하는 행위를 뜨샇는 것이 아님
+      - Operation이 종료된 후, domain model에서 **객체 도는 관계의 변화**를 관찰해서 기술
+    - 일반적으로 postcondition은 과거형으로 기술
+      - A SalesLineItem was created
+      - Create a SalesLineItem(X)
+  - Operation contracts 작성을 통한 update
+    - Contracts를 명세화 하는 도중에 domain model에서 새로운 개념, 속성, 연관관계가 드러날 수 있음
+    - 이를 통해 domain model의 표현을 강화할 수 있음
+    - Operation이 명확하지 않거나 use-case의 설명이 너무 추상적인 경우
+      - contract 작성을 통해 명확화 할 수 있음
+  - Common Mistakes
+    - 개념간 association의 forming/broken을 많이 간과함
+    - ex) 새로운 instance 생성, 기존 instance 삭제
+- Example
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/087ae67e-f152-40d1-8ad7-da20b881b350)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/f7b6ad04-3971-48d0-8ecd-cb6896b96349)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/24562ccd-a6fa-4ec6-ab60-5d5695568bef)
+- Analysis flow
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/ee975678-d114-4274-aca9-3d04306fea0c)
