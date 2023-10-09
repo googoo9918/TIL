@@ -389,7 +389,7 @@
     - 한 데이터를 여러 트랜잭션에서 읽을 수는 있다는 얘기(물론, 이 데이터가 X mode로 lock이 걸려있으면 안됨)
   - 쓰기 록은 반드시 한 개의 트랜잭션에만 부여 가능
   - ![image](https://github.com/googoo9918/TIL/assets/102513932/4eed16b4-6a86-4afc-bdd1-53ef674b1c2b)
-    - 모든 데이터베이스 연산을 locking과 unlocking이 감사는 형태
+    - 모든 데이터베이스 연산을 locking과 unlocking이 감싸는 형태
     - 이를 well-formed schedule이라 칭함
     - 다만, 이는 트랜잭션 직렬가능 스케줄을 보장하진 않음
 - 2단계 록킹 규약(Two-phase Locking Protocol)
