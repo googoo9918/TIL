@@ -49,6 +49,19 @@
     - [Inheritance Relationship](#inheritance-relationship)
   - [State\&Activity Diagram](#stateactivity-diagram)
     - [State Machine Diagram](#state-machine-diagram)
+    - [Activity Diagram](#activity-diagram)
+  - [Case Study for OOD](#case-study-for-ood)
+    - [State Machine Diagrams](#state-machine-diagrams)
+    - [Activity Diagram](#activity-diagram-1)
+    - [Logical Architecture](#logical-architecture-1)
+    - [Sequence Diagrams](#sequence-diagrams)
+    - [Class Diagram](#class-diagram-1)
+  - [SOLID](#solid)
+    - [SRP](#srp)
+    - [OCP](#ocp)
+    - [LSP](#lsp)
+    - [ISP](#isp)
+    - [DIP](#dip)
 # 소프트웨어 분석 및 설계
 ## Introduction
 ### 소프트웨어
@@ -1033,3 +1046,157 @@ public class StaticTest{
   - 이전 상태에서 다음 상태로 변경될 때 유발하는 조건이나 이벤트를 간선에 표기
   - Notation
     - Trigger[Guard]/ Action
+      - Trigger: 전이를 발생시키는 event
+      - Guard: boolean 조건
+      - Action: 전이 이후 수행되는 행위
+      - 각 요소는 경우에 따라 생략 가능함
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/5bb72a8d-6e8d-47bb-aa32-fdec5ec496b8)
+      - door
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/1a2c96c5-cfef-418c-99f0-df220f2c4382)
+      - CD player
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/dcb01c2c-c1c9-4c8b-9d68-1cc1084ef652)
+      - troll
+- Internal behavior of state
+  - state 내부에서 발생할 수 있는 행위를 표현
+    - do/behavior
+    - entry/behavior
+      - 해당 state가 active될 때 수행
+    - exit/behavior
+      - 해당 state가 inactive될 때 수행
+- Internal transaction of state
+  - State내에서 reaction을 유발하는 전이
+    - 다른 상태로 이동은 X
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/e80356f0-d7e9-45a5-bd41-fa3b674adfc7)
+- Composite States
+  - 동시에 여러 stae를 가질 때 표기
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/640c3840-1a8b-4b0b-bb4e-bb74f06cddc1)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/7ceb3912-9cd8-45af-8afc-a86949e24a87)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/bb3d5f82-ef24-4620-8802-0e5b2cb43677)
+
+### Activity Diagram
+- 활동 다이어그램
+  - 시스템 내에서 수행되는 작업이나 동작의 흐름을 시각적으로 표현
+    - flow chart의 advance version
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/e59b77d7-9e93-45f6-b30f-24a5a0165032)
+  - ATM 사용 사례의 사용 및 활동 흐름
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/ce4361ed-2e51-479b-a40b-2e73ba0bbce2)
+  - 상품 주문에 해당하는 활동 흐름
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/b8fb311d-c747-4abf-9ef8-95d9d07b5b3e)
+  - 상품 주문에 해당하는 활동 흐름
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/4f5191e1-242b-4406-b593-06f52ec820c4)
+- 스윕 레인
+  - 활동 다이어그램은 여러 클래스와 연관 가능
+  - 클래스 별로 나눠서 활동 흐름 표시
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/90851937-c3d0-442d-92a3-81101b909379)
+- 신호
+  - 특정 조건 하에서 시작되는 활동
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/1e83df8f-7397-4919-b6d1-5fcdb8863d63)
+- Loop 표현
+  - plain notation
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/c024de88-12e3-4af0-bd7f-a4bf21fc9750)
+  - Loop Node
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/0ceba962-c01a-4521-9785-a97ed8c758c9)
+  - Extension region
+    - Collection의 개별 entry에 대해 반복적으로 수행
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/64f4d889-8af5-4ae4-9f41-7ecb5ca5a0d6)
+
+## Case Study for OOD
+- Library Management System
+  - Actor-based use-cases
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/cb6f30e1-29bd-41dd-8e83-6a5710c40227)
+  - Use-case Diagram
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/2fa4d9f8-54e1-4c5b-953d-09fbc6a88191)
+  - Domain Model
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/d25761fc-b0b1-44f9-b880-ec981a49ba4e)
+  - System Sequence Diagram(SSD)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/5df11e8e-4213-4896-9f29-47966435c16e)
+### State Machine Diagrams
+- Title과 Item 객체 상태 변화
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/c5030668-c398-40a8-b0e7-c1a8368b0ce1)
+
+### Activity Diagram
+- Librarian's activities
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/99130008-8fb5-43b6-a09b-f3e6d87a8318)
+
+### Logical Architecture
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/69aa9945-5309-4989-bc61-9f9cfe9073bb)
+
+### Sequence Diagrams
+- Login
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/e69194c8-311f-463c-b09d-6820fb80f463)
+- Add Borrower
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/90cc16b1-f8d0-405f-80cc-f15835e8cfc5)
+- Add Item
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/9dff4776-687e-42a1-9075-7f4cf52ed61a)
+
+### Class Diagram
+- Domain Model
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/746b758d-406b-44a3-b722-6f5b8dece31c)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/92cb697b-ef22-4c04-a606-02ea900aa4c3)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/089f68b5-8c65-4ae8-9b9d-a504017a4e0c)
+
+## SOLID
+### SRP
+- SRP(Single Responsibility Principle)
+  - 단일 책임 원칙
+  - 모든 클래스는 단 하나의 책임만을 가져야 함
+    - 지켜지지 않으면 변경에 취약
+    - 여러 책임이 있으면 변경이 일어 났을 때 수정해야하는 코드가 많아짐
+  - 책임 분리
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/125e5f00-7ee7-4f5f-8d4c-a5e8b5d0b6ae)
+
+### OCP
+- OCP(Open-closed Principle)
+  - 개방-폐쇄 원칙
+  - 확장에는 열려있어야 하며, 수정에는 닫혀있어야 함
+    - 변경 사항 발생 시, 확장은 가능해야하나 수정은 없어야 함
+  - 변해야 하는 것은 쉽게 변할 수 있게 하고, 변하지 않아야 할 것은 변화는 것에 영향을 받아선 안됨
+  - 일반적으로 추상 클래스와 상속을 통해 OCP를 따름
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/bf0c3621-504b-4c80-8f2e-f1b17b8a180d)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/b2ea1230-ed31-4574-9d55-841ff18a2464)
+
+### LSP
+- LSP(Liskov Substitution Principle)
+  - 리스코프 치환 원칙
+  - 상위 타입의 객체를 하위 타입의 객체로 치환 해도, 상위 타입을 사용하는 프로그램은 정상적으로 동작해야 함
+    - 즉, 자식 클래스가 부모 클래스의 행동 규약을 지켜야함
+  - 지켜지지 않는경우
+    - 오버라이딩을 잘못 한 경우(매개변수 개수나 타입 다름)
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/b8b76f74-ab54-4055-b109-5d9cd072d158)
+    - 부모의 의도와 다른 오버라이딩
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/62879500-a701-4937-a80a-32bfd9882c5a)
+    - 잘못된 상속 관계 구성
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/eff5a313-71d9-4a03-b608-2b523b7452be)
+
+### ISP
+- ISP(Interface Segregation Principle)
+  - 인터페이스 분리 원칙
+  - 클라이언트가 사용하지 않는 메서드에 의존하지 않아야함
+    - 인터페이스에 클라이언트가 필요한 메서드만 포함될 수 있도록 분리
+    - 인터페이스를 각각 사용에 맞게 분리
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/54081f44-a38c-465c-8f7a-b9107a77f27e)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/5aa8ce69-5da5-4c73-b0a7-a9d9e7fff511)
+- SRP VS ISP
+  - SRP는 클래스의 단일 책임을 강조, ISP는 인터페이스의 단일 책임을 강조
+  - ISP는 클라이언트의 기준으로 인터페이스가 분리되어야 함
+    - 만약, 비대해진 클래스를 SRP에 따라 여러 클래스로 나누고 각자의 인터페이스를 제공한다면 ISP를 따를 수도 있으나, 반드시 그런 것은 아님
+      - 게시판의 여러 기능의 메서드를 제공하는 클래스가 있다고 가정
+      - 클라이언트에 따라 일부 기능만 사용 가능
+      - 일반 사용자는 게시판 삭제 불가, 관리자는 삭제 가능
+      - 게시판 클래스는 게시판에 관련된 책임을 지므로 SRP를 만족함
+      - 이 클래스의 모든 메서드가 들어있는 인터페이스가 클라이언트에 상관 없이 사용되므로 ISP에는 위반
+
+### DIP
+- DIP(Dependency Inversion Principle)
+  - 의존 관계는 변화하기 어렵거나 변화가 거의 없는 것과 맺어야 함
+  - 구체 클래스는 변화하기 쉽고, 추상클래스와 인터페이스는 변화하기 어려움
+  - DIP를 만족하려면 구체적인 클래스보다 추상클래스 또는 인터페이스와 의존 관계를 맺도록 설계해야함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/32f99393-4906-47d1-a89c-5058bb27dc97)
+- 기존에는 고수준의 클래스가 저수준의 클래스에 직접적으로 의존하였으나
+  - 고수준 클래스와 저수준 클래스 둘 다 추상화(추상 클래스 또는 인터페이스)에 의존해야함
+
+- SRP와 ISP는 객체가 커지지 않도록 돕고
+- LSP와 DIP는 OCP를 지원
+  - OCP는 추상화와 다형성을 통해 기능 확장을 하면서도 기존 코드를 수정하지 않도록 함
+  - DIP는 변화 되는 부분의 추상화를 지원
+  - LSP는 다형성을 도움
