@@ -47,6 +47,8 @@
     - [Composition Relationship](#composition-relationship)
     - [Aggregation VS Composition](#aggregation-vs-composition)
     - [Inheritance Relationship](#inheritance-relationship)
+  - [State\&Activity Diagram](#stateactivity-diagram)
+    - [State Machine Diagram](#state-machine-diagram)
 # 소프트웨어 분석 및 설계
 ## Introduction
 ### 소프트웨어
@@ -992,3 +994,42 @@ public class StaticTest{
     - 슈퍼 클래스가 직접적으로 인스턴스화 되지 않음
     - 추상 클래스를 상속받는 서브 클래스만 인스턴스화 될 수 있음
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/af8ab434-c182-4a8d-a096-aac9978c8135)
+
+## State&Activity Diagram
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/4b76d830-52be-4a23-9e3b-248682a59b45)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/3faa9691-57f4-4d87-a87f-9e8fc61773d3)
+
+### State Machine Diagram
+- 상태(state)
+  - 시스템이나 객체는 보통 특정 상태(state)에 있음
+    - 특정 이벤트 발생 시, 상태 변화
+- 상태 다이어그램
+  - 시스템이나 객체의 상태가 어떤 오퍼레이션에 의해 동적으로 변하는지 표현
+- 상태 머신 다이어그램의 기본 구성 요소
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/49ee62c8-0f17-443d-8dce-87984e1e0c9e)
+  - 상태(state)
+    - 시스템이나 객체의 특정 상태
+    - text로 상태 표현
+  - 전이(transaction)
+    - 상태의 변경을 표현
+    - 화살표와 이벤트로 표기
+- 상태 머신 다이어그램의 기본 구성 요소
+  - 초기 상태
+    - filled black circle
+  - 최종 상태
+    - circled dot
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/f29aba6a-7edc-45e9-ac44-a2bdc7d87230)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/ac96bfb5-a89b-4e5d-be4c-03821eea90ef)
+- 상태
+  - 특정 시점에서의 컨디션으로 passive/active 구분
+    - passive
+      - 전구 -> On and Off
+    - active
+      - 커피머신 -> Brewing
+  - Doing state의 경우 상태 내부에 행위 기술 가능
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/6924eac2-5e15-431c-9c88-59aff595fde2)
+    - do/behavior의 경우 행위 마무리 시 상태 변경이 있을 수도, 없을 수도 있음
+- 전이
+  - 이전 상태에서 다음 상태로 변경될 때 유발하는 조건이나 이벤트를 간선에 표기
+  - Notation
+    - Trigger[Guard]/ Action
