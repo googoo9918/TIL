@@ -19,6 +19,34 @@
   - [System Sequence Diagram \& Contracts](#system-sequence-diagram--contracts)
     - [System Sequence Diagram](#system-sequence-diagram)
     - [Operation Contracts(작업 규약)](#operation-contracts작업-규약)
+  - [Case Study for OOA](#case-study-for-ooa)
+  - [Package Diagram](#package-diagram)
+    - [Logical Architecture](#logical-architecture)
+    - [계층을 이용한 설계](#계층을-이용한-설계)
+    - [Typical Layers in OO System](#typical-layers-in-oo-system)
+    - [Package Diagram](#package-diagram-1)
+    - [Steps for Package Diagram](#steps-for-package-diagram)
+    - [Guideline for Package Diagram](#guideline-for-package-diagram)
+    - [Designing Objects](#designing-objects)
+  - [Interaction Diagram](#interaction-diagram)
+    - [Dynamic Object Modeling](#dynamic-object-modeling)
+    - [Sequence Diagram](#sequence-diagram)
+    - [Communication Diagram](#communication-diagram)
+  - [Interaction Diagram(2)](#interaction-diagram2)
+    - [Combined Fragments](#combined-fragments)
+    - [Exception Itneraction](#exception-itneraction)
+    - [Weak Order of Sequences](#weak-order-of-sequences)
+    - [Atomic Interaction](#atomic-interaction)
+    - [Interaction Reference](#interaction-reference)
+  - [Class Diagram](#class-diagram)
+    - [Notations in Class Diagram](#notations-in-class-diagram)
+    - [Types of Class Relationship](#types-of-class-relationship)
+  - [Class Diagram(2)](#class-diagram2)
+    - [Association class](#association-class)
+    - [Whole-part Relationship](#whole-part-relationship)
+    - [Composition Relationship](#composition-relationship)
+    - [Aggregation VS Composition](#aggregation-vs-composition)
+    - [Inheritance Relationship](#inheritance-relationship)
 # 소프트웨어 분석 및 설계
 ## Introduction
 ### 소프트웨어
@@ -525,3 +553,442 @@ public class StaticTest{
   - ![image](https://github.com/googoo9918/TIL/assets/102513932/24562ccd-a6fa-4ec6-ab60-5d5695568bef)
 - Analysis flow
   - ![image](https://github.com/googoo9918/TIL/assets/102513932/ee975678-d114-4274-aca9-3d04306fea0c)
+
+## Case Study for OOA
+![image](https://github.com/googoo9918/TIL/assets/102513932/373bc2eb-78e0-4b86-8172-2caf5e2fc985)
+![image](https://github.com/googoo9918/TIL/assets/102513932/3ebd02de-0f6b-442d-ad02-0831a2e52bb8)
+![image](https://github.com/googoo9918/TIL/assets/102513932/1a4e5660-3dc1-485c-bc49-0d1f92d0d3a5)
+![image](https://github.com/googoo9918/TIL/assets/102513932/f7889853-0dd8-4879-8a6a-4cf24de94431)
+![image](https://github.com/googoo9918/TIL/assets/102513932/08c2abb7-3b79-41a8-994a-35b5ce835c9d)
+![image](https://github.com/googoo9918/TIL/assets/102513932/de91572b-2bce-4990-87a7-a0c66acab5cc)
+![image](https://github.com/googoo9918/TIL/assets/102513932/6a122fdb-4933-46bb-9259-4a6e8717649d)
+![image](https://github.com/googoo9918/TIL/assets/102513932/c473a6b3-b688-4a81-a94e-51600dd62dac)
+![image](https://github.com/googoo9918/TIL/assets/102513932/560a13a3-102d-4ca4-953c-fbc1c22e3701)
+![image](https://github.com/googoo9918/TIL/assets/102513932/6f70259b-d208-432a-9e39-8183410ea096)
+![image](https://github.com/googoo9918/TIL/assets/102513932/9e76e511-e77d-49dc-ae19-d8fa45056c4f)
+![image](https://github.com/googoo9918/TIL/assets/102513932/513e68bf-1c8c-4c09-9b88-5209916b8e38)
+  - New loan instance was created
+  - New Associations between loan and item , loan and borrower were created
+![image](https://github.com/googoo9918/TIL/assets/102513932/80d7a831-51fb-4161-915b-feb8dd6022d6)
+  - 1 item available was set to true
+  - Old loan instance was deleted
+  - Association between loan and item was broken
+  - Association between loan and borrow was broken
+## Package Diagram
+- 객체지향 분석(OOA)에서 객체지향설계(OOD)로의 전환
+  - Unified process에서 각 iteration 마다, 요구사항/OOA에서 설계/구현으로의 전환이 일어남
+  - 반복적, 점진적 분석 및 설계 수정
+  - 분석에서는 "올바른 일"에 중점
+  - 설계에서는 "올바르게 동작하도록" 중점
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/3e4f967f-4a48-4f62-a1b3-b763375ff65b)
+
+### Logical Architecture
+- 논리적 아키텍처
+  - 클래스들을 package, subsystem, layer와 같은 큰 단위로 구성
+  - 배치의 방법을 고려하지 않고 논리적인 수준에서 구조를 고민
+    - 배치를 고려하는 것은 deployment diagram
+  - Package diagram으로 논리적 아키텍처 시각화 가능
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/fc671f97-a42f-4852-b1b9-bd33825b9776)
+
+### 계층을 이용한 설계
+- 계층
+  - 응집된 책임을 가지며 클래스, 패키지 또는 서브시스템을 그룹화
+- 기본 아이디어
+  - 큰 규모의 시스템을 계층들로 조직화, 각 계층은 연관된 책임을 가짐
+  - 높은 계층이 낮은 계층의 서비스를 호출할 수 있도록 계층 구성
+- 장점
+  - 관심분리, 하위 수준과 상위 수준의 서비스 분리
+    - 재사용성 증가
+  - 일부 계층만 새로운 구현으로 대체 가능
+    - 모듈성 증가
+
+### Typical Layers in OO System
+- 사용자 인터페이스 계층
+  - 액터와의 입출력 담당
+- 응용 로직과 도메인 계층
+  - 요구사항을 충족하는 도메인 개념을 나타냄
+- 기술적 서비스 계층
+  - 객체, DB 연결, 오류 로깅 서비스와 같이 기술적 서비스를 제공하는 객체나 서브시스템
+  - 여러 시스템에서 재사용 가능
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/d791eb52-e4c2-4132-ac3c-c7b694162cf1)
+
+### Package Diagram
+- 패키지 다이어그램
+  - 어떤 구성 요소라도 그룹(package)으로 조직화되면 시각화할 수 있음
+  - 패키지는 중첩되어 포함될 수 있음
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/e4218768-97b7-4100-b22e-1eb571d8d69c)
+- Notations
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/51ede0fd-f6f0-41bc-8fdd-6c21c2c66c97)
+  - Tier = Logical layer
+  - Vertical Layers
+    - 수직으로 분할
+  - Horizontal Partition
+    - 한 계층 내에서 병렬적인 서브시스템, 패키지를 수평으로 표현
+  - Dependency
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/f996ff12-92f3-4587-90f6-d45ae895b93e)
+    - A에서 B에 있는 요소를 사용 시, A는 B를 의존한다 함
+    - **점선** 화살표로 표기
+
+### Steps for Package Diagram
+1. Package 파악
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/830516ee-3346-4e12-a488-342520993b1e)
+    - 동일한 주제 영역, 개념/목적에 밀접하게 관련, 동일한 사용사례 등 함께 묶음
+2. Layer에 배치
+  - UI, Domain, Service Layer에 맞게 배치
+  - 의존관계 또한 추가
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/ecc935a6-2bdd-42a3-80ba-a4f2714d5bef)
+3. Printer Management System
+- OOA 결과물로부터 package화
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/405190cd-6c4b-4d00-8753-d1d63b7b1be7)
+
+- SSD와 System Operations의 연관
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/fa135df4-ebac-447a-abf9-b5214bdecbfa)
+  - UI 계층의 객체는 UI 계층에서 도메인 계층으로 요청을 전달 및 위임
+  - UI 계층에서 도메인 계층으로 보내는 메시지는 SSD에 나타난 메시지와 동일
+
+### Guideline for Package Diagram
+- 도메인 계층의 클래스 이름은 도메인 모델에서 따옴
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/666fee0d-ce66-4b19-b394-5857a6c24fd8)
+- 논리적 모델과 물리적 모델을 섞어 그리지 않음
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/a301e591-af22-4254-a52b-e3a10abb8484)
+- 모델-뷰 분리 원칙
+  - 모델은 도메인 계층의 객체를 의미
+  - 모델(도메인) 객체는 뷰(UI) 객체에 대한 직접적인 지식을 가져선 안됨
+    - Sales/Register 등의 도메인 객체는 뷰 객체가 아니므로, 화면에 표시, 색상 변경, 창 닫기 등을 도메인 객체가 요청할 수 없음
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/00e634e9-6654-4dc9-b919-b4032f1305c2)
+  - 이유
+    - 유지보수
+      - UI는 자주 변하나 도메인/데이터는 상대적으로 덜 변함
+    - 관심의 분리
+      - UI 개발은 사용자 관점에서 편의성을 최대화 하는데 초점
+      - 모델 개발은 데이터 처리에 초첨
+    - 싱글 모델-멀티 뷰
+      - 하나의 데이터를 여러 모습으로 사용자에게 보여주는 상황이 많음
+### Designing Objects
+- Object model의 종류
+  - Static model(정적 모델)
+    - 패키지, 클래스 이름, 속성, 오퍼레이션 등의 정의를 설계하는데 도움
+  - Dynamic model(동적 모델)
+    - 로직, 코드, 메서드 등을 설계하는데 도움
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/3b76b1cd-ad35-4a5f-bf89-6ddc81ceb25e)
+- Static and dynamic object modeling
+  - 가장 흔하게 사용되는 정적 객체 모델링 방법은 class diagram
+    - dynamic modeling도 정적 모델만큼 중요함
+    - 동적 객체 모델링을 통해 상호작용에 대한 세부 정보 파악
+  - Static UML tools
+    - Class diagram, Package diagram, Deployment diagrma
+  - Dynamic UML tools
+    - sequence diagram, State diagram, Activity diagram
+
+## Interaction Diagram
+### Dynamic Object Modeling
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/43ed927c-ff5b-420d-8205-8ff1a4443364)
+  - 동적 모델링
+    - 시스템 기능을 만족하기 위해 각 블록이 어떻게 상호작용하는지 나타냄
+    - 클래스의 인스턴스로 생성된 객체가 특정 시간에 다른 객체에 어떻게 메시지를 보내 상호작용하는지 나타냄
+    - 객체, 시간, 메시지 호출 순서, 논리적 흐름 등이 표현됨
+  - Interaction Diagram의 종류
+    - Sequenc diagram, Communication diagram
+- Seqeuence diagram
+  - 시간 순으로 객체 간 메시지 교환 및 상호작용을 나타냄
+- Communication diagram
+  - 상호작용 객체 간 연관을 표현, 주고 받는 메시지로 구성
+    - 메시지에 번호를 붙여 순서 표시
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/9e38dc31-7050-4428-ba1d-6eb48510b9d1)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/d4083c6d-cbce-4577-b2ae-abfe2101ad34)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/b7e42f5e-ff84-4e18-9eb1-884caad0ecf2)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/1ddb0e3f-f0d7-4194-8e64-5ffb1c20b079)
+  - makePayment()라는 메시지를 Register 객체에 전송
+  - Register 객체는 makePayment() 메시지를 Sale 객체로 전달
+  - Sale 객체는 Payment 객체를 생성
+  - 서로 동일한 정보를 담고 있으나, 표현법이 다름(상호 변환 쉬움)
+    - Sequence: fence style
+    - Communication: network style
+- Sequence Vs Communication
+  - Sequence
+    - 시간 축에 초점을 두고 사건 흐름을 나타냄
+  - Communication
+    - 객체 관계에 초점을 두고 흐름을 나타냄
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/c6633247-33dd-48de-b2f0-aae437e1fc83)
+### Sequence Diagram
+- 시퀀스 다이어그램 기본 요소
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/1289ce44-4bdd-450d-a4d1-330c2baa3be5)
+  - 객체: box로 표기
+  - 메시지: 보내진 방향으로 화살표 표기
+    - Found message: 시퀀스 다이어그램에서 메시지 전송 시작점
+      - Actor 존재 시, actor가 시작점
+  - 라이프라인: 객체가 시스템에 존재하는 기간
+    - box에 lifeline이 붙으면 lifeline box라 하는데, 필요에 따라 세분화 가능
+  - Activation box
+    - 객체가 활성화 되어서 실행되는 기간
+  - Type of messages
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/543f6a66-5fdf-4eb0-af1b-e8b43e8ec73f)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/1da205d4-4a79-4974-ac26-0ef426cead44)
+    - Synchronous message
+      - Sender가 response message를 받을 때까지 기다려야 함
+    - Asynchronous message
+      - Sender가 응답을 기다리지 않고 진행할 수 있음
+    - Response message
+      - 요청 메시지에 응답에 해당하는 메시지
+      - 명확한 응답의 경우 생략 가능
+    - Message Syntax
+      - `return = message(parameter:parameterType): returnType`
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/ffb504aa-8672-42ca-b4f4-013cab96faba)
+    - Found message
+      - 보낸 사람이 누군지 모르는 경우 보통 시작점
+    - Lost message
+      - 받는 사람이 누군지 모르는 경우
+    - self message
+      - 자기 자신에게 보내는 메시지
+    - Time-consuming message
+      - Message with duration: 보내서 받는데 걸리는 시간
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/6d328e2f-8a57-4fc8-b975-c84e420d72f0)
+    - 생성의 경우 관용적으로 점선에 <<created>> 메시지 표시
+      - Target instance의 lifeline box를 향함
+    - 소멸의 경우 <<destroy>> 메시지와 X로 표시
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/dd6a77a7-d41b-4920-bd4b-580fcdd90b11)
+    - 조건: 단일 메시지에 대해 조건을 명시하는 표기법
+      - [condition] message와 같이 표기
+        - condition이 만족되는 상황에만 message 전송
+    - 반복: 단일 메시지를 여러 번 보내는 경우 표기
+      - [for loop condition] message와 같이 표기
+- Example
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/b8a94254-f959-4131-baac-bb12fdd198af)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/1c462ceb-c910-45cd-9afd-12e5919441db)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/c4a2f0ae-4399-46ea-8076-ef312f362c18)
+
+### Communication Diagram
+- 커뮤니케이션 다이어그램 구성 요소
+  - 연관된 객체는 화살표 없는 직선으로 연결
+  - Message 표기
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/8fc70ceb-0963-4fc0-b5e6-aa6ec00aa279)
+    - 메시지는 선 위에 화살표와 같이 표기
+    - 메시지 순서를 숫자로 앞에 같이 표기
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/e973bd70-3cad-448f-afa5-5a053e181ee6)
+
+
+## Interaction Diagram(2)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/a82bce57-5327-4703-a202-c45ab1184100)
+
+### Combined Fragments
+- In Sequence Diagram
+  - 시퀀스 다이어그램의 요소를 그룹화 하고 조건에 따른 실행 흐름을 시각화하기 위해 사용
+  - Frame으로 범위를 명시, Interaction operatior과 operand로 표기
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/0f9bb152-164f-4233-a988-0a94e04c08ee)
+    - Operatior: 해당 fragment의 의미와 operands를 어떻게 사용할지 결정
+    - Operand: 특정 조건이 만족될 때 수행되는 공간
+      - 조건이 없다면 항상 실행
+    - Guard condition
+      - 수행 조건을 명시해야 할 때 사용
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/870dcb37-eaba-4585-91c4-a0c4bc9987d7)
+    - alt
+      - 조건에 따라 다른 흐름을 표현해야 할 때(if-else if-else)
+      - 조건은 []로 표시, [else]는 predefine
+    - opt
+      - 조건이 성립할 때문 수행(if-then)
+      - 하나의 operand만 있음
+  - loop fragment
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/71ef053a-c6a4-42a9-a6db-28485aed3ec6)
+    - loop(min,max) or (min..max)
+    - 최소 min에서 최대 max만큼 반복됨
+    - *은 no upper limit을 의미
+    - Guard가 false 될 때 loop 종료
+
+### Exception Itneraction
+- Usage of break fragment
+  - 예외처리와 비슷
+  - Guard condition 항시 명시
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/b450a410-cbd8-4251-8de0-df54064f7984)
+  - Guard가 true인 경우
+    - Break안의 operand가 수행
+    - 둘러싸고 있는 나머지 operand는 수행하지 않음
+    - 다음 higher level fragment에서 sequence 흐름이 이어짐
+- EX
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/71532208-0400-49e3-8586-ff2266608408)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/4cd18aca-8990-40a5-8abc-b721ffc70e7f)
+
+### Weak Order of Sequences
+- Usage of seq fragment
+  - Operands간 weak sequence를 나타낼 때 사용
+  - Weak sequnce
+    - 다른 lifeline에서의 메시지들의 순서는 자유로우나, 하나의 lifeline에서의 메시지들의 경우 순서는 시간 축을 따름 
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/ea14d9f1-3def-4790-8e21-16256b74ea08)
+  - 따로 표시가 안되어 있으면 모두 seq임
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/337ad508-8cf1-427c-948d-10e0f443f3e7)
+    - google 검색과 bing/yahoo 검색 순서는 상관 없음
+    - 다만, bing을 먼저 검색하고 yahoo를 검색해야함
+- Usage of strict fragement
+  - 서로 다른 operand간 순서를 엄격히 제약하고자 할 때 사용
+    - 기본값은 seq임
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/a23b3d4f-8572-459a-8941-948ae98710b5)
+- Usage of par fragment
+  - 서로 다른 operand의 동시 수행을 표현할 때 사용
+    - operand 내의 순서는 유지되나, 서로 다른 operands 내의 순서는 상관 없음
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/4113b22b-e2ec-4b2a-bef1-a1fd6d8984ec)
+
+### Atomic Interaction
+- Usage of critical fragment
+  - Critical region(atomic area)을 나타낸 것으로, critical region 내에 있는 메시지들 사이에 region 밖의 다른 메시지들이 끼어들 수 없음
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/87d287ba-a46b-486c-8629-34d54e31227f)
+    - 위 두 operand들은 병렬적으로 수행되나, c->d 사이에 다른 메시지가 올 수 없음
+
+### Interaction Reference
+- Usage of ref fragment
+  - ref fragment를 통해 다른 sequence diagram(sd)를 가리키게 할 수 있음
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/fa2ffc10-c2bf-46c4-9b9b-ecb9c524cdf7)
+- 같은 메시지를 한 collection 내 개별 요소에게 iterate 하여 보내야 할 때
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/080d9074-fcfa-410c-bd6c-24af08fa632f)
+- Time Constraints
+  - 메시지 전송, 수신 시간, duration 등의 제약 표기 가능
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/2e2d021f-6f87-4ea4-a591-43e74e14c106)
+
+## Class Diagram
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/0f6dc1c0-a3ce-4482-8e2c-5488f67b313f)
+  - 시스템을 구성하는 클래스와 클래스 간 관계를 도식화
+  - Seqeunce diagram을 그리다 보면 클래스와 메소드들이 등장
+    - Dynamic, Static view를 동시에, 반복적으로 그림
+- Domain model과 design class diagram의 차이
+  - Domain model
+    - 개념적인(conceptual) 관점에서 시스템을 이루는 도메인 객체 관계 표현
+  - Design class diagram
+    - software 관점에서 시스템 내부의 클래스와 관계를 세부적으로 표현
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/bf72b1d8-2d6e-44e1-9f86-cfaf29dd726a)
+
+### Notations in Class Diagram
+- 클래스
+  - Attribute와 operations의 집합체
+  - 클래스의 instance를 object라 지칭
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/9e141c3d-358f-465f-82fb-fcab9a8a16d2)
+    - Attribute는 객체마다 다름
+    - Operation은 모든 객체에서 동일
+- 가시성(visibility)
+  - 클래스 안의 속성을 누가 접근할 수 있는지 명시
+  - 접근 지정자 표기
+  - +: public
+  - -: private
+    - 해당 클래스 내에서만 접근
+  - #: protected
+    - 클래스 자기 자신과 상속 받는 서브 클래스에서만 접근 가능
+- derived attribute
+  - 다른 정보로부터 해당 attribtue의 값이 계산되는 attribute
+    - /name과 같이 /(slash)를 이용하여 표기
+    - 혹은, {readOnly}를 붙이기도 함
+      - 다른 attributes로부터 값이 결정되기 때문에 직접적인 수정을 허용하지 않음
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/6a894abb-9464-472e-b437-a923999ec4e2)
+- name and type
+  - Name과 Data type을 표기
+- multiplicity
+  - 한 attribute가 갖는 값의 개수
+  - [min..max], No upper limit --> [*]
+- default value
+  - Attirbute가 갖는 기본 값
+- properties
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/5be2cd47-2519-4c67-8ff0-08327aa8ef62)
+- Operation syntax
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/4a998b1f-3170-4c96-bee2-d9951d2116a1)
+  - in: input parameter
+  - out: output parameter
+  - inout: combined input/output parameter
+- Class variable and class operation
+  - static이 붙는 attribute, operation
+  - underline으로 표시함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/559c54ae-5086-4905-8825-50a9d5302218)
+- Getter and setter
+  - 모든 속성에 대해 getter/setter를 다 표시 하는 것은 장황해질 수 있음, 종종 생략
+- Abstract operation and abstract class
+  - Italic(기울어진) 글씨체로 표현
+  - {abstract} property로 붙여 표현
+  - class의 경우 <<abstract>>로 표현하기도 함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/2f416c1d-b6cc-4d79-bab4-edae9df0f17d)
+
+### Types of Class Relationship
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/101b2c2a-035a-4f57-a52c-b3a300b7a7c7)
+  - 의존 관계
+    - 한 클래스의 객체에서 다른 클래스의 객체를 사용하는 경우
+      - 메소드의 파라미터, 반환 값으로 사용 or 지역 변수로 사용 시
+  - Association
+    - 한 클래스의 객체가 다른 클래스의 객체와 "장기간" 연관되어 동작할 경우
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/c42413fe-d3f4-4366-9195-30b338ce4ecf)
+  - Navigability
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/bfb0fb14-9ad2-4ea3-a6cb-efb43e683254)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/869e79f0-5434-45c7-abd7-f7f47b59ddc8)
+  - Binary Association as Attribute
+    - Association 관계에서 attribute를 표현하는 방법
+      - attribute text: type으로 association을 표현
+      - association line
+      - Both together
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/b4537e7c-eff0-4734-b6da-9f2eef3abff8)
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/baa173fe-ab29-4527-b037-e54c2922689a)
+        - 보통 Data에 해당하는 attribute는 text로, 두 클래스간 연관 관계에 있는 attribute는 association line으로 표기
+
+## Class Diagram(2)
+### Association class
+- 연관 클래스
+  - 연관 관계에 속성이나 행위를 추가할 필요가 있을 때, 연관 관계를 클래스로 표현
+    - 다대다 관계에서 사용
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/fc3444bf-d3ee-4c24-b975-cfedda680fbd)
+      - 한 학생은 다수의 강좌 등록
+      - 한 강좌는 다수의 학생 등록
+      - Enrollment는 특정 학생의 특정 과목에 대한 성적 표현
+        - 연관 관계를 클래스로 표현, 이를 *연관 클래스*라 지칭
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/c1fdd0b6-f5de-4178-a9c1-72882848b6d3)
+      - 연관 클래스를 풀어서 연관 관계로만 표현 가능
+      - 일대다, 다대일 관계로 풀어서 표현 가능
+      - 한 학생은 여러 과목 등록, 한 과목은 다수의 학생에 읳 ㅐ등록
+      - 이때 Enrollment객체는 Student 객체, Course 객체, grade를 속성으로 가짐
+
+### Whole-part Relationship
+- 전체/부분 관계
+  - 전체 개념에 해당하는 클래스(whole) 이릉 이루는 부품에 해당하는 클래스(part) 간 관계
+    - 자동차/바퀴, 건물/방
+    - 부분 개념이 모여서 전체 개념을 이룰 때
+- Aggregation Relationship
+  - 집합 관계
+  - 부분이 전체에 **약하게** 속하는 관계 표현
+  - 부분은 전체에 관계없이 독립적으로 존재 가능
+  - 전체라는 객체가 소멸되어도, 부분에 해당하는 객체는 사라지지 않음
+    - 전체와 부분이 생명 주기를 달리함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/e17dc4fb-5a85-4641-909b-4189a0092cd0)
+  - Car/Wheel, User/Address
+    - wheel은 car와 상관 없이 독립적으로 존재 가능, 다른 이동수단에도 사용 가능
+    - address는 user라는 개념에 상관 없이 독립적으로 존재 가능, 다른 곳에서도 사용 가능
+  - 주의점
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/f62093d6-b36f-4203-b55a-fcc1495c42cd)
+    - 집합 관계는 연관 관계에 포함되기 때문에 집합 관계를 association으로 표기 가능함
+    - 단, 단순 연관 관계에 집합 관계를 적용할 수는 없음
+    - 양방향 hollow diamond는 불가능함
+    - 마찬가지로 2개의 링크를 통한 양방향 불가능
+
+### Composition Relationship
+- 합성 관계
+  - 부분이 전체에 **강하게** 연관되는 관계를 표현
+    - 전체와 부분이 생명 주기를 같이함
+    - Building/Room, Book/Chapter
+      - 건물이 없으면 방만으로는 의미 없음, 책이 없이 챕터만으로는 의미가 없음
+- 표기법
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/55ffe0a7-1967-47f8-8715-cbdfcb09b4b8)
+  - Filled diamond로 표기
+
+### Aggregation VS Composition
+- 전체와 부분의 생명 주기
+  - 집합
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/04bca550-fbc7-4aa3-a0c6-6ff123ca0298)
+    - 전체 객체가 소멸되더라도 부분 객체는 사라지지 않음
+  - 합성
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/7da24b28-ba72-49d1-ab96-f7b92ea2abd2)
+    - 전체 객체가 소멸되면 부분 객체도 사라짐
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/6f62daa7-642a-45c5-b58c-82d0b8c02ad4)
+
+### Inheritance Relationship
+- 상속 관계(일반화)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/d9ee39cd-44eb-4782-b262-94c66f4061d9)
+  - 공통된 특성을 슈퍼 클래스로 일반화
+  - 서브 클래스의 인스턴스는 동시에 슈퍼 클래스의 간접적인 인스턴스
+  - 서브 클래스는 private을 제외하고 슈퍼 클래스의 모든 것을 상속
+  - 서브 클래스는 속성 및 관계를 가질 수 있음
+- 일반화(추상 클래스)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/1a9103c1-3298-4544-ae13-f91de216c041)
+  - 추상 클래스는 서브 클래스의 공통된 특성을 강조
+    - 슈퍼 클래스가 직접적으로 인스턴스화 되지 않음
+    - 추상 클래스를 상속받는 서브 클래스만 인스턴스화 될 수 있음
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/af8ab434-c182-4a8d-a096-aac9978c8135)
