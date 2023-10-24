@@ -203,7 +203,7 @@
       - ex) fork()
     - 멀티태스킹은 사용자가 동시에 여러 개의 프로그램을 실행할 수 있도록 함
     - CPU가 Idle 상태일 때는 Background 작업을 실행 가능하도록 함
-    - Multiprogramming과 TimeSharing이 MultiTasking임
+    - TimeSharing이 MultiTasking임
   - Issue
     - 복잡한 메모리 관리 시스템
       - 동시에 여러 프로그램이 메모리에 상주
@@ -287,7 +287,7 @@
   - 하나의 물리적 시스템에서 여러 다른 운영 체제를 동시에 실행할 수 있도록 함
   - 가상화된 컴퓨터 하드웨어 자원을 제공하기 위한 관리 계층
     - 게스트 OS와 하드웨어 사이에 위치
-    - 게스트 OS와 Hypervisor가 제공하는 가상화된 하드웨어 자원을 이용하는 운영체제
+    - 게스트 OS는 Hypervisor가 제공하는 가상화된 하드웨어 자원을 이용하는 운영체제
   - 각 게스트 OS들은 서로 다른 가상머신에서 수행, 서로의 존재를 알지 못함
   - 각 게스트 OS간의 CPU, 메모리등 시스템 자원을 분배하는 최소한의 역할 수행
   - 장점
@@ -894,7 +894,7 @@ void ChildRun(int shmid)
   - 여러 Process 동시 접근 가능
     - 동기화 필요
 ```c
-//Mesage에 대한 저으이
+//Mesage에 대한 정의
 typedef struct _MSG {
     long type;
     char message[256];
