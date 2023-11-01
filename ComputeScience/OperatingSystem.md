@@ -65,6 +65,12 @@
     - [Shared Memory](#shared-memory-1)
     - [Message Queue](#message-queue)
     - [Socket](#socket)
+  - [Thread](#thread)
+    - [Thread \& CPU Utilization](#thread--cpu-utilization)
+    - [Thread의 구성 요소](#thread의-구성-요소)
+    - [Multi-Threaded Program 장점](#multi-threaded-program-장점)
+    - [User and Kernel Threads](#user-and-kernel-threads)
+    - [Mapping of USer \& Kernel Thread: Many-to-One](#mapping-of-user--kernel-thread-many-to-one)
 # 운영체제
 ## Introduction
 ### 운영체제란?
@@ -952,3 +958,125 @@ int main(void)
     - 물리적 위치나 특정 HW 환경에 구애받지 않음
   - Remote Machine은 Local Machine의 Port만 보임
     - 원격 시스템에서는 포트만 보이고, 내부 프로세스 구조나 소켓 정보는 안보임
+
+
+## Thread
+- 정의
+  - Execution Unit
+  - Process 내의 실행 흐름
+  - Process 보다 작은 단위
+  - Protection Domain은 존재하지 않음
+- Process와 차이점
+  - Process 간 Memory는 독립적
+    - Thread는 Code, Data, File 영역 공유
+  - Process는 IPC 필요(고비용)
+    - Thread는 공유되는 메모리를 통해 통신
+  - Process Context Switch(고비용) VS Thread Context Switch(저비용)
+    - 같은 Memory 영역을 사용하므로 Switch 비용이 적음
+    - Process보다 Thread의 고유 정보 수가 적기 때문에 비용이 적음
+### Thread & CPU Utilization
+- Thread 수와 Throughput
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/2c2f18d6-5add-461e-9346-629d186e84b1)
+    - Thread의 수가 증가할 수록 대체적으로 Utilization, Throughput 증가
+      - 임계값을 넘어가면 다시 감소
+        -  Thread의 수가 많아질 수록 Context Switching이 빈번하게 일어나고, 이에 따른 오버헤드가 증가하기 때문
+      - CPU의 수가 많은 System일 수록 Thread를 이용하는 것이 유리
+        - 더 많은 Thread를 병렬적으로 실행할 수 있음
+
+### Thread의 구성 요소
+- Thread는 하나의 실행 흐름이므로 관련된 자료 구조가 필요
+  - Thread ID
+    - Thread 식별자
+  - Program Counter
+    - 현재 실행중인 Instruction 주소
+  - Register Set
+    - CPU Register 값
+  - Stack
+  - 동일 Process 내에 있는 다른 Thread와 공유하는 것
+    - Code
+      - Program의 Code Section
+    - Data
+      - Process의 Data Section
+    - File
+      - Porcess에서 Open한 File
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/22b64975-b30b-4d51-a716-6151b631c44c)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/18cc51c3-f8eb-4d7e-8da3-52cb7697d6c5)
+
+### Multi-Threaded Program 장점
+- Responsiveness(반응성)
+  - Program의 특정 부분을 담당하는 Thread가 Block되거나 시간이 걸려도
+  - 다른 Thread는 실행되고 있음, User 입장 Interactive
+- Resource Sharing
+  - Thread들 간에는 Process의 Memory와 다른 자원들 공유
+    - 동기화 문제는 잊지 말 것
+- Economy
+  - Thread는 하나의 Process Memory에서 실행함
+  - 새 Process 생성보다 새 Thread 생성이 비용이 적게 듬
+- Scalability(확장성)
+  - 여러 개의 Thread가 각각 다른 Processor에서 동시 실행 가능
+- 주의점
+  - Big에서 4개의 CPU(코어), 하나의 Shared Cache
+  - LITTLE에서 2개의 CPU(코어), 하나의 Shared Cache
+    - 각 클러스터에서 Multicore는 Cache를 공유함을 기억하라!
+    - 따라서 Data, Code 등 Process의 자원을 공유하는 멀티쓰레드 프로그래밍에 효율적
+  - T1~T4가 BIG, T5~T6이 LITTLE에 할당
+  - T2와 T5 통신시
+    - T2 -> Shared Cache -> DRAM -> Shared Cache -> T5로 통신해야함
+    - 따라서 LITTLE 클러스터가 비어있다고 해서 무작정 쓰레드를 할당한다면, 오히려 쓰레드 간 통신에서 오버헤드가 더 크게 생길 수 있음
+    - LITTLE에서 코어를 안쓰고 있어도, BIG에서 그냥 대기하는게 나을 수도 있음 
+
+### User and Kernel Threads
+- User Thread(User-level Threading)
+  - 멀티 쓰레드를 User 레벨에서 관리하는 경우
+  - 일반적으로 User Level의 Library를 통해 구현
+  - Library에서 Thread를 생성, Scheduling과 관련된 관리를 함
+  - 장점
+    - 동일한 Memory 영역에서 Thread가 생성 및 관리 되므로 이에 대한 속도가 빠름
+  - 단점
+    - ![image](https://github.com/googoo9918/YourssuAssignment/assets/102513932/f2e34690-50e4-4256-a3df-7e1ee078b709)
+    - 여러 개의 User Thread 중 하나의 Thread가 System Call 요청으로 Block되면, 나머지 모든 Thread 역시 Block 됨
+    - 커널은 한 번에 하나의 Thread만 처리할 수 있음!
+    - 커널은 여러 User Thread들을 하나의 Process로 간주함
+- Kernel Thread(Kernel-level Threading)
+  - 운영체제에서 Thread를 지원
+  - Kernel 영역에서 Thread 생성, Scheduling 등을 관리
+  - 장점
+    - Thread가 System Call 호출하여 Block시, Kernel은 다른 Thread를 실행
+    - 즉, 전체적인 Thread Blocking이 없음!
+      - Thread Blocking이 아예 없는건 아님
+    - Multiprocessor 환경에서 Kernel이 여러 개의 Thread를 다른 Processor에 할당할 수 있음
+      - User-level Threads는 커널에 하나의 Process로 인식되기 때문에, 다른 프로세서에 스케줄링 하는 것을 고려하지 않음
+  - 단점 
+    - User Thread보다 생성 및 관리가 느림
+      - 생성 및 관리를 위해 시스템 호출이 필요하기 때문
+      - Kernel-level Thread 간 context switching의 비용이 더 많음
+
+### Mapping of USer & Kernel Thread: Many-to-One
+- Many-to-One
+  - ![image](https://github.com/googoo9918/YourssuAssignment/assets/102513932/da20a31c-05ca-4fb8-86f6-b9b629b3d8ec)
+  - Thread 관리는 User Level에서 이뤄짐(User level Threading)
+  - 여러 개의 User Level Thread들이 하나의 Kernel Thread로 Mapping
+  - Kernel Thread를 지원하지 못하는 System에서 사용
+  - 한계점
+    - 한 번에 하나의 Thread만 Kernel에 접근 가능
+      - 하나의 Thread가 System Call시, 나머지 Thread들은 대기
+      - 진정한 Concurrency는 지원하지 못함
+      - 동시에 여러 개의 Thread가 System Call 사용 불가
+    - Kernel의 입장에서 여러 개의 Thread는 하나의 Process이므로, MultiProcessor더라도 여러 개의 Processor에서 동시 수행 불가능
+      - 실제로는 Thread Library에서 여러 개의 Thread를 Scheduling 함
+- One-to-One
+  - ![image](https://github.com/googoo9918/YourssuAssignment/assets/102513932/34ca1d43-5d61-403d-9c48-8544ddb62470)
+  - 각각의 User Thread를 Kernel Thread로 Mapping
+  - User Thread가 생성되면, 그에 따른 Kernel Thread가 생성
+    - System Call 호출 시 다른 Thread가 Block 되는 문제 해결
+    - 해당 Thread는 block되어도 다른 Thread는 계속 실행
+  - 여러 개의 Thread를 Multiprocessor에서 동시 수행 가능
+  - 한계점
+    - Kernel Thread도 한정된 자원, 문한정으로 생성할 수 없음
+    - Thread를 생성 및 사용 시 개수에 대한 고려 필요 
+- Many-to-Many
+  - 여러 개의 User Thread를 여러 개의 Kernel Thread로 Mapping
+  - Many-to-One과 One-to-One Modle의 문제점을 해결
+  - Kernel Thread는 생성된 User Thread와 같거나, 적은 수 만큼 생성되어 적절히 Scheduling
+    - One-to-One 처럼 사용할 Thread의 수에 대한 고민이 줄음
+    - Many-to-one처럼 System Call 사용 시 다른 Thread들이 Block되는 현상에 대해 걱정할 필요 없음
