@@ -71,6 +71,7 @@
     - [Multi-Threaded Program 장점](#multi-threaded-program-장점)
     - [User and Kernel Threads](#user-and-kernel-threads)
     - [Mapping of USer \& Kernel Thread: Many-to-One](#mapping-of-user--kernel-thread-many-to-one)
+    - [Thread Issues](#thread-issues)
 # 운영체제
 ## Introduction
 ### 운영체제란?
@@ -1063,7 +1064,7 @@ int main(void)
       - 진정한 Concurrency는 지원하지 못함
       - 동시에 여러 개의 Thread가 System Call 사용 불가
     - Kernel의 입장에서 여러 개의 Thread는 하나의 Process이므로, MultiProcessor더라도 여러 개의 Processor에서 동시 수행 불가능
-      - 실제로는 Thread Library에서 여러 개의 Thread를 Scheduling 함
+      - 실제로는 Thread Library에서 여러 개의 Thread를 하나의 processor에 Scheduling 함
 - One-to-One
   - ![image](https://github.com/googoo9918/YourssuAssignment/assets/102513932/34ca1d43-5d61-403d-9c48-8544ddb62470)
   - 각각의 User Thread를 Kernel Thread로 Mapping
@@ -1075,8 +1076,61 @@ int main(void)
     - Kernel Thread도 한정된 자원, 문한정으로 생성할 수 없음
     - Thread를 생성 및 사용 시 개수에 대한 고려 필요 
 - Many-to-Many
+  - ![image](https://github.com/googoo9918/YourssuAssignment/assets/102513932/583979a6-f96b-48d0-8940-2fe51ebd9c29)
   - 여러 개의 User Thread를 여러 개의 Kernel Thread로 Mapping
   - Many-to-One과 One-to-One Modle의 문제점을 해결
   - Kernel Thread는 생성된 User Thread와 같거나, 적은 수 만큼 생성되어 적절히 Scheduling
     - One-to-One 처럼 사용할 Thread의 수에 대한 고민이 줄음
     - Many-to-one처럼 System Call 사용 시 다른 Thread들이 Block되는 현상에 대해 걱정할 필요 없음
+
+### Thread Issues
+- Thread로 인한 운영체제 변화
+  - 기존에는 Stsyem Call Semantice는 Process를 기준으로 작성됐음
+  - Thread의 개념에 대한 고려
+    - fork(), exec() 
+      - Thread 지원을 위한 변화 필요
+    - Thread 종료 문제
+      - 함께 일하는 Thread의 종료는 Process보다 복잡함
+- Multi-threaded Programming에 대한 지원
+  - Thread Scheduling
+  - Thread 간 통신 방법
+  - Thread가 사용할 Memory 공간 할당
+- Creation
+  - fork and exec System call
+    - Multithreaded Program에서 fork와 exec의 의미가 달라져야 함
+  - fork
+    - 하나의 progrma 내에서 Thread가 fork 호출 시
+      - 모든 Thread를 갖고 있는 Process를 만들 것인가?
+      - fork를 요청한 thread만을 복사한 process를 만들 것인가?
+    - 참고로, Linux에서는 2가지 버전의 fork를 만들어 각각의 경우를 처리함
+  - exec
+    - fork를 하여 모든 Thread를 복사한 경우, exec 수행 시 모든 Thread들은 새로운 Program으로 교체됨
+      - 교체될 Thread들의 복사는 불필요한 작업임
+      - 따라서 fork를 하고 exec를 수행할 경우, fork를 요청한 Thread만이 복사되는 것이 더 바람직함
+      - 그러나 fork를 하고 exec를 수행하지 않는 경우, 모든 Thread의 복사가 필요하기도 함
+- Cancellation
+  - Thread Cancellation
+    - Thread의 작업이 끝나기 전 외부에서 작업을 중지시키는 것
+    - 하나의 Thread에서 중지 명령이 결국은 다른 Thread의 모든 작업을 중지시켜야 하는 경우도 존재
+    - 자원이 Thread에 할당된 경우 문제
+      - System의 자원을 사용하고 있는 Thread가 중지 될 경우, 할당된 자원을 함부로 해제할 수 없음
+        - 다른 Thread가 그 자원을 사용하고 있을 수도 있기 때문
+        - Malloc()은 free()없이는 해제되지 않음
+      - 따라서 Thread 별로 주기적으로 cancelation point를 두고, 사용하지 않는 메모리를 확인하고 해제함으로써 메모리 누수를 피함
+- Thread Pools
+  - Thread가 자주 생성되고 제거되는 상황에서, 새로운 Thread를 만드는 시간이 실제 Thread가 동작하는 시간보다 긴 경우가 있음
+  - 해결 방안
+    - Thread Pool을 만들고, Process 실행 시 정해진 수 만큼의 Thread를 만들고 Pool에 할당
+    - 새로운 Thread가 필요하면 Pool에서 가져오고, 작업이 끝나면 Thread를 제거하지 않고 다시 Pool에 넣어둠
+      - 마치 버퍼처럼 동작
+        - 응답시간 개선
+      - 만들고 삭제하는 오버헤드가 저장하고 꺼내는 오버헤드로 줄어듬
+        - 메모리 오버헤드와 context switching 비용이 줄어듬
+  - Pool을 통해 제한된 수의 Thread를 관리
+    - 너무 많은 Thread 생성에 따른 System 부하를 줄일 수 있음
+    - 실행될 수 있는 스레드의 최대 수를 제한함으로써, 리소스 사용을 제어하고 시스템이 과부화 상태에 빠지는 것을 방지함
+    - 이떄 Pool에서 관리할 Thread의 수는 유동적으로 결정됨
+- Thread간 IPC
+  - Thread들은 같은 Process의 Data 영역을 공유, 자연스러운 Shared Memory 가능
+  - IPC 최소화
+  - 물론, 다른 Process에 존재하는 다른 Thread와의 통신은 IPC임
