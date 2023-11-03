@@ -62,6 +62,17 @@
     - [LSP](#lsp)
     - [ISP](#isp)
     - [DIP](#dip)
+  - [Design Patterns](#design-patterns)
+    - [Introduction to Design Pattern](#introduction-to-design-pattern)
+    - [Desing Patterns of GoF](#desing-patterns-of-gof)
+    - [Singleton Pattern](#singleton-pattern)
+    - [Lazy initialization](#lazy-initialization)
+    - [Eager initialization](#eager-initialization)
+    - [Double-checked locking](#double-checked-locking)
+    - [Lazy holder](#lazy-holder)
+    - [Enum method](#enum-method)
+    - [Singleton 사용 사례](#singleton-사용-사례)
+    - [Discussions on Singleton](#discussions-on-singleton)
 # 소프트웨어 분석 및 설계
 ## Introduction
 ### 소프트웨어
@@ -449,7 +460,7 @@ public class StaticTest{
     - 이 단계에서 operation은 표현하지 않음
     - ![image](https://github.com/googoo9918/TIL/assets/102513932/aa07c46b-c2ee-4bc6-9ad8-f6d89eeb4047)
 - Notes on Domain Model
-  - Domain model에서는 concept를 표현하는 것으로 설꼐 단계에서 software objects와는 *구별*되어야 함
+  - Domain model에서는 concept를 표현하는 것으로 설계 단계에서 software objects와는 *구별*되어야 함
   - software objects
     - software class, artifacts related to system implementation, Methods
     - ![image](https://github.com/googoo9918/TIL/assets/102513932/6a46d421-7c24-418d-af2c-b63c2478d91d)
@@ -550,7 +561,7 @@ public class StaticTest{
   - Notes on Postconditions
     - Postcondition은 domain model에서 객체의 상태 변화를 기술
       - db에 반영되는 결과
-      - 해당 system operation이 수행하는 *도중*에 발생하는 행위를 뜨샇는 것이 아님
+      - 해당 system operation이 수행하는 *도중*에 발생하는 행위를 뜻하는 것이 아님
       - Operation이 종료된 후, domain model에서 **객체 도는 관계의 변화**를 관찰해서 기술
     - 일반적으로 postcondition은 과거형으로 기술
       - A SalesLineItem was created
@@ -1201,3 +1212,242 @@ public class StaticTest{
   - OCP는 추상화와 다형성을 통해 기능 확장을 하면서도 기존 코드를 수정하지 않도록 함
   - DIP는 변화 되는 부분의 추상화를 지원
   - LSP는 다형성을 도움
+
+## Design Patterns
+### Introduction to Design Pattern
+- 디자인 패턴
+  - SW를 설계 시 특정 맥락/상황에서 자주 발생하는 문제 존재
+    - 이에 대한 해결 방법을 재사용 가능하게 패턴화
+- 장점
+  - 검증된 해결책
+    - 저명한 개발자에 대해 여러 번 시도되고 검증된 해결책
+  - 효율적 의사소통
+    - 효율적으로 의사소통 하는데 사용할 수 있는 공통 언어
+- 단점
+  - 모든걸 해결해주진 않음
+    - 남용하면 안됨
+  - 패턴을 쓰지 않고 간단하게 해결할 수 있다면, 간단한 것을 선택
+    - 가장 단순한 설명이 최선
+  - 설계상 문제가 적합할 시 패턴도입
+
+### Desing Patterns of GoF
+- Categories of design patterns
+  - 생성 패턴(creational design patterns)
+    - 객체 생성에 관련된 패턴
+    - 객체의 생성과 조합을 캡슐화
+    - 특정 객체가 생성되거나 변경되어도 프로그램 구조에 영향을 크게 받지 않도록 유연성 제공
+  - 구조 패턴(structural design patterns)
+    - 클래스나 객체를 조합해 더 큰 구조를 만듬
+    - 서로 다른 인터페이스를 지닌 2개의 객체를 묶어 단일 인터페이스를 제공
+  - 행위 패턴(behavior design patterns)
+    - 객체나 클래스 사이의 알고리즘이나 책임 분베에 관련된 패턴
+    - 객체간 결합도를 최소화 하면서 한 객체가 수행할 수 없는 작업의 분배 방법을 결정
+- 디자인 패턴의 구조
+  - 맥락(Context)
+    - 문제가 발생하는 여러 상황을 기술
+    - 패턴이 적용될 수 있는 상황 및 유용하지 못하는 상황 기술
+  - 문제(Problem)
+    - 패턴이 적용되어 해결될 필요가 있는 이슈를 기술
+    - 여러 제약 사항과 영향력도 고려해야 함
+  - 해결(Solution)
+    - 해결하도록 설계를 구성하는 요소들과 요소들 사이의 관계, 책임, 협력 관계를 기술
+  - 표현
+    - UML을 이용하여 표현
+
+### Singleton Pattern
+- 하나의 클래스가 오직 하나의 인스턴스만 가질 수 있도록 하는 패턴
+  - 생성 패턴에 속함
+- 맥락
+  - 한 객체가 리소스를 많이 사용하는 경우
+    - 생성 시 시간이 오래 걸리거나, 메모리를 많이 쓰는 경우
+    - 리소스 절약을 위해 하나만 만들고 공유해서 사용
+  - 예시
+    - DB 연결, 파일, 스레드풀, 로깅
+- 표현
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/7fb5f5a3-5671-424a-88d4-7c145f2f9d5f)
+  - 단일 클래스에 대한 내용, 클래스 다이어그램으로는 클래스 하나로 간단하게 표현
+  - 오직 하나의 인스턴스만 가져야 함
+    - 객체는 클래스 내부에서 만들어 공유해 사용
+    - 생성자는 클라이언트가 볼 수 없도록 지정
+      - 생성자 private로 지정, 생성 제한
+      - static으로 공유
+  - 클라이언트는 getInstance 메서드를 통해 인스턴스에 접근 가능
+
+### Lazy initialization
+```java
+public class Settings{
+  private static Settings instance;
+  //하나의 instance로 공유
+
+  private Settings(){}
+  //생성자를 private으로 지정, 외부에서 인스턴스를 생성할 수 없음
+
+  public static Settings getInstance(){
+    //global 하게 접근 가능
+    if(instance == null){
+      instance == new Settings();
+      // 실제로 인스턴스를 써야하는 시점에 생성(lazy)
+      // 객체가 사용되지 않고 있는 상황이라면 불필요하게 메모리를 차지하고 있지 않음
+    }
+    return instance;
+  }
+}
+
+//사용 예시
+Settings settings = Settings.getInstance();
+```
+- 문제점
+  - 멀티 쓰레드 환경에서 인스턴스가 여러개 존재할 수 있음(no-thread-safe)
+  - 쓰레드는 리소스를 공유하고, 실행단위를 기억하며 순차적으로 수행
+  - 예시
+    - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/46d0df85-8d39-4075-8e2c-52f6f4c4f809)
+  - 해결책
+    - Thread-safe initialization
+    - getInstance 메서드에 sychronized 키워드를 사용해 한 번에 하나의 thread만 들어오게 제약
+      - 장점
+        - Thread safe
+      - 단점
+        - 동기화(sychronization)로 인해 overhead 발생
+```java
+public static synchronized Settings getInstance(){
+  if(instance == null){
+    instance = new Settings();
+  }
+  return instance;
+}
+```
+
+### Eager initialization
+- 미리 상수(constant)로 만들어 두고 사용하는 방법
+- static final은 프로그램 로딩 시점에 만들어지기 때문에 thread-safe
+- 객체 생성 비용이 적으면 괜찮지만, 크다면 당장 사용하지 않는 공간을 차지하는 문제 존재
+```java
+public class Settings{
+  private static final Settings INSTANCE = new Settings();
+
+  private Settings() { }
+
+  public static Settings getInstance(){
+    return INSTANCE;
+  }
+}
+```
+
+### Double-checked locking
+- Lazy 방식으로 생성
+- 매번 동기화를 하지 않기 위해 최초 초기화 할때만 동기화 수행
+  - 장점
+    - lazy initialization 가능 + 동기화 부담 적음
+  - 단점
+    - 코드 구성과 이해 어려움(JVM 1.5 이상부터 동작)
+```java
+public class Settings{
+  //volatile은 변수를 캐시가 아니라 메모리에서 읽어오도록 지정
+  private static volatile Settings instance;
+
+  private Settings() { }
+
+  public static Settings getInstance(){
+    if(instance == null){
+      synchronized(Settings.class){
+        if(instance == null){ // 두 번 check!
+          instance = new Settings();
+          //내부로는 한 번에 하나의 쓰레드만 들어올 수 있음
+        }
+      }
+      return instance;
+    }
+  }
+}
+```
+
+### Lazy holder
+- 클래스 안에 내부 static 클래스(holder)를 두는 방식
+```java
+public class Settings{
+  private Settings() { }
+
+  private static class SettingsHolder{
+    private static finla Settings INSTANCE = new Settings();
+    //final로 지정, 다시 값이 할당되지 않도록 방지
+  }
+
+  public static Settings getInstacne(){
+    return SettingsHolder.Instance;
+    //getInstance() 호출 시 내부 클래스가 한 번 초기화 되면서 객체 최초 생성
+  } 
+}
+```
+- 장점
+  - lazy initialization, thread-safe, 간결한 코드
+- 단점
+  - 클라이언트가 임의로 싱글톤을 파괴할 수 있음
+
+### Enum method
+- enum의 특성을 응용해 생성
+  - 장점
+    - 코드가 간단하고, 클라이언트가 임의로 싱글톤을 깰 수 없음
+  - 단점
+    - 선언하는 순간 만듬, lazy 하지 않음
+    - 클래스 상속이 필요할 때 enum은 상속 불가능
+```java
+public enum Settings{
+  INSTANCE;
+
+  private Settings() { }
+
+  private static Settings getInstance(){
+    return INSTANCE;
+  }
+
+  //상수 뿐 아니라 변수/메서드도 선언해서 사용 가능함
+  private int number;
+  public int getNumber(){
+    reutrn number;
+  }
+}
+```
+
+### Singleton 사용 사례
+- 일반적으로 권장되는 싱글톤
+  - Lazy holder
+    - 성능이 중요시 되는 환경
+    - Lazy initalization 가능
+    - 다만, 클라이언트의 공격에 싱글톤이 깨질 여지가 있음
+  - Enum
+    - 안정성이 중요시 되는 환경
+    - reflection 및 직렬화 이슈에 대응 가능
+    - eager initalization과 비슷하기 때문에 불필요하게 메모리를 차지할 수 있음
+- Runtime
+  - java 프로그램이 실행되고 있는 환경에 대한 객체
+- Logging
+  - 프로그램 로그를 남기기 위한 라이브러리
+
+### Discussions on Singleton
+- 싱글톤 패턴의 문제점
+  - 모듈간 의존성 증가
+    - 여러 모듈이 하나의 싱글톤 객체 사용
+    - 싱글톤 객체 변경 시 이를 참조하는 다른 모듈에도 영향이 감
+  - SOLID 원칙에 위배 
+    - SRP 위배
+      - 클래스 본연의 작업 책임 + 인스턴스 접근 관리 역할 책임
+    - OCP 위배
+      - 싱글톤은 무조건 단일 객체만을 생성, 상속도 불가능
+    - DIP 위배
+      - 인터페이스가 아닌 싱글톤 객체와 의존 관계가 설정됨
+  - 단위 테스트가 어려움
+    - 단위 테스트는 독립적이어야 하는데, 싱글톤은 전역변수와 같이 공유됨
+    - 테스트 순서에 따라 테스트 결과에 종속이 생길 수 있음
+    - 테스트 프레임워크는 상속에 의존하는 경우가 많은데, 싱글톤은 상속 불가 
+- 싱글톤 패턴의 이득
+  - 클래스가 하나의 인스턴스만을 가짐
+    - 공유를 통한 리소스 절약 가능
+  - 싱글톤 객체는 처음 요청시만 초기화
+    - 객체 생성 비용 절약
+  - 인스턴스에 대한 전역 접근 가능
+    - 전역 변수처럼 사용
+- 정리
+  - 싱글톤 패턴은 한 개의 인스턴스를 보증하여 효율성 확보
+    - 다만 그에 따라 수반되는 여러 문제점 존재
+  - 유연성이 많이 떨어지는 패턴
+    - 안티 패턴
