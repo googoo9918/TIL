@@ -73,6 +73,9 @@
     - [Enum method](#enum-method)
     - [Singleton 사용 사례](#singleton-사용-사례)
     - [Discussions on Singleton](#discussions-on-singleton)
+  - [Design Patterns(2)](#design-patterns2)
+    - [Factory Method Pattern](#factory-method-pattern)
+    - [Enum Factory Method Pattern](#enum-factory-method-pattern)
 # 소프트웨어 분석 및 설계
 ## Introduction
 ### 소프트웨어
@@ -1451,3 +1454,104 @@ public enum Settings{
     - 다만 그에 따라 수반되는 여러 문제점 존재
   - 유연성이 많이 떨어지는 패턴
     - 안티 패턴
+
+## Design Patterns(2)
+### Factory Method Pattern
+- 팩토리 메서드 패턴
+  - 객체 생성을 서브 클래스에 위임할 수 있는 생성 패턴
+  - 객체 생성을 위한 인터페이스 정의
+    - 어떤 클래스를 인스턴스화 할지는 서브 클래스가 결정
+  - 사용되는 상황
+    - 생성 코드를 분리하려고 할 때
+    - 기존 코드를 건들지 않고 쉽게 확장을 하려고 할 때
+      - OCP(개방-폐쇄)와 연관
+- 문제 Example
+  - 배를 만드는 공장(ShipFactory), client의 요청에 맞춰 배를 주문(orderShip), 배(Ship)의 객체를 받음
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/5b4eae73-be75-4128-892c-0ff48b3b2227)
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/27cd3905-8412-4b80-aeb8-ebdb1c69f405)
+    - 현재 ShipFactory와 Ship 사이 강한 결합
+    - 확장 시도 시, 기존 코드(ShipFactory)에 수정이 발생
+      - OCP 위배
+- 팩토리 메서드 패턴의 구조
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/89e3b772-a6ee-4ca3-84c5-299de1faa246)
+  - 인터페이스를 통해 팩토리 객체와 제품 객체 간결합을 느슨하게 함
+    - 팩토리 클래스는 제품 객체를 도맡아 생성
+    - 이를 상속하는 서브 클래스의 메서드에서 여러가지 제품 객체 생성을 각각 책임짐
+      - createProduct()는 abstract 메서드
+      - 제품 객체 하나당 그에 걸맞는 생산 공장 객체 위치!!
+    - 각각 추상화를 하고, 추상화 끼리 연결, 팩토리와 제품은 각각 대응됨
+      - A 제품은 A 팩토리에 의해 만들어져야 함
+    - 확장 시
+      - Concrete Product C가 추가되면, ConcreteCreateorC가 추가되면 됨
+        - 확장 시 기존 코드를 수정하지 않음 
+- 팩토리 메서드 패턴으로 객체 생성 시 시퀀스
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/cf7def76-2e00-438b-bcf1-33170f208d89)
+    - ConcreteProductA에 대한 구체적인 생성은 ConcreteCreatorA(팩토리 객체)가 전담
+    - client는 ConcreteCreatorA를 통해 Product 객체를 받음
+      - `ConcreteProductA product = new ConcreteCreatorA().createProduct()`
+- 해결 Example
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/2ba905e3-91f4-4ec0-954b-fa17d25968f1)
+    - i는 인터페이스, c는 클래스
+    - createShip()은 추상메서드!
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/1c9b3246-7876-4c96-885d-ccc8ba1a07f2)
+    - default 메서드를 통해 orderShip은 지정
+    - 현재 orderShip이 createShip을 포함하고 있음
+    - WhiteShipFactory().orderShip("whiteship");을 통해 특정 팩토리로 특정 제품 생성
+- 확장 시
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/775d9afc-6caf-472c-ab64-a0b0b73c0a5d)
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/ad38567d-e594-4054-9282-947333537ca8)
+  - 클라이언트 코드 최적화도 가능
+    - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/75970623-8a92-4d0d-bdbd-4e9449645e02)
+- 사용 예시
+  - XML document parser
+    - 여러가지 파싱 방법을 제공하기 위해 팩토리 메서드 패턴으로 구현
+  - Java.util.Calaendar, java.text.Numberformat, Speing BeanFactory, etc
+- 장점
+  - 객체의 생성을 캡슐화, 나머지 코드와 분리
+    - 코드 유지보수를 용이하게 함
+  - 인터페이스 기반 재사용 용이(객체 생성이 인터페이스를 통해 이뤄짐)
+    - ex) 클라이언트 코드 최적화
+  - SRP 준수
+  - OCP 준수
+    - 기존 코드의 변경 없이 새로운 코드를 유연하게 추가 가능
+    - 어떤 클래스를 인스턴스화 할지는 서브 클래스가 결정함
+- 단점
+  - 코드 구조 복잡도 증가
+    - 각 제품 구현체 마다 팩토리 객체를 모두 구현해줘야 함
+    - 클래스 수가 많아지고, 한 눈에 이해하기 어려움
+  - 객체 생성, 상속 관계에 따른 오버헤드 발생
+  - 여러 개선된 변형이 존재
+    - Enum factory pattern
+      - 서브 팩토리 클래스를 하나하나 구현하지 않고, enum Factory 하나로 구성
+    - Dynamic factory pattern
+      - 서브 클래스 수가 늘어나는 것을, Reflection API를 이용해 동적으로 처리하여 문제 해결 
+
+### Enum Factory Method Pattern
+- Enum으로 팩토리 메서드 패턴 구성 시, 일일히 서브 팩토리 클래스 구현 없이 하나의 enum Factory에서 구성 가능
+- 문제 예시
+  - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/134840bf-6f83-4b35-bc1d-7b08e4d8846e)
+- 해결 아이디어
+  - 추가적인 팩토리 클래스를 만들지 않고, 동시에 단일 팩토리로 제품 객체를 생성
+    - Enum을 이용하여 싱글톤 객체를 만듬
+      - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/6d6fb46c-4f8c-4976-9aac-f5bd866a1a67)
+    - Enum을 이용하면 멀티톤(multiton)으로도 일반화
+      - Multiton이란, 여러 개의 관리되는 인스턴스를 가지는 클래스
+      - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/a85d2044-8af1-4c64-801b-eec10c0e864a)
+        - 위 두 코드는 사실 같은 개념임!
+    - Enum을 활용한 해결 아이디어
+      - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/431a3512-365a-44ea-be2d-96b5f9fc594a)
+        - 여기서 익명 자식 클래스는, Operation을 부모 클래스로 두고 apply를 오버라이딩 하고 있음
+        - 이를 통해 enum에서 변수마다 오버라이딩을 다르게 할 수 있음!!
+  - 해결 예시
+    - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/122648d8-2974-4465-9ab4-3ee9f361db85)
+      - Enum의 멀티톤과 익명 자식 클래스를 사용, 팩토리 서브 클래스를 추가하는게 아닌 Enum 변수를 추가하는 것으로 대체 가능
+    - ![image](https://github.com/googoo9918/software-project-bokha/assets/102513932/d3b33aeb-963b-4c7c-9388-949168235852)
+- Discussion
+  - Java Enum 기능 활용, 기존 Factory Method Pattern이 갖는 문제 해결
+    - 새로운 제품 추가 시
+      - Product class를 추가, Enum Factory에 Factory 객체를 추가
+    - 하나의 Factory 객체는 싱글톤으로 공유, 외부에서 객체로 만들어 줄 필요 없음
+      - 객체 생성에 따른 부담 완화 
+    - 새로운 Factory 추가 시 기존의 Enum 코드가 수정되는 단점이 존재
+      - 코드의 복잡성과, OCP를 얼마나 엄밀하게 지킬 것인가에 대한 trade-off가 존재함
+    - Factory가 복잡한 상속 계층으로 구성된다면, Enum은 클래스 상속이 안되기 때문에 상속 구조 표현에 한계가 있음
