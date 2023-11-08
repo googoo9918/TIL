@@ -48,7 +48,18 @@
     - [복구 기법](#복구-기법)
     - [데이터 버퍼](#데이터-버퍼)
     - [로그 기반 복구](#로그-기반-복구)
-    - [ARIES 알고리즘](#aries-알고리즘)
+    - [원격 백업](#원격-백업)
+  - [연습문제 3장](#연습문제-3장)
+    - [1](#1-2)
+    - [2](#2-2)
+    - [3](#3-2)
+    - [4](#4-2)
+    - [5](#5-2)
+    - [7](#7-2)
+    - [9](#9-2)
+    - [10](#10-2)
+    - [11](#11-2)
+    - [12](#12-2)
 # 데이터베이스 응용
 ## 트랜잭션 이론
 ### 트랜잭션 개념
@@ -971,11 +982,11 @@
   - 버퍼에 더 이상 가용한 블록 공간이 없을 때 이미 존재하는 블록을 선택
     - 선택된 버퍼는 더 이상 공간을 차지하지 않고, 블록 내용이 변경되었다면 디스크에 내용을 반영해야 함
     - LRU(Least Recently Used) 주로 이용
-      - 가장 오랫동안 사용되지 않은 페이지 선택 제거
+      - 가장 오랫동안 사용되지 않은 블록 선택 제거
     - toss-immediate strategy
-      - 버퍼에 저장된 페이지 중 변경되지 않은 페이지를 버림
+      - 버퍼에 저장된 블록 중 변경되지 않은 블록를 버림
     - MRU(Most Recently Used)
-      - 가장 최근에 사용된 페이지를 교체 대상으로 선택
+      - 가장 최근에 사용된 블록을 교체 대상으로 선택
       - 순차적으로 한 번씩 접근되는 패턴에서 효과적
     - 복구 기능 지원을 위해 forced output 기능 제공
       - DBMS가 원하는 시점에 특정 블록을 디스크에 즉시 쓰는 기능(flusing)을 제공 
@@ -1090,41 +1101,136 @@
       - 디스크의 전체 내용을 다른 저장 장치로 복사
       - 최근에 dump된 DB 상태로부터 이후에 Commit된 트랜잭션을 redo, 장애시의 DB 상태로 복구
 
-### ARIES 알고리즘
-- Algorithm for Recovery and Isolation Exploiting Semantics
-  - LSN(Log Sequence Nubmer) 사용
-    - 로그 레코드를 유일하게 특정하는 값
-    - 시간 흐름에 따라 LSN 값이 지속적으로 증가해야함
-    - clock은 적절하지 않고, offset으로 주로 사용
-    - 각 페이지는 해당 페이지를 가장 마지막으로 변경한 LSN을 지님
-      - 이를 page LSN이라 함
-  - PageLSN
-    - 트랜잭션이 페이지 변경 시, 베타적으로 페이지에 접근해야 함
-    - 이를 위해 해당 페이지에 대한 Latch를 잡고 쓰기 연산 수행
-    - 페이지 변경을 하는 경우, 로그 레코드의 LSN도 페이지에 기록해야 함
-    - 특정 연산을 한 번 수행하든 다수 번을 수행하든 그 결과가 동일할 시, 해당 연산은 idempotence하다고 함
-      - 복구 알고리즘은 idempotence 성질을 만족해야함
-      - 몇 번 수행할 때마다 다른 상태로 DB를 복구하면 안되기 때문
-    - 만약 로그 레코드의 LSN이 임의 페이지의 LSN보다 같거나 적으면, 복구 중 해당 로그 레코드는 redo하지 말아야 함
-      - 이는 페이지가 이미 로그 레코드에 해당하는 작업을 반영한 상태이기 때문
-        - 따라서 해당 로그 레코드를 redo할 필요 없음
-        - 페이지는 이미 최신 상태임
-  - 물리-논리적(Physiological) Redo
-    - 연산이 수행된 페이지는 물리적으로 식별, 페이지 내에서는 논리적 연산을 수행하는 redo 연산 지원
-    - 페이지 내에서 레코드 삭제 후 다른 레코드가 이동해야 하면, 물리-논리적 redo 로깅은 레코드 삭제 정보만 로깅함
-      - 물리적 redo 로깅은 레코드 의동에 의해 변경되는 모든 바이트의 변화를 물리적으로 기록
-  - 로그 레코드
-    - 로그 레코드는 해당 트랜잭션이 수행한 이전 로그 레코드 LSN 값을 기록하고 있음
-      - PrevLSN
-      - 이는 로그 화일 전체 검색 없이 해당 트랜잭션 undo를 용이하게함
-        - 역순으로 진행되기 때문
-  - CLR
-    - ![image](https://github.com/googoo9918/TIL/assets/102513932/a2997271-6588-4ce6-a46f-9670044bf433)
-    - Undo 작업을 수행하면 이를 기록하는 로그 레코드 생성
-      - Compensation Log Record(CLR)
-    - UndoNextLSN 필드
-      - undo하는 로그 레코드의 이전 레코드 LSN을 가짐
-        - 다음에 어떤 작업을 롤백
-      - 만약 어떤 로그 레코드에 대한 롤백이 완료되었다면, 해당 로그 레코드의 UndoNextLSN은 이미 롤백된 로그
-    - CLR에 대한 undo 연산은 필요가 없음
-      - CLR은 REDO 연산을 위한 로그 레코드임
+### 원격 백업
+- 원격 백업 시스템
+  - 주 사이트에 재난이 발생하여도 백업 사이트가 계속 수행, 시스템 가용성을 증가
+    - 시스템 장애 시간을 최소화 하게 하는 가용성이 높은 시스템을 요구함
+    - 주 사이트 장애를 원격 백업 시스템에서 반드시 감지하여야 함
+      - 이를 위해 다수개의 통신 링크를 유지/관리
+      - 주 시스템은 지속적으로 heart-beat message를 발송
+  - 제어 이관
+    - 로그 레코드를 갖고 복구 연산을 하여 주 시스템 상태와 동일하게 만듬
+    - 백업 시스템이 주 시스템 역할을 할 수 있음
+  - 높은 가용성
+    - 재난 시 빠른 회복 시간이 중요함
+    - 빠르게 제어권을 갖기 위해 로그를 받는 즉시 적용하여 빠른 회복시간을 지원할 수 있음
+      - hot-spare 설정
+    - 동일 데이터를 분산적으로 다수 장소에 저장하는 분산 데이터베이스 방식도 사용 가능
+      - 구현 및 관리 관점에서 고비용을 요구하나, 주로 더 높은 가용성을 제공함
+  - 완료 시간
+    - 트랜잭션의 지속성을 보장하기 위해 원격 시스템에 트랜잭션 완료 로그가 기록되어야 해당 트랜잭션이 완료할 수 있음
+      - 다만, dealy를 줄이기 위해 완화된 기준을 제공할 수 있음
+      - One-safe
+        - 트랜잭션의 커밋 로그 레코드가 주(Primary) DB에 기록되는 즉시 트랜잭션을 커밋
+        - 문제점
+          - 백업 DB가 주 DB를 대체하기 전에 주 DB의 업데이트가 백업에 도착하지 않을 수 있음
+          - 즉, 백업 서버가 최신 상태가 아닐 수 있음
+      - Two-very-safe
+        - 트랜잭션의 커밋 로그 레코드가 주 DB와 백업 DB 모두에 기록 될 때만 트랜잭션을 커밋
+        - 문제점
+          - 가용성 감소
+          - 주 DB나 백업 DB중 하나라도 실패하면 트랜잭션이 커밋되지 않음
+      - Two-safe
+        - 주 DB와 백업 DB가 모두 활성 상태일 때
+          - Two-very-safe 전략을 따름
+        - 주 DB만 활성 상태일 때
+          - One-Safe 전략으로 전환
+            - 백업 DB가 실패하거나 접근할 수 없는 상황에서도 시스템이 계속 작동
+            - 가용성을 높임
+## 연습문제 3장
+### 1
+- When the system recovers from a crash, it constructs an undo-list and a redo-list. Explain why log records for transactions on the undo-list must be processed in reverse order, while those log records for transactions on the redo-list are processed in a forward direction.
+- 시스템이 충돌에서 복구될 때, 실행 취소(undo) 목록과 재실행(redo) 목록을 구성합니다. 실행 취소 목록에 있는 트랜잭션의 로그 레코드는 역순으로 처리되어야 하는 반면, 재실행 목록에 있는 트랜잭션의 로그 레코드는 순방향으로 처리되는 이유를 설명하라
+  - 예를 들어 하나의 데이터 항목이 여러 번 업데이트 되는 경우, (1->2, 2->3) undo 로그 레코드를 순방향으로 처리하면 데이터의 최종 값이 2로 설정됨 반면 역순으로 처리하면 값이 올바르게 1로 설정됨 마찬가지로 redo도 역방향으로 처리하면 최종값이 2로 잘못 설정되기 때문에 순방향으로 처리해야함
+
+### 2
+- Stable storage cannot be implemented.
+  - 안정 저장 장치는 실제로 구현할 수 없음
+(a) Explain why it cannot be.
+  - 모든 저장 장치는 하드웨어로 만들어져 있고, 모든 하드웨어는 기계적이나 전자적 결함이 생길 수 있기 때문
+(b) Explain how database systems deal with this problem.
+  - 분산 시스템으로 이를 근사하게 구현
+    - 데이터를 동시에 여러 저장 장치에 기록
+    - 만약 한 장치에 문제가 생겨도, 다른 장치에 있는 데이터로 백업이 가능
+
+### 3
+- Explain how the buffer manager may cause the database to become inconsistent if some log records pertaining to a block are not output to stable storage before the block is output to disk.
+- 버퍼 관리자가 블록과 관련된 일부 로그 레코드를 안정 저장 장치에 output 하기 전에 블록을 디스크에 출력하는 경우 DB가 일관성을 잃게 될 수도 있는 이유에 대해 설명하라 
+  - 데이터 항목 x가 로그 레코드가 안정 저장 장치에 기록되기 전에 디스크 상에서 수정되면, x의 이전 값에 대한 유일한 기록은 주 메모리에 있게 되는데, 이는 시스템에 crash가 나는 경우 손실됨
+    - 만약 트랜잭션이 crash시점에 아직 commit되지 않았다면, 복구할 수 없는 일관성 문제가 생김
+    - 따라서 WAL 원칙을 엄격하게 준수해야함
+      - 버퍼에 있는 데이터 블록을 디스크로 output하기 전, 블록에 관련된 모든 로그 기록이 안정 저장 장치에 output 되어야 함
+
+### 4
+- Outline the drawbacks of the no-steal and force buffer management policies.
+- no-steal 정책과 force 정책의 단점
+  - no-steal 정책의 단점
+    - 이 정책에서는 트랜잭션이 완전히 끝날 때까지 디스크에 저장하지 않음
+      - 따라서 많은 수의 업데이트를 수행하는 트랜잭션에서 적합하지 않음
+        - 버퍼를 가득 채울 수 있기 때문
+  - force 정책의 단점
+    - 트랜잭션이 커밋 하기 전에 모든 변경사항을 바로 디스크에 저장하도록 강제함
+      - 이 과정에서 디스크 I/O에 대한 시간이 오래 걸림
+
+### 5
+- Disk space allocated to a file as a result of a transaction should be not released even if the transaction is rolled back.
+- 트랜잭션 결과로 파일에 할당된 디스크 공간은 트랜잭션이 rollback되어도 해제되지 않아야 함
+  - 다른 트랜잭션이 같은 페이지에 레코드를 저장했을 수 있기 때문
+
+### 7
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/b4598263-9e96-4c8c-a4c9-cadd43f5c07b)
+  - 풀어볼 것!
+
+### 9
+- Expalin the difference between a system crash and a disaster
+  - 시스템 충돌에서는 CPU가 다운되고, 디스크가 충돌될 수 있지만 안넌 저장 장치는 시스템 충돌을 견뎌낼 것임
+  - 그러나 disaster에서는 모든 것이 파괴됨, 따라서 안전 저장 장치는 disatster를 견뎌내기 위해 분산되어야 함
+
+### 10
+-  For each of the following requirements, identify the best choice of degree of durability in a remote backup system.
+- 다음 각 요구 사항에 대해 원격 백업 시스템에서 최적의 내구성 정도를 식별하라
+(a) Data loss must be avoided but some loss of availability may be tolerated.
+- 데이터 손실은 피해야 하지만 일부 가용성 손실은 용인될 수 있음
+  - Two very Safe가 적합, 가용성이 낮지만 primary와 backup DB가 모두 활성 상태일때만 동작하기 때문에 안정성 보장
+(b) Transaction commit must be accomplished quickly, even at the cost of 	loss of some committed transactions in a disaster.
+- 트랜잭션 커밋은 신속하게 이루어져야 하며, 재해 시 일부 커밋된 트랜잭션의 손실이 발생하더라도 그렇게 해야 함
+  - One safe가 적합, 백업 사이트에 로그가 도달하기를 기다릴 필요가 없음
+(c) A high degree of availability and durability is required, but a longer running time for the transaction commit protocol is acceptable.
+-  높은 정도의 가용성과 내구성이 요구되지만 트랜잭션 커밋 프로토콜의 더 긴 실행 시간은 허용
+   -  Two Safe가 적합
+      -  트랜잭션이 커밋되기 전, 트랜잭션에 의해 변경된 모든 데이터는 주 시스템의 로그에 기록됨
+      -  백업 시스템 활성 상태라면, two very safe처럼 동작
+      -  백업 시스템 가동 X면, One safe처럼 동작
+
+### 11
+- Standard buffer managers assume each block is of the same size and costs the same to read.  Consider a buffer manager that, instead of LRU, uses the rate of reference to objects, that is, how often an object has been accessed in the last n seconds. Suppose we want to store in the buffer objects of varying sizes, and varying read costs (such as Web pages whose read cost depends on the site from which they are fetched).  Suggest how a buffer manager may choose which block to evict from the buffer.  
+- 표준 버퍼 관리자가 각 블록이 동일한 크기이고, 읽는 데 동일한 비용이 든다고 가정하는 것과 달리, 객체의 참조 빈도를 사용하는 버퍼 관리자에 대해 고려한다. 버퍼에 다양한 크기의 객체와 읽기 비용이 다른 객체를 저장하려는 경우를 상정, 버퍼 관리자는 버퍼에서 어떤 블록을 제거해야되는가?
+  - 우선 순위 큐를 사용
+    - 우선 순위(p)는 재읽기 비용을 예상하는 기준에 따라 정해짐
+    - 과거 접근 빈도(f)는 객체가 마지막 n초 동안 얼마나 자주 접근되었는지를 나타냄
+    - 재읽기 비용(c)는 객체가 다시 읽어야 할 때 드는 비용
+    - 크기(s)는 객체의 크기임
+    - p = f*c/s
+      - f(접근 빈도)가 높으면 우선 순위가 높아져(커져) 버퍼에서 제거되지 않을 가능성이 높아짐
+      - 반면 크기(s)가 크거나 재읽기 비용(c)가 높은 경우, 우선 순위가 낮아져(작아져) 먼저 제거될 가능성이 높아짐
+
+### 12
+- 트랜잭션 수행 시에 발생하는 로그 레코드는 해당 데이터 페이지가 안전 저장 장치로 flush(write)된 후에 안전 저장 장치로 flush(write)되어야 한다.
+  - F, 로그 레코드가 먼저 flush 되어야 함
+- 트랜잭션이 commit 하려면 트랜잭션이 생성한 모든 로그 레코드가 stable storage에 flush하여야 함
+  - T
+- 트랜잭션이 생성하는 log record는 DBMS에서 buffering을 하며, 이에 대한 page replacement policy는 LRU 알고리즘을 사용한다.
+  - F, Buffer replacement policy에서는 주로 LRU를 이용
+    - page replacement policy에서는 사용하기도, 안하기도..
+- No steal 방식의 회복 기법을 지원하는 경우, DBMS가 관리하는 데이터 버퍼 전체 크기는 회복기법 기능과 무관하다.(즉, 전체 데이터 버퍼 용량이 크던 작던 회복기법 기능과는 무관하다)
+  - F, No steal 방식에서 데이터페이지 버퍼 크기는 매우 광대해야 함
+- Steal 방식의 버퍼 관리 환경에서, 아직 완료되지 않고 수행 중인 트랜잭션이 갱신한 페이지는 필요에 따라 디스크에 flush(write) 될 수 있다.
+  - T, 버퍼 공간 관리 방법 중 하나임
+- WAL(write-ahead logging)은 데이터 페이지를 메모리 버퍼에서 수정하기 전에 해당 log record를 메모리 버퍼에 먼저 생성해야 하는 것을 의미한다.
+  - F, WAL은 데이터 페이지가 *디스크*에 반영되기 전에 해당 log record가 먼저 디스크에 반영되는 것을 의미함
+- STEAL/FORCE 정책을 사용하는 회복 알고리즘은 REDO/UNDO 연산을 모두 지원해야 함
+  - F, UNDO 연산만 지원하면 됨
+- remote backup system에서 One-safe commit 방식에서는 트랜잭션 완료 로그 레코드가 backup site에 항상 반영된다.
+  - F, primary site에는 항상 반영, backup site에는 반영되지 않을 수 있음
+- Slotted page 구조에서 페이지 내의 레코드 크기 변화로 인해 레코드 위치 이동이 가능하고, 이 경우 레코드 id 값은 변경하지 않는다.
+  - T
