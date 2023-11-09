@@ -64,6 +64,15 @@
     - [물리적 저장 매체](#물리적-저장-매체)
     - [자기 디스크](#자기-디스크)
     - [RAID](#raid)
+  - [4장 연습문제](#4장-연습문제)
+    - [1](#1-3)
+    - [2](#2-3)
+    - [3](#3-3)
+    - [4](#4-3)
+    - [5](#5-3)
+    - [6](#6-2)
+    - [7](#7-3)
+    - [8](#8-2)
 # 데이터베이스 응용
 ## 트랜잭션 이론
 ### 트랜잭션 개념
@@ -1436,3 +1445,76 @@
     - Hot swapping
       - 고장난 하드디스크를 시스템 중단 없이 교체할 수 있는 기능
       - RAID 시스템 내에 다수개의 예비 디스크를 구비하게 하고, 운영 중인 디스크에 장애 발생 시 즉시 예비 디스크를 사용하는 기술
+
+## 4장 연습문제
+### 1
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/c3dad88f-1a0f-4632-9cec-8e1c9900c9ba)
+  - 실린더 -> 트랙 -> 섹터 -> 레코드 순서로 저장됨
+  - 각 섹터에는 512/128 = 4, 4개의 레코드가 저장될 수 있음
+  - 현재 20,000개 레코드이기 때문에, 총 5,000 섹터가 저장되어야 함
+    - 5,000 섹터는 125 track에 저장됨
+    - 125 track은 11.36 cylinders, 즉 12개의 cylinders에 저장되어야 함
+
+### 2
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/65dc2e48-fab8-4cbd-b4cf-560bd03ad5d2)
+  - 현재 P1은, B1~B4의 패리티를 저장함
+    - 여기서 문제점은, P1과 B_4i-3이 같은 디스크에 위치한다는 것임
+    - 오류가 발생했을 때, B1 데이터 블록과 P1을 모두 잃게 되고, B1 데이터 블록을 복구할 수 없게 만듬
+
+### 3
+- 4.3 A power failure that occurs while a disk block is being written could result in the block being only partially written. Assume that partially written blocks can be detected. An atomic block write is one where either the disk block is fully written or nothing is written (i.e., there are no partial writes). Suggest schemes for getting the effect of atomic block writes with the following RAID schemes. Your schemes should involve work on recovery from failure. 
+- 전력 장애로 인해 디스크 블록이 부분적으로만 쓰여지는 상황에서, 부분적 쓰기를 감지할 수 있을 때 RAID 레벨1과 RAID 레벨5에서 어떻게 되는가?
+	a. RAID level 1 (mirroring)
+  - 원자성을 확보하기 위해, 첫 번째 물리적 블록에 정보를 쓰고 첫 번째 쓰기가 성공적으로 완료되면 동일한 정보를 두 번째 물리적 블록에 씀
+    - 두 번째 쓰기가 성공적으로 완료되면 쓰기 작업을 완료한 것으로 선언
+  - 복구 중에는 각각의 물리적 블록 쌍을 검사
+    - 한 블록이 부분적으로 쓰여졌다면, 다른 블록의 내용으로 교체
+    - 복구 중 모든 상응하는 블록 쌍을 비교할 수는 없기에, 비 휘발성 RAM을 사용하여 진행 중인 블록 쓰기를 추적함
+      - 복구 시에는 진행 중이던 쓰기 작업이 있는 블록만 비교
+	b. RAID level 5 (block interleaved, distributed parity)
+  - 정보 블록을 먼저 쓰고 패리티 블록을 씀
+  - 복구 시
+    - 특정 블록이 부분적으로 쓰여졌으면, 그 내용을 다른 블록을 사용하여 재구성
+    - 부분적으로 쓰여진 블록이 없지만 패리티 블록의 내용과 정보 블록의 내용이 일치하지 않는 경우, 패리티 블록의 내용을 재구성
+
+### 4
+- RAID systems typically allow you to replace failed disks without stopping access to the system. Thus, the data in the failed disk must be rebuilt and written to the replacement disk while the system is in operation. Which of the RAID levels yields the least amount of interference between the rebuild and ongoing disk accesses? Explain your answer
+  - RAID 시스템에서 하드 디스크가 실패했을 때, 시스템을 중단하지 않고도 해당 디스크를 교체할 수 있는 기능(Hot swapping)을 하고자 할 때, 디스크 액세스와의 간섭이 가장 적은 RAID 레벨은?
+    - RAID 레벨 1이 간섭을 최소화함
+      - RAID 1에서 재구축은 단지 실패한 디스크의 복사본에서 데이터를 복사하면 되기 때문
+      - 이 과정이 다른 디스크의 정상적인 작업에 미치는 영향이 가장 적음
+        - 다른 RAID 레벨에서는 재구축 과정이 모두 다른 디스크의 전체 내용을 읽어야 하는 작업을 포함함
+        - 예를 들어, RAID 5에서는 하나의 디스크 실패 시, 나머지 디스크에서 데이터와 패리티 정보를 모두 읽어서 손실된 데이터를 재구축 해야함
+        - 이 과정은 더 많은 디스크 읽기 작업을 필요로 하고, 더 많은 간섭을 초래함
+
+### 5
+- Explain RAID 1 and RAID 5 in brief. Is the following statement true? “For applications that has low data update and requires large amount of space to store databases, RAID 5 is better than RAID 1”
+- 데이터 업데이트가 적고 데이터베이스를 저장하기 위해 많은 양의 공간이 필요한 응용 프로그램의 경우, RAID 5가 RAID 1보다 낫다
+  - 맞음, RAID 5는 하나의 디스크만을 추가적으로 사용하지만 RAID 1은 같은 수만큼의 디스크를 필요로 하기 때문에 RAID 1보다 더 많은 사용 가능한 저장 공간을 제공함
+  - 또한, 데이터 업데이트가 적다면 RAID 5의 쓰기 성능 저하 문제는 크게 중요하지 않게 됨
+    - 추가적으로, RAID 1과 RAID 5 모두 쓰기 작업이 2번 일어나지만 RAID 5의 쓰기 성능이 더 낮음
+      - RAID 1은 두 디스크의 동일하게 쓰여지기 때문에, 오버헤드가 적음
+      - 반면 RAID5의 쓰기 작업은 기존의 데이터와 패리티 블록을 먼저 읽고 계산한 후 써야 하기 때문에 오버헤드가 높음
+
+### 6
+- If you have data that should not be lost on disk failure, and the data are write intensive, how would you store the data?
+- 디스크 장애 발생 시 데이터 손실이 없어야 하며, 데이터 쓰기 작업이 많은 환경에 대해 데이터를 어떻게 저장할 것인가?
+  - 비활성 RAM에 쓰기 연산을 우선, 쓰기 연산에 따른 기다림을 없애는 방식
+      - NVRAM(non-volatile RAM)을 활용하는 RAID를 사용
+
+### 7
+- In earlier generation disks the number of sectors per track was the same across all tracks. Current generation disks have more sectors per track on outer tracks, and fewer sectors per track on inner tracks (since they are shorter in length). What is the effect of such a change on each of the three main indicators of disk speed?
+- 이전 세대의 디스크 드라이버들은 모든 트랙에서 섹터의 수가 동일했지만, 현재 세대의 디스크들은 외부 트랙에 더 많은 섹터를, 내부 트랙에는 더 적은 섹터를 갖고 있음. 이러한 변화가 디스크 속도의 세 가지 주요 지표에 어떤 영향을 미치는가?
+  - 안쪽 트랙에 더 적은 섹터가 있는 이유는, 데이터 전송률이 바깥쪽 트랙이 안쪽보다 더 높기 때문임
+    - 디스크는 일정한 속도로 회전하고, 외부 트랙에 있는 동안 더 많은 섹터가 읽힐 수 있음
+      - 즉, 외부 트랙의 데이터 전송률이 더 높음
+
+### 8
+- 4.8 저장 장치를 구성하는 방법 DAS, NAS, SAN을 비교 설명하시오.   각 방법에서 사용하는 대표적인 규약을 2개 이상 명시하시오.  
+  - DAS : direct attached storage (컴퓨터에 저장장치를 직접 연결)
+	- NAS : network attached storage
+		. 저장장치를 컴퓨터 네크워크에 단독 실체로 연결하
+		. file-based protocol(예를 들면, NFS, SMB/CIFS, AFP Apple filing protocol 등)를 사용하여 데이터 전송을 한다.  
+	- SAN : Storage Area Networks
+		. 데이터 전송을 위한 독립적인 네트워크를 구성하여 저장장치를 연결하고
+		. 블록 전송 프르토콜(예를 들면, SCSI, ATA, Fiber channel 등)을 사용하여 데이터를 전송한다. 
