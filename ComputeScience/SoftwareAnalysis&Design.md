@@ -80,6 +80,9 @@
     - [Abstract Factory Pattern](#abstract-factory-pattern)
     - [Builder Pattern](#builder-pattern)
     - [Prototype Pattern](#prototype-pattern)
+  - [Structural Design Patterns(1)](#structural-design-patterns1)
+    - [Adapter Pattern](#adapter-pattern)
+    - [Bridge Pattern](#bridge-pattern)
 # 소프트웨어 분석 및 설계
 ## Introduction
 ### 소프트웨어
@@ -1656,3 +1659,120 @@ public enum Settings{
     - 얕은 복사(객체 필드만 복제)와 깊은 복사(참조된 객체도 복제)를 관리해야 할 수 있음
   - 남발 시 메모리 사용량이 늘어남
   - 복제로 인해 객체 상태 관리가 어려움
+
+## Structural Design Patterns(1)
+### Adapter Pattern
+- 어댑터 패턴
+  - 호환성이 없는 인터페이스 때문에 함께 동작할 수 없는 클래스들을 어댑터를 통해 함께 작동할 수 있도록 변환해주는 구조 패턴
+    - 양 쪽 간의 호환성을 유지해주기 위해 사용
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/d4c03547-bf49-4f1d-ab53-f593d9125dff)
+- 필요한 상황 예시
+  - 데이터는 XML 형태로 다운 가능
+  - 데이터 분석 라이브러리는 JSON 형식으로 입력 받음
+  - XML에서 JSON으로 포맷을 변경해주는 어댑터를 만들어서 연동 가능하게 함
+    - 어댑터를 통해서만 분석 라이브러리와 통신하도록 함
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/96625c5b-8eb3-47e8-9b22-3d4c2b7a4ec6)
+- 어댑터 패턴의 구조(객체 어댑터 구조)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/2e49dd78-6b08-4ae3-8fd2-7990bcb00430)
+    - 클라이언트와 서비스가 바로 연결될 수 없는 상황
+    - 어댑터가 Service에 해당하는 객체를 필드값으로 지님(Adapter가 Service를 wrapping)
+      - adaptee
+      - 이를 이용해서 서비스 호출
+- 구현 예시
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/476554f3-7f31-4f24-a037-ccdca5b67e99)
+- 어댑터 패턴의 구조(클래스 어댑터 구조)
+  - 다중 상속을 지원하는 C++ 같은 언어에서 활용 가능
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/76fa7357-859f-40d2-b54a-69d7cf151232)
+      - 라이브러리가 여러 개 있는 경우, 사용하는 것이 용이함
+      - 그냥 이런 구조도 있을 수 있다 정도로 받아들이는게 ㅇㅇ
+        - 객체 어댑터 구조가 더 유연하게 처리 가능함
+  - 구현 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/bd60032a-ded5-4b44-bda0-919c0ebbcfe1)
+      - 클라이언트 입장에서 명확하게 Adapter가 보이진 않음
+        - new Adapter(new Service())가 아니라 그냥 new Adapter()이기 때문
+  - 패턴 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/fd9bc266-0d5a-496b-831d-fd781251dc1d)
+      - peg가 못임
+        - 서비스는 직육면체 못 제공, 클라이언트는 원통형 구멍
+        - 어댑터를 통해 들어갈 수 있는지 확인?
+          - 쨌든 이를 통해 연결을 해줄 수 있다..
+- 어댑터 패턴 사용 시기
+  - 새로운 인터페이스가 레거시와 호환이 되지 않을 때
+  - 이미 만든 것을 재사용하고자 하나, 수정은 하고 싶지 않을 때
+  - sw의 구 버전과 신 버전을 공존 시키고 싶을 떄
+- 사용 사례
+  - java.utils.Arrays , java.io.InputStreamReader
+```java
+BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+// InputStreamReader가 Adapter 역할을 하고 있음
+
+String[] s = {"a", "b", "c"};
+List<String> list;
+list = Arrays.asList(s);
+// asList가 Adapter 역할
+```
+- 장점
+  - 기본 비즈니스 로직에서 인터페이스 분리 가능
+    - SRP 준수
+  - 기존 클래스 코드를 건들지 않고 클라이언트 인터페이스를 통해 어댑터와 작동
+    - OCP 준수
+  - 추가로 필요 메소드 있을 때, 어댑터로 빠르게 구현 가능
+    - 버그가 발생해도 기존 클래스에는 버그가 없으므로, 어댑터만 조사하면 됨
+- 단점
+  - 새로운 인터페이스와 어댑터 클래스 세트를 도입해야 해서 복잡성 증가
+  - 때로는 서비스(adaptee)클래스를 변경하는 것이 간단할 수도 있음
+
+### Bridge Pattern
+- 브릿지 패턴
+  - 큰 클래스 또는 밀접하게 관련된 클래스들의 집합을 두 개의 개별 계층으로 나눈 후 각각 독립적으로 개발할 수 있도록 함
+  - 문제 ex
+    - Shape Color 조합을 갖는 클래스 구성은 새로운 모양이나 색상 유형이 추가되면 계층 구조는 기하급수적으로 늘어남
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/bfa876cb-108d-42e8-8ce9-f0cbcdd36085)
+  - 해결 방법
+    - 상속으로 진행하지 않고, 포함 관계로 전환하여 차원 중 하나를 별도의 클래스 계층 구조로 추출, 포함될 수 있도록 구조를 변경
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/64216a62-1a93-4204-af0c-ed7dd3c04b2f)
+      - Shape 클래스는 색상 객체를 가리키는 reference 필드를 가짐
+        - 연결된 색상 객체에 모든 색상 관련 작업 위임
+        - 이 연결이 브릿지
+- 브릿지 패턴에서 역할 구분
+  - 구조 관점에서 Abstraction과 Implementation의 역할
+    - Abstraction: 일부 개체에 대한 상위 수준의 제어/기능 레이어
+      - Shape
+    - Implementation: 각 기능에 대한 구현부를 담당하는 레이어
+      - Color
+      - Abstraction은 결국 Implementation을 통해 구현되어야 함을 기억하라!
+    - Abstraction과 Implementation을 분리하고 브릿지로 연결하여 변화 대응에 독립적으로 확장 가능
+  - 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/9137f55e-628b-4ada-acf0-43e6acc8c93c)
+    - Abstraction: 앱의 그래픽 사용자 인터페이스(GUI) 레이어
+    - Implementation: 운영 체제의 API
+      - GUI는 OS의 API로 구현되겠지
+- 브릿지 패턴의 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/c31e7d42-4a35-4dda-9feb-90f164c93b65)
+    - implementation을 필드로 갖고있음에 유의하라
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/acde58a4-3668-41bb-bbaa-a23db608c8e4)
+- 브릿지 패턴 예시
+  - Implementation
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/96af160d-34b5-4621-b02a-3b8169896e95)
+  - Abstraction & Client
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/4760c1c0-0ab1-4a66-b601-c0a656208305)
+- 브릿지 vs 어댑터
+  - 둘 다 기존 객체 코드를 필드값을 가짐으로써 사용되는, 비슷한 부분이 있음
+    - 기존 코드를 수정하지 않고 확장을 목표로 하고 있음
+    - 다만, 활용시점이 다름!
+  - 브릿지는 일반적으로 사전에 설계되어 다양한 부분을 독립적으로 개발
+  - 어댑터는 기존 앱과 사용, 원래 호환되지 않던 일부 클래스들이 서로 잘 작동하도록 함
+- 사용 사례
+  - JDBC는 DB 벤더에 상관 없이 쿼리를 요청하고 결과를 받을 수 있음
+  - 실제 DB에 대한 구체적 구현은 org.h2.Driver에 있음
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/6feb7f9d-ef7a-4938-bd83-ca8e1a86853d)
+- 장점
+  - 새로운 추상화들과 구현들을 상호 독립적으로 둘 수 있음
+    - 즉, 추상적인 코드를 구체적 코드 변경 없이도 독립적으로 확장 가능함
+    - OCP 준수!
+  - Abstraction의 상위 수준 논리와 Implementation 플랫폼 세부 정보에 집중할 수 있음
+    - SRP 준수
+- 단점
+  - 계층 구조가 늘어나 코드 복잡성 증가 가능
+    - 하나의 클래스만 있고, 확장 가능성이 없으면 불필요한 작업
+  - 설계 구조 파악이 안되면 코드 파악에 어려움이 있을 수 있음
