@@ -76,6 +76,10 @@
   - [Design Patterns(2)](#design-patterns2)
     - [Factory Method Pattern](#factory-method-pattern)
     - [Enum Factory Method Pattern](#enum-factory-method-pattern)
+  - [Design Patterns(3)](#design-patterns3)
+    - [Abstract Factory Pattern](#abstract-factory-pattern)
+    - [Builder Pattern](#builder-pattern)
+    - [Prototype Pattern](#prototype-pattern)
 # 소프트웨어 분석 및 설계
 ## Introduction
 ### 소프트웨어
@@ -1555,3 +1559,100 @@ public enum Settings{
     - 새로운 Factory 추가 시 기존의 Enum 코드가 수정되는 단점이 존재
       - 코드의 복잡성과, OCP를 얼마나 엄밀하게 지킬 것인가에 대한 trade-off가 존재함
     - Factory가 복잡한 상속 계층으로 구성된다면, Enum은 클래스 상속이 안되기 때문에 상속 구조 표현에 한계가 있음
+
+## Design Patterns(3)
+### Abstract Factory Pattern
+- 추상 팩토리 패턴
+  - 연관 있는 여러 객체(제품) 군 (family)의 생성을 추상화 한 생성 패턴
+    - 팩토리 메서드 패턴은 단일 객체의 생성을 추상화
+    - 추상 팩토리 패턴은 관련이 있는 *여러 객체*들의 일관된 생성을 추상화
+  - 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/59a24b57-a82a-4282-b076-9a190f86ef43)
+      - {Chair, Sofa, CoffeeTable}에 대해 스타일 별로 각 제품을 일관되게 생성
+  - 새로운 스타일의 제품 군이 추가되더라도 기존의 코드를 바꾸지 않고 추가할 수 있음
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/ee03905c-e6b1-4a3f-a21a-fcfb4701525b)
+      - 제품 별로 인터페이스로 추상화
+      - 모든 추상 제품에 대한 생성 메서드를 갖는 팩토리로 추상화
+      - 각 서브 팩토리에는 스타일에 일관된 제품군이 생성될 수 있도록 생성 메서드를 구현
+  - 추상 팩토리 패턴의 구조
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/e284e3e6-81f1-457b-afa0-42a85b4aced4)
+  - 예시
+    - Cross-platform GUI example
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/5e5f3d2c-b886-41dc-bc16-a4a26f616a25)
+  - 장점
+    - 객체를 생성하는 코드를 분리
+      - 클라이언트 코드와 결합도를 낮춤
+    - 제품 군(family)를 쉽게 대체할 수 있음
+    - 단일 책임 원칙 및 개방 폐쇄 원칙 준수
+  - 단점
+    - 제품, 팩토리들을 모두 구현해줘야 함
+      - 코드 구조 복잡성이 높음(팩토리 메서드 패턴과 동일)
+    - 새로운 제품 추가 시 모든 팩토리 구현 로직에 새로운 생성 함수가 추가되어야 함
+
+### Builder Pattern
+- 복잡한 객체 생성 과정과 표현 방법을 분리
+  - 클라이언트가 다양한 구성을 조합하여 객체를 생성할 수 있도록 하는 생성 패턴
+    - 생성자에 모든 변수의 값을 넣지 않아도 됨!!
+  - 클래스 내에서 객체 생성에 관련된 코드를 Builder라는 별도의 객체로 옮김
+    - Builder를 이용, 값을 설정 할 수 있게 함
+    - 복잡한 객체를 만드는 프로세스를 독립적으로 분리
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/2773b812-e9e6-41d0-b2c5-570856b71602)
+- 빌더 패턴의 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/688476e2-5394-4267-8465-5ce6bc66e661)
+  - 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/3a9e1773-b41d-4821-8a5e-441ce7117c95)
+  - 구현 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/9096a14f-ab8f-449b-a1d7-940860e625b9)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/a6047e71-44e2-41b0-83fb-b4aaeb89780b)
+  - 사용 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/5e72f772-80fa-48c3-90e5-4d9c39cd0537)
+- 장점
+  - 구성하기 복잡한 객체 순차적으로 생성 가능
+  - 복잡한 객체를 만드는 구체적 과정을 숨길 수 있음
+  - 동일한 프로세스를 통해 구성에 따라 다른 객체를 만들 수 있음
+  - 불완전한 객체를 사용하지 못하도록 방지 가능
+- 단점
+  - 선행적으로 빌더 객체를 먼저 만들어야 함
+  - 단순 생성 대비 구조적으로 복잡함
+    - 간단한 객체는 생성자로 바로 만들 것
+
+### Prototype Pattern
+- 기존의 객체를 복제(clone)하여 새로운 객체를 만드는 생성 패턴
+  - 클래스에 의존하지 않으면서 기존 객체 복사
+  - 원형이 되는(prototypical) 인스턴스를 사용하여 생성할 객체의 종류를 명시
+    - 이에 대한 견본을 복사해서 새로운 객체를 생성
+  - 객체 생성/복사가 까다로운 상황
+    - private/protected 멤버 변수 등으로 클래스 외부에서 객체를 복사하지 못할 수 있음
+    - 객체 생성에 따른 리소스가 많이 요구 될 때 새로 생성하는 것은 비효율적
+- 프토토타입 패턴 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/98ae954e-f289-4343-a202-674e67d5c275)
+    - 복제되는 실제 객체에 복제 프로세스를 위임 
+      - clone이라는 공통 인터페이스를 갖게됨
+- 프로토타입 패턴 구현 예시
+  - Cloneable 인터페이스
+    - 자바에서 Objects.clone() 메서드는 인스턴스 객체의 복제를 위한 메서드
+    - 해당 인스턴스를 복제, 새로운 인스턴스를 생성해 레퍼런스 반환
+    - clone()을 사용하려면 Cloneable 인터페이스를 implements하고 clone() 메서드를 오버라이딩 해줘야함
+      - Prototype 인터페이스 역할
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/63d8d6ee-8a4e-45b1-849f-f48b91fbe272)
+- Shallow copy vs deep copy
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/5a3a3ba6-03f6-49ff-a0bb-4ec2fef2e74f)
+    - 얕은 복사
+      - 객체 필드만 복제
+    - 깊은 복사
+      - 참조된 객체도 복제
+  - 패턴 구현 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/24b90b00-7e6f-4496-8cf5-6d7a305123c8)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/a3b89cac-916f-4f4c-9d30-7a966ac34404)
+  - deep clone이 되게 복사를 하고 싶을 때
+    - clone() 메서드에서 deep copy 될 수 있도록 변경
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/8f23816b-a1c5-4394-b54b-556ae7b95061)
+- 장점
+  - 객체를 생성하는 복잡한 과정을 피할 수 있음
+  - 객체를 복제하는 것이 생성하는 것보다 일반적으로 더 빠름
+  - 런타임에 객체 타입을 동적으로 변경하거나, 새로운 객체 유형을 추가하는 데 유용
+- 단점
+  - 객체가 복잡한 구조를 갖거나 객체 간 참조가 있을 때, 복제 과정이 복잡해짐
+    - 얕은 복사(객체 필드만 복제)와 깊은 복사(참조된 객체도 복제)를 관리해야 할 수 있음
+  - 남발 시 메모리 사용량이 늘어남
+  - 복제로 인해 객체 상태 관리가 어려움
