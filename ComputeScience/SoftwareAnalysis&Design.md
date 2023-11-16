@@ -83,6 +83,9 @@
   - [Structural Design Patterns(1)](#structural-design-patterns1)
     - [Adapter Pattern](#adapter-pattern)
     - [Bridge Pattern](#bridge-pattern)
+  - [Structural Design Patterns(2)](#structural-design-patterns2)
+    - [Composite Pattern](#composite-pattern)
+    - [Decorator Pattern](#decorator-pattern)
 # 소프트웨어 분석 및 설계
 ## Introduction
 ### 소프트웨어
@@ -1776,3 +1779,108 @@ list = Arrays.asList(s);
   - 계층 구조가 늘어나 코드 복잡성 증가 가능
     - 하나의 클래스만 있고, 확장 가능성이 없으면 불필요한 작업
   - 설계 구조 파악이 안되면 코드 파악에 어려움이 있을 수 있음
+
+## Structural Design Patterns(2)
+- Structural Design Patterns
+  - 구조는 유연하고 효율적 유지
+  - 객체와 클래스 더 큰 구조로 조립
+### Composite Pattern
+- 복합체 패턴(Composite Pattern)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/197fae71-c1fb-46f3-a5a0-096bddc1c320)
+  - 전체, 부분 관계의 트리 구조로 표현되는 객체를 단일 객체처럼 취급할 수 있게 해주는 구조 패턴
+    - 단일 객체와 복합 객체를 동일한 인터페이스를 사용하여 처리
+    - 단일 객체는 Leaf, 그룹인 복합 객체는 Composite
+  - 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/7f219eb4-d686-45c2-9b25-1aa18b514427)
+      - 주문 시스템에서 여러 상품을 담은 상자의 가격 계산 시
+        - 한 box에 여러 products와 좀 더 작은 box를 담을 수 있음
+        - 작은 box도 여러 products를 담을 수 있음
+      - 일반적으로는, 트리 전체 순회를 하며 box와 product의 type을 구분해야되기 때문에 코드가 복잡해짐
+  - 복합체 패턴 아이디어
+    - 총 가격을 계산하는 메서드를 갖는 공통 interface를 통해, products와 boxes에 대해 동일 작업이 가능해짐
+      - Product는 단순 제품의 가격을 반환
+      - Box는 Box내 products의 총 가격을 반환
+    - 트리를 구성하는 구체적인 클래스 타입에 대해 신경 쓸 필요가 없음
+    - 그릇과 내용물을 동일 시, 재귀적인 구조를 편하게 다룰 수 있게 함
+  - 복합체 패턴 구조
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/d226107d-3080-4eba-b589-c2f289967cb6)
+  - 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/6cc00002-8272-4026-9bca-7f54815e2aa0)
+  - 코드 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/7aa45392-98b1-4159-81e9-9cc52e30d6d2)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/ef76926b-f69a-4e84-83cb-a5798d85e954)
+  - Java 복합체 패턴 사용 사례
+    - Java Swing
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/be9a5c49-c3f4-4ee4-a76a-155ec04afe72)
+      - Java GUI 형태로 주로 사용
+  - 사용 시기
+    - 객체의 구조가 트리로 표현되는 상황
+    - 단일 / 복합 객체의 관계를 단순화하여 균일하게 처리하고 싶을 때 
+  - 장점
+    - 다형성 재귀를 통해 복잡한 트리 구조를 편리하게 다룰 수 있음
+    - 새로운 leaf 클래스를 추가하더라도 클라이언트에는 영향 없음 
+      - OCP를 준수
+  - 단점
+    - 재귀 호출 특징 상 트리 깊이가 깊어지면 디버깅에 어려움 생김
+    - 기능이 너무 다른 클래스들 간에는 공통 인터페이스 설계가 까다로움
+      - Component에 선언되는 메서드가 공통으로 활용될 수 있는 의미를 가져야 함
+### Decorator Pattern
+- Decorator Pattern
+  - 객체에 추가적인 기능을 *동적으로* 더할 수 있게 하는 구조 패턴
+  - **런타임**에 객체에 대한 기능 확장 가능
+  - 필요한 상황
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/88331854-7bae-4493-98c9-c9eb1a54bd6c)
+    - 사용자에게 이벤트 알람을 주기 위한 알람 라이브러리
+    - Notifer를 통해 기본적으로 이메일 알람
+      - 이메일 이상의 알람 기능을 원해서 상속 구조로 Notifier를 확장 시
+        - 상속 구조에서는 한 번에 특정 Notifer만 동작
+        - 여러 채널을 통해서 알람을 보내고 싶을 때
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/5ec8059e-d00e-4a15-a1a3-76b9e793a21d)
+    - 상속 구조를 유지한 상태에서는 모든 조합에 따른 Notifer를 구현해야 함
+      - 코드의 양도 늘어나고, 확장의 유연성도 떨어짐
+      - 이미 있는 여러 Notifer들을 Decorator Pattern을 통해 runtime에서 조립!!
+- 데코레이터 패턴의 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/0a2055d5-9c90-4ec9-a11b-0b1de868f1fc)
+    - Concreate Componetn는 default에 해당함
+      - 물론 이 default는 decorator에 의해 변경될 수 있음
+    - a는 ConcreteComponetn()가 들어가 있음
+    - b에는 ConcreteDecorator1(a)가 들어가 있음
+      - 이게 가능한건 BaseDecorator에는 Component가 wrappee로 들어가 있기 때문임
+      - 따라서 b.execute() 실행 시 -> a(super::execute())가 실행되고 -> b에 있는 execute가 실행됨
+    - 마찬가지로 c에는 ConcreateDecorator2(b)가 들어가 있음
+      - 따라서 a(기본 execute) -> b 실행 -> c 실행됨
+  - 데코레이터 패턴 구조 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/48919921-cf62-425a-ae73-29aaebdb0a98)
+  - 코드 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/5c5b17b0-021d-4222-9299-5b4cbc17b240)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/7ddf9167-c98e-4c3f-9ba8-0f488b8b9e7a)
+      - SMSDecorator, SlackDeocrator도 위와 유사하게 구현
+      - send 메서드를 각각에 맞게 오버라이딩
+      - **super의 send를 호출**해줘야 함
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/9a8abca8-8cb1-4133-981c-83a79d1a484e)
+      - F(FaceBooke)이 DefaultNotifier()를 wrappee로 가짐
+      - super(send)를 wrappee의 send를 먼저 호출하니까, D -> F 순으로 호출됨
+      - 끝까지 가면 D -> F -> S(SMS) -> S(Slack) 순서로 send가 호출될 것임
+  - 패턴 사용 사례
+    - Stream
+      - 어댑터임과 동시에 데코레이터
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/c4328aa6-53d0-459f-a9da-a17917b7fc26)
+    - Collections
+      - checkedList(), synchronizedList(), unmodifiableList() 등등
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/779bc37f-3d5c-4fb6-8589-3aa358bf1e72)
+  - 사용 시기
+    - 객체 책임과 행동이 동적으로 상황/조건에 따라 다양한 기능이 빈번하게 추가/삭제 되는 경우
+      - 객체 생성하는 코드에 변경이 없으면서 런타임에 추가 가능
+    - 객체의 결합을 통해 기능이 생성되어야 하는 경우
+    - 상속을 통해 서브 클래싱으로 객체의 동작을 확장하는 것이 어색하거나 불가능할 때
+  - 장점
+    - 상속을 통한 확장보다 유연하게 기능 확장 가능
+    - 여러 데코레이터의 래핑을 통해 자유로운 결합 가능
+    - 각 데코레이터 클래스마다 고유 책임을 가져 SRP 준수
+    - 코드 수정 없이 기능 확장 필요 시 데코레이터 클래스 추가하면 되니 OCP 준수
+    - 구현체가 아닌 인터페이스에 의존하기 때문에 DIP 준수
+  - 단점
+    - 데코레이터 일부를 동적으로 제거하고 싶을 때, wrapper 스택에서 특정 wrapper를 제거하는 것이 어려움
+    - 데코레이터 조합 방식에 코드 복잡도가 올라감
+    - 데코레이터 스택은 순서에 의존함
+      - 어떤 데코레이터를 먼저 래핑하느냐에 따라 행동이 다르기 때문에 순서에 유의해야함
