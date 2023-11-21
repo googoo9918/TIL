@@ -1298,7 +1298,7 @@ public class Settings{
   public static Settings getInstance(){
     //global 하게 접근 가능
     if(instance == null){
-      instance == new Settings();
+      instance = new Settings();
       // 실제로 인스턴스를 써야하는 시점에 생성(lazy)
       // 객체가 사용되지 않고 있는 상황이라면 불필요하게 메모리를 차지하고 있지 않음
     }
@@ -1309,7 +1309,7 @@ public class Settings{
 //사용 예시
 Settings settings = Settings.getInstance();
 ```
-- 문제점
+- Lazy initialization의 문제점
   - 멀티 쓰레드 환경에서 인스턴스가 여러개 존재할 수 있음(no-thread-safe)
   - 쓰레드는 리소스를 공유하고, 실행단위를 기억하며 순차적으로 수행
   - 예시
