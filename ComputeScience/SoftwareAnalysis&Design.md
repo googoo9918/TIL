@@ -86,6 +86,10 @@
   - [Structural Design Patterns(2)](#structural-design-patterns2)
     - [Composite Pattern](#composite-pattern)
     - [Decorator Pattern](#decorator-pattern)
+  - [Sturctural Desgin Patterns(3)](#sturctural-desgin-patterns3)
+    - [Facade Pattern](#facade-pattern)
+    - [Flyweight Pattern](#flyweight-pattern)
+    - [Proxy Pattern](#proxy-pattern)
 # 소프트웨어 분석 및 설계
 ## Introduction
 ### 소프트웨어
@@ -1884,3 +1888,96 @@ list = Arrays.asList(s);
     - 데코레이터 조합 방식에 코드 복잡도가 올라감
     - 데코레이터 스택은 순서에 의존함
       - 어떤 데코레이터를 먼저 래핑하느냐에 따라 행동이 다르기 때문에 순서에 유의해야함
+
+## Sturctural Desgin Patterns(3)
+### Facade Pattern
+- 퍼사드 패턴
+  - 퍼사드(facade)는 건물의 정면
+    - 외관만 보고 전체를 이해
+  - 라이브러리에 대해 사용하기 간편한 인터페이스를 구성하기 위한 구조 패턴
+    - 라이브러리의 각 클래스와 메서드의 사용이 복잡하거나, 바로 쓰기 어려울 때 사용
+    - 디테일을 내부로 묶고 사용자가 쓰기 쉽게 정리
+  - 필요한 상황
+    - 라이브러리의 여러 API를 조합해서 쓸 때, 클라이언트의 코드 라이브러리 의존성이 높은 경우
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/679f5c4d-ee25-402d-a7d7-f8afb9c5c29f)
+  - 문제 상황 예시
+    - JAVA로 email을 보내는 코드 작성 시, 클라이언트는 email API를 복잡하게 조합해야 함
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/034d7665-5605-4481-91ab-bf7c334ddf38)
+    - 퍼사드 패턴의 구조
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/9e6d575b-77a8-47c3-9951-df081e9c860f)
+  - 퍼사드 패턴 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/41e39fad-953b-4c5a-b645-6354568d5cbf)
+    - 클라이언트는 퍼사드(EmailSender)만 갖고 작업
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/cf3dc579-ebd7-4cb6-bc2d-f5e4e8a85b20)
+        - 미리 정의된 API를 쓰기 때문에 코드의 사용이 쉽고 간결해짐
+        - 복잡한 API 사용의 실수를 줄일 수 있음
+  - 사용 시기
+    - 복잡한 서브 시스템에 대한 제한적이지만 간단한 인터페이스 필요 시
+    - 서브 시스템과의 결합도가 높아 의존성을 줄일 필요가 있을 시
+  - 장점
+    - 서브 시스템 간의 의존 관계가 많을 경우, 이를 감소시키고 의존성을 한 곳으로 모음
+    - 클라이언트가 퍼사드 클래스만 다루기 때문에 기능을 쉽게 이해하고 사용함
+  - 단점
+    - 앱의 모든 클래스에 결합된 god object가 될 수 있음
+      - 다수의 고유한 유형 참조 or 관련이 없거나 분류되지 않은 메소드가 너무 많은 객체
+    - 코드가 추가되고, 유지보수 측면에서 관리 대상이 늘어남
+### Flyweight Pattern
+- 플라이웨이트 패턴
+  - 메모리 사용량을 최소화하기 위해 재사용 가능한 객체를 공유할 수 있게 해주는 구조 패턴
+    - 캐시 개념을 도십하여 패턴화
+    - 자주 변하는 속성(extrinsit)과 변하지 않는 속성(intrinsit)으로 분리
+      - 변하지 않는 속성은 캐시(따로 저장하고 재사용, 메모리 save)
+- 필요한 상황
+  - Editor 프로그램에서 character를 표현하는 객체 예시
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/4ebd3d74-e897-4eb9-b83c-e514b92f6395)
+- 플라이웨이트 패턴 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/9f0ae5a4-b072-49bd-af60-e1e256071344)
+- 적용 예시
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/41e12975-46f0-44cf-831f-737d26c72e72)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/9fa21473-8da1-415a-ac6c-688a0f8bfbca)
+- 사용 시기
+  - 메모리에 오래 상주하는 객체가 많이 생성되어 메모리 사용이 높은 경우
+  - 공통적인 인스턴스를 많이 생성하는 로직이 포함되는 경우
+- 장점
+  - 메모리 사용량과 프로그램 속도 개선
+    - 객체 생성(enw)시 데이터 생성 및 메모리 적재에 시간이 소모됨
+- 단점
+  - 캐싱등을 처리 하기 위한 클래스 도입으로 코드 복잡성 증가
+
+### Proxy Pattern
+- 프록시 패턴
+  - 대상 원본 객체에 대한 접근을 제어하거나 대리할 수 있도록 해주는 구조
+    - proxy == 대리인
+    - 클라이언트가 대상 원본 객체를 직접 쓰는게 아니라 proxy를 거쳐 씀
+    - 원본 객체를 수정할 수 없을 때, 원본 객체와 같은 interface를 갖는 proxy를 통해 처리
+      - 대상 클래스가 민감한 정보를 가져 권한에 따라 접근 제한 시
+      - 인스턴스화 하기 무거워 lazy 초기화를 하고 싶을 때
+  - 효과
+    - 보안
+      - 클라이언트 작업 권한에 따라 전달
+    - 캐싱
+      - 데이터가 캐시에 아직 존재하지 않는 경우에만 작업이 실행 되도록 할 수 있음
+        - 데이터가 캐시에 이미 존재하면 캐시에서 데이터 반환
+        - 캐시에 없을 때만 실제 작업을 실행
+    - 데이터 유효성 검사
+      - 입력을 원본 객체로 전달하기 전에 유효성을 미리 체크 가능
+    - 지연 초기화
+      - 원본 객체의 생성 비용이 비싼 경우, 프록시가 생성되도록 할 수 있음
+    - 로깅
+      - 메서드 호출과 매개변수에 대한 기록을 중간에 남길 수 있음
+- 프록시 패턴 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/f5a5b924-6ed3-4288-a80a-c61b01859a0a)
+- 적용 예시
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/11701b96-6f1f-4115-86f2-a2cc9edc2adb)
+- 사용 시기
+  - 기능을 추가하고 싶은데, 기존의 특정 객체를 수정할 수 없는 상황인 경우
+    - 지연 초기화, 접근 제어, 로깅, 캐싱 등등
+  - 장점
+    - 원래 기능을 유지하며 부가 기능을 원래 사용법과 같이 쓸 수 있음
+    - 기존 대상 객체 코드 변경 없이 확장
+      - OCP 준수
+    - 대상 객체는 자신 기능에 집중, 부가 기능은 프록시가 집중
+      - SRP 준수
+  - 단점
+    - 많은 프록시 클래스 도입, 코드 복잡성 증가
+    - 프록시 클래스 자체에 들어가는 자원이 많아지면 처리 비용 증가
