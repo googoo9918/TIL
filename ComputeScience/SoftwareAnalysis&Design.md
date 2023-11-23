@@ -90,6 +90,9 @@
     - [Facade Pattern](#facade-pattern)
     - [Flyweight Pattern](#flyweight-pattern)
     - [Proxy Pattern](#proxy-pattern)
+  - [Behavior Desgin Patterns](#behavior-desgin-patterns)
+    - [Chain of Responsibility Pattern](#chain-of-responsibility-pattern)
+    - [Command Pattern](#command-pattern)
 # 소프트웨어 분석 및 설계
 ## Introduction
 ### 소프트웨어
@@ -1981,3 +1984,93 @@ list = Arrays.asList(s);
   - 단점
     - 많은 프록시 클래스 도입, 코드 복잡성 증가
     - 프록시 클래스 자체에 들어가는 자원이 많아지면 처리 비용 증가
+
+## Behavior Desgin Patterns
+- Behavior Design PAtterns
+  - 한 객체가 수행할 수 없는 작업을 여러 개의 객체로 어떻게 분배할 것인가?
+
+### Chain of Responsibility Pattern
+- 책임 연쇄 패턴
+  - 클라이언트의 요청에 대한 처리를 한 객체가 전부 진행X
+    - 여러 개의 처리 객체로 나누고 이를 사슬(chain)처럼 연결해 연쇄적으로 처리
+    - Handler가 처리 객체로 지칭
+      - 요청 수신 시 각 핸들러는 요청 처리 여부를 판단 -> 불가 시 다음 핸들러로 책임 전가 
+- 책임 연쇄 패턴이 필요한 상황
+  - 온라인 주문 시스템 개발 예시
+    - 요청 -> 인증 및 인가 검사 -> 주문 시스템
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/fe583f04-9f6d-4ed7-9066-75bb37b18ba1)
+      - 핸들러라는 독립 실행형 객체로 변환
+      - 체인에 따라 요청을 처리
+- 책임 연쇄 패턴의 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/a504bf3c-8d16-4534-ac45-f5313c756bd3)
+- 책임 연쇄 패턴 적용전 예시 코드
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/af8843f0-eba6-4b7b-8d7d-35cc8264048b)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/9e773e3c-e7fe-423f-a377-297a34e13a84)
+- 책임 연쇄 패턴 적용 후 구조 및 코드
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/0839b198-db17-42f3-80be-45917fc66630)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/75a2da76-cea8-4a48-91aa-6bf111e98f89)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/786cdba4-ef73-4ffb-ac6c-d438ab2af771)
+- 사용 시기
+  - 특정 요청을 2개 이상의 여러 객체에서 판별하고 처리해야 할 때
+  - 특정 순서로 여러 핸들러를 실행해야 하는 경우
+  - 다양한 방식과 종류의 요청을 처리할 것으로 예상되나, 요청 유형과 순서를 미리 알 수없는 경우
+  - 요청을 처리할 수 있는 객체 집합이 동적(런타임)으로 정의되어야 할 때
+- 장점
+  - 클라이은터는 체인 집합 내부의 구조를 알 필요 없음
+  - 각각 체인은 SRP를 지키기 때문에 새로운 요청 처리에 유연하게 확장 가능
+    - OCP 준수
+  - 클라이언트 코드 변경하지 않고 체인 동적 변경 가능
+- 단점
+  - 실행 시 코드 흐름이 많아져 과정을 살펴보기 어려움
+  - 무한 사이클로 체인 구성 시 무한 루프에 빠질 수 있음
+  - 책임 연쇄로 인한 처리 지연 문제 발생 가능
+- Decorator Pattern과 차이점
+  - 데코레이터는 객체의 기능 확장을 목적으로 함
+    - 책임 연쇄는 하나의 책임에 대해 유연성을 제공하는게 목적
+  - 데코레이터는 객체를 Wrapping하는 구조
+    - 책임 연쇄는 객체들이 연쇄를 형성하는 구조
+  - 데코레이터는 기본 기능에 추가 기능을 더함
+    - 책임 연쇄는 여러 객체 중 하나가 요청을 처리하고 이후 연쇄적으로 연결
+
+### Command Pattern
+- 명령 패턴
+  - 요청을 객체의 형태로 캡슐화
+    - 나중에 이용할 수 있도록 재사용성을 높임
+    - Invoker는 커맨드를 이용하여 receiver와 디커플링
+      - 실행하기만 하면 됨!
+- 명령 패턴이 필요한 상황
+  - 텍스트 편집기 앱 개발 시
+    - 여러 버튼이 있는 도구 모음(toolbar) 개발 시, Button 클래스를 생성해줘야함
+    - 버튼의 모양은 비슷하지만 기능은 다 다름
+    - 만약 Button을 부모로 두고 기능마다 다 상속해서 오버라이딩 한다면, 너무 복잡해짐
+      - 또한 Button 클래스에 수정이 생길 때마다 자식 클래스에 영향을 받음
+      - 또한 동일한 기능을 하는 로직이 버튼이 아닌 다른 형태로 존재할 경우
+        - 같은 기능을 하는 코드가 여러 클래스에서 중복되게 됨
+        - 로직 수정 시 여러 클래스에 존재하는 기능도 다 수정해줘야함
+  - 해결책
+    - 인터페이스 객체들이 요청을 직접 보내지 말고 Command를 경유해서 보낼 것
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/8b447513-f87e-4e74-8b2d-7b93d8b9d2ed)
+      - 다양한 기능에 따른 자식 클래스가 여러개 필요하지 않음
+      - 커맨드가 중간 레이어 역할을 함으로써 사용자 인터페이스와 비즈니스 로직 사이에 결합도를 줄임
+- 명령 패턴의 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/b2f39bd2-5a8a-4358-88dc-7fa5fe2ef23a)
+- 패턴 적용 전 예시 코드
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/fa6d4ea4-97ca-4303-94a9-823ec3de8227)
+    - 지금 off만 되어있는데, on과 off가 되려면 Button 코드를 수정해야함
+    - Light(Receiver)코드가 바뀌면 Button에 있는 코드도 수정되어야함
+    - 만약 Game이라는 클래스를 Button에 추가하고 싶으면, Button 코드를 수정해야함
+    - 즉, 확장성이 떨어짐!!
+- 명령 패턴 적용 예시
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/f1f829ae-9f01-4a98-ab9a-f948c7722479)
+    - 클라이언트는 커맨드를 넣음으로써 디커플링!!
+    - + 수정 용이
+- 장점
+  - SRP, OCP 준수
+    - Invoker와 receiver로 책임 분리
+    - 기존 클라이언트 코드 변경 없이 새 커맨드 도입
+  - Invoker, Receiver 간 결합도 감소
+    - 클라이언트는 어떤 커맨드가 어떤 객체에서 어떻게 실행되는지 알 필요 없음
+  - 명령 기록과 실행 취소/재실행 (undo/redo)
+    - Invoker 내부에 Stack 이용, command history 관리 가능
+- 단점
+  - Inboker와 receiver 사이 새로운 레이어(command)를 도입, 코드 복잡성 증가됨
