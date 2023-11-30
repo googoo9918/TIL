@@ -93,6 +93,12 @@
   - [Behavior Desgin Patterns](#behavior-desgin-patterns)
     - [Chain of Responsibility Pattern](#chain-of-responsibility-pattern)
     - [Command Pattern](#command-pattern)
+  - [Behavior Design Patterns(2)](#behavior-design-patterns2)
+    - [Interpreter Pattern](#interpreter-pattern)
+  - [Behavior Desing Patterns(3)](#behavior-desing-patterns3)
+    - [Mediator Pattern](#mediator-pattern)
+    - [Memento Pattern](#memento-pattern)
+    - [Observer Pattern](#observer-pattern)
 # 소프트웨어 분석 및 설계
 ## Introduction
 ### 소프트웨어
@@ -2074,3 +2080,103 @@ list = Arrays.asList(s);
     - Invoker 내부에 Stack 이용, command history 관리 가능
 - 단점
   - Inboker와 receiver 사이 새로운 레이어(command)를 도입, 코드 복잡성 증가됨
+
+## Behavior Design Patterns(2)
+- Behavior Design Patterns
+  - 한 객체가 수행할 수 없는 작업을 여러 개의 객체로 분배
+    - 객체 사이의 결합도를 최소화 하는 것에 중점
+
+### Interpreter Pattern
+- 해석자(Interpreter) 패턴
+  - 언어의 문법 규칙을 표현하고 해당 언어를 해석할 때 사용되는 행동 패턴
+
+## Behavior Desing Patterns(3)
+### Mediator Pattern
+- 중재자(mediator) 패턴
+  - 객체 간 직접 통신을 제한하고 중재자 객체를 통해서만 협력하도록 하는 행동 패턴
+    - 객체 간 결합도 감소, 유연성 확보
+    - 중재자
+      - 객체 간 통신 관리 및 매개체 역할
+- 필요한 상황
+  - 프로필을 만들고 편집하기 위한 대화상자(dialog)에서 다양한 요소 상호 작용 가능
+    - 각 객체가 서로 필요한 객체 참조 시
+      - 한 클래스 수정 -> 연관 클래스 수정 발생 가능
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/7f988b8e-69d8-4d15-9f82-dd50fa599731)
+  - 중개자 패턴의 아이디어
+    - 각 객체 간 연결을 느슨하게 만듬
+      - 객체 간 직접 통신 중단, 호출을 대신 처리하는 중재자 객체를 통해 간접 협력
+      - M:N 관계를 M:1 관계로 전환
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/f0e103d1-cdc6-4e7e-924b-282690c36770)
+- 중재자 패턴의 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/9772ad9c-24ef-400f-bace-abd9537bf40a)
+- 중재자 패턴의 코드 예시
+  - 채팅 중계 예시
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/b6535331-bb5e-448c-bd60-b0eadb2049a2)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/b86d3742-7d1a-4594-890d-005c5b4aecbb)
+- 장점
+  - 다양한 컴포넌트간 통신을 한 곳으로 추출, 코드를 이해하고 유지관리하기 용이함
+  - 프로그램의 다양한 컴포넌트 간 결합도를 줄일 수 있음
+  - 개별 컴포넌트들을 더 쉽게 재사용 할 수 있음
+  - 실제 컴포넌트를 변경하지 않아도 새 중재자를 도입할 수 있음
+- 단점
+  - 중재자는 god object로 발전할 수 있음
+- 퍼사드 패턴과 차이점
+  - 퍼사드 패턴은 객체의 하위 시스템에 대한 단순화된 인터페이스를 제공하지만, 새로운 기능을 제공하진 않음
+    - 정리의 느낌이 강함
+  - 하위 시스템 자체는 퍼사드를 인식하지 못하며 하위 시스템 내의 객체들은 서로 직접 통신 가능함
+  - 중재자는 시스템 컴포넌트 간 통신을 중앙 집중화 함
+
+### Memento Pattern
+- 객체의 구현 세부 사항을 공개하지 않고, 해당 객체의 이전 상태 값을 저장 및 복원할 수 있게 해주는 행동 패턴
+  - 스냅샷
+- 필요한 상황
+  - 텍스트 편집기에서 실행 취소(ctrl+z)
+  - 이를 위해 객체의 모든 필드 값을 복사해야함
+  - 그러나 대부분 실제 객체들은 모든 중요 데이터를 비공개함(캡슐화)
+  - 공개된 필드여도, 객체 일부가 수정되면 복사를 맡은 클래스들 역시 변경 되어야 함
+    - 결합도가 너무 높음
+- 메멘토 패턴의 아이디어
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/61325319-d622-4766-90c0-2c0040e85925)
+  - 상태 스냅샷들의 생성을 해당 상태의 실제 소유자인 originator 객체에 위임
+  - memento라는 특수 객체에 상대 복사본을 저장
+    - 메멘토의 내용에는 메멘토 생성 객체를 제외한 어떤 객체도 접근 불가함
+- 메멘토 패턴의 구조
+  - 중첩 클래스에 기반
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/f1fafc4f-51b7-486b-99c8-dd3928f33536)
+- 메멘토 패턴 코드 예시
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/f2570705-1dc5-4ebb-8057-d4132a0b7672)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/29d94310-2929-454b-87c2-a9821f47e5b9)
+- 장점
+  - 캡슐화를 위반하지 않고 객체 상태 스냅샷 생성 가능
+  - CareTaker가 Originator의 상태 기록을 유지하도록 함
+    - Originator의 코드 단순화 가능
+- 단점
+  - 클라이언트들이 메멘토를 너무 자주 생성하면 메모리 사용이 늘어남
+  - CareTaker에 오래된 메멘토는 삭제하고 관리하는 역할이 부여될 수 있음
+
+### Observer Pattern
+- 옵저버 패턴
+  - 옵저버들이 관찰하고 있는 대상의 상태 변화가 있을 때마다
+  - 대상자는 각 관찰자에게 통지, 관찰자들은 알림을 받아 조취를 취하는 행동 패턴
+    - 발행-구독 모델이라고도 함
+- 옵저버 패턴 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/69639d56-c7f4-49d5-9c41-ce193d3f5cd0)
+- 옵저버 패턴의 흐름
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/3bab61b9-4d97-4f0b-8ba8-5b849b65bcd0)
+  - 한 개의 관찰 대상자, 여러개의 관찰자로 1:N 관계 구성
+  - 관찰 대상자의 상태가 바뀌면 변경사항을 관찰자에게 통보
+  - 통보를 받은 관찰자는 적절하게 필요에 맞춰 업데이트
+  - 언제든지 구독 추가/취소 가능
+- 옵저버 패턴 코드 예시
+  - 날씨 API로부터 온습도 알림받기
+    - 각 유저들이 변화된 날씨 데이터를 자동으로 전달받음
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/5de4afec-31bf-47be-b460-77dda473a3d6)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/66bb56c0-d7dc-41bc-b0c7-3efec552462b)
+- 장점
+  - 관찰 대상자의 상태 변경을 주기적으로 조회하지 않고 자동으로 감지
+  - Publisher의 코드를 변경하지 않고 새 구독자 클래스를 도입
+  - 런타임 시점에 발행자와 구독 알림 관계를 맺음
+  - 상태 변경하는 객체와 변경 감지 객체의 관계를 느슨하게 유지
+- 단점
+  - 구독자는 알림 순서를 제어할 수 없고 무작위로 통보만 받음
+  - 다수의 observer 객체 등록 이후, 사용하지 않는 observer를 해지하지 않는다면 memory 낭비 발생 가능
