@@ -70,7 +70,7 @@
     - [Thread의 구성 요소](#thread의-구성-요소)
     - [Multi-Threaded Program 장점](#multi-threaded-program-장점)
     - [User and Kernel Threads](#user-and-kernel-threads)
-    - [Mapping of USer \& Kernel Thread: Many-to-One](#mapping-of-user--kernel-thread-many-to-one)
+    - [Mapping of User \& Kernel Thread: Many-to-One](#mapping-of-user--kernel-thread-many-to-one)
     - [Thread Issues](#thread-issues)
 # 운영체제
 ## Introduction
@@ -1020,7 +1020,7 @@ int main(void)
   - LITTLE에서 2개의 CPU(코어), 하나의 Shared Cache
     - 각 클러스터에서 Multicore는 Cache를 공유함을 기억하라!
     - 따라서 Data, Code 등 Process의 자원을 공유하는 멀티쓰레드 프로그래밍에 효율적
-  - T1~T4가 BIG, T5~T6이 LITTLE에 할당
+  - T1부터 T4가 BIG, T5부터 T6이 LITTLE에 할당
   - T2와 T5 통신시
     - T2 -> Shared Cache -> DRAM -> Shared Cache -> T5로 통신해야함
     - 따라서 LITTLE 클러스터가 비어있다고 해서 무작정 쓰레드를 할당한다면, 오히려 쓰레드 간 통신에서 오버헤드가 더 크게 생길 수 있음
@@ -1052,7 +1052,7 @@ int main(void)
       - 생성 및 관리를 위해 시스템 호출이 필요하기 때문
       - Kernel-level Thread 간 context switching의 비용이 더 많음
 
-### Mapping of USer & Kernel Thread: Many-to-One
+### Mapping of User & Kernel Thread: Many-to-One
 - Many-to-One
   - ![image](https://github.com/googoo9918/YourssuAssignment/assets/102513932/da20a31c-05ca-4fb8-86f6-b9b629b3d8ec)
   - Thread 관리는 User Level에서 이뤄짐(User level Threading)
