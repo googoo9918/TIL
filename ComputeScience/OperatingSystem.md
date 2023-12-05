@@ -79,6 +79,10 @@
     - [Synchronization Instruction](#synchronization-instruction)
     - [Semaphores(세마포어)](#semaphores세마포어)
     - [Monitor](#monitor)
+  - [Synchronization(2)](#synchronization2)
+    - [Bounded-Buffer Problem](#bounded-buffer-problem)
+    - [Readers-Writers Problem](#readers-writers-problem)
+    - [Dining-Philosophers Problem](#dining-philosophers-problem)
 # 운영체제
 ## Introduction
 ### 운영체제란?
@@ -1080,7 +1084,7 @@ int main(void)
     - 해당 Thread는 block되어도 다른 Thread는 계속 실행
   - 여러 개의 Thread를 Multiprocessor에서 동시 수행 가능
   - 한계점
-    - Kernel Thread도 한정된 자원, 문한정으로 생성할 수 없음
+    - Kernel Thread도 한정된 자원, 무한정으로 생성할 수 없음
     - Thread를 생성 및 사용 시 개수에 대한 고려 필요 
 - Many-to-Many
   - ![image](https://github.com/googoo9918/YourssuAssignment/assets/102513932/583979a6-f96b-48d0-8940-2fe51ebd9c29)
@@ -1350,3 +1354,262 @@ boolean TestAndSet(boolean *target){
   - 데이터베이스의 트랜잭션
     - Transaction 내에 묶인 하나의 작업 단위가 반드시 완전히 수행
     - 만약 어느 하나라도 실패 시, 전체 명령문 취소
+
+## Synchronization(2)
+### Bounded-Buffer Problem
+- N개의 Item을 삽입할 수 있는 Buffer에 여러 생상자와 여러 소비자 접근 시
+  - 생산자
+    - 하나의 Item을 생산해 Buffer에 저장
+      - Buffer에 대해 여러 Producer가 동시에 item 추가하려고 할 때 Race Condition 발생 가능
+  - 소비자
+    - Buffer에서 하나의 Item을 가져옴
+      - 소비자가 동시에 Buffer에서 Item을 빼려고 할 때 Race Condition 발생 가능
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/0e56a3ad-7963-4dcb-9c73-d087a7a07089)
+  - 한 Producer가 data를 넣고 있을 때
+    - 다른 Producer나 Consumer는 접근하면 안됨
+- Bounded-Buffer Problem 구현
+  - Buffer 구현
+    - `boolean buffer[n];`
+    - `buffer[0....n-1] = empty;`
+  - 생산자 Operation
+    - Buffer 배열 중, empty인 index를 찾아 full로 바꿈
+    - `buffer[m] = full;`
+  - 소비자 Operation
+    - Buffer 배열 중, full인 index를 찾아 empty로 바꿈
+    - `buffer[m] = emty;`
+- Bounded-Buffer Problem 세마포어
+  - Empty: Buffer 내에 저장할 공간이 있음을 표시
+    - 생산자의 진입 관리
+    - `sem_t empty;`
+  - Full: Buffer 내에 소비할 아이템이 있음을 표시
+    - 소비자의 진입 관리
+    - `sem_t full`
+  - Mutex: Buffer에 대한 접근 관리
+    - 생산자, 소비자가 empty, full 세마포어 진입 시 buffer의 상태 값 변경
+    - `pthread_mutex_t mutex`
+  - value 초기값
+    - `Full = 0, Empty = n, Mutex =1`
+    - Buffer에 Full인 entry가 0개, Empty인 entry가 n개
+- 생산자 Process
+  ```c
+  do{
+    produce an item in nextp
+
+    P(empty) //버퍼에 적어도 하나의 공간이 생기기를 기다림
+    //sem_wait(&empty)
+    P(mutex) //critical section에 진입하기 위해 기다림
+    //pthread_mutex_lock(&mutex)
+    ...
+    add nextp to buffer
+    ...
+
+    V(mutex) //critical section에서 빠져나왔음을 알림
+    //pthread_mutex_unlock(&mutex)
+    V(full); //버퍼에 아이템이 있음을 알림
+    //sem_post(&full)
+  }while(1);
+  ```
+- 소비자 Process
+  ```c
+  do{
+    P(full) //버퍼에 적어도 하나의 아이템이 들어가기를 기다림
+    //sem_wait(&full)
+    P(mutex);
+    remove an item from buffer to nextc
+
+    V(mutex);
+    V(empty); //버퍼에 하나의 빈 공간이 생겼음을 알림
+    //sem_post(&empty)
+    consume the item in nextc
+  }while(1);
+  ```
+
+### Readers-Writers Problem
+- 여러 Readers와 Writers가 하나의 공유 데이터를 읽거나 쓰기 위해 접근
+- Readers: 공유 데이터를 읽음
+  - 여러 Reader는 동시에 Data를 읽을 수 있음
+- Writers: 공유 데이터에 씀
+  - Writer가 데이터를 수정하기 위해서는, Reader 혹은 다른 Writer가 작업을 하고 있지 않아야 함
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/a5c6acb7-d0c7-4862-b22b-dbc79d789133)
+  - Read는 같이 할 수 있으나, Write는 독립적임
+- Solution 1
+  - `int readCount`
+    - 버퍼에 현재 몇 개의 Reader가 접근 중인지 표시
+  - `Semaphore wrt`
+    - Writers 사이의 동기화 관리
+    - `sem_t wrt`
+  - `Semaphore mutex`
+    - Readcount와 wrt에의 접근이 원자적으로 수행됨을 보장하기 위한 세마포어
+    - `pthread_mutex_t mutex`
+  - 초기값
+    - `Mutex = 1, wrt = 1, readcount =0`
+  - Writer
+  ```c
+  P(wrt) //entry section
+  writing is performed
+  V(wrt); //exit section
+  ```
+
+  - Reader
+  ```c
+  P(mutex); //readcount와 wrt 접근을 위함
+    readcount++;
+    if(readcount ==1) //처음 읽고 있는 상황이면
+      P(wrt); //wrt에 대한 세마포어를 통해 어떤 wrtier도 수행되고 있지 않음을 판별
+  V(mutex);
+    reading is performed
+  P(mutex);
+    readcount --;
+    if(readcount == 0)
+      V(wrt);
+  V(mutex);
+  ```
+  - 문제점
+    - Writer의 Starvation
+      - Readcount가 0일 대만 V(wrt)가 수행되어 p(wrt)로 대기하고 있던 Writer가 수행할 수 있음
+      - 첫 번쨰 Reader(Readcount ==1)가 P(wrt)만 통과하면 다른 Reader들은 P(mutex)에 대한 P(mutex)만 기다리면 언제든지 수행할 수 있음
+        - Writer와 상관없이 진입 가능
+      - 따라서 여러 Reader들이 계속해서 진입할 경우, ReadCount는 0까지 떨어지지 않을 수 있음
+  - 해결책
+    - Write process에 우선순위를 부여함
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/a2f25056-d268-4ae5-a7f5-9e3f6f5dc9ba)
+      - S1
+        - readcount 변수에 대한 접근을 동기화하는데 사용하는 세마포어
+      - S2
+        - writeCount 변수에 대한 접근을 동기화하는데 사용되는 세마포어
+      - rd, wrt
+        - 실제 데이터 읽기와 쓰기 작업을 동기화하는 데 사용되는 세마포어
+      - wrtpending
+        - 쓰기를 대기 중인 작가가 있음을 나타내는 세마포어
+      - wrtCount
+        - 현재 데이터를 쓰려고 대기 중인 작가의 수 추적
+      - readCount
+        - 현재 데이터를 읽고 있는 독자의 수 추적
+      - Writer
+        - writeCount 접근을 위해 S2 세마포어를 얻음
+        - writeCount 증가
+        - 처음 쓰는 거라면, rd 세마포어를 얻음
+          - 쓰기 작업을 시작하기 전에, 읽기 작업을 차단함
+        - S2 사메포어 해제
+        - wrt 세마포어 획득 ~ 해제
+        - S2 획득
+        - writeCount 감소
+        - 더이상 쓸 사람이 없다면, rd 세마포어 해제
+        - S2 해제
+      - Reader
+        - 쓰기를 대기하는 사람이 있는지 확인
+          - 근데 이게 의미가 있나 싶음(Writer에서 wrtpending에 대한 wait을 하지 않음)
+          - 만약 있다면, 쓰는 사람이 대기하는 중이라면 더 이상 readcount는 증가하지 않겠지
+        - rd에 대한 세마포어를 얻음
+          - 현재 쓰기 작업 진행중이라면, 세마포어를 얻지 못함
+        - s1에 대한 세마포어를 얻음
+        - readcount 증가, wrt 세마포어 획득
+        - s1, rd, wrtpending에 대한 세마포어 해제
+        - 읽기 진행
+        - s1 획득
+        - readcount 감소
+        - wrt, s1 해제
+
+### Dining-Philosophers Problem
+- 5명의 철학자가 한 식탁에서 함께 식사
+  - 젓가락이 5개 뿐
+    - 자신의 바로 옆 젓가락만 집을 수 있음
+    - 두 젓가락을 모두 집어야 식사를 할 수 있음
+    - 식사를 하고 난 다음에 두 젓가락을 모두 내려놓을 수 있음
+  - Deadlock과 Starvation이 발생하는 경우
+    - 모두 자신의 오른쪽 젓가락을 집은 경우
+- Solution 1
+  - 모든 철학자가 자신의 왼쪽 또는 오른쪽 젓가락부터 집도록 함
+  - `boolean waiting[n];`
+  - 세마포어
+    - `chopstick[5]`
+      - 각각 젓가락에 대한 동기화 관리
+  - 초기값은 모두 1
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/cfd34c6a-24d7-43e0-b0c5-9edba05c0442)
+    - while loop 내에서 think와 eat을 반복
+    - P(chopstick[i])
+      - 왼쪽 젓가락을 잡으려고 시도함
+    - P(chopstick[(i+1) % 5])
+      - 오른쪽 젓가락을 잡으려고 시도함
+    - V(chopstick[i])
+      - 왼쪽 젓가락을 내려놓음
+    - V(chopstick[(i+1) % 5])
+      - 오른쪽 젓가락을 내려 놓음
+    - 문제점
+      - 동시에 chopstick을 잡으면 deadlock 발생
+      - 예를 들어, 모든 철학자가 왼쪽 젓가락을 집는 경우
+- 개선안
+  - Deadlock 해결 방안
+    - 한 번에 최대 4명의 철학자만 식탁에 앉도록 함
+    - 젓가락 상태 미리 검사, 양 쪽의 젓가락이 모두 사용 가능할 때만 젓가락을 집도록 함
+    - 철학자에게 번호를 부여, 홀수인 철학자는 왼쪽 젓가락, 짝수인 철학자는 오른쪽 젓가락을 먼저 집도록 함
+  - 위 해결방안은 Starvation까지 해결하진 못함
+    - 각각 방안에 대해 Starvation에 대한 고려 추가 가능
+      - 한 차례 굶은 철학자 우선권 부여 등
+- Solution 2
+  - 양 쪽의 젓가락을 한 번에 집는 방법
+    - 젓가락 상태 미리 검사, 양 젓가락이 모두 사용할 때만 젓가락을 집도록 하는 방법
+    - `state[5]`
+      - 각 철학자의 상태를 기록(THINKING, HUNGRY, EATING)
+    - 문제 해결을 위한 세마포어
+      - mutex: 젓가락을 집거나 놓는 수행을 Critical Section으로 관리하기 위한 세마포어
+        - 초기값: 1
+      - Self[5]: 철학자 각각이 젓가락 두 개를 잡기를 기다리는 세마포어
+        - 초기값: 모든 원소가 0
+        - Self[i]
+          - 철학자 i가 HUNGRY 상태이더라도, 다른 젓가락 하나를 사용할 수 없을 경우 Waiting하기 위한 세마포어
+    - Process
+      ```c
+      do{
+        ...
+        think
+        ...
+        take_chopstics(i);
+        ...
+        eat
+        ...
+        put_chopsticks(i)
+        ...
+      }while(1);
+      ```
+    - take_chopsticks  
+      ```c
+      take_chopsticks(int i)
+      {
+        P(mutex);
+        state[i] = HUNGRY;
+        test(i);
+        V(mutex);
+        P(self[i]);
+      }
+      ```
+      - P(self[i])는 Test의 V(self[i])에 의해 결정됨
+        - 먹을 수 있는 상황이라면 V(self[i])를 통해 값을 올리고, P(self[i])가 동작하지 않도록 함
+    - put_chopsticks
+      ```c
+      put_chopsticks(int i)
+      {
+        P(mutex);
+        state[i] = THINKING;
+        test(LEFT);
+        test(RIGHT);
+        V(mutex);
+      }
+      ``` 
+      - test(LFFT, RIGHT)를 통해 양쪽의 철학자 상태를 검사, 먹을 차례를 기다리는 철학자에게 signal을 보내줌
+    - test(int i)
+      ```c
+      test(int i)
+      {
+        if(state[i] == HUNGRY &&
+           state[LEFT] != EATING &&
+           state[RIGHT] != EATING){
+              state[i] = EATING;
+              V(self[i]);
+           }
+      }
+      ``` 
+      - test를 수행한 철학자 i가 HUNGRY 상태고, 양쪽의 철학자가 모두 젓가락을 집지 않은 상태(NOT EATING)이면 take_chopsticks()에서 wait했던 자신의 세마포어 self[i]에 signal을 보내어 EAT으로 진행
+  - 해설
+    - 이 전략은 철학자 좌우 젓가락이 사용 가능할 때만 Critical Section에 진입
+      - i번째 식사를 하기 위해서는, i-1과 i+1의 철학자가 EATING 상태가 아니어야 함
