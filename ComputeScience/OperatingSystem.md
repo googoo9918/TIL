@@ -72,6 +72,13 @@
     - [User and Kernel Threads](#user-and-kernel-threads)
     - [Mapping of User \& Kernel Thread: Many-to-One](#mapping-of-user--kernel-thread-many-to-one)
     - [Thread Issues](#thread-issues)
+  - [Sychronization(1)](#sychronization1)
+    - [Sharing Resources](#sharing-resources)
+    - [Race Condition](#race-condition)
+    - [Critical Section](#critical-section)
+    - [Synchronization Instruction](#synchronization-instruction)
+    - [Semaphores(세마포어)](#semaphores세마포어)
+    - [Monitor](#monitor)
 # 운영체제
 ## Introduction
 ### 운영체제란?
@@ -1134,3 +1141,212 @@ int main(void)
   - Thread들은 같은 Process의 Data 영역을 공유, 자연스러운 Shared Memory 가능
   - IPC 최소화
   - 물론, 다른 Process에 존재하는 다른 Thread와의 통신은 IPC임
+
+## Sychronization(1)
+### Sharing Resources
+- Thread는 고유의 Stack을 같기 때문에, 지역 변수는 쓰레드끼리 공유되지 않음
+- 다른 쓰레드의 stack에 지역 변수의 포인터를 보내거나, 공유하거나, 저장하는 것 자체가 문제가 될 수 있음
+- 공유 가능한 변수
+  - 전역 변수(Global variables)
+    - static data segment에 저장됨
+  - 동적 할당 객체(Dynamic objects)
+    - heap에 저장됨
+
+### Race Condition
+- Concurrency는 non-deterministic(결정되지 않은) 결과를 초래할 수 있음
+  - 같은 input data에서 결과가 다르게 나올 수 있음
+- 공유 데이터에 대한 동시 접근은 데이터의 일관성(Consistency)를 해칠 수 있음
+  - Race Condition
+    - 공유 데이터에 대해 여러 Process가 동시에 접근, 변경을 시도하는 상황
+- ex)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/36655106-160e-4faf-b46f-1202a29d3c32)
+
+### Critical Section
+- 여러 Process(Thread)들이 공유하는 데이터에 접근하는 Code 영역
+- 한 번에 오직 하나의 Process(Thread)만이 Critical Section에 진입해야 함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/2b4b3e74-f4ee-4ed9-8615-9d339a5c75e3)
+- Critical Section 해결 조건
+  - Mutual Exclusion(상호 배제)
+    - 만약 Process A가 Critical Section에 진입해 있다면, 다른 모든 Process는 진입할 수 없어야 함
+  - Progress(진행)
+    - 만약 어떤 Process도 Critical Section에 있지 않고, Crtical Section에 진입하고자 하는 Process가 존재한다면
+      - Remainder Section에서 실행중이 아닌 Process들(=진입하려는 Process들) 만이 누가 진입할지 결정할 수 있어야 함
+        - 동기화 매커니즘에 따라 결정을 따르게 됨
+      - 결정은 무한히 연기될 수 없음(Deadlock-free)
+  - Bounded Waiting
+    - Process가 Critical Section에 진입할 때까지 걸리는 시간에 Limit이 존재해야 함
+      - starvation-free
+  - deadlock-free는 시스템이 정지하지 않는 것을 보장하지만, 모든 프로세스가 공정하게 처리되는 것을 보장하진 않음
+    - starvation-free는 모든 프로세스가 결국에 자원에 접근할 수 있는 기회를 갖는 것을 보장함
+- 두 Process를 위한 알고리즘
+  - Shared Variable: `int turn = 0;`
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/1f7b22d9-3620-4c6e-aa58-eba79d5c38e3)
+    - 만족 조건: Mutual Exclusion
+    - 불만족 조건: Progress, Bounded Waiting
+      - P1의 우선순위가 P0보다 높은 비선점형 스케줄링인 경우
+- 다른 Algorithm
+  - `boolean flag[2];`, `flag[0] = flag[1] = false`로 초기화
+  - `flag[0] = true`일 때, P0이 critical section에 진입 가능
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/970af2da-b83c-485d-93e9-807afa87a125)
+    - 만족 조건: Mutual Exclusion
+    - 불만족 조건: Progress, Bounded Waiting
+      - 두 process가 동시에 flag[0]과 flag[1]을 true로 변경한 경우
+- Peterson Solution
+  - Shared Variables
+    - `int turn;`, `boolean flag[2]; flag[0] = flag[1] = false`
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/47f24a75-aa1a-4cf6-bfad-7dc898acc7e6)
+      - 두 프로세스가 서로에 대해 우선순위를 줌
+      - turn 변수는 양보를 나타내고, flag[] 배열은 진입 의사를 나타냄
+        - turn = 1은 다음 차례는 P1의 것이라는 의미
+      - flag 선언과 turn의 선언의 순서가 바뀌게 되면 Mutual Exclusion을 불만족 할 수 있음
+  - Peterson Soluiton의 한계
+    - 3개 이상의 Process에서 구현?
+    - 확장된 Algorithm에서 증명은 NP 문제임
+    - 하드웨어로 처리하면 알고리즘이 간단해짐
+      -  ![image](https://github.com/googoo9918/TIL/assets/102513932/ff022e2a-caa3-4705-bbe5-43b320cc069c)
+         -  Acquire Lock ~ Releas Lock을 한 단위로 봄
+      - 혹은 Critical Section에서 Interrupt를 Disable 할 수 있음
+        - 그러나 User Program이 Interrupt를 Control 하는 것은 바람직 하지 않음
+        - Scalable 하지 않음
+        - 따라서 동기화를 위한 Instruction이 도입됨
+
+### Synchronization Instruction
+- CPU에서 지원하여 원자적으로 수행되는 명령어 이용
+  - 하드웨어의 지원을 받아 구현됨
+  - 원자적 -> All or Nothing
+- Test and Set 명령어
+```c
+boolean TestAndSet(boolean *target){
+  boolean rv = *target;
+  *target = true;
+  return rv;
+  // target이 true면 true를 리턴
+  // target이 false면 false를 리턴하고 true로 설정
+}
+```
+- Mutual Exclusion with Test-and-Set
+  - Shared Variables: `boolean lock = false`
+  - Process P1
+    ```c
+    do{
+      while(TestAndSet(&lock));
+        critical section
+      lock = false;
+        remainder section
+    }
+    ```
+  - lock이 true인 경우(다른 스레드가 critical section 사용중인 경우)
+  - while 루프에 머물면서 lock이 false로 설정될 때까지(Release lock 할 때까지) 계속 체크함
+    - busy waiting
+- Swap 명령어
+    ```c
+    void Swap(boolean *a, boolean *b){
+      boolean temp = *a
+      *a = *b;
+      *b = temp;
+    }
+    ```
+- Mutual Exclustion with Swap
+  - Shared Variables: `boolean lock;`, `boolean waiting[n];`
+  - process P1
+    ```c
+    do{
+      waiting[i] = true;
+      while (waiting[i] == true)
+        swap(&lock, &waiting[i]);
+          critical section
+        lock = false;
+          remainder section
+    }
+    ``` 
+    - lock이 true이고 waiting도 true라면, 계속해서 swap을 진행하면서 while 루프를 돌게됨
+    - lock이 false가 된다면, waiting은 false가 되고 lock은 true가 되면서 이 스레드는 critical section으로 돌입할 수 있게 됨
+- 위와 같은 Instruction의 한계점
+  - 동기화 Instruction을 통해 Mutual Exclustion은 해결되나, Bounded Waiting 등의 조건은 User Program에서 제공해야 함
+  - 그러나 Bounded Waiting이 주어진 문제마다 차이가 있기 때문에, User Program에서 제대로 처리하는 것을 기대하기 어려움
+    - 보다 포괄적인 동기화가 필요
+
+### Semaphores(세마포어)
+- 세마포어
+  - 두 개의 원자적 연산을 갖는 정수 변수
+    - 원자적 연산
+      - Wait() 또는 P()
+      - Signal() 또는 V()
+    - 세마포어 변수는 2개의 원자적인 연산에 의해서만 접근됨
+- P는 Critical Section 들어가기 전에, V는 나와서 수행
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/2f166e31-1e20-40d2-a3f4-641ae7947403)
+  - 서로 독립적, 원자적으로 수행
+  - 하나의 프로세스가 P를 수행하는 동안, 다른 Process가 P나 V를 수행하지 못함
+- Semaphores의 구현
+  - Busy Waiting 이용
+    ```c
+    P(s){
+      while(S<=0);
+        s = s - 1;
+    }
+
+    V(s){
+      s = s + 1;
+    }
+    ```
+    - 단점
+      - CPU Cycle 낭비 가능
+      - 대기 중인 Process 중 누가 Critical Setction에 진입할지 결정하지 않음
+      - Sychronization Instruction과 다를게 없음
+  - Sleep Queue 이용
+      - Busy Waiting 방식의 CPU Cylce 낭비 문제 해결
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/fae7a520-3348-479c-8838-928f5422e626)
+        - P연산
+          - 세마포어의 값 감소, 0이하라면 현재 프로세스를 Sleep Queue에 추가하고 sleep()
+        - V연산
+          - 세마포어 값 증가, 값이 0이하라면, Sleep Queue에서 프로세스를 제거하고 wakeup(P)
+      - FIFO 방식 Queue 라면, Bounded Waiting 해결!
+- Semaphores(세마포어)의 종류
+  - Counting Semaphore
+    - Semaphore 값은 범위가 정해져 있지 않음
+    - 초기값은 가능한 자원의 수로 정해짐
+  - Binary Semaphore
+    - Semaphore value가 가질 수 있는 값은 0과1
+    - Counting Semaphore보다 구현이 간단함
+  - Binary Semaphore는 test-and-set과 같은 Hardware 도움 받는 Instruction을 통해 구현 가능
+  - Binary Semaphore를 이용하여 Counting Semaphore 구현 가능
+- Binary Semaphore의 구현
+  - Test and Set을 통해 구현
+  - Semaphore S: 현재 Critical Section에 진입한 Process가 있는지 나타냄(True or False)
+  - P(s)
+    - While(test_and_set(&s));
+  - V(s)
+    - s = false;
+- Counting Semaphore의 구현
+  - Binary Semaphore를 이용한 Counting Semaphore 구현
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/d6971ad9-6335-48bb-91f9-525c714481e4)
+- Semaphores의 구현
+  - Kernel이 Single Thread인 경우
+    - P/V를 System Call로
+    - Kernel 내에서 처리하여 Semaphore 동작 구현'
+    - Kernel 내의 수행이 비선점형, kernel에 들어간 것이 Critical Section에 들어간 것임
+  - Kernel이 MultiThread인 경우
+    - P/V를 System Call로
+    - Kernel 내에서 별도로 동기화를 해야함
+- Semaphores의 단점
+  - Deadlock 발생 가능
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/bbc47891-ecd4-41a9-82de-87e67cbbb448)
+  - P와 V의 연산이 분리되어 있음, 잘못 사용할 경우 대책이 없음
+    - P() -> Critical Section -> P()
+      - Deadlock 발생
+    - V() -> Critical Section -> P()
+      - 여러 Process가 Critical Section에 진입 가능, Mutual Exclusion 보장 불가
+### Monitor
+- High-level 언어에서의 동기화 방법
+- 한 순간에 하나의 Process만 Monitor에서 활동하도록 보장
+  - 공유데이터와 공유데이터를 접근하는 코드를 하나의 모니터(객체)에 구성
+- Application은 Semaphore와 같이 P와 V연산에 대한 고려 없이 Procedure를 호출하는 것 만으로 동기화 해결 가능
+  - 프로그래머는 동기화 제약 조건(P/V)를 명시적으로 코드화 하지 않아도 됨
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/19c2d49b-a177-4b6e-9ea6-5d5e3e2329f0)
+  - Entry Queue에서 대기하는 Process들은 Monitor를 사용하기 위해 기다림
+    - 한 번에 하나의 스레드만이 모니터 함수 실행 가능
+  - Shared Data를 사용하기 위해서는 Monitor에 진입하여 제공되는 Operation을 통해야 함
+- ex)
+  - 데이터베이스의 트랜잭션
+    - Transaction 내에 묶인 하나의 작업 단위가 반드시 완전히 수행
+    - 만약 어느 하나라도 실패 시, 전체 명령문 취소
