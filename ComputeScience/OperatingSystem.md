@@ -91,6 +91,11 @@
     - [Page Table](#page-table)
     - [Translation Look-aside Buffers(TLB)](#translation-look-aside-bufferstlb)
     - [다양한 Paging Table](#다양한-paging-table)
+  - [Memory Management(2)](#memory-management2)
+    - [Page Replacement](#page-replacement)
+    - [Swapping](#swapping)
+    - [Contiguous Memory Allocation](#contiguous-memory-allocation)
+    - [Fragmentation](#fragmentation)
 # 운영체제
 ## Introduction
 ### 운영체제란?
@@ -1829,3 +1834,160 @@ boolean TestAndSet(boolean *target){
         - ![image](https://github.com/googoo9918/TIL/assets/102513932/30295848-1013-4d74-90e2-54e44d791571)
         - 주로 예측하기 어려운 패턴을 가질 때..
           - 대용량 DB 순차적 스캔, 대용량 파일 처리, 가상화 환경 등...
+
+## Memory Management(2)
+### Page Replacement
+- Memory 과다 할당 상태
+  - Memory 내에 위치한 User Process의 수가 증가함에 따라 발생
+  - 모든 User Process가 사용하는 Page 수보다 물리 Memory의 Frame 수가 적은 상황
+- 해결 방법
+  - Page Falut 처리에 Page Replacement를 추가
+    - 물리 Memory에 위치한 Page를 Disk에 저장하고, 요구된 Page가 해당 Frame을 할당 받도록 하는 방법
+- Page Fault with Page Replacement
+  - 디스크에서 요구된 Page의 위치를 찾음
+  - 물리 Memory에서 Free Frame을 찾음
+    - Free Frame이 있으면 사용
+    - 없으면, Page Replacement Algorithm을 사용하여 교체할 Frame을 선택
+    - 교체할 Frame을 Disk에 저장, Page Table을 변경
+  - Page Table에 변경 내용 저장
+  - User Process 재시작
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/eb22185c-2cb7-4df5-a6b2-700eecd43ec8)
+- Page Replacement 고려 사항
+  - 각각의 User Process에게 어떻게 Frame을 분배해 줄 것인가?
+    - Frame Allocation Algorithm
+  - Page 교체가 필요할 때 어떻게 교체할 Page를 고를 것인가?
+    - Page Replacement Algorithm
+  - 위 알고리즘은 모두 Page 교체에 의한 I/O 작업 수행 햇쇠룰 최대한 줄이려는 목적을 가짐
+    - 적합한 Algorithm의 사용은 System의 성능을 크게 좌우함
+    - I/O 작업은 매우 큰 비용을 사용하고, SSD는 쓰기 횟수가 정해져 있기 때문
+- Page Replacement Algorithms
+  - 어떤 Page Replacement Algorithm을 사용할 것인가?
+    - 가장 낮은 Page Fault 발생 빈도를 가진 Algorithm
+    - 즉, 가장 낮은 I/O 작업 횟수를 요구하는 Algorithm
+  - 여러 Algorithm들을 비교하기 위해 아래 환경 가정
+    - 세 개의 Frame 할당
+      - Page Fault 발생 빈도는 Frame의 개수와 반비례
+    - Page를 참조하는 순서 --> 20번
+      - 7, 0, 1, 2, 0, 3, 0, 4, 2, 3, 0, 3, 2, 1, 2, 0, 1, 7, 0, 1
+    - 한 번 참조된 Page는 교체가 일어나기 전에는 물리 Memory에 위치
+- Optimal Agorithm
+  - 앞으로 가장 오랫동안 사용되지 않을 Page 부터 먼저 교체
+    - 이론상 최적, 그러나 앞으로 어떤 Page가 사용될지 미리 알 수 없기 때문에 실제 구현 불가능
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/74fded2e-43b0-464c-9c47-7e16d62ed3da)
+- FIFO Algorithm
+  - 먼저 Frame이 할당된 Page를 먼저 교체
+  - locality가 낮은 멀티미디어 Data에서 사용하기 적합
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/d5ca42c0-ff79-42c6-9545-58383a49c7a6)
+- SCR Algorithm
+  - Second Chance Replacement
+  - FIFO 기법의 단점을 보완
+  - 오랫동안 주 기억장치에 존재하던 Page 중에서 자주 사용되는 Page 교체를 방지하기 위해 고안
+  - FIFO Queue를 만들고 사용하되, 참조 Bit(Reference bit)를 두어 Page를 관리함
+    - 참조 Bit(Reference Bit)
+      - 최초로 Frame에 Load 될 때와 Page가 참조되었을 때마다 1로 Set
+      - 일정 주기마다 다시 0으로 Reset
+  - 제거 대상으로 선택된 Page의 참조 Bit가 1로 Setting된 경우, 최근에 사용된 Page이므로 제거하는 대신 참조 Bit만 0으로 Reset
+  - 참조 비트 없이 Page Table Hit이 발생한 경우 해당 Frame을 Queue의 맨 끝으로 옮기는 방식으로 구현하기도 함
+    - 이건 사실 LRU와 동일함
+- Clock Algorithm
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/545b80da-1f5e-48b6-a003-54f71246417f)
+  - SCR 기법의 발전형
+    - 큐를 순회하는데 있어서 효율상 이점을 제공함
+  - Circular Queue를 사용하여 Frmae을 관리
+  - 다음에 제거될 Page를 가리키는 Hand라는 Pointer를 둠
+  - Hand는 Queue를 따라 1칸씩 이동함
+  - Hand가 가리키는 Page의 참조 Bit가 1이라면, 최근 접근한 Page이므로 제거하는 대신 참조 Bit만 0으로 Reset
+- LFU Algorithm
+  - Least Frequently Used
+  - 사용 빈도가 가장 적은 Page를 교체하는 기법
+  - 지금까지 가장 적게 참조된 Page가 교체 대상으로 선택
+    - 참조 횟수가 Page Table에 추가되어야 함
+  - Program 실행 초기에 많이 사용된 Page는 그 후로 사용되지 않더라도 Frame을 계속 차지하는 문제가 있음
+- NRU Algorithm
+  - Not Recently Used
+    - 최근에 사용하지 않은 Page를 교체하는 기법
+  - Page마다 참조 Bit와 변형 Bit를 두어 관리함
+    - 참조 Bit
+      - 최초로 Frame에 Load 될 떄와 Page가 참조되었을 때마다 1로 Set
+      - 일정 주기마다 다시 0으로 Reset
+        - 주기에 대한 시점을 모든 페이지가 알고 있어야 됨
+    - 변형 Bit
+      - 최초로 Frame에 Load 될 때는 0
+      - Page의 내용이 바뀔 때 1로 Set
+    - 교체 우선순위
+      - 참조 0, 변형 0
+      - 참조 1, 변형 0
+      - 참조 0, 변형 1
+      - 참조 1, 변형 1
+- LRU Algorithm
+  - Least Recently Used
+  - 가장 오랜 시간 참조되지 않은 Page부터 먼저 교체함
+    - 주로 가장 최적의 알고리즘 (Locality 고려)
+  - 구현 방법
+    - Counter의 사용
+      - 참조된 시간을 기록
+    - Queue의 사용
+      - 한 번 사용한 Page를 Queue의 가장 위로 이동시킴
+        - 가장 위의 Page: 가장 최근에 사용된 Page
+        - 가장 아래의 Page: 가장 오래 전에 사용된 Page
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/8c5c42bb-eb53-44f4-b4c7-5404a803f623)
+
+### Swapping
+- Page Out으로 Memory 부족을 해결하지 못할 경우 필요한 기법
+  - Page out은 활성화되지 않은 페이지를 디스크로 옮겨 메모리 공간을 확보하는 것
+  - 개별 페이지 단위로 작동함
+- Swap Out 대상이 된 Process 전체를 Secondary Storage로 보냄
+  - 보다 극단적인 메모리 부족 상황에서 사용됨
+  - 페이지 단위의 메모리 관리만으로 해결이 어려울 때 사용
+- 이렇게 Page Out이나 Swapping에 사용되는 Secondary Storage(Backing Storage)를 Swap 영역이라함
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/a711bf35-79e6-410a-9c8b-8b0b808c8fa2)
+### Contiguous Memory Allocation
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/7d896cab-cffc-41d8-ad0b-12e923567f2b)
+  - Single Partition Allocation
+    - 가장 단순하게 Memory를 사용
+    - User Program 영역을 한 번에 1개의 User Program만 사용
+  - Multiple Partition Allocation
+    - [1]의 방법에 Multiprogramming 개념을 추가하여 User Program 영역을 여러 개의 User Program이 사용하도록 함
+    - Partition과 Program의 크기가 명확하게 들어맞지 않기 때문에 일정 공간이 낭비될 수밖에 없음
+  - No Partition
+    - 각 Program이 필요에 따라 전체 User Program 영역을 사용
+    - Page/Swap Out 시 Garbage Collection 필요
+      - 프로그램이 쓰는 페이지를 수집하는 과정이 필요
+- Memory Allocation Problem
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/8e729f58-4451-4a97-b331-4a9c3360c9c9)
+  - User Program이 Load될 때, 물리 Memory의 OS 영역을 제외한 User 영역에 배치됨
+  - Protection, Relocation, Swap 기법 사용
+  - Program을 Memory에 Load할 때, Memory의 빈 공간 중 어디에 Program을 Load할 것인가?
+  - First-fit
+    - 가장 먼저 발견한 곳에 배치
+  - Best-fit
+    - 사용가능한 공간 중 가장 작은 곳에 배치
+### Fragmentation
+- External Fragmentation
+  - Contiguous Memory Allocation에서 발생
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/8bee2ff1-7bf9-47ca-92f6-c1434bfc2a68)
+  - Program에게 할당 후 남은 Memory의 총 공간은 새로운 할당 요청에 충분하지만, 그 공간이 연속적이지 않아 사용할 수 없는 경우
+    - Paging을 통해 해결 가능
+  - 연속적 메모리 할당과 해제의 결과로 발생됨
+- Internal Fragmentation
+  - 프로세스의 크기가 3998B인 경우, 페이지 크기는 4KB
+    - 2B의 Internal Fragmentation이 발생
+  - 개별 할당된 메모리 블록 내부에서 발생
+    - 프로세스의 메모리 요구량과 할당된 블록의 크기 사이의 불일치에서 기인함
+  - Paging 대신 Segmentation 사용 등, 가변 크기 메모리 할당 방식으로 해결 가능
+- Protection과 Relocation
+  - Protection
+    - Contigous Memory Allocation 방법 사용 시, OS의 Memory 영역과 User Program의 Memory 영역은 서로 구분되어야 함
+    - 서로의 영역을 침범하지 못하도록 보호해야함
+  - Relocation
+    - User Program은 재배치 가능한 주소로 표현됨
+    - 재배치 가능한 주소를 이용, Program이 어느 위치에 load 되더라도 쉽게 Code의 주소를 결정할 수 있어야 함
+  - Protection과 Relocation을 위한 Hardware의 지원
+    - Limit Register와 Relocation Register를 이용하여 구현
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/35a259f1-3472-4a59-a788-669c81f0b0fc)
+      - Limit Register
+        - 참조가 허용되는 주소의 최대값
+        - 이를 통해 참조하는 주소가 허용되는 영역인지 판별
+      - Relocation Register
+        - Program이 차지하는 주소 영역 중 첫 번째 주소
+        - 재배치 가능한 주소를 통해 실제 물리 Memory의 주소로 참조 가능하게 함
