@@ -83,6 +83,14 @@
     - [Bounded-Buffer Problem](#bounded-buffer-problem)
     - [Readers-Writers Problem](#readers-writers-problem)
     - [Dining-Philosophers Problem](#dining-philosophers-problem)
+  - [Memory Management(1)](#memory-management1)
+    - [주소 공간](#주소-공간)
+    - [물리 주소와 가상 주소](#물리-주소와-가상-주소)
+    - [가상 메모리](#가상-메모리)
+    - [Paging](#paging)
+    - [Page Table](#page-table)
+    - [Translation Look-aside Buffers(TLB)](#translation-look-aside-bufferstlb)
+    - [다양한 Paging Table](#다양한-paging-table)
 # 운영체제
 ## Introduction
 ### 운영체제란?
@@ -1613,3 +1621,211 @@ boolean TestAndSet(boolean *target){
   - 해설
     - 이 전략은 철학자 좌우 젓가락이 사용 가능할 때만 Critical Section에 진입
       - i번째 식사를 하기 위해서는, i-1과 i+1의 철학자가 EATING 상태가 아니어야 함
+
+## Memory Management(1)
+### 주소 공간
+- Process에서 참조할 수 있는 주소 범위
+  - Process와 1:1 관계
+- 주소 공간의 크기
+  - CPU의 주소 버스(Address Bus) 크기에 의존
+  - 주소 버스가 32Bit인 System에서 주소 공간의 크기
+    - 2^32개의 서로 다른 주소에 대한 식별자를 만들 수 있음
+    - 0 ~ 2^32-1 까지의 주소 범위를 Addressing 할 수 있음
+  - 32 bit 주소 버스를 가진 System이 주소 1개당 1Byte의 Memory를 접근할 수 있다면, 이 System이 Address할 수 있는 주소 공간의 크기는 몇 Byte인가?
+    - 2^10, KB / 2^20, MB / 2^30, GB --> 4GB
+### 물리 주소와 가상 주소
+- 물리 주소(Physical Address)
+  - 컴퓨터의 메인 메모리를 접근할 때 사용되는 주소
+  - 기억 장치의 주소 레지스터에 적재되는 주소
+- 가상 주소(Logical Address or Virtual Address)
+  - Process 관점에서 사용하는 주소
+  - CPU 관점의 주소는 물리 주소, 가상 주소 모두 가능
+  - Logical이기 대문에 주소 공간을 의미 있는 단위로 나누어 사용하지 않음
+- 초창기 컴퓨터의 주소 관리
+  - 물리 주소를 Compile Time에 생성
+    - 컴파일러는 프로세스를 실제 물리 주소로 매핑함
+    - 따라서 시작 주소의 위치가 바뀔 경우 다시 Compile 해야함
+  - 다양한 Program이 실행됨에 따라 Compile Time에 물리 주소를 정하기 어려워짐
+    - 1개의 Program이 실행될 경우 문제 없음
+    - 멀티 프로그래밍의 경우, 여러개의 프로그램을 동시에 Memory에 Load 하기 어려움
+      - 가상 주소를 생성하기 시작
+- Compile Time
+  - 컴파일러가 Symbol Table을 만들고, 주소는 Symbol Table Relative한 주소로 이루어짐
+  - 컴파일된 .O 파일은 주소 0부터 시작(Relocatable)
+- Link Time
+  - .O 파일들과 System에서 제공하는 Library를 묶어서 Symbol Table에 의존적이지 않은 주소를 만들어 냄
+  - 만들어진 Executable 파일은 하나의 주소 공간으로, 주소는 0부터 시작함
+- Load Time
+  - Program의 실행을 위해 Loader는 실행 파일을 Memory로 Load함
+  - 주소 공간 전체가 Memory에 올라간다면, Load 시 물리 주소에 대한 Binding이 일어남
+    - Base Register를 통해 물리 주소로 바꿔서 실행
+    - 메모리에 로드된 후 위치를 변경할 수 없음
+  - 만일 Program의 시작 주소를 바꾸려면, Load를 다시 해야함
+- Execution Time
+  - Process가 실행 되는동안 물리 주소가 결정되고 바뀜
+    - 그때그때 필요에 따라 물리 주소로 변환됨
+    - 주로 가상 메모리 시스템에서 흔히 사용
+  - MMU와 같은 특별한 Hardware가 필요
+- CPU에서 사용하는 주소에 따른 변환 방법
+  - CPU에서 Physical Relative Address를 사용하는 경우
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/915e6f5a-ec5b-45b4-8228-9a4e918d51ca)
+      - Program 내 Instruction들의 주소를 시작 주소(Base Address)로 부터 상대적인 Offset으로 표현
+      - 시작 주소 결정 시, 시작 주소 + 상대 주소의 합으로 절대 주소 생성 가능
+  - CPU에서 Virtual Address를 사용하는 경우
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/44f6625e-5ebf-4a5f-91f3-ebb6c97e9288)
+      - Translation의 속도가 중요한 요소가 됨
+- Memory Management Unit(MMU)
+  - Virtual Address와 Physical Address 간의 변환을 수행하는 Hadrware 장치
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/0013facd-84e1-49f8-a28d-a94423898493) 
+### 가상 메모리
+- 가상 메모리
+  - 물리적으로 존재하진 않지만, Process가 바라보는 공간
+- Basic Idea
+  - Process가 수행 되기 위해 Program의 모든 부분이 Physical Memory에 있을 필요는 없음
+    - 현재 실행되고 있는 Code 부분만이 실제 Memory에 있으면 Process는 실행 가능
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/d9ce69c2-c090-4dbf-a0e0-8c80f425d82d)
+- 가상 메모리 구현
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/2c0902fb-0268-4015-8fbb-8d705963e981)
+    - 가상 메모리의 특정 영역을 미리 물리 메모리에 올려놓음
+    - 나머지 부분은 SSD에 올리고 로드할 수도 있음
+- Address Mapping Table
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/6c92d2ae-9dbc-4966-8ba9-60f5d75ac298)
+    - 가상 주소 페이지가 더 많기 때문에 물리 주소 페이지에 다 들어가지 못하는 경우가 있을 수밖에 없음
+    - 그래서 재배치가 일어날 수 있음
+      - 순차적으로 매핑되어 있지 않음
+### Paging
+- 주소 공간을 동일한 크기인 Page로 나눠 관리
+- 보통 1 Page의 크기는 4KB로 나눠 사용
+  - 크기가 너무 작으면 메모리와 SSD 간 통신이 너무 많이 일어나게 됨
+  - 크기가 너무 크면 메모리에 많은 프로세스를 올리지 못함
+- 프레임(Frame, Physical Page)
+  - 물리 Memory를 고정된 크기로 나눴을 때, 하나의 Block
+- 페이지(Page)
+  - 가상 Memory를 고정된 크기로 나눴을 때, 하나의 Block
+- 각각의 프레임 크기와 페이지 크기는 같음
+- Page가 하나의 Frame을 할당 받았다는 건, 물리 Memory에 위치하고 있다는 것임
+  - Frame을 할당 받지 못한 Page들은 외부 저장장치(Backing Stroage, SSD 등)에 저장됨
+    - Backing Storage도 Page, Frame과 같은 크기로 나눠져 있음
+- CPU가 관리하는 모든 주소는 두 부분으로 나뉨
+  - Page 번호
+    - 각 Process가 가진 Page 각각에 부여된 번호
+    - ex) 1번 Process는 0부터 63번까지의 Page를 갖고 있음
+  - Page 주소
+    - 각 Page의 내부 주소를 가리킴
+    - ex) 1번 Process 12번 Page의 34번째 Data
+    - 1 Page의 크기가 4KB(2^2 * 2^10)니까 offset은 12bit 사용
+      - Byte를 bit단위까지 나눠줄 필요는 없음
+        - 어차피 사용하는 최소 단위가 1Byte임
+- 중간점검
+  - 0. 128MB의 물리 Memory를 4KB 단위로 Paging 하려고 하면, 몇 개의 Frame이 필요한가?
+    - 2^7 * 2^20 / 2^2 * 2^10 = 2^27 / 2^12 = 2^15
+  - 1. 4GB의 Logical Address를 Paging 하려고 하면, 총 몇 개의 Page가 필요한가?(Page의 크기는 4KB)
+    - 2^2 * 2^30 / 2^12 = 2^10 = 2^20
+  - 2. Page의 크기가 4KB일 때, 한 Page의 Memory를 Access 하기 위한 주소 Bit는 몇 Bit인가?
+    - 2^12, 12bit
+### Page Table
+- 페이지 테이블(Page Table)
+  - 각 Process의 Page 정보 저장
+  - Process마다 하나의 Page Table을 가짐
+  - Index: Page 번호
+  - 내용
+    - 해당 Page에 할당된 물리 Memory(Frame)의 시작 주소
+    - 이 시작 주소와 Page 주소(offset)를 결합, 원하는 Data가 있는 물리 Memory 주소를 알 수 있음
+      - Page 주소는 물리 주소와 가상 주소 동일
+- 페이지 테이블의 구현
+  - Page Table은 물리 Memory에 위치
+  - PTBR(Page Table Base Register)가 물리 Memory 내 Page 테이블을 가리킴
+  - PTLR(Page Table Length Register)이 Page Table의 Size를 나타냄
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/37946592-658b-4477-90d8-480bac181bde)
+  - Page Talbe을 이용한 VA, PA Mapping
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/f8128889-bb4e-4959-818e-822f233ca955)
+  - Page Table을 이용한 주소 변환
+- PTE(Page Table Entry)
+  - Page Table의 Record
+  - 각 필드 내용
+    - Page Base Address
+      - 해당 Page에 할당된 Frame의 시작 주소
+      - 이를 통해 물리 Memory에 접근
+    - Flag Bits
+      - Page에 대한 접근, 변경, 할당된 Frame, 읽기/쓰기에 대한 권한 등이 있음
+### Translation Look-aside Buffers(TLB)
+- Paging 방식에서는 Data로의 접근이 항상 두 번의 Memory 접근을 거쳐야 함
+  - Page Table에 한 번, 물리 Memory 내의 Data에 한 번
+  - 속도를 떨어트림
+  - 해결 방법 TLB in MMU
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/9d5145fd-422a-4e00-aa77-577e158a1434)
+    - Page Table을 이용해 변환된 주소(Page Table Entry)를 TLB에 저장
+    - 다음 접근 시, TLB에 저장된 값을 이용하여 빠르게 변환된 주소를 얻을 수 있음
+      - TLB는 Register이기에, 빠른 수행 가능
+    - TLB Hit Ratio
+      - TLB 내에서 원하는 주소를 찾을 수 있는 확률
+      - 높을 수록 Memory 접근 속도가 빠름
+### 다양한 Paging Table
+- Multi-level Page Table의 필요성
+  - System의 발전에 따라 가상 주소 공간도 매우 큰 용량을 요구하게 됨
+  - Page Table의 크기가 커지고, 차지하는 공간에 의해 Paging이 잘 이뤄질 수 없음
+    - ex) 32Bit 가상 주소 공간을 갖는 System
+      - Page 크기 4KB인 경우
+      - Page Table 크기: 1MB * 4B = 4MB
+        - 1MB는 Page 번호의 갯수, 4B는 보통 Page Table Entry의 크기
+        - 한 프로세스가 4MB 만큼의 페이지 테이블을 갖게됨
+        - 100개의 프로그램이 running 되는 경우, 400MB 만큼 page table이 차지함
+  - Page Table 자체도 Paging된 공간에 저장
+- 2 Level Page Table 구현
+  - Outer Page Table을 하나 더 두어, Page Table을 가리키도록 함
+  - 20 Bit를 차지하는 Page 번호를 다시 나눔
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/6ea5e46f-546e-41d5-89d0-cf0e62ad9137)
+    - 10 Bit Page 번호
+    - 10 Bit Page 주소
+    - 도식
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/db742e12-3273-488f-bdd3-8dea31208d97)
+    - Table Walk
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/b52ef940-fba9-4b06-9f47-21d7af4c8b46)
+        - Table Walk에 걸리는 시간은 증가함
+    - 12KB Process Mapping
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/20baf0cc-66a1-4ef9-85c4-78b07d5768a4)
+      - 1개의 L1 Page Table, 3개의 L2 Page Table을 이용하여 Mapping 가능
+- Inverted Page Table
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/615fec7a-7dc8-40a8-9650-4a669ffd5837)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/02b0ba77-115b-4f26-9c99-9648cf2f4762)
+    - 기존 방식은 Page #을 이용하여 Frame #을 검색
+    - Inverted Page Table은 ProcessId와 Page를 통해 물리적 메모리에 직접 Index를 매김 
+      - Page Table Index: Frame의 번호
+    - System 전체에 하나의 Page Table만 두게됨
+      - 예를 들어 물리 메모리가 8GB(2^33)라면, 2^33 / 2^12 = 2^21 만큼의 Page 수를 갖게 됨
+      - 하나의 페이지 테이블 엔트리 크기가 4B라 하면, 2^23(8MB)만큼의 Page Table 크기를 가짐
+    - Page Table은 보다 적은 용량을 차지하게 되지만, Table을 검색하는데 시간이 오래 걸리게 됨
+      - 해쉬 테이블 등을 사용하여 단축 가능
+- Demanding Paging
+  - Process의 실행을 위한 모든 Page를 Memory에 올리지 않고, 필요한 Page의 요청이 발생할 때 메모리에 올리는 Paging 기법
+  - Paging Service를 통해 한 Process에 필요한 Page를 Memory와 Secondary Storage 간에 이동시킴
+  - Valid and Invalid Page
+  - 장점
+    - 실행을 위한 물리 Memory 구성의 시간이 줄어듬
+    - Process의 전체 이미지를 Memory에 올리지 않기 때문에, 실제 필요한 전체 물리 Memory의 양을 줄일 수 있음
+  - 단점
+    - 참조하려는 Page가 Valid한 경우
+      - 실제 물리 Memory에 있기 때문에 정상적인 참조가 일어남
+    - 참조하려는 Page가 Invalid한 경우
+      - 실제 물리 Memory에 없으므로 이에 대한 처리 필요
+      - Page Fault 발생
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/f683334c-abde-45f9-8565-6357b1c41ef0)
+  - Page Fault
+    - Process가 Page를 참조하였을 때 해당 Page가 할당 받은 Frame이 없는 경우
+    - Page Fault Handler가 수행하는 내용
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/0c5f89ca-03cb-4cf5-96c6-432d4a84d8ba)
+      - 새로운 Frame을 할당 받음
+      - Backing Storage에서 Page의 내용을 다시 Frame에 불러들임
+      - Page Table을 재구성
+      - Process의 작업 재시작
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/b46a1441-aefc-4576-b18a-73a62c581b9c)
+      - Page fault 발생 빈도는 프레임의 개수와 반비례
+        - 프레임의 개수가 많아지면 page를 많이 저장할 수 있으니 일반적으로 더 좋아짐
+        - 다만, FIFO 알고리즘 같은 경우 벨라디의 역설이 존재하기도함
+    - Locality
+      - 일반적인 경우
+        - ![image](https://github.com/googoo9918/TIL/assets/102513932/8cb0991a-cb17-4ecd-bb63-765e83551bb1)
+      - Video Playing
+        - ![image](https://github.com/googoo9918/TIL/assets/102513932/30295848-1013-4d74-90e2-54e44d791571)
+        - 주로 예측하기 어려운 패턴을 가질 때..
+          - 대용량 DB 순차적 스캔, 대용량 파일 처리, 가상화 환경 등...
