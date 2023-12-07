@@ -99,6 +99,12 @@
     - [Mediator Pattern](#mediator-pattern)
     - [Memento Pattern](#memento-pattern)
     - [Observer Pattern](#observer-pattern)
+  - [Behavior Design Patterns(4)](#behavior-design-patterns4)
+    - [State Pattern](#state-pattern)
+    - [Strategy Pattern](#strategy-pattern)
+  - [Desing Patterns(5)](#desing-patterns5)
+    - [Template Method Pattern](#template-method-pattern)
+    - [Visitor Pattern](#visitor-pattern)
 # 소프트웨어 분석 및 설계
 ## Introduction
 ### 소프트웨어
@@ -2180,3 +2186,181 @@ list = Arrays.asList(s);
 - 단점
   - 구독자는 알림 순서를 제어할 수 없고 무작위로 통보만 받음
   - 다수의 observer 객체 등록 이후, 사용하지 않는 observer를 해지하지 않는다면 memory 낭비 발생 가능
+
+## Behavior Design Patterns(4)
+### State Pattern
+- 상태 패턴
+  - 객체의 내부 상태 변경 시, 객체 스스로가 상태에 따라 행동을 변경할 수 있도록 하는 행동 패턴
+- 상태 패턴이 필요한 상황
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/d64deb50-98a9-42ed-889b-ac0254c6de50)
+  - Document 클래스가 있고, Draft(초안), Moderation(검토), Published(출판됨)의 세 가지 상태를 가질 때
+- publish 메서드는 각 상태에 따라 다르게 동작
+  - Draft일 때, 문서를 검토 상태로 이동
+  - Moderation일 때, 문서를 공개하거나 관리자에게만 공개
+  - Published일 때, 아무런 작업을 하지 않음
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/1c9364c5-b23d-48ab-bed4-ce61567f5413)
+- 상태 패턴의 아이디어
+  - 객체의 모든 가능한 상태들에 대해 새 클래스를 만들고 모든 상태별 행동들을 상태 클래스에 추출함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/f9fb8d51-2c9a-4e14-bead-13cb9caf23e1)
+- 상태 패턴의 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/e9b0d553-670b-471c-8169-445d6b85715d)
+  - Context
+    - State를 갖는 객체
+    - 상태를 나타내는 참조 필드를 가짐
+  - State
+    - 상태별 메서드 선언
+  - Concrete State
+    - 구체적인 각각의 상태를 클래스로 표현
+    - State에 따라 결정되는 메서드를 구체적으로 구현
+    - Context에 대한 참조 필드를 지님
+      - 필요한 정보를 갖고 오기도 하고 Context의 상태를 set하기도 함
+- 예시 코드
+  - 노트북 전원 상태에 따른 동작 설계
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/86b69524-63f6-4bc5-8769-96c70cced8f5)
+    - On 상태에서 전원 버튼 누르면 OFF 상태로 변경
+    - OFF 상태에서 전원 버튼을 누르면 ON 상태로 변경
+    - 절전 모드 상태에서 전원 버튼 누르면 ON 상태로 변역
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/d70fc564-4281-44d3-93ad-c7e9ec2a5325)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/82aba57a-6dc4-46ed-8fd0-22d41da6c300)
+    - 일반적으로 상태를 매번 다른 인스턴스로 하지 않아도 됨
+    - 상태를 싱글톤으로 구성, 코드를 개선할 수 있음
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/964a9ebe-9623-4541-bcdf-fdf8a248d6e9)
+- 장점
+  - 상태에 따른 동작으로 개별 클래스로 옮겨 관리(SRP)
+  - 상태와 관련된 모든 동작을 각각의 상태 클래스에 분산, 로직의 복잡도를 줄일 수 있음
+  - 기존 상태 클래스나 컨텍스트를 변경하지 않고 새 상태 도입 가능(OCP)
+- 단점
+  - 상태별로 클래스 생성, 관리해야 하는 클래스 수 증가
+  - 객체에 적용할 상태가 별로 없거나, 상태 변경이 자주 일어나지 않는 경우 패턴 적용이 과할 수 있음
+
+### Strategy Pattern
+- 전략 패턴이란?
+  - 실행 중에 알고리즘 전략을 선택, 객체 동작을 실시간으로 바뀌도록 할 수 있게 하는 행동 패턴
+- 필요한 상황
+  - 내비게이션 앱에서 목적지까지 빠른 경로를 찾아주는 기능을 설계할 때
+    - 첫 번째 버전에서는 도로로 된 경로만을 찾을 수 있음
+    - 도보, 대중교통, 자전거 등의 경로 옵션을 제공하는 형태로 확장
+      - 확장하면 할수록 네비게이터 클래스가 복잡해짐 
+- 전략 패턴의 아이디어
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/971501dc-b41d-45d3-b9ae-3dd3b7b7f8cd)
+    - 특정 작업은 다양한 방식으로 수행하는 클래스를 선택, 모든 알고리즘을 strategy라는 별도 클래스로 추출함
+- 전략 패턴의 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/ae51732e-a185-47d1-a0ab-94af8090ebf5)
+- 전략 패턴 예시 코드
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/875edb03-f335-460e-a25e-b6d200ea6c85)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/e853deb3-168b-46b1-9fbd-f0c4990adafc)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/698b4fc6-aa1f-4f4d-a375-af8498bd9669)
+- JAVA에서 전략 패턴 사용 예시
+  - Comparator: 비교 전략을 런타임에 정의하고 변경할 수 있음
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/fc3d6b08-d030-491c-bace-3c193d054341)
+- Strategy Pattern
+  - 장점
+    - 런타임에 객체 내부에서 사용하는 알고리즘 교환 가능함
+    - 새로운 알고리즘을 추가해도 기존 코드에 영향 X (OCP)
+    - 전략 클래스는 단 하나의 알고리즘 가짐, SRP 준수
+    - 다른 컨텍스트에서 전략을 재사용학 ㅣ편함
+  - 단점
+    - 알고리즘이 별로 없고, 거의 변화가 없다면 사용이 과함
+    - 클라이언트의 적절한 전략 선택을 위해 전략 간 차이점을 인지하고 있어야 함
+- State vs Strategy
+  - 유사점
+    - 클래스 다이어그램이 거의 유사하고, 사용법이 비슷함
+    - 둘 다 합성(composititon)을 통해 해결함
+  - 차이점
+    - 초점
+      - 상태 패턴은 객체의 상태에 따른 행동 변화에 중점
+      - 전략 패턴은 알고리즘의 동적인 교체에 중점
+    - 적용 시나리오
+      - 상태 패턴은 객체가 여러 상태를 갖고, 상태에 따라 행동이 달라야 할 때 사용
+      - 전략 패턴은 알고리즘이 독립적으로 정의하고 교체해야 할 때 사용
+
+## Desing Patterns(5)
+### Template Method Pattern
+- 템플릿 메서드 패턴
+  - 알고리즘의 구조를 정의하고 일부 단계를 서브 클래스에서 구체적으로 구현할 수 있게 하는 행동 패턴
+    - 여러 클래스에서 공통으로 사용하는 메서드를 템플릿화 하여 상위 클래스에서 정의, 서브 클래스마다 세부 동작을 다르게 구현
+    - 알고리즘의 구조를 유지한 채로 행동을 다르게 변경할 수 있음
+- 템플릿 메서드 패턴이 필요한 상황
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/7c45f6dc-417d-4605-99c3-a76716c9a973)
+  - 회사 문서들을 분석하는 앱을 만들고 있다고 가정
+    - 다양한 포맷(pdf, doc, csv) 문서에 대해 일관된 형식으로 의미 있는 데이터 추출
+  - 포맷에 맞게 처리하는 부분 외에 많은 코드 중복 발생
+- 템플릿 메서드 패턴의 아이디어
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/9ea692bc-bba6-471d-a663-56206728e737)
+    - 알고리즘을 일련의 단계로 나누고, 이러한 단계를 메서드로 변환
+    - 단일 템플릿 메서드 내부에 단계 메서드들에 대한 일련의 호출로 구성
+    - 상속을 통해 추상 단계 메서드를 오버라이드 해서 구현
+    - 템플릿 메서드
+      - 알고리즘의 뼈대를 이루는 메서드, 단계 메서드로 구성
+      - 서브 클래스에서 오버라이딩 되면 안됨(final 처리)
+    - 추상 단계 메서드
+      - 모든 자식 클래스에서 구현해야 하는 메서드
+    - 디폴트 단계 메서드
+      - 부모 클래스에서 기본 구현이 있어서 공통으로 쓰일 수 있는 메서드
+        - 필요한 경우 디폴트 구현을 무시하고 자식에서 오버라이드 가능
+- 템플릿 메서드 패턴의 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/739007a8-1ffb-4cb9-b6a1-cf49468421bd)
+- 템플릿 메서드 패턴의 코드 예시
+  - 숫자를 읽어와 숫자들을 연산한 결과를 알려주는 기능 구현
+    - 모든 숫자를 더하는 기능
+    - 모든 숫자를 곱하는 기능
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/8c22a8d9-6c52-4717-931f-00a49cbf63ed)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/af2c0c38-f79c-4004-b339-458fa486633b)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/b390724b-686e-460e-a931-cad0036d12a5)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/c970a857-401c-4c9a-a4a0-ad7dad16cb1d)
+- 훅 메서드
+  - 몸체가 비어 있는 단계 메서드
+    - 자식 클래스가 선택적으로 오버라이딩
+    - 템플릿 메서드는 훅이 오버라이딩 되지 않아도 작동함
+  - 훅 메서드는 알고리즘 전/후에 배치, 자식 클래스들에게 알고리즘의 추가 확장 지점 제공
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/2eab1ba0-ba5b-47ff-843c-aec729ffacb6)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/d8463527-9590-4613-9765-5f1f647c779b)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/036094f0-beaf-4ff3-9525-6c021649914b)
+- 장점
+  - 클라이언트가 대규모 알고리즘의 특정 부분만 재정의 하도록 함
+    - 알고리즘의 다른 부분에 발생하는 변경에 영향을 덜 받도록 함
+  - 상위 클래스로 로직을 공통화, 코드의 중복을 줄임
+    - 핵심 로직을 상위 클래스에서 관리, 관리 용이해짐
+- 단점
+  - 제공되는 뼈대로 인해 알고리즘 로직의 유연성이 제한 될 수 있음
+  - 하위 클래스에서 구현시, 해당 단계 메서드가 어느 타이밍에 호출되는지 템플릿 메서드 로직을 이해할 필요가 있음
+  - 로직에 변화가 생겨 상위 클래스 수정 시, 모든 서브 클래스 수정이 생김
+  - 서브 클래스를 통해 기본 단계 구현을 억제하여 리스코프 치환 법칙을 위반할 여지가 있음
+
+### Visitor Pattern
+- 알고리즘을 객체 구조에서 분리시키려는 행위 패턴
+  - 각 클래스들의 데이터 구조에서 처리 기능을 분리
+    - 별도의 클래스로 구현
+  - 분리된 처리 기능은 visitor을 통해 각 클래스들을 방문하며 수행
+- 방문자 패턴이 필요한 상황
+  - 그래프로 구성된 지리 정보를 사용해 작동하는 앱을 구현 중이라 가정
+    - 각 정점은 산업, 관광 지역 등 세부적인 정보를 갖는 여러 클래스로 표현
+    - 정점들은 도로로 연결
+  - 그래프를 XML 형식으로 내보내는 작업 구현 시, 기존 노드 클래스를 변경할 수 없는 상황이라 가정
+    - 각 노드 클래스에 export 메서드를 추가해서 그래프 순회하며 export를 수행하면 간단하게 처리 될 수 있음
+    - XML export 메서드를 모든 노드 클래스에 추가해야 하는데, 변경과 함께 버그 발생 시 전체 앱이 망가질 수 있음
+    - 노드 클래스의 주 작업은 지리 데이터를 처리하는 것
+      - export를 추가하는게 적절하지 않을 수 있음(SRP 측면)
+    - 만약 다른 형식으로 확장을 해야 한다면, 클래스 전반적으로 다시 수정해야 함
+- 방문자 패턴의 아이디어
+  - 데이터를 처리하는 기능을 기존 클래스에 두는 것이 아닌, 방문자라는 별도 클래스에 배치
+    - 방문자에 의해 방문 되면서 처리 기능 수행
+      - 행동을 수행해야 했던 원래 객체가 방문자의 인수로 전달
+        - 원래 객체의 정보에 접근할 수 있음
+    - XML export 예시에서 다음과 같이 노드 클래스 종류에 맞게 처리 기능을 구현, 방문하면서 처리
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/63ce5d13-d1cc-437d-8141-4d23bdc31461)
+- 방문자 패턴의 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/ff03aa6e-f7c8-495a-9a48-4cd406c82095)
+- 방문자 패턴의 예시 코드
+  - 도형 클래스가 있고, 방문자는 도형의 넓이를 계산하는 예씨
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/cbc87015-3310-4ccc-8300-771196e83905)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/4975ca90-d5e3-45f8-b92c-cca5cc68ca58)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/a7f0c33d-61b6-4787-aa8e-c28772ab56e3)
+- 장점
+  - 다른 클래스를 변경하지 않으면서 해당 클래스의 객체와 작동할 수 있는 새 행동 도입 가능(OCP 준수)
+  - 동작을 클래스로 캡슐화 하므로, 자신의 주된 책임에 집중(SRP 준수)
+  - Visitor 클래스는 관련된 동작을 캡슐화, 동일한 동작을 다양한 element 클래스에 재사용 가능
+- 단점
+  - Element 인터페이스를 구현하는 새로운 클래스 추가 시, visitor에 대한 수정 발생 가능
+    - 유지보수의 어려움
+  - 런타임에 동작을 결정하기 때문에, 실행 시 오버헤드 발생
