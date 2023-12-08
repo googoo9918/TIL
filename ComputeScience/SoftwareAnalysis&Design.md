@@ -105,6 +105,9 @@
   - [Desing Patterns(5)](#desing-patterns5)
     - [Template Method Pattern](#template-method-pattern)
     - [Visitor Pattern](#visitor-pattern)
+  - [Clean Code](#clean-code)
+    - [Meaningful Names](#meaningful-names)
+    - [Functions](#functions)
 # 소프트웨어 분석 및 설계
 ## Introduction
 ### 소프트웨어
@@ -2364,3 +2367,159 @@ list = Arrays.asList(s);
   - Element 인터페이스를 구현하는 새로운 클래스 추가 시, visitor에 대한 수정 발생 가능
     - 유지보수의 어려움
   - 런타임에 동작을 결정하기 때문에, 실행 시 오버헤드 발생
+
+## Clean Code
+- Clean Code
+  - 코드를 읽기 쉽고 이해하기 쉽게 작선하는 원칙과 관계의 집합
+    - 코드의 가독성, 유지보수성, 확작성을 향상
+  - 코드를 작성하는 개발자와 다른 개발자 간의 협업을 촉진
+  - 단순하고 명확
+  - 잘 쓰여진 글처럼 읽혀야 함
+  - 설계자의 의도를 명확히 드러내야 함
+  - 간결한 추상화와 복잡하지 않은 제어 로직을 가져야 함
+### Meaningful Names
+- Variables, functions, arguments, classes, packages 등에 적절한 이름을 부여해야함
+  - Source files, directories에도 적절한 이름을 부여 해야 함
+  - 이름 짓는 일이 굉장히 많기 때문에 좋은 이름을 잘 짓기 위한 방법 필요
+- Use intention revealing names
+  - What it does
+    - 무앗을 하는가?
+  - Why ite exists
+    - 왜 존재하는가?
+  - How is it used
+    - 어떻게 사용되는가?
+  - 주석이 필요하다면, 그 이름은 의도를 드러내지 않은 것
+  - 의도를 드러내는 이름을 선택하는 것이 코드를 이해하기 쉽고 수정하기 쉽게 만들어줌
+    ```java
+    public List<int[]> getThem(){
+      List<int[]> list1 = new ArryaList<int[]>();
+      for(int[] x : theList){
+        if(x[0] == 4){
+          list1.add(x);
+        }
+      }
+      return list1;
+    }
+    // theList에 있는 객체는 어떤 객체?
+    // 0번째 인덱스의 의미는 무엇? 4라는 값의 의미는 무엇?
+    ``` 
+    - 코드의 암시성 측면에서 좋지 않음
+  - 지뢰 찾기 게임을 개발하고 있다 하자
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/280ef535-791d-45be-bcb4-653de9fef6ea)
+      - 위에서 Board는 cells의 theList란 이름의 list로 표현 --> gameBoard로 변경
+      - getThem --> getFlaggedCells(List라 s붙음)로 변경
+      - 위에서 0번째 인덱스는 상태 값의 위치이고, 상태 값 4는 "flagged"를 의미했던거임
+        - 명시적으로 변경
+      - 마지막으로, int[]표현을 Cell 클래스로 변경
+- Avoid disinformation
+  - 코드의 의미를 혼동할 수 있는 단서를 남기는 것을 피해야 함
+    - 다른 의미를 가진 흔히 쓰이는 단어를 피해야함
+    - 실제로 List가 아님에도 accountList와 같이 명명하면 안됨
+- Make meaningful distinctions
+  - 컴파일러만을 만족 시키는 코드 작성 시 문제가 생김
+    - 컴파일러가 만족하더라도, 일련의 숫자나 의미 없는 단어를 추가하는 것은 충분하지 않음
+  - 만약 이름이 달라야 한다면, 다른 의미를 가져야 함
+    - Noise words는 의미 없는 구별이고, 중복적으로 표현됨
+      - ex) `a1.length, a2[i] = a1[i]...`
+    - 예를 들어 아래에 대해 어떤 차이가 있는가?
+      - `getActiveAccount()`, `getActiveAccounts()`, `getActiveAccountInfo()`
+- Use Pronounceable names
+  - 발음하기 쉬운 이름으로 지어야 함
+  - Genymdhms(generation date, year, month, day, hour, minute, and second)라는 변수, 의사소통 어려움
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/99b275d7-1db7-419c-bfff-d19a5daff878)
+- Use searchable names
+  - 검색하기 쉬운 이름으로 지어야 함
+    - 단일 문자 이름(a, b, c)과 숫자 상수(1, 2)는 텍스트 본문 전체에서 찾기 쉽지 않음
+    - 단일 문자 이름은 short method에서 지역 변수로만 사용 되어야 함
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/9282d2aa-ed74-442a-a952-040c45700bd5)
+- Class Names
+  - 클래스와 객체 이름은 명사 또는 명사구 사용
+    - Customer, WikiPage, Account, and AddressParser
+  - 모호하거나 너무 일반적인 단어는 피함
+    - Manager, Processor, Data, Info
+  - 클래스 이름의 첫 글자는 대문자로 씀
+  - 일반적으로 클래스 이름은 동사로 시작하지 않음
+- Method Names
+  - Method는 동사 또는 동사구의 이름을 가짐
+    - postPayment, deletePage, save
+  - 접근자, 변경자, 조건자는 get, set, is(should/has) 로 시작
+  - 일반적으로 method의 첫 글자는 소문자
+- Other guidelines
+  - 기발한 이름은 피하라(특정 문화에서 쓰는게 아닌, 의도를 명확히 할 것)
+  - 한 추상적인 개념엔 하나의 단어 사용
+    - 동의어 사용이 많아지면 좋지 않음
+  - Solution domain 용어 사용
+    - 프로그래머가 코드를 읽는다는 가정 하에 코드 작성
+    - Computer science 용어를 사용하는 것은 괜찮음
+  - Problem domain 용어 사용
+    - 문제 영역과 관련이 깊은 용어 사용은 괜찮음
+
+### Functions 
+- 어떤 프로그램이든 함수는 기본적 단위
+- 함수를 만들 때 최대한 작게 만들자
+  - 한 줄은 150자를 넘지 않도록 구성, 함수는 100줄을 넘지 않도록 구성
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/a1b6d025-ddff-45b7-9138-2724df42e353)
+  - 어떻게 짧게 만드는가?
+    - 로직이 길어진다면 별도 함수로 분리
+      - 중첩구조(if/else, while)에 들어가는 블록은 한 줄로 표현
+      - 각 함수 별 들여쓰기 수준이 2단을 넘어서지 않고, 각 함수가 명확해야함
+    - 그러나 함수가 많아져 생기는 혼동 발생 가능
+- Do one thing
+  - Funtions Should Do One Thing, They Should Do it Well, They Should Do it Only
+  - 문제
+    - One thing이 무엇인지 파악하기 어려움
+      - 한 가지 이상 수행 시, 다른 함수를 추출할 것
+  - 함수를 주석 등으로 여러 섹션으로 나눌 수 있따면, 이 함수는 여러 작업을 하는 셈임
+- One level of abstraction per function
+  - 한 가지 작ㅇ업만 하려면 함수 내 모든 문장의 추상화 수준이 동일 해야 함
+    - 만약 한 함수 내 추상화 수준이 섞이면, 읽는 사람이 헷갈림
+  - Stepdown Rule
+    - 코드는 위에서 아래로 이야기처럼 읽혀야 좋음
+    - 함수 추상화 부분이 한 번에 한 단계씩 낮아지는 것이 이상적임
+- Use descriptive names
+  - Ward's principle
+    - 코드를 읽으며 짐작했던 기능을 각 루틴이 그대로 수행하면 clean code
+      - 한 가지 작업을 수행하는 것은 작은 함수에 대해 좋은 이름을 선택하라
+      - 기능이 더 작고 집중적일 수록 서술적 이름을 선택하기 쉬움
+    - 서술적 이름 선택 시 모듈 디자인 이해 및 개선에 도움이 됨
+      - 긴 서술적 이름이 짧고 애매한 이름보다 나음
+      - 긴 서술적 이름이 긴 주석보다 나음
+    - 이름의 일관성 유지
+- Function arguments
+  - 이상적 인수 개수는 0개(가독성 측면에서)
+    - 일반적으로 3개가 넘어가면 이해에 도움 안됨
+    - 출력 인수는 이해하기 어려우므로 쓰지 않는게 좋음
+      - 인수 개수 1개는 인수 개수 0개 다음으로 최선임
+  - 많이 쓰는 단항 형식
+    - 인수에 질문을 던지는 형식
+      - `boolean existsFile("filename)`
+    - 인수를 변환해 결과 반환
+      - `InputStream openFile("filename")`
+    - 이벤트 함수일 경우
+      - `void checkPasswordWithRetryCount(int count)`
+  - Flag argument는 좋지 않음
+    - boolean flag 변수를 넘기는 것 자체가 함수가 여러 일을 하는 것을 의미
+    - flag가 true일 때 하는 일 + flag가 false 일 때 하는 일
+  - Argument Objects
+    - 함수 2~3개 이상의 인수 필요 시, 인수 자체를 래핑할 수 있는지 검토
+      - `Circle makeCircle(double x, double y, dobule radius)`
+      - `Circle makeCircle(Pointer center, double radius)`
+    - 래핑 하는 것 자체가 인수의 수를 줄이기 위한 cheating처럼 느껴질 수는 있으나, 래핑이 된다는 것 자체가 특정 이름을 갖는 개념의 일부일 가능성이 높음
+  - Function arguments
+    - 동사와 키워드
+      - 함수에 좋은 이름을 선택하는 것은 해당 "함수의 의도"와 "인수의 순서 및 의도"를 설명하는데 도움이 됨
+    - 단항 함수
+      - 함수와 인수는 동사/명사 쌍을 형성
+      - `write(name) vs wiiteField(name)`
+        - name이 field라는 것을 알려줌
+      - `assertEqual(expected, actual) vs assertExpectedEqualsActual(expected, actual)`
+  - 오류 코드보다 예외를 사용
+    - try/catch 사용 시 오류 처리 코드가 원래 코드에서 분리, 코드가 깔끔해짐
+      -  ![image](https://github.com/googoo9918/TIL/assets/102513932/bc33105e-8ba2-4c35-954b-943c8b908716)
+      -  ![image](https://github.com/googoo9918/TIL/assets/102513932/74feacf0-078c-4022-839b-97e397af0b12)
+- 결론
+  - 시스템은 프로그래머가 설계한 도메인 특화 언어로 구축
+    - 함수는 동사, 클래스는 명사
+  - 시스템을 이야기로 풀어나가는 방식이 뛰어난 프로그래밍임
+  - Clean code는 도구일 뿐, 광신도적으로 맹신하면 안됨
+    - 협업에서 특히 주의 할 것
