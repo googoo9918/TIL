@@ -95,6 +95,7 @@
     - [Command Pattern](#command-pattern)
   - [Behavior Design Patterns(2)](#behavior-design-patterns2)
     - [Interpreter Pattern](#interpreter-pattern)
+    - [Iterator Pattern](#iterator-pattern)
   - [Behavior Desing Patterns(3)](#behavior-desing-patterns3)
     - [Mediator Pattern](#mediator-pattern)
     - [Memento Pattern](#memento-pattern)
@@ -2091,13 +2092,65 @@ list = Arrays.asList(s);
   - Inboker와 receiver 사이 새로운 레이어(command)를 도입, 코드 복잡성 증가됨
 
 ## Behavior Design Patterns(2)
-- Behavior Design Patterns
-  - 한 객체가 수행할 수 없는 작업을 여러 개의 객체로 분배
-    - 객체 사이의 결합도를 최소화 하는 것에 중점
 
 ### Interpreter Pattern
 - 해석자(Interpreter) 패턴
   - 언어의 문법 규칙을 표현하고 해당 언어를 해석할 때 사용되는 행동 패턴
+  - 컴파일러 또는 인터프리터 개발 시 적용, 언어의 문법 구조를 나타내는데 유용
+  - 문법 규칙을 클래스로 표현, 클래스를 조합하여 언어의 문장을 해석하는 구조를 만듬
+  - 새 언어를 추가하거나 기존 언어 문법 변경 시 유연하게 확장 가능
+- 해석자 패턴을 도입하기 위한 예제
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/fd7a8132-424e-4e06-ad6f-297996e01501)
+  - Infix notation
+    - 일반적인 표기법, 사람들이 보기에 익숙
+    - 연산자 우선순위 때문에 괄호 필요
+  - Postfic notation
+    - 사람이 보기에 직관적이지 않지만, 수식을 읽으며 바로 계싼 가능
+      - 괄호 필요X
+    - 특정 연산자는 가장 마지막으로 등장한 두 피안산자에 대해 계산
+      - 가장 마지막으로 등장한 피연산자를 파악하기 위해 스택 활용
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/3ecdc12c-d430-474f-8b9e-20c2bfaecf9d)
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/239bab38-e408-4c58-9d3a-eb173cc52cbe)
+  - 해석자 패턴 구조
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/e9185c0f-46eb-4fed-b28e-b92a719d7b9b)
+      - 특정 행동들을 핸들러라는 독립 실행형 객체로 변환
+  - 책임자 패턴 예시 코드
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/da9e1d5b-93b0-453a-882d-5516d5d55359)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/5143c7af-4639-459d-9838-289c49cf4e00)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/74c08409-51aa-4908-940b-bbab560b524f)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/7a2e1b43-a900-4205-9979-b6326c5950ac)
+  - 장점
+    - 새로운 언어 요소나 문법 규칙 추가 유연
+    - 단순한 문법을 갖는 언어의 경우, 인터프리터 패턴 효과적
+    - 언어의 문법이나 규칙이 변경되더라도 인터프리터 패턴은 변화에 대응이 쉬움
+  - 단점
+    - 언어의 문법이 복잡한 경우 인터프리터 패턴의 클래스 계층 구조가 복잡해짐
+    - 일부 복잡한 언어나 대규모 문장에 대해서는 패턴 적용 시 성능이 저하될 수 있음
+### Iterator Pattern
+- 컬렉션 요소들의 기본 표현(리스트, 스택, 트리 등)을 노출하지 않고 컬렉션 내 요소를 하나씩 순회할 수 있도록 하는 행동 패턴
+- 반복자 패턴이 필요한 상황
+  - 데이터 컬렉션이란 객체들을 그룹으로 묶어 자료구조에 맞게 저장
+  - 선형적 자료구조(배열, 리스트)는 순차적으로 요소 조회 가능
+    - 트리, 해시와 같은 비선형적 자료구조는 순회의 기준이 필요함
+  - 컬렉션의 종류를 따지지 않고 순회하고 싶음
+- 반복자 패턴의 아이디어
+  - 컬렉션의 순회 동작을 iterator라는 별도 객체로 추출
+- 반복자 패턴의 구조
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/a3cb7e17-a0aa-4811-a0eb-6a385431f000)
+- 반복자 패턴 코드 예시
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/080f804f-5323-4b9c-af38-0b2eb7b1a26e)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/86a8112c-125d-463f-b2aa-43c1b113b34f)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/f2be7ed1-211d-47c5-a1b3-8fce0989b8d3)
+- 장점
+  - 일관된 iterator 인터페이스 사용, 여러 종류 컬렉션에 대해 동일한 순회 인터페이스 제공
+  - 클라이언트는 컬렉션 내부 구조 및 순회 방식을 알지 않아도 됨
+  - 컬렉션의 구현과 접근하는 부분을 반복자로 분리, 결합도를 낮춤
+- 단점
+  - 만일 앱이 간단한 컬렉션에서만 작동하는 경우 패턴 적용 시 코드가 복잡해짐
+    - iterator 객체를 만드는 것이 필요한 상황인지 판단해야함
+- Java에서 반복자 패턴이 적용된 사례
+  - java.util.Iterator
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/206e42d8-229a-4396-a748-6c14530d08a2)
 
 ## Behavior Desing Patterns(3)
 ### Mediator Pattern
