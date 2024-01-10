@@ -115,7 +115,7 @@
 - 레퍼런스 잘 참고해볼 것.. 단계별 진행의 정석적 풀이
 
 ### 14. computeSquareRoot
-- [정리]()
+- [정리](https://github.com/googoo9918/TIL/blob/main/Problem%20Solving/Coplit/%EB%AC%B8%EC%9E%90%EC%97%B4/computeSquareRoot.md)
 - 소수점 n번째 자리까지 출력
   - String str = String.format("%.nf", num);
   - Math.round(pi*100) /100.0; 
