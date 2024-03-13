@@ -1,4 +1,50 @@
 # 빅데이터 분석
+## 4차 산업혁명의 이해
+- 데이터 유형
+  - Nominal
+    - 명목형 데이터
+    - ex) 성별, 혈액형
+  - Numeric
+    - 수치형 데이터
+    - 숫자로 표현
+- 초연결
+  - 사물과 공간, 제품과 서비스 연결성 무한 확장
+    - 사물인터넷, 5G
+  - 사물인터넷
+    - IoT
+      - 언제나, 어디서나, 어느 것과도 연결될 수 있는 새 통신 환경
+    - RFID 태그를 읽는 센서 네트워크(USN) -> 사물과 사물 통신(M2M) -> 상호 통신 만물 인터넷(IoE)
+  - 5G
+    - 초고속, 초연결, 초저지연
+  - 인공지능
+    - 초지능
+      - 하이퍼 인텔리전스
+        - 인간과 인공지능 협력 + 사물 지능화
+      - 슈퍼 인텔리전스
+        - 인공지능의 지능이 인간을 넘어섬
+  - 빅데이터
+    - 디지털 환경에서 발생하는 모든 데이터
+    - 4차 산업 전 분야에서 분석 및 활용
+  - 초융합
+    - 디지털 트랜스포메이션
+      - 디지털 기술 활용, 프로세스 변화를 야기함
+  - 데이터 과학
+    - 다양한 데이터로부터 지식과 인사이트를 추출, 여러 알고리즘과 시스템을 동원
+    - 데이터 과학과 IoT + 빅데이터 + AI
+      - IoT 구성 센서와 노드 : 감각 및 행동 기관
+      - 빅데이터: 외부 센싱 데이터, 내부 처리 결과 데이터
+      - 5G : 신경계
+      - AI : 두뇌
+      - 다 선순환하여 발전 + 진화해야함
+    - ex) 자율주행차
+      - 인지, 판단, 제어 3 단계
+      - 5레벨로 나뉨
+    - 커넥티드 카
+      - 차량과 도시의 모든 곳 연결, 위험 감지 및 거리 속도 제어
+    - 스마트 시티
+      - 기관들의 네트워킹이 가능하도록 통신 인프라가 갖춰진 것
+    - 스마트 헬스 케어
+      - 건강 관련ㅅ ㅓ비스 + 의료 IT 융합 종합 의료 서비스
 ## 파이썬 리뷰
 - 파일 읽기
 ```python
@@ -358,6 +404,311 @@ print (A[(2,4),])
 # 첫번째 axis에 대한 것을 명시 필요
 # 즉, `,`를 통해서 뒤에 추가 차원을 지정하지 않았다는 것을 나타낼 수 있음
 # print(A[[2,4]]) 등으로 대체 가능함
-[7 9]
+# [7 9]
+
+A[1:3]
+# array([6, 7])
+
+B=np.arrange(30).reshape((5,6))
+B
+
+B[3,2]
+# 20
+
+B[3, 2:4]
+array([20,21])
+
+C=np.arrange(45).reshape((5,3,3))
+C
+
+C[:,:,1:2]
+# :는 차원의 모든 요소를 의미함
+# array([[[ 1],
+#         [ 4],
+#         [ 7]],
+
+#        [[10],
+#         [13],
+#         [16]],
+
+#        [[19],
+#         [22],
+#         [25]],
+
+#        [[28],
+#         [31],
+#         [34]],
+
+#        [[37],
+#         [40],
+#         [43]]])
+# slicing과 indexing의 차이를 인지하고 있어야 함
+# slicing을 할 때는 차원이 유지되지만
+C[:,:,1]
+# array([[ 1,  4,  7],
+#        [10, 13, 16],
+#        [19, 22, 25],
+#        [28, 31, 34],
+#        [37, 40, 43]])
+# 이처럼 indexing을 진행하는 경우 3차원이 2차원으로 변경됨
+
+# ... : 중간 inx 생략
+C[..., 1]
+# 위와 결과 값이 같음
+# C[1, ...] , C[1, ..., 1] 처럼 사용 가능
+```
+
+- np.arrange(30).reshape(5,6)에서 0,2,4,... column(axis=1)만 뽑아서 새로운 array를 만드시오
+```python
+array = np.arrange(30).reshape(5,6)
+new_array = array[:,[0, 2, 4]]
+print(new_array)
+```
+## 빅데이터의 이해와 활용
+- 빅데이터 분류
+  - 정형 데이터
+    - 고정된 필드에 저장, 스키마 형식에 맞춤
+      - ex) RDB, 스프레드시트
+    - 수집하기 쉬움, 처리 난이도 낮음
+  - 반정형 데이터
+    - 메타데이터나 스키마 등을 포함
+      - ex) XML, HTML, JSON 웹 문서, 웹 로그
+    - API 형태로 제공, 데이터 처리 기술 요망
+      - 처리 난이도 중간
+  - 비정형 데이터
+    - 데이터 구조 일정하지 않음 
+      - ex) 이미지, 텍스트
+    - 파일을 데이터 형식으로 파싱
+      - 처리 난이도 상
+- 빅데이터의 특징
+  - 데이터 측면 5V
+    - Volume(규모)
+    - Variety(다양성)
+    - Velocity(속도)
+    - Veracity(정확성)
+    - Value(가치)
+  - 혁신과 창조의 도구
+    - 효율화, 개인화, 미래 예측
+  - 가트너의 단계적 빅데이터 자원 확보
+    - 저장 -> 공유 -> 통합 -> 공동 창출
+- 빅데이터 플랫폼
+  - 발전 과정
+    - 파일시스템 -> 데이터베이스 -> 빅데이터 플랫폼
+  - 개념
+    - 빅데이터 처리, 고속 저장, 고성능 계산
+    - 비식별화 중요
+  - Data Sources -> Data Acquistion -> Data Storage -> Data analysis -> Reporting & visualization
+- 빅데이터 분석 방법론
+  - 연구 목표 설정 -> 데이터 수집 -> 데이터 준비 -> 데이터 탐색 -> 데이터 모델링 -> 결과 발표 및 자동화
+  - 연구 목표 설정
+    - 연구 목표 정의 + 산출물 + 일정 등 계획 합의
+  - 데이터 수집
+    - 필요한 데이터 위치와 형태 확인 + 원시 데이터 수집
+    - 다양한 수집 기술
+      - 크롤링, FTP, Open API, RSS(웹 기반 최신 정보 공유), 스트리밍, 로그 수집기, RDB 수집기
+  - 데이터 준비
+    - 원시 데이터 정제 후 사용 가능한 형태로 제공
+      - 오류 여과, 수정하여 정제
+    - 필요에 다라서 데이터 통합 + 형태 변환
+  - 데이터 탐색
+    - 데이터와 변수 간 관계, 상호 작용 이해
+    - 변수 간 관련성, 데이터 분포, 편차, 패턴 존재 여부 확인
+      - 탐색적 데이터 분석[EDA]
+      - 그래프, 히스토그램, 분포도 등 사용
+  - 데이터 모델링
+    - 데이터 탐색 결과로 프로젝트에 대한 답을 찾는 관계
+    - 변수 선택, 모델 구성, 실행 평가 과정을 반복 수행
+  - 결과 발표 및 분석 자동화
+    - 연구 목표 달성 여부를 이해 당사자, 의사 결정자에게 이해시킴
+    - 분석 결과 발표 + 분석 과정 재사용을 위한 자동화
+- 빅데이터 분석 방법론
+## Pandas
+- dataframe
+  - 2차원 구조, column 마다 다른 데이터 type
+  - row = 레코드, col = 필드
+  - 데이터처리, 통계 등은 column 단위로 이루어짐
+  - tabular data(일반 csv 데이터 구조 처리 적합)
+- 만들기
+  - 딕셔너리로부터 만들기
+    - {'컬럼명': [값, 값, ...], '컬렴명':[값, 값, ...]}
+    - pd.DataFrame(딕셔너리)
+  - index와 column labe(컬럼명)
+```python
+import pandas as pd
+dic= { 'gender' : [ 1, 2, 1,2], 'bloodtype': ["A", "B", "O", "AB"]}
+
+df1= pd.DataFrame(dic)
+
+df1
+#   gender	bloodtype
+# 0	1	A
+# 1	2	B
+# 2	1	O
+# 3	2	AB
+```
+- numpy array를 사용 가능
+  - DataFrame(array, index= row index array, columns = 컬럼명 array)
+```python
+df = pd.DataFrame(np.random.randn(6,4), index=np.arrange(6). columns=list("ABCD"))
+```
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/29625bba-5761-4fe6-a2a8-8d442f723ce8)
+- 보기
+  - `head()`, `tail()`
+    - 최초, 마지막 5개
+  - `head(n)`, `tail(n)`
+    - 최초, 마지막 n개
+  - index, columns: row, column 이름
+    - `df.index`, `df.columns`
+  - `dsecribe`
+    - count, mean, std, min, 25%, 50%, 75%, max 등 제공
+  - `df.sort_values(by="B")`
+    - value 기준 오름차순 정렬
+```python
+import pandas as pd
+df=pd.read_csv("studentlist.csv", encoding="cp949")
+df
+```
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/47916c1b-db0d-4965-92df-12c15ce9d586)
+
+```python
+df[0:3] #rows
+
+df[["age", "dept"]]
+# column
+
+# 숫자 index에 의한 참조 : iloc
+df.iloc[1:5, 0:3]
+# 1~4, 0~2 출력
+
+df.iloc[ [1,2,4], [0,2]]
+# 1,2,4 행 0,2 열 출력
+
+# label에 의한 참조: loc
+df.loc[0:3, ["age", "grade"]]
+# age와 grade열 0~3번째 행 출력
+# 행과 열을 한 번에 선택할 수 있다.
+
+# 값에 의한 참조: boolean indexing, 조건에 맞는 row 선택
+df[df["bloodtype"] == "B"]
+
+# 포함조건 isin()
+df.loc[df["bloodtype"].isin(["B", "A"]), ["name", "Age"]]
+
+# column 연산
+# column.연산함수()
+# 함수(column)
+df["age"].mean()
+np.mean(df['age'])
+```
+
+- 혈액형이 B형인 사람의 키의 평균을 구하시오
+```python
+df.loc[df["bloodytype"] == "B", "height"].mean()
+# loc를 사용하면 행과 열을 한 번에 표시
+
+df[df['bloodtype'] == 'B']['height'].mean()
+# 값에 의한 참조는 행과 열을 따로 표시
+```
+
+- Operations
+  - `concat(objects, axis =0 or 1)`
+```python
+df2 = df[1:3]
+df3 = df[5:8]
+df4 = pd.concat([df2, df3], axis=0)
+df4
+```
+- axis 0인경우
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/c311a631-cb0e-474d-86e0-4ff79bf848d4)
+- axis 1인경우
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/9fc54336-1b23-427d-a28b-0233789c56d8)
+
+```python
+df2= df[["age", "grade"]]
+df3= df[["height", "weight"]]
+df4=pd.concat([df2, df3], axis=1)
+df4
+```
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/3a03d33b-1e3d-47fa-ba6c-ebaeb19c2699)
+
+- 각 사람의 BMI(몸무게 kg/(키 m^2))를 구하여 column을 추가하여라
+```python
+df['BMI'] = df['weight'] / (df[height]/100)**2
+```
+
+- `merge(A,B, on=키)`
+  - 기본 inner join
+  - `df3 = pd.merge(df, dff, left_on='name', right_on='realname')`
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/59fb8649-3b68-4e9c-8609-ae411ebcfcb9)
+- grouping
+  - groupby
+  - `df.groupby("grade").mean()`
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/409b56e8-9ff8-4f33-8e3a-2e0f895fde4e)
+  - `df.groupby(["sex","bloodtype"]).mean()`
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/471c848e-b4cf-40bb-9b7c-e4ee97d25058)
+  - `df.groupby(["sex", "bloodtype"]).size()`
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/27d62ab4-d6f7-44c1-9b61-635773838da6)
+
+## matplotlib
+- 기본 내용
+  - `plt.plot(x축 데이터, y축 데이터, plottype)`
+  - `plt.plot([1, 2, 3, 4], [1, 4, 2, 3])`
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/b73a9e71-427a-42b9-aa1c-be33efc0fdfb)
+- input data 형식
+  - numpy array 이어야 함
+  - pandas column도 가능
+- plot type
+  - "ro" red circle
+  - "b-" solid blue line default
+  - "r--" red dasesh
+  - "bs" blue squares
+  - "g^" green trianles
+- `plt.plot( df[["height", "weight"]] )`
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/75aca7bf-1704-4acc-8cf1-fabfb8df71f8)
+- `plt.plot( df["height"], df["weight"] , 'ro')`
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/b336ff63-dd7f-4a75-b27f-f3dda5091df3)
+- `t = np.arrange(0., 5., 0.2)`
+  - `plt.plot(t, t, 'r--', t, t**2, 'bs', t, t**3, 'g^')`
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/261dae8f-f637-41a1-ac51-3b6618d00f52)
+- 여러 chart
+  - `figure`
+    - 여러 axes를 포함
+  - `subplot()`
+    - 하나의 axes를 만듬
+  - `bar(), scatter(), plot()`
+    - 각기 다른 모양 plot()의 파라미터로도 표현 가능
+```python
+names = ['group_a', 'group_b', 'group_c']  # X
+values = [1, 10, 100] # Y
+
+plt.figure(figsize=(7, 3))  #전체 가로세로 크기
+
+plt.subplot(231)   # 2 x 3 구성의 1번
+# 여러개의 그래프를 하나의 그림 안에 배치할 수 있게 해줌
+# 2x3 격자에서 1번 위치에 서브플롯을 생성
+plt.bar(names, values)  
+plt.subplot(232)
+plt.scatter(names, values)
+plt.subplot(236)
+plt.plot(names, values)
+plt.suptitle('Categorical Plotting')
+```
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/1f42f22d-765e-45c9-acb2-6e48a2f80fe4)
+
+- studentlist의 혈액형 별 도수를 bar 차트로 그리시오
+```python
+bloodtype_counts = df['bloodtype'].value_counts()
+# df.groupby('bloodtype').size()도 가능함
+bloodtype_counts.plot(kind='bar')
+
+plt.bar(bloodtype_counts.index,bloodtype_counts.values)
+```
+
+- 2가지 이상의 정보를 2차원에 표시
+  - `scatter(x, y, c=유형벌 컬러, s=사이즈, data = label을 가진 원본 데이터)`
+  - `plt.scatter("height", "weight", c="grade", data=df)`
+    - height가 x축, weight가 y축, grade를 통해 색깔을 결정, 원본 데이터는 df
+- studentlist의 키와 몸무게를 시각화하되, 학과 별로 다른 색상으로 학년을 크기로 표현하는 차트를 그리시오
+```python
 
 ```
