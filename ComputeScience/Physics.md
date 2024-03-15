@@ -24,5 +24,39 @@
 - 자연수에서 끝의 0은 유효숫자인지 알 수 없음
   - 500
     - 0 두 개는 유효숫자인지 알 수 없음
+    - 자연수의 유효숫자는 모른다고 보는게 맞음
 - 유효숫자 연산 규칙
   - ![image](https://github.com/googoo9918/TIL/assets/102513932/7a187917-b879-42f0-ba50-e761697b33f2)
+
+### 좌표계
+- 직각 좌표계
+  - 평면의 한 점을(x, y)로 표시
+- 평면 극 좌표계
+  - 평면의 한 점을(r,세타)로 표현
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/d2811f7e-ed08-49d8-92aa-2dfd1966e832)
+
+### 벡터와 스칼라
+- 스칼라
+  - 크기만 갖는 물리량
+- 벡터
+  - 크기와 함께 방향을 갖는 벡터량
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/6d55fdd0-7c8a-4307-99de-5b743271a14b)
+
+### 벡터의 성질
+- 벡터의 동등성
+  - 크기가 같고 방향이 같음
+- 벡터의 덧셈
+  - 교환법칙, 결합법칙 성립 가능
+- 영벡터
+  - 크기가 영인 벡터
+- 벡터의 뺄셈
+  - A - B = A + (-B)
+
+### 벡터의 성분과 단위 벡터
+- 벡터를 성분별로 표현, 산술적으로 더하거나 뺄 수 있음
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/c0f5a13c-7d98-4b8d-a56c-69edddd92510)
+- 단위벡터
+  - 차원이 없고 크기가 1인 벡터
+  - A = A_x + A_y = A_X*i + A_y*j
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/46081584-11c7-4439-ae38-e56c444c0f0c)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/91e09031-cfe2-455b-82ca-3ca63242d145)
