@@ -4,7 +4,7 @@
     - [What is Intelligence?](#what-is-intelligence)
     - [Examples](#examples)
   - [Unimformed Search Methods](#unimformed-search-methods)
-    - [Seaarch Problems](#seaarch-problems)
+    - [Search Problems](#search-problems)
     - [State Space Graphs \& Search Trees](#state-space-graphs--search-trees)
     - [Search Strategies](#search-strategies)
     - [Depth-First Search](#depth-first-search)
@@ -81,7 +81,7 @@
   - Strong AI? Symbolic AI?
 
 ## Unimformed Search Methods
-### Seaarch Problems
+### Search Problems
 - search problem consists of
   - state space
   - successor function(with actions, costs)
@@ -91,10 +91,6 @@
   - Possible actions
   - Goal test
   - Path cost
-- Introduction to Artificial Intelligence
-  - What is intelligence?
-  - Strong and weak Ai
-  - Symbolic vs subSymbolic Ai
 - Search Problems(Traveling in Romania)
   - ![image](https://github.com/googoo9918/TIL/assets/102513932/c2dbfdfe-fea4-4a04-b265-e5e8e1a907a3)
   - State space
