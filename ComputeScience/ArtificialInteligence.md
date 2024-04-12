@@ -138,7 +138,7 @@
 - Space?
   - O(bd)
 
-### BFS
+### Breadth-First Search(BFS)
 - Queue 사용
 - Comlete?
   - b가 유한하다면, 그렇다
@@ -183,29 +183,517 @@
   - UCS
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/e70461e3-d31a-4047-8c9e-9bf6a0506b65)
 
+## Informed Search Methods
+### Heuristics
+- 목표에 얼마나 가까운지 추정하는 함수
+- 특정 검색 문제를 위해 설계됨
+- 예를 들어, 8 Puzzle에서 Heuristic이 잘못 배치된 타일의 갯수라 했을 때, admissible한가?
+  - 너무 낙관적인 케이스(실제 비용은 훨씬 크다)
+- 실제 비용 휴리스틱으로 사용하는 것은 어떠한가?
+  - 가능성은 있지만, 최적의 해결책을 찾는데 도움이 되진 않음
+  - 실제 비용을 정확히 안다면, 탐색할 필요가 없기 때문
+  - 휴리스틱이 실제 비용에 가까워질 수록 더 적은 노드를 확장하지만, 휴리스틱 자체 계산을 위한 작업량이 많아짐
+- 8 퍼즐 분석 및 각 탐색 방법의 장단점
+  - DFS
+    - DFS는 메모리 효율이 좋고, 깊이가 무한인 경우를 제외하고 간단한 해결책을 찾을 때 유용함
+    - 그러나 최적의 해를 보장하진 않음
+  - BFS
+    - 최단 경로를 보장하지만, 메모리 사용량이 매우 큼
+  - UCS
+    - BFS가 각 이동의 비용을 고려하지 않는 반면, UCS는 이동 비용을 고려하여 탐색함
+    - 최적 경로 보장
+    - 다만, 메모리 사용량이 크고 탐색 속도가 느릴 수 있으며, 휴리스틱이 없음
+      - 특정 방향이 더 유리한지에 대한 사전 정보가 없음
+  - 그리디 탐색(best-first)
+    - 가장 가까운 것으로 보이는(휴리스틱이 제일 낮은) 노드를 우선적으로 확장함
+    - 빠르게 해를 찾을 수 있지만, 최적의 해를 보장하진 않음
+  - A*
+    - UCS와 그리티 탐색의 장점 결합
+    - 최적의 해를 찾을 수 있으며, 휴리스틱 함수를 사용하여 탐색 효율성을 높임
+    - 메모리 사용이 큼
+      - MBA(Memory Bounded A*)로 해결 가능
+- 휴리스틱의 효과성
+  - 잘못 배치된 타일 수
+    - 간단하고 계싼하기 쉽지만, 최적 경로의 비용을 과소평가할 수 있음
+  - 이동해야 할 타일의 수(맨해튼 거리)
+    - 각 타일을 올바른 위치로 옮기는 데 필요한 최소 이동 횟수 추정, 보다 정확한 휴리스틱 제공
+      - 보다 효과적
+- 최단 경로 문제와의 차이
+  - 트리 탐색은 각 상태를 한 번만 방문하는 것을 가정함
+  - 그래프 탐색은 루프나 반복 상태가 가능함
+  - 8퍼즐과 같은 문제는 그래프 탐색을 통해 중복 상태를 피하는 것이 좋음 
+### Greedy Search(Best-Frist Search)
+- 목표 상태에 가장 가까운 것 같은 노드를 확장
+  - 휴리스틱을 통해 가장 목표에 가깝다고 생각되는 노드를 선택하여 확장
+- 단, 항상 최적의 해를 보장하진 않음
+  - 휴리스틱의 추정이 완벽하지 않을 수 있음
+  - 잘못 설계된 DFS처럼 작동할 수 있음
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/74e58e6d-e39b-4df4-bbce-6a01b141242c)
+  - 직접 그려볼 수 있어야 함
+  - UCS는 비용을 기준으로, Greedy는 휴리스틱을 기준으로 진행됨을 명심하라
+### A* search(UCS + Greedy)
+- UCS와 Greedy를 합쳐서 진행!
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/e505e5a6-4157-4817-a17d-e888c7a0987a)
+  - 다만, Uniform-cost는 경로비용 g(n)에 의해 순서가 정해짐
+  - Greedy는 휴리스틱 h(n)에 의해 순서가 정해짐
+  - A* 검색은 합계에 의해 순서가 정해짐
+    - 너무 비관적이면 안됨(추정치가 실제 비용보다 작아야 함)
+- Admissibility
+  - 비관적(Inadmissible) 휴리스틱은 최적성을 깨트림
+    - 실제 비용보다 높게 추정되는 휴리스틱은 좋지 않음
+    - 비관적 휴리스틱도 특정 상황에서 탐색 속도를 높이는 데 도움이 될 수 있음
+  - 낙관적(Admissible) 휴리스틱은 실제 비용을 결코 초과하지 않음
+    - 너무 낙관적이면 탐색 과정을 불필요하게 길어지게 만들 수는 있음
+      - 너무 낙관적이면, 0값이 돼버리고 UCS와 똑같아 지겠지
+- 휴리스틱 h는 가장 가까운 목표까지의 실제 비용인 경우, 낙관적으로 간주됨
+  - 즉, 모든 노드 n에 대해 h(n)이 실제 최소 비용보다 작거나 같아야 함(비용을 과대평가 하지 않아야 함)
+- Properties of A*
+  - Complete?
+    - f(n) <= f(G)인 무한히 많은 노드가 있는 경우를 제외하고, 그렇다
+      - f(n)은 노드 n에서의 경로 비용의 추정치
+      - f(G)는 목표 노드 G에서의 추정치임
+      - 즉, 탐색 공간이 무한대로 확장될 수 있으면 완전하지 않다는 것임
+  - Optimal?
+    - 만약 f가 가능성(admissible)하면 그렇다
+      - 실제 비용을 과대평가 하지 않는 경우
+      - f(n)은 n에서 목표까지 가는 데 필요한 실제 최소 비용보다 작거나 같아야 함
+  - Time?
+    - O(b^d)
+  - space?
+    - 모든 생성된 노드를 메모리에 유지함
+    - A*에 주요 단점
+- Simple Memory Bounded A*Search
+  - 메모리가 가득 차면, 가장 큰 f(n) 값을 가진 노드를 삭제함
+  - 물론 루트에서 목표까지의 단일 경로가 메모리에 맞지 않으면 해결책을 나올 수 없음
+  - 여태 본 탐색 알고리즘 중 최선임
+- UCS vs A*
+  - UCS는 모든 방향으로 균등하게 확장함
+    - 등심원
+  - A*은 주로 목표를 향해 확장하지만, 최적성 보장을 위해 배팅을 분산시킴
+    - 타원
+### Problems
+- Optimistic(낙관적) vs Pessimistic(비관적) Heuristics
+- 
 - Infromed Search
   - Greedy & A* search
   - 정의, 차이점
 
+## Graph Search
+- 중복 상태를 감지하지 못하면, 더 많은 작업을 초래할 수 있음
+  - state graph는 cycle이 있을 수 있고, search tree는 반복된 state가 나올 수 있음
+  - 이 경우, DFS는 complete하지 않게 되고, BFS는 작업량이 너무 많아지게 됨
+- 닫힌 집합을 사용해야함
+  - 트리 탐색에 set을 사용, 중복 상태 확장을 방지
+  - 결국 이게 그래프 탐색인거임!
+- 그래프 탐색
+  - 상태를 두 번 확장하지 않음
+  - 트리 탐색과 함께 closed set 사용
+  - 완전성
+    - 완전성을 유지함
+  - 최적성
+    - 사용된 탐색 전략과 휴리스틱이 최적성을 보장하는 경우, 최적의 해결책을 찾을 수 있음
+    - A*등을 이용하는 경우 
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/c5e5bcda-50a9-444a-8efe-76352f91c855)
+  - Admissibility, 즉 가능성은 휴리스틱 비용이 실제 목표까지의 비용보다 작거나 같을 때 가능성이 있다고 얘기함
+    - 여태까지 이것만 따졌음
+  - Consistency, 즉 일관성을 따져야 Optimal을 보장할 수 있음
+    - A에서 C로 가는 실제 비용에 대해 휴리스틱이 일관적이라는 것은
+    - A의 휴리스틱 비용에서 C의 휴리스틱 비용을 뺀 값이 A에서 C로 가는 실제 비용보다 작거나 같다는 것을 의미함
+      - 따라서 그림에서 휴리스틱 비용은 4가 아닌 2가 되어야 Optimality를 보장할 수 있음
+
+### Optimality
+- 트리 탐색
+  - A*은 휴리스틱이 admissible 할 때 최적임
+  - UCS는 휴리스틱이 0인 특별한 경우임
+- 그래프 탐색
+  - A*은 휴리스틱이 consistnet할 때 최적임
+  - UCS는 최적임(h=0은 일관성 있음)
+  - 그래프 탐색은 중복 상태를 방지하는 추가 매커니즘이 있기에, 일관성 있는 휴리스틱은 삼각 부등식을 통해 휴리스틱 값이 점차 증가하도록 보장함
+- 일반적으로 대부분의 자연스러운 admissible한 휴리스틱은 consistent한 경우가 많음, 특히 relaxed problems에서 유도된 경우 그러함
+
+### Example
 - Graph Search
   - Tree vs Graph Search
+  - 트리 탐색
+    - 탐색 과정에서 생성되는 모든 노드를 트리 구조로 확장
+    - 같은 상태가 여러 번 나타날 수 있음
+  - 그래프 탐색
+    - 중복 상태를 방지하기 위해 이미 방문한 상태를 기록
+    - 이를 다시 확장하지 않음(closed set)
   - 정의, 차이점
+- Tree vs Graph Search
+  - w.r.t optimally
 
+
+## Game Search
+- Types of Games
+  - agent가 둘 이상인 경우를 게임이라 함
+  - Deterministic(결정론적) vs Stockhastic(확률론적)
+    - 상태 변화가 미리 결정되어 있는지(체스), 우연의 요소가 포함되어 있는지(주사위)
+  - 제로섬
+    - 한 플레이어의 이득이 반드시 다른 플레이어의 손실을 의미하는지
+    - 한 플레이어가 이기면 다른 플레이어는 반드시 짐
+- Games vs Search Problems
+  - Adversarial search(적대적 탐색)
+    - 에이전트의 목표가 충돌하는 경쟁 환경을 다룸
+      - 몇 수 앞을 볼 수 있어야 함
+    - 시간제한이 존재, 목표를 찾는 것이 불가능 할 수 있음 --> approximate(근사치)를 찾아야 함
+    - 상대방이 예측할 수 없는 경우(확률론적), 근사치를 사용해야 함
+- 단일 에이전트 트리(Single-Agent Trees)에서의 상태 가치(Value of a State)
+  - 상태의 가치(Value of a State)
+    - 특정 상태에서 시작하여 도달할 수 있는 최선의 결과(Utility)를 의미함
+  - Non-Terminal States
+    - 게임이나 결정 과정이 끝나지 않은 상태
+  - Terminal States
+    - 게임이나 결정 과정이 끝남, 종단 상태에서는 상태의 가치가 해당 상태의 유틸리티와 동일함
+    - 내가 진 경우 -1, 비기면 0, 이기면 +1 등의 값을 부여할 수 있음
+- 적대적 게임 트리(Adversarial Game Trees)에서의 상태 가치 및 미니맥스(Minimax)
+  - State Under Agent's Control
+    - 우리 에어전트가 행동 결정, 최대 유틸리티를 달성하기 위한 선택
+  - State Under Opponent's Control
+    - 상대가 행동 결정, 우리 에이전트가 받을 유틸리티를 최소화하려고 함
+  - Minimax
+    - 최악의 경우(상대방이 최적으로 움직인 경우)에도 우리 에이전트가 보장받을 수 있는 최선의 결과를 의미함
+- Adversarial Search (Minimax)
+  - Ddterministic, zero-sum games
+    - 결정론적 제로섬 게임은 모든 게임의 결과가 정확하게 예측될 수 있음
+    - 한 플레이어의 이득이 반드시 다른 플레이어의 손실을 의미하게 됨
+      - ex) 틱택토, 체스
+    - 한 플레이어는 유틸리티를 최대화하려 하고, 다른 플레이어는 유틸리티를 최소화 하려 함
+  - 미니맥스 탐색(Minimax Search)
+    - 게임의 가능한 모든 수를 포함하는 탐색 트리를 구성함
+    - 플레이어는 번갈아가며 턴을 진행
+      - 이성적이고 최적으로 행동하는 상대방에 대항하여 달성할 수 있는 최선의 유틸리티
+    - Bottom부터 Top까지 재귀적으로 올라가야 함
+- Minimax Search
+  - 게임 트리에서, 미니맥스 탐색을 통해 최적 전략을 찾음
+  - MAX는 나, MIN은 상대를 의미함
+  - n이 종단 노드인 경우, 이 노드의 미니맥스는 노드의 유틸리티(해당 상태의 결과 수치화)임
+  - n이 max노드(내가 플레이할 차례)라면, 이 노드의 미니맥스 가치는 후속 노드들의 미니맥스 가치 중 최대값임
+  - n이 MIN노드(상대방 차례), 이 노드의 미니맥스 가치는 후속 노드들의 미니맥스 가치중 최소값
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/a9ddd90c-b352-4777-ab5d-5fa211cc2589)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/9380711d-5a6c-4160-83f1-17c8e258b460)
+- Properties of Minimax
+  - Complete?
+    - 트리가 유한하다면 그렇다
+      - 게임 트리의 DFS를 수행함
+  - Optimal?
+    - 최적의 상대에 대해서는 최적의 결과를 보장함
+  - Time?
+    - O(b^m)
+      - DFS와 동일
+  - Space?
+    - O(b^m)
+      - DFS와 동일
+  - 단, 미니맥스 알고리즘은 모든 미래의 움직임이 최적(Optimal)일 것이라 가정하고, 합리적인(rational) 플레이어와 합리적인 상대를 가정한 것임
+### Game Tree Pruning
+- Minimax Pruning
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/89c3aa3b-8427-4a16-9871-86df12d754c8)
+    - bottom -> Top임을 기억하라 
+    - 왼쪽부터 search가 진행될 때, 상대방(역삼각형, min)은 3, 12, 8 중 3을 고를 것이다
+    - 중간에서 처음에 2가 나온 순간, 더 search를 할 필요가 없어진다
+    - 어차피 **MAX**에서 선택되지 않을 것이기 때문에!!
+    - 마지막은 2가 제일 마지막 노드에 있기 때문에 search를 계속하는 것 뿐임
+- Alpha-Beta Pruning
+  - 알파는 MAX를 위해 지금까지 발견된 가장 높은값, 초기는 -무한대
+  - 베타는 MIN을 위해 지금까지 발견된 가낭 낮은겂, 초기는 +무한대
+  - 알파와 베타 사이 범위를 재귀적으로 좁힘
+    - 최대화 과정에서는 알파를 높은 값으로 재설정, 최소화 단계에서는 베타를 더 낮은 값으로 재설정
+  - MIN 노드의 자식 노드에서의 가지치기
+    - 특정 MIN 노드에서 자식 노드들의 값을 평가 시, 자식 노드들의 최소값 추정치가 떨어져고 있다고 가정해보자
+    - 이때 MAX 플레이어는 그 노드 값이 자신이 이미 찾아놓은 선택(알파값)보다 나쁘다면, 그 경로를 선택하지 않을 것임
+    - 따라서, 현재 평가 중이 노드의 가치가 알파 값보다 나빠지면, 더 이상 그 노드의 다른 자식 노드를 고려할 필요가 없어짐
+  - MAX 노드의 자식 노드에서의 가지치기는 완전히 위와 대칭적임
+- 주요 특성
+  - Pruning은 최종 결과에 영향을 주지 않음
+    - 탐색 시간을 줄이지만, 최적의 수는 변하지 않음
+  - 중간 노드의 값이 잘못될 수 있음
+    - 필요하지 않은 노드를 탐색하지 않기 때문에
+  - 좋은 자식 노드 순서가 Pruning 효과를 높일 수 있음
+- Resource limit
+  - 현실적 게임 환경에서는 모든 가능한 수 탐색이 불가능함
+    - 깊이 제한 탐색(Depth-limited search)과 같은 전략이 사용됨
+  - 이를 위해 비종단 노드에 대한 평가 함수(evaluation function)을 사용하게됨
+  - 최적의 플레이 보장 상실
+    - 깊이 제한 탐색 사용 시, Optimal을 보장할 수 없게됨
+    - Evalutaion Function의 정확도에 크게 의존하게 됨
+  - 반복 심화(iterative deepening)을 사용
+    - 깊이 제한 탐색을 여러 번 수행하되, 매번 깊이를 점진적으로 증가시킬 때 사용
+    - 제한된 시간 안에 최선의 수를 찾을 때 유용
+      - 언제든지 중단할 수 있음
+  - 평가 함수(Evaluation function)
+    - 해당 포지션의 가치를 수치로 나타냄
+    - 각 포지션의 전략적 가치를 정확하게 반영하고자 함
+      - 이상적인 평가 함수는 minimax value를 반환
+      - 실제로는, 평가 함수로 추정함
+    - 비종단 노드에서 가장 좋은 이동을 결정하는 데 필수적임
+- Depth Matters
+  - 평가 함수는 기본적으로 불완전함
+    - 모든 가능성을 반영할 수 없기 때문에 불가피하게 근사치(approximation)이 됨
+  - 깊이의 중요성
+    - 더 깊은 위치에서 평가 함수를 사용할 수록 영향은 상대적으로 줄어듬
+    - 즉, 더 깊은 부분에서 평가 수행 시 잠재적 오류의 영향을 줄일 수 있음
+  - 특성 복잡성(feature complexity)과 계산 복잡성(computation complexity)사이 트레이드 오프 존재
+    - 더 많은 특성 고려 시 상태를 더 정확하게 반영할 수 있지만, 계산 복잡성이 증가함
+- Synergies between Evaluation Function and Alpha-Beta
+  - 알파 베타 Fruning에서는 노드 확장 순서가 중요한 영향을 미침
+    - Evaluation Function이 이 확장 순서를 최적화 하는데 도움을 줄 수 있음
+    - 마치 A* 탐색에서 사용되는 Heuristic과 비슷한 역할을 함
+  - 즉, 평가 함수가 제공하는 정보를 통해 더 많은 Fruning을 수행할 수 있고, 탐색 효율성을 향상시킴
+### Example
 - Definition of AI, categories
   - search properties, actual search and evaluation
-
 - Game Search
   - minimax Search and Alpha-Beta Pruning
+- Deteministic & optimal adversarial search methods
+  - optimization(alpha-beta)
+  - what is the problem?
+- Approximation of evaluation(value-function)
+  - probabillity(e.g. Expertimax)
+  - Estimating evaluatin function
+  - Relationship wiht search(e.g complexity tradeoff)
 
+## Search under Uncertainty
+- Expectimax Search
+  - 특정 행동의 결과를 정확히 예측할 수 없는 경우 존재
+  - 명시적 무작위성
+    - 주사위 굴리기 같이 순수 확률에 의해 결정되는 경우
+  - 예측 불가능 상대
+    - 상대방의 행동이 무작위적이거나 예측하기 어려운 경우
+  - 행동 실패
+    - 실행한 행동이 예상대로 이뤄지지 않는 경우
+- 이러한 불확실성을 고려, Expectimax(기대값 최대화) 탐색이 도입
+  - 최악의 경우를 고려하는 Minimax(미니맥스) 탐색과 달리, 평균적 결과를 예측하기 위함임
+- 탐색 방법
+  - Max 노드
+    - 최선의 행동을 선택
+  - Chance 노드
+    - Min노드와 유사하지만, 결과가 확실하지 않은 노드를 의미함
+    - 가능한 결과에 대한 expected utilites(기대 유틸리티, 예상 가치)를 계산함
+    - 우리가 제어할 수 없는 결과들을 나타냄
+      - 상대방이 어떤 상태에서 어떻게 행동할지에 대한 확률 모델 사용
+    - 균일 분포일 수도 있고, 복잡한 분포 일 수도 있음
+- Why not minimax?
+  - 미니맥스 알고리즘은 너무 보수적임
+    - 실제로 모든 상황이 최악으로 흐르지 않고, 때로는 더 낙관적 결과가 있을 수 있음
+    - 따라서 평균적인 사례 추론이 필요
+      - 과도한 낙관도, 과도한 비관도 위험
+- Utilities
+  - 유틸리티는 특정 상태 또는 결과의 가치를 나타내는 함수
+  - 에이전트는 유틸리티를 최대화하는 행동을 선택해야함
+  - worst-case minimax reasoning
+    - 터미널 상태의 유틸리티 값의 크기가 중요하지 않음
+    - 상태 간 순서만 올바르면, 그것으로 충분함
+      - 중요한 것은 상태 간 상대적 순서임
+  - average-case expectimax reasoning
+    - 기대값 최대화 추론에서는 상태의 유틸리티 값의 크기가 의미를 가짐
+    - 단순한 순서를 나타내는 것 이상의 정보를 담고있기 때문임
+### Monte Carlo Tree Search(MCTS)
+- 몬테 카를로 트리 탐색(MCTS)은 바둑과 같이 분기 인자(branching factor)가 매우 높아 전형적인 탐색이 비효율적인 경우 효과적임
+  - 불확실성을 다루고, 가능한 모든 미래의 시나리오를 탐색함
+- 롤아웃에 의한 평가
+  - 현재 상테에서 게임이 종료될 때까지 무작위로 게임을 여러 번 플레이하는 과정
+    - 실제 게임에서 사용할 만큼 정교하지 않아도 됨
+    - 탐색 과정을 가속화
+    - 특정 상태의 가치를 평과
+  - 롤아웃 과정
+    - 각 롤아웃은 현재 상태에서 게임이 종료될 떄가지 계속됨
+    - 게임의 최종 결과를 기록
+    - 승리 비율을 통해 해당 포지션의 가치를 추정
+- 선택적 탐색
+  - MCTS는 전체 게임 트리를 균등하게 탐색하지 않음
+  - 루트에서의 결정을 개선하는 데 도움이 될 트리의 특정 부분을 선택적으로 탐색
+    - 깊이에 상관없음
+- MCTS 버전 0
+  - 초기 버전에서는 루트의 각 자식 노드에서 N(예: 100)번의 롤아웃을 수행
+  - 각 롤아웃에서 승리의 비율을 기록하고, 이 비율이 가장 높은 노드를 선택하는 간단한 접근 방식을 사용
+  - 각 노드를 동등하게 탐색하며, 가장 성공적인 결과를 보인 노드를 선택
+- MCTS 버전 0.9
+  - 롤아웃을 더 유망한 노드에 할당하는 방식으로 발전
+  -탐색을 더 효율적으로 만들며, 성공 가능성이 더 높은 노드에 더 많은 계산 자원을 집중시킴
+- MCTS 버전 1.0
+  - 유망한 노드뿐만 아니라 불확실성이 높은 노드에도 롤아웃을 할당
+  - 이는 "유망함"과 "불확실함"이라는 두 가지 기준을 사용하여, 탐색 과정에서 정보 획득을 극대화
+  - 여기서 불확실성은 주로 탐색이 적게 이루어진 노드에서 높게 나타남
+    - 이러한 노드는 아직 충분히 탐색되지 않았기 때문에, 더 많은 정보를 제공할 가능성이 높음
+- MCTS 버전 2.0
+  - 시간이 허용하는 한 탐색을 반복
+  - 현재 탐색 트리를 바탕으로, 버전 1.0의 접근 방식을 재귀적으로 적용하여 아직 완전히 확장되지 않은 리프 노드까지 확장
+  - 선택된 리프 노드에 새로운 자식 노드를 추가하고, 해당 자식 노드에서 롤아웃을 실행한 후, 그 결과를 루트까지 업데이트
+- Min이나 Max를 사용하지 않는 이유
+  - 노드의 가치는 노드의 자식들의 값에 대한 가중 평균으로 계산됨
+  - 횟수가 무한대에 가까워질 수록, 점점 최적의 자식 노드를 선택하게 되고 가중 평균은 MIN이나 MAX에 수렴하게 됨
+    - 즉, 알고리즘은 미니맥스 수를 선택하게됨
+
+### Example
 - Search under Uncertainty
   - Expectimax
   - Monte Carlo Tree Search
+- Monte Carlo Tree Search(MCTS)
+  - How to approximate evaluation?
 
+## Optimization Methods
+### Finding Best Parameters
+- 미분을 통한 최적화
+  - 도함수는 기울기를 나타냄
+  - 최저점 조건
+    - 기울기가 0이 되는 점을 찾는 것이 필수적
+- 편미분
+  - 여러 변수에 대한 함수를 미분할 때, 각 변수에 대한 도함수로 구성된 벡터를 그래디언트라고 함
+- 최소 제곱 예제
+  - 선형 회귀(Linear Regression)
+    - 데이터 포인트마다 출력을 예측, 데이터를 가장 잘 대표하는 직선을 찾는 과정
+    - 오차를 최소화하는 직선의 기울기와 절편을 위해 최소 제곱법 사용
+    - θ_1은 직선의 기울기, θ_2는 절편을 나타냄
+### Local Search Method
+- Tree Search는 탐색되지 않은 대안들을 fringe(경계)에 유지하여 완전성을 보장함
+  - 즉, 모든 가능한 후보를 고려하여 문제의 해결책을 찾음
+  - 이로써 완전성을 보장하지만, 메모리와 계산 비용이 많이 듬
+- Local Search(지역 탐색)
+  - 지역 탐색은 현재 해에서 시작, 점진적으로 개선하는 방식
+  - 메모리 사용이 적고 계산 속도가 빠름
+  - 그러나 지역 최적해에 갇힐 위험이 있고, 전역 최적해를 보장하지 않음
+    - 즉, 얻은 해가 최선의 해가 아닐 수 있음(incomplete, suboptimal)
+### Hill-climbing Search
+- 시작점
+  - 임의의 시작점에서 시작할 수 있음
+- 반복 과정
+  - 현재 상태의 이웃 중 최선의 상태로 계속 이동함
+    - 이웃이란, 현재 상태에서 작은 변화로도 도달할 수 있는 상태
+- 종료 조건
+  - 현재 상태보다 더 좋은 이웃이 없는 경우
+    - 즉, 현재 상태에서 어떤 이동도 상황을 개선하지 못할 경우 탐색 중단
+- Steepest Ascent
+  - 최대 상승, 각 단계에서 가능한 최고의 개선을 추구
+- Greedy LocalSearch
+  - 선택이 향후 결과에 어떤 영향을 미칠지 고려하지 않음
+  - 장기적 계획보다는, 단기적 이익 추구
+- 장점
+  - 구현 간단, 메모리 요구사항이 낮음
+- 단점
+  - 지역 최적해에 갇힐 위험이 큼
+  - 이웃 간 성능 차이가 거의 없는 경우 효율적이지 않음
+
+### Optimization
+- 최적화
+  - 함수 최적화(continuout optimization)
+    - 연속적인 값들을 다루는 최적화 문제
+    - 함수의 기울기(그래디언트) 계산, 최소점을 찾음
+    - ex) f(x1,x2) = (x1-1)^2 + x_2^2
+      -  편미분 시 x1=1, x2=0
+      -  이는 주어진 함수의 최소점임
+  - 조합 최적화(discrete optimization)
+    - 이산적 값, 명확히 구분되는 값을 다루는 최적화 문제
+    - ex) 유전 알고리즘과 같은 기법을 사용할 수 있음
+
+### Gradient Descent Method
+- 그래디언트 강하법
+  - 함수의 최소값을 찾기 위해 사용되는 반복적 최적화 알고리즘
+  - 세상에서 가장 간단한 알고리즘, 가장 효율적 방법은 아닐 수 있음
+  - 마이너스 도함수에 주목하라
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/78ce00e0-3c86-4341-ac69-6f2a72a4b2e0)
+  - arg min θ는 θ에 대해 손실 함수를 최소화하는 값을 찾는 것을 의미함
+  - 알고리즘
+    - L(θ)이 감소하는 방향 v를 찾음
+    - θ+av를 θ로 업데이트함
+      - 이때 a는 학습 시 필요한 소요시간, 스탭 사이즈라 함
+        - 스탭사이즈란, Gradient Desecnt의 각 반복 단계에서 파라미터를 업데이트할 때 얼마나 멀리 이동할 것인지를 결정하는 값
+      - 이때 스탭사이즈가 너무 작으면 수렴에 오랜 시간이 걸리고, 너무 크면 최소값을 지나칠 수 있음
+        - 너무 작으면 파라미터가 아주 조금씩만 업데이트 됨
+        - 너무 크면 정확한 최소값에 도달하기 힘듬
+- Gradent Descent vs Hill-climbing search
+  - 경사 하강법은 주변 기울기(미분값)을 이용, 가장 낮은 지점(최소값)을 찾아 내려가는 방법
+    - 연속적인 파라미터 값을 가진 함수 최적화 시 사용
+  - 언덕 오르기 탐색
+    - 모든 이웃 상태를 살펴보고, 비용이 가장 낮은 상태로 이동하는 것을 반복
+    - 더 이산적인 상태 공간을 가진 문제에 대해 적합함 즉, 조합 최적화
+- loss surface
+  - 파라미터 공간에 대한 함수 값의 그래픽 표현
+- convexity
+  - 그래프 아래의 모든 지점에서 선분을 그렸을 때, 선분이 그래프 위에 있는 경우
+    - 단일 글로벌 최소값을 갖기 때문에, 최적화가 쉬움
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/3650c5f2-d846-45f3-a19e-39fc7fbc36af)
+### Example
 - Local Search Method
   - Hiill-climbin Search
   - Optimizations
   - Gradient Descent Method
+- Hill-climbing in TSP?
+- Properites of optimization methods
+  - Discrete or coninuous? Combinatorial? Optimal? Parameter-dependent properties
+    - Optimize 방법에서 정할 수 있는 것들이 많음(step size, selection 방법 등)
 
+## Non-Derivative Unconstrained Optimizations
+### Downhill Simplex Method
+- 함수에서 최소점을 찾으려고 시도하는 휴리스틱 탐색 방법
+  - Simplex 사용
+    - N차원 입력에 대해 N+1개의 점을 사용
+    - ex) 1D에서는 구간, 2D에서는 삼각형 등, 3차원에서는 사면체 등
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/9cd8f4ab-57c9-49dc-954c-c967d33f79ed)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/bf081570-e4d7-414a-9dc1-3a96a67a8e40)
+  - reflect
+    - 목적 함수가 높은 점을 반대쪽으로 '반사'시켜서 더 낮은 목적 함수 값을 찾음
+  - Expansion
+    - 반사를 통해 얻은 새로운 점이 더 좋은 값을 나타낼 경우, 더 멀리 확장 하여 더 나은 점을 탐색함
+  - Contraction
+    - 반사를 통해 개선된 점을 찾지 못한 경우, 크기를 수축하여 최소값을 찾음
+  - Shrink
+    - 수축이 실패할 경우, 심플렉스의 모든 점을 가장 좋은 점에 가까워지도록 축소함
+- 초기 추정값으로 시작 --> 지역 최소점을 만날 때 까지 아래로 이동
+- 도함수가 아닌 **함수 평가**만을 필요로 함
+- 지역 최소점에 갇힐 가능성 존재
+
+### Grnetic Algorithm
+- 유전 알고리즘(GA)
+  - 각 단계에서 가장 적합한 N개의 가설을 기반으로 선택
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/e950f9f4-e3d7-4cd6-ab7c-1bfd20fa4568)
+  - fittest(selection), reproduction(Crossover), mutation이 존재
+    - 생존(선택), 번식(교차), 돌연변이
+  - Selection
+    - 적합도 평가 --> 적합한 해결책 선별
+    - 좋은 해결책 강조 + 나쁜 해결책 제거
+  - 적합도 평가는 주로 적합도 함수를 사용하여 각 해결책의 성능을 수치적으로 평가하게됨
+    - Fitness Function
+      - 목표 문제에 대한 해의 최적성을 정량화하는 목적 함수
+      - 적함도 함수의 실제 정의는 문제에 따라 달라지게됨
+  - 선택 연산
+    - 교차에 쓰이는 두 개의 부모해를 고르기 위한 연산
+      - 우수한 해가 선택될 확률이 높아야 함
+      - 적합도 차이를 조절함으로써 선택 확률 조정 가능
+        - 품질 비례 룰렛 휠 선택(Roulette wheel selection)
+          - 가장 좋은 해의 적합도가 가장 나쁜 해의 적합도의 k배가되도록 조절
+        - 순위 기반 적합도 할당(Rank-based)
+          - 품질에 따라 순위를 매기고, 적합도 할당
+            - 다양성을 보다 오래 유지할 수 있음
+  - Crossover(교차) 연산
+    - 일점 교차(point crossover)
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/9590e554-a630-4d81-871a-e1febea51a98)
+      - 길이가 n인 일차원 문자열로 된 염색체 상에서 일점 교차로 자른 방식은 총 n-1가지
+    - 다점 교차(multipoint corssover)
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/4bc36669-8619-436e-a39d-63b7281b2c23)
+        - k점 교차로 자르는 방식 n-1Ck
+        - 일점 교차보다 교란 정도가 큼(보다 넓은 공간 탐색)
+        - 교란이 강하면 수렴성이 떨어지고, 시간 내에 수행되지 않을 수 있음
+    - 균등 교차(uniform crossover)
+      - 자름선을 이용하지 않음
+      - 각 유전자 위치에서 독립적으로 부모 유전자를 선택할 수 있음
+      - 난수(마스크) 설정하여 선택
+    - 싸이클 교차(cycle crossover)
+    - 순서 교차(cycle crossoer)
+      - 위 두개는 순열로 표현되는 경우에 적용 가능함
+    - 간선 재조합
+      - TSP를 위해 개발된 교차 연산
+  - GA가 유용한 문제들
+    - deterministic한 방법으로 좋은 해를 잘 구하지 못하는 경우
+  - GA가 소용 없는 문제들
+    - 크기가 너무 작은 경우
+    - 결정론적 알고리즘으로 쉽게 풀리는 문제
+- 장점
+  - 빠르고 메모리 요구량이 낮음
+  - 분석적 작업 없이 해결책을 찾을 수 있음
+- 단점
+  - complete x, optimal x
+  - 지역 최대값에 갇힐 수 있음
 - Non-Derivative Unconstrained Optimizations
   - Downhill simplex Method
   - Genetic Algorithm
@@ -215,23 +703,3 @@
    - 우리가 왜 먹어가고 있는지?
    - uncertainty 기반 search 수행은 왜 하는 것?
      - time limit이 있고, search를 다 못하고 evalutaion function이 필요한데 그러면 어떻게 해야 하는가?, evaluation function과의 관계와 필요성
-
-
-Examples
-
-- Optimistic vs Pessimistic Heuristics
-- Tree vs Graph Search
-  - w.r.t optimally
-- Deteministic & optimal adversarial search methods
-  - optimization(alpha-beta)
-  - what is the problem?
-- Approximation of evaluation(value-function)
-  - probabillity(e.g. Expertimax)
-  - Estimating evaluatin function
-  - Relationship wiht search(e.g complexity tradeoff)
-- Monte Carlo Tree Search(MCTS)
-  - How to approximate evaluation?
-- Hill-climbing in TSP?
-- Properites of optimization methods
-  - Discrete or coninuous? Combinatorial? Optimal? Parameter-dependent properties
-    - Optimize 방법에서 정할 수 있는 것들이 많음(step size, selection 방법 등)
