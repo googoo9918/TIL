@@ -1,3 +1,43 @@
+## 목차
+- [인공지능](#인공지능)
+  - [Introduction to Artificial Intelligence](#introduction-to-artificial-intelligence)
+    - [What is Intelligence?](#what-is-intelligence)
+    - [Examples](#examples)
+  - [Unimformed Search Methods](#unimformed-search-methods)
+    - [Seaarch Problems](#seaarch-problems)
+    - [State Space Graphs \& Search Trees](#state-space-graphs--search-trees)
+    - [Search Strategies](#search-strategies)
+    - [Depth-First Search](#depth-first-search)
+    - [Depth-Limited Search](#depth-limited-search)
+    - [Iterative Deepening Depth-First Search(IDS)](#iterative-deepening-depth-first-searchids)
+    - [Breadth-First Search(BFS)](#breadth-first-searchbfs)
+    - [DFS vs BFS](#dfs-vs-bfs)
+    - [Uniform Cost Search](#uniform-cost-search)
+  - [Informed Search Methods](#informed-search-methods)
+    - [Heuristics](#heuristics)
+    - [Greedy Search(Best-Frist Search)](#greedy-searchbest-frist-search)
+    - [A\* search(UCS + Greedy)](#a-searchucs--greedy)
+    - [Problems](#problems)
+  - [Graph Search](#graph-search)
+    - [Optimality](#optimality)
+    - [Example](#example)
+  - [Game Search](#game-search)
+    - [Game Tree Pruning](#game-tree-pruning)
+    - [Example](#example-1)
+  - [Search under Uncertainty](#search-under-uncertainty)
+    - [Monte Carlo Tree Search(MCTS)](#monte-carlo-tree-searchmcts)
+    - [Example](#example-2)
+  - [Optimization Methods](#optimization-methods)
+    - [Finding Best Parameters](#finding-best-parameters)
+    - [Local Search Method](#local-search-method)
+    - [Hill-climbing Search](#hill-climbing-search)
+    - [Optimization](#optimization)
+    - [Gradient Descent Method](#gradient-descent-method)
+    - [Example](#example-3)
+  - [Non-Derivative Unconstrained Optimizations](#non-derivative-unconstrained-optimizations)
+    - [Downhill Simplex Method](#downhill-simplex-method)
+    - [Grnetic Algorithm](#grnetic-algorithm)
+    - [Example](#example-4)
 # 인공지능
 ## Introduction to Artificial Intelligence
 ### What is Intelligence?
@@ -694,6 +734,7 @@
 - 단점
   - complete x, optimal x
   - 지역 최대값에 갇힐 수 있음
+### Example
 - Non-Derivative Unconstrained Optimizations
   - Downhill simplex Method
   - Genetic Algorithm
