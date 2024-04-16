@@ -10,7 +10,7 @@
       - 은닉층 존재 여부
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/3ff859fb-0629-4ca2-8afd-b4875a92f1d4)
   - 독립변수(feature; x)들의 선형 및 비선형 결합을 통해 목적변수(종속변수, output; y)를 확률적으로 추정
-  - 딥러닝은 은닉층 존재, 머신러닝은 은닉층 업음
+  - 딥러닝은 은닉층 존재, 머신러닝은 은닉층 없음
 ### 은닉층
 - *특성변수*는 회귀와 분류를 위한 *목적변수*를 예측하는데 이용
   - 특성변수는 *고수준의 대표성*을 지니는 경우가 많음
@@ -62,7 +62,7 @@
     - 총 31개의 학습 파라미터(모수) 존재
       - 20(입력-은닉 가중치)(wₖⱼ) + 5(은닉-출력 가중치)(βk) + 5(은닉 층 편향)(wₖ₀) + 1 (출력 층 편향)(β0)
       - 그냥 ( (4+1) * 5 ) + ( (5+1) *1) 이라고 생각하는게 나을듯
-### Activation FUnction
+### Activation Function
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/9726ac03-abaa-47f9-8800-9f7fa7778fce)
   - A_k = h_k(X) = g(w_k0 + ∑ᵢ₌₁ᵖ w_kj X_j)
     - 활성화 함수는 신경망에서 입력 X를 받아 은닉 노드의 출력 A_k를 생성하는데 사용됨
@@ -124,3 +124,152 @@
       - 129는 두 번째 은닉층의 128 유닛에 바이어스 유닛을 추가한 것
   - 총 매개변수
     - 총 235,146의 매개변수가 있음
+
+### Lab in Python
+- 데이터 준비
+```python
+# 결측치 제거
+.dropna()
+
+# 훈련, 테스트 데이터 분할
+train_test_split(X,Y, test_size = 1/3, random_state=1)
+```
+- 선형 회귀 모델
+```python
+# 회귀 모델 적합
+.fit(X_train, Y_train)
+
+# 예측
+.predict(X_test)
+```
+- 라쏘 회귀 모델
+```python
+# 데이터 학습 + 변환 과정 결합
+scaler.fit_transfrom(X_train)
+# 적합
+grid.fit(X_train, Y_train)
+# 예측
+.predict(X_test)
+```
+- 신경망 모델
+```python
+# 입력 데이터 1차원 배열로 평탄화
+self.flatten()
+
+# 신경망 계층 순차적 정의
+# 입력 차원을 50개의 뉴런으로 매핑 / 비선형 활성화 함수 -> 음수 입력을 0으로 만듬 / 과적합 방지를 위해 뉴런 40%를 임의로 비활성화 / 50개 뉴런을 최종 출력인 1차원으로 매핑
+self.sequential = nn.Sequential(
+            nn.Linear(input_size, 50), nn.ReLU(), nn.Dropout(0.4), nn.Linear(50, 1)
+        )
+# Hitters의 19개 특성이 50차원으로 매핑 -> 50 * (19+1)의 파라미터가 됨
+# 이후 40%의 드롭아웃 계층을 거침
+# 마지막으로 1차원으로의 선형 매핑, 다시 편향이 도입됨 50 +1
+# 따라서 전체 파라미터는 1000 + 50 + 1 --> 1051임
+```
+- PyTorch
+```python
+# NumPy배열에서 파이토치 텐서로 변환
+torch.tensor(X_train.astype(np.float32))
+
+# 회귀 모델 설정, 평가 지표로 평균 절대 오차 사용
+hit_module = SimpleModule.regression(hit_model, metrics={'mae':MeanAbsoluteError()})
+
+# SGD(확률적 경사 하강법)은 데이터셋의 일부만을 사용, 각 단계에서 그리디언트 계산하고 모델 매개변수를 업데이트함
+# 에폭 계산, 에폭은 훈련 데이터셋을 한 번 순회하는 것을 의미함 hit_dm에서 batch_size를 32로 지정했으므로, 한 에폭은 175/32 = 5.5 SGD 단계임 --> 총 6번의 단계가 필요하게 됨
+```
+
+- 모델 평가
+```python
+# 모델을 평가 모드로 설정, 드롭아웃과 같은 레이어 비활성화
+.eval()
+```
+
+- Multilayer Network on the MNIST Digit Data
+```python
+self.layer1 = nn.Sequential(
+            nn.Flatten(),
+            nn.Linear(28*28, 256),
+            nn.ReLU(),
+            nn.Dropout(0.4))
+        self.layer2 = nn.Sequential(
+            nn.Linear(256, 128),
+            nn.ReLU(),
+            nn.Dropout(0.3))
+        self._forward = nn.Sequential(
+            self.layer1,
+            self.layer2,
+            nn.Linear(128, 10))
+# 1*28*28의 이미지를 28*28 요소의 1D 벡터로 평탄화
+# 평탄화된 벡터를 256차원의 히든 레이어로 선형 변환
+# 이때 파라미터 --> 785 * 256 = 200, 960
+
+# 256 -> 128
+# 257 * 128 = 32,896
+
+# 128 -> 10
+# 129 * 10 = 1,290
+```
+- 다중 클래스 로지스틱 회귀 모델
+```python
+# 분류 모델 생성, (훈련 모델, 클래스 수)
+SimpleModule.classification(mlr_model, num_classes=10)
+
+# 모델 적합
+.fit(mlr_module, datamoudle=mnist_dm)
+
+# 모델 평가
+.test(mlr_module, datamodule=mnist_dm)
+```
+
+## Convolutional Nerual Networks(CNN)
+- CNN은 이미지 인식과 분류 작업에서 탁월한 딥러닝 모델
+- 여러 계층으로 구성
+- CIFAT100
+  - 32*32 픽셀 크기의 자연 이미지
+  - 100개의 다양한 클래스
+    - 각 클래스가 5개의 하위 클래스를 갖는 20개의 슈퍼 클래스로 구성
+- 핵심 컴포넌트
+  - 컨볼루션(convolution) 계층
+    - 입력 이미지의 작은 부분에 대해 필터를 적용
+    - 이를 통해 이미지의 중요 특징 감지
+
+### How Work
+- 컨볼루션 계층
+  - 이미지에서 작은 패턴이나 특징을 감지하는 역할
+  - 선이나 가장자리와 같은 기본 형태 감지 가능
+  - 필터(커널)이라는 작은 행렬을 이미지 전체에 걸쳐 슬라이딩
+    - 특징 맵 생성
+    - 이 맵은 입력 이미지에서 각 필터가 반응하는 영역의 강도를 나타냄
+- 풀링 계층(Pooling layers)
+  - 컨볼루션 계층 다음에는 풀링 계층 위치
+  - 이미지의 공간 크기를 줄여주는 역할을 함
+  - 이를 통해 계산량을 감소, 가장 두드러진 정보 유지 + 과적합 방지
+- 계층적 구성
+- 최종 분류
+
+### 컨볼루션 계층(Convolution Layer)
+- 컨볼루션 계층은 다수의 컨볼루션 필터로 구성
+- 컨볼루션 필터는 컨볼루션이라고 불리는 간단한 연산에 의지함
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/ffa0d075-b391-4597-93fc-d7a0afc9a043)
+  - 만약 원본 이미지의 2*2 부분 행렬이 컨볼루션 필터와 유사하다면, 변환된 이미지에서 큰 값이 나타나고 아니라면 작은 값이 나타남
+    - 입력 이미지의 부분 이미지가 필터와 비슷하면 점수가 높고, 그렇지 않으면 점수가 낮음
+  - 필터 자체도 하나의 이미지, 작은 형태나 가장자리 등을 나타냄
+    - 이 필터를 입력 이미지 위에서 이동시키면서 일치하는 부분에 대한 점수를 매김
+    - 점수 매기기는 내적을 사용하여 수행됨
+- 컨불루션 필터는 이미지의 다양한 부분에서 발생하는 공통 패턴을 찾기 위함임
+  - 컨볼루션의 결과는 새로운 특징 맵(feature map)임
+
+### Pooling Layser
+- Pooling Layer는 큰 이미지를 작은 요약 이미지로 압축하는 츠
+- Max Pooling
+  - 2*2 블록의 네 개 픽셀 중 최대값을 선택, 해당 블록을 대체
+  - 이미지의 크기를 각 방향으로 절반으로 줄임
+  - 위치 불변성(location invariance)를 제공함
+    - 하나의 픽셀이 큰 값을 갖는 경우, 블록 전체가 축소된 이미지에서도 큰 값으로 등록 -> 불변
+    - 중요 특징을 유지하면서도 데이터의 양을 효과적으로 줄일 수 있음
+
+### Architecture of CNN
+- CNN은 다수의 컨볼루션 층과 풀링 층으로 구성됨
+- ex) 3개의 컨볼루션 layer와 Pooling Layer
+- 필터는 일반적으로 작은 크기(2*2)를 가짐, 각 필터는 컨볼루션 층에서 새로운 채널을 생성함
+- 풀링 층은 이
