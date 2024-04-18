@@ -269,7 +269,220 @@ SimpleModule.classification(mlr_model, num_classes=10)
     - 중요 특징을 유지하면서도 데이터의 양을 효과적으로 줄일 수 있음
 
 ### Architecture of CNN
-- CNN은 다수의 컨볼루션 층과 풀링 층으로 구성됨
-- ex) 3개의 컨볼루션 layer와 Pooling Layer
-- 필터는 일반적으로 작은 크기(2*2)를 가짐, 각 필터는 컨볼루션 층에서 새로운 채널을 생성함
-- 풀링 층은 이
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/4b6cc6f6-6ee5-4049-ba4d-2a042e76e428)
+  - CNN은 다수의 컨볼루션 층과 풀링 층으로 구성됨
+  - ex) 현재는 3개의 컨볼루션 layer와 Pooling Layer
+  - 필터는 일반적으로 작은 크기(2*2)를 가짐, 각 필터는 컨볼루션 층에서 새로운 채널을 생성함
+  - 폴링으로 크기가 감소함에 따라 필터의 수는 일반적으로 증가
+
+### Data Augmentation(데이터 증강)
+- 각 학습 이미지는 여러번 복제 되고, 각 복제본은 임의로 왜곡됨
+  - 이때 이 외곡은 확대, 수평 및 수직 이동, 회전 등을 포함함
+  - 인간의 이식에는 영향을 미치지 않음
+- 학습 데이터 셋을 상당히 확장하여 다른 예제를 생성하는 방법
+  - 이로써 과적합을 방지함
+- 일종의 정규화 처럼 동작
+
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/f259842b-e15e-49a5-86a6-71eb59abedb5)
+
+### Lab in Python
+- CNN on CIFAR100 data
+```python
+# 텐서들을 하나의 텐서로 결합
+torch.stack()
+
+# 난수 생성기 객체 rng 초기화 --> 시드 값은 결과의 재현성 보장
+rng = np.random.default_rng(4)
+
+# 데이터 셋에서 고유한 인덱스 무작위 선택
+rng.choice()
+
+# 입력 채널 수와 출력 채널 수를 기반으로 3*3 커널 크기의 convolution 연산을 정의
+# 패딩이 same, 입력과 출력의 공간 크기를 유지함
+# 예를 들어, 입력 이미지가 6*6이고 필터가 3*3, 스트라이드(필터가 한 번에 움직이는 칸 수)가 1이라 하자
+# 패딩이 없는 경우, 출력 크기는 (입력 크기 - 필터 크기 + 1) / 스트라이드 이다.
+# (6-3+1)/1 =4 --> 4*4 출력 이미지가 생성된다.
+# 패딩이 있는 경우, 패딩은 (필터 크기 - 1)/2 이므로, (3-1)/2 =1 이고, 각 변에 패딩1을 추가한다.
+# 즉, 입력 이미지의 각 변에 패딩을 추가하여 입력 이미지의 크기를 키우고, 전체 이미지에 대한 합성곱을 수행한다.
+        self.conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=(3,3), padding='same')
+        self.activation = nn.ReLU()
+        # 2*2 맥프 룰링이 연속적으로 적용
+        self.pool = nn.MaxPool2d(kernel_size=(2,2))
+
+# CIFAR100의 이미지 크기는 3 * 32 * 32임, 3개 채널, 32*32 픽셀
+# 현재 필터의 크기가 3*3 이므로 BuildingBlock(3,32)에서 파라미터 개수는 다음과 같음
+# input --> (3 * 3 * 3(차원)) * 32 + 32
+# 32 -> 64는 어떠한가?
+# 3*3*32*64 +64
+# 64->128, 128->256 또한 마찬가지이다.
+        sizes = [(3,32), (32,64), (64,128), (128,256)] 
+        self.conv = nn.Sequential(*[BuildingBlock(in_, out_) for in_, out_ in sizes])
+        self.output = nn.Sequential(
+            nn.Dropout(0.5),
+            # 평탄화된 특징 맵을 512개의 뉴런으로 연결
+            # 마찬가지로 파라미터는 2*2*256*512 + 512
+            nn.Linear(2*2*256, 512),
+            nn.ReLU(),
+            # 512개의 뉴런을 100개의 클래스로 매핑
+            # 마찬가지로 파라미터는 512*100 + 100
+            nn.Linear(512, 100)
+        )
+```
+
+- Using Pretrained CNN Models
+```python
+# mps와 같은 GPU 기반 가속화 기술을 통해 훈련 속도를 크게 높임
+cifar_trainer_mps = Trainer(accelerator='mps', deterministic=True, max_epochs=30) cifar_trainer_mps.fit(cifar_module, datamodule=cifar_dm) cifar_trainer_mps.test(cifar_module, datamodule=cifar_dm)
+```
+
+## Recurrent Nerual Networks
+- IMDB(인터넷 영화 데이터베이스)에 대한 리뷰 분류
+- 25,000개의 리뷰를 포함하는 세트, 테스트 세트 레이블
+- 리뷰의 감정을 예측하기 위한 분류기를 구축하고자 함
+- Bag of Words Model
+  - 문서는 길이가 다르며 단어의 연속으로 구성됨
+  - 사전에서 가장 자주 등장하는 1만 개의 단어 식별
+    - 해당 단어가 나타난 모든 위치에 1을 표시
+      - 없으면 0으로 표시된 이진 벡터 생성
+      - 벡터들은 모두 같은 길이(1만)을 가짐, 대부분의 값이 0이기 때문에 희소 행렬이라 불림
+    - 단어의 존재 유무만을 고려, 순서나 문맥은 고려하지 않음
+    - 이는 유니그램으로, 이 대신 바이그램이나 m-그램을 사용할 수 있음
+      - 두 단어의 조합이나 더 많은 단어의 조합
+  - 라쏘 회귀와 두 개의 은닉층을 가진 신경망 모델 비교
+### Lasso logisitc regression vs Two-calss Neural Network
+- 두 경우 모두에서 훈련 정확도가 단조롭게 증가
+- 라쏘는 특성 선택(**glmnet**)을 통해 모델을 단순화하고 계산 비용을 줄일 수 있음
+  - 희소 행렬 X에서 0이 아닌 항목만을 고려, 효율적으로 계산할 수 있음
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/caa2a5a0-5f79-470d-af07-3b1c74995894)
+  - Pr(Y=1|X)
+    - 주어진 특성 X가 주어졌을 때 Y가 1일 확률
+  - log 부분은 X에대해 Y가 1일 확률과 0일 확률의 비율인 오즈 로그 값을 나타냄
+    - 로지스틱 회귀 모델의 예측 변수로 사용됨
+  - Z1-Z0
+    - 두 클래스(1, 0)에 대한 로지스틱 함수의 출력 값들 간의 차이
+    - B10 - B00은 절편의 차이, B1l - B0l은 각 특성의 계수 차이
+    - A_l(2)은 두 번째 층의 l번째 노드의 활성화 값
+    - K_2는 두 번째 층에 있는 노드의 수
+
+### RNN(Recurrent Neural Networks)
+- 데이터가 시퀀스 형태로 발생하는 상황에서 자주 사용되는 신경망 구조
+  - ex) 문서는 단어의 연속적인 시퀀스, 날씨 데이터나 금융 지수와 같은 시계열 데이터, 녹음된 음성이나 음악, 필기 데이터 등
+- RNN은 이러한 데이터의 순차적 특성을 고려, 과거의 정보를 기억하는 모델을 구축함
+  - 관측치의 특성은 벡터의 시퀀스, {X1, X2, ..., Xn}과 같이 표현됨
+    - ex) X_12가 단어를 나타내고, 전체 X가 IMDb 영화 리뷰 문서 등을 나타낼 수 있음
+- 타깃 Y는 일반적으로 단일변수나 다중 클래스를 위한 one-hot vector와 같은 형태를 취할 수 있음
+  - 혹은 시퀀스일 수도 이씅ㅁ
+- 결론적으로, RNN은 연속적 흐름을 파악, 이전 정보를 활용하는 능력을 갖추고 있고 이로 인해 시퀀스 데이터 처리 작업에 매우 적합함 
+
+### RNN Architecture
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/3a2102b2-59e4-48b6-80d6-d865fa78485b)
+  - 입력: 시퀀스 X={X1, X2,...Xn}
+    - Xi는 단어 수 L을 나타낼 수 있음
+  - 출력: 간단한 출력 Y를 생성함
+  - 은닉층: A = {A1, A2,...,Am}은 은닉 상태의 시퀀스
+    - 입력 X와 이전 은닉 상태 Ai-1을 받아 새로운 은닉 상태 A_i를 계산함
+    - 각 단계마다 같은 가중치 W, U 및 편향 B를 사용함
+      - 반복적으로 가중치를 사용하기 때문에 recurrent, 즉 순환적임!
+  - 가중치 재사용
+    - 각 시간 단계에서 같은 가중치를 사용함
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/b16cf25c-2d0c-46ea-8281-2f22f2306e58)
+  - 입력과 은닉 상태
+    - X는 p개의 컴포넌트를 가진 입력 벡터
+    - A는 K개의 컴포넌트를 가진 은닉 상태 벡터
+  - 계산
+    - 각 은닉 유닛 Ak의 계싼은 입력 X와 이전 은닉 상태 A에 대한 가중치 행렬 W와 U를 사용함
+    - 이 공식은 A_k = g(WkX + UkA)로 표현됨
+      - g는 비선형 활성화 함수
+  - 가중치
+    - W: K * (p+1)행렬, 입력층의 가중치
+    - U: K*K 행렬, 은닉층에서 이전 은닉 상태로부터 다음 은닉 상태로의 전이를 결정
+    - B: 출력층의 가중치 벡터, K+1 차원
+  - 출력
+    - 출력 O는 O = BA로 계산됨
+    - B는 출력층의 가중치임
+
+### RNN and IMDB Reviews
+- 문서 특성
+  - 문서의 특성은 단어의 시퀀스 W로 표현됨
+  - 일반적으로 모든 문서를 동일한 단어 수 L로 자르거나 채워 문서의 길이를 통일
+- 단어의 표현
+  - 각 단어 Wi는 10,000길이의 one-hot 인코딩된 벡터 X로 표현됨
+    - 모두 0이고, 해당 단어의 사전 내 위치에만 1 표시
+- 단어 임베딩
+  - 미리 학습된 임베딩 행렬E 사용
+  - 매우 큰 문서에서 PCA 변형을 사용하여 구축됨
+  - 10,000 길이의 이진 특성 벡터를 m 차원의 실수 벡터로 줄여줌
+- 즉, 원-핫 인코딩은 차원이 높기 때문에 비효율적, Work Embedding을 통해 효과적으로 표현
+- LSTM(Long Short-Term Memory)
+  - RNN을 LSTM으로 개선하자 정확도가 늘어남
+
+### Time Series Forecasting(시계열 예측)
+- 뉴욕 증권 거래소 데이터를 사용한 시계열 예측
+  - 주어진 데이터를 바탕으로, 로그 거래량을 예측
+    - 전체 발행 주식 수 대비 거래된 주식수(100일 이동 평균 대비 로그 스케일)
+- 자기상관(autocorrelation)
+  - 시계열 데이터에서, 특정 시차(lag) l에 대한 데이터 값들의 상관관계
+  - Vt와 l 거래일 차이나는 Vt-l 간의 상관도를 의미함
+  - 과거의 값들이 미래 값을 예측하는 데 유용하다는 것을 시사
+    - 과거 데이터 패턴이 일정 부분 반복될 가능성 존재
+### RNN Forecaster
+- 긴 시계열 데이터에서 부분 시퀀스를 추출하여 사용
+  - 사전 정의된 길이 L인 lag를 사용, 입력 시퀀스 X1, X2,,,, Xl를 생성
+  - Xi는 시점 t-i에서의 값과 그 이전 값 포함 가능
+  - X와 Y 쌍 생성, Y는 예측하고자 하는 다음 시점의 값
+- 시리즈의 총 길이가 T=6,051이고 L=5로 설정하면, 총 6,046개의 (X,Y) 쌍을 생성할 수 있음
+  - 1~5일 까지가 X1, 2~6까지가 X2 .... 6046~6050이 X6046이 되겠지
+  - Y1은 여섯 번째 날, Y2는 일곱 번째 날, .... Y6046은 6051번째 날이 됨
+- RNN 구성 시, 각 lag 단계마다 12개의 은닉 유닛을 사용
+  - 각 시점에서의 입력이 은닉층을 통해 처리, 다음 시점의 입력으로 연결됨
+### RNN Results for NYSE Data
+- R^2의 값이 1에 가까울 수록 완벽한 예측을 의미함
+  - RNN 모델 : 0.42
+  - 전날의 로그 거래량을 사용해 당일의 로그 거래량을 예측하는 기존 모델: 0.18
+
+### Autoregression Forecaster
+- RNN은 전통적인 자기회귀(AR) 모델과 유사한 구조를 가짐
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/500a5eb5-2b1f-4fa4-bbe4-3ea8e4834bc6)
+  - 자기회귀 모델은 L차수의 지연 변수 사용, 현재의 값을 예측함
+  - y를 M 행렬의 선형 조합으로 예측
+    - M 행렬은 각각의 행이 L개의 지연된 데이터 포인트를 포함하는 설계 행렬임
+  - OLS 회귀 적합
+    - OLS를 적용, 계수 B를 추정
+      - 이 계수들은 각 지연 변수가 현재 값 y에 미치는 영향과 크기를 나타냄
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/49095004-b8bf-484a-b949-e777cb5f104c)
+
+### Lab in Python
+```python
+# 입력 크기에서 16개의 노드로 데이터를 변환하는 연결층 생성
+# inputsize가 10003, output이 16 --> 10003 * 16 +16 = 160,064
+self.dense1 = nn.Linear(input_size, 16) 
+# 활성화 함수로 ReLU 사용
+self.activation = nn.ReLU() 
+# 두 번째 선형층, 16개의 노드에서 16개의 노드로 데이터 전달
+# 16*16 + 16 = 272
+self.dense2 = nn.Linear(16, 16) 
+# 출력층, 마지막 16개의 노드를 최종 출력 노드 1개로 변환
+# 16*1 + 1 = 17
+self.output = nn.Linear(16, 1)
+
+# 이진 분류 작업을 위한 모듈 생성
+imdb_module = SimpleModule.binary_classification( imdb_model, optimizer=imdb_optimizer)
+
+# 모듈에 대한 훈련 실행
+imdb_trainer.fit(imdb_module, datamodule=imdb_dm)
+
+# 모델 평가
+imdb_trainer.test(imdb_module, datamodule=imdb_dm)
+
+
+# 입력 데이터를 32차원의 임베딩 벡터로 변환함
+# 임베딩에서는 편향이 추가되지 않음 --> 10003 * 32 = 320,096
+self.embedding = nn.Embedding(input_size, 32)
+# LSTM 레이어 정의, 차례대로 임베딩의 출력 크기, LSTM 셀의 숨겨진 상태 크기, 입력 텐서의 첫 번쨰 차원이 배치 크기 
+# 
+self.lstm = nn.LSTM(input_size=32, hidden_size=32, batch_first=True) 
+# LSTM의 출력을 받아 최종 예측 결과를 생성하는 선형 레이어
+# 얘는 당연히 33인거 알겠제?
+self.dense = nn.Linear(32, 1)
+```
+
