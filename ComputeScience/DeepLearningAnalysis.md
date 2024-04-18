@@ -479,10 +479,28 @@ imdb_trainer.test(imdb_module, datamodule=imdb_dm)
 # 임베딩에서는 편향이 추가되지 않음 --> 10003 * 32 = 320,096
 self.embedding = nn.Embedding(input_size, 32)
 # LSTM 레이어 정의, 차례대로 임베딩의 출력 크기, LSTM 셀의 숨겨진 상태 크기, 입력 텐서의 첫 번쨰 차원이 배치 크기 
-# 
+# 얘는 왜 8448이 나오는지 모르겠네..
+# 32*32 + 32*32 + 32  32 = 2080, 2080*4 = 8320
+# input_size * hidden_size + hidden_size * hidden_size + hidden_size + hidden_size
+# LSTM에는 4개의 게이트가 있음
 self.lstm = nn.LSTM(input_size=32, hidden_size=32, batch_first=True) 
 # LSTM의 출력을 받아 최종 예측 결과를 생성하는 선형 레이어
 # 얘는 당연히 33인거 알겠제?
 self.dense = nn.Linear(32, 1)
+
+# RNN for Time Series Prediction
+# X 데이터프레임에 요일(dummy)을 병합 --> 모델에 요일 효과를 포함시키기 위함임
+X_day = pd.merge(X, pd.get_dummies(NYSE['day_of_week’]), on='date’)
+
+# 데이터프레임 X의 컬럼을 지정된 순서대로 재배치
+X = X.reindex(columns=ordered_cols)
+
+# 3개의 입력 특성을 받고, 12개의 숨겨짓 유닛을 가짐, 배치 크기가 첫 번째 차원으로 오도록 설정
+# input_size * hidden_size + hidden_size * hidden_size + hidden_size + hidden_size
+# 3*12 + 12*12 + 12 + 12 = 204
+self.rnn = nn.RNN(3, 12, batch_first=True)
+# 숨겨짓 유닛 -> 출력값으로 변환하기 위한 선형 레이어
+self.dense = nn.Linear(12, 1)
+self.dropout = nn.Dropout(0.1)
 ```
 
