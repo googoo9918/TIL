@@ -51,8 +51,10 @@
         - 은닉 레이어의 각 유닛에 대한 편향(바이어스 항)
       - wₖⱼ
         - 입력 레이어 -> 은닉 레이어로 가는 연결의 가중치
-      - k
+      - K
         - 은닉 유닛(은닉 노드)의 수를 나타냄
+      - p
+        - 입력 노드의 수를 나타냄
       - g(z)
         - 미리 지정된 비선형 활성화 함수
           - ex) 시그모이드, ReLU
@@ -124,103 +126,150 @@
       - 129는 두 번째 은닉층의 128 유닛에 바이어스 유닛을 추가한 것
   - 총 매개변수
     - 총 235,146의 매개변수가 있음
-
+- Input Data for MLP
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/388a0014-00d0-448f-91a7-dc52c2f4b723)
+  - 샘플
+    - 개별 데이터포인트
+    - ex) 이미지, 문서, 관측값
+  - 특성
+    - 샘플의 속성이나 특성을 나타냄
+    - ex) 이미지의 픽셀 값, 문서의 단어 빈도
+  - Samples 개수와 parameter는 아무 연관이 없음
+    - 샘플 수가 많아져도 신경망 구조가 같다면 파라미터 수는 동일함
 ### Lab in Python
 - 데이터 준비
 ```python
-# 결측치 제거
-.dropna()
+# HittersModel 클래스 정의
+class HittersModel(nn.Module):
+  def __init__(self, input_size): 
+    super(HittersModel, self).__init__()
+    # 입력 데이터 1차원 배열로 평탄화
+    self.flatten = nn.Flatten() 
+    self.sequential = nn.Sequential(
+      # 입력 차원을 50개의 뉴런으로 매핑 
+      nn.Linear(input_size, 50),
+      # 비선형 활성화 함수로 ReLU 사용
+      nn.ReLU(), 
+      # 과적합 방지
+      nn.Dropout(0.4),
+      # 50개 뉴런을 최종 출력인 1차원으로 매핑
+      nn.Linear(50, 1)) 
+  def forward(self, x): 
+    # 입력을 평탄화
+    x = self.flatten(x)
+    # sequential 적용 후 결과를 flatten
+    return torch.flatten(self.sequential(x))
 
-# 훈련, 테스트 데이터 분할
-train_test_split(X,Y, test_size = 1/3, random_state=1)
-```
-- 선형 회귀 모델
-```python
-# 회귀 모델 적합
-.fit(X_train, Y_train)
+# Data를 로드하고 관리하는데 사용되는 SimpleDataModule
+# hit_train은 훈련 데이터
+# hit_test는 테스트 데이터셋
+## 완전한 모델 개발이 끝난후 모델 성능 최종 평가에 사용됨
+# batch_size=32는 각 데이터 로더에서 한 번에 로드할 데이터 수를 설정
+# num_workers = min(4, max_num_workers)는 데이터 로딩에 사용될 병렬 처리 워커의 수를 지정
+## 로딩 속도를 향상시키기 위해 사용됨
+# validation=hit_test는 검증 데이터셋 지정
+## 모델 학습 과정 중 모델을 평가하고 조정하는 데 사용(과적합 감지, 조기 종료 등)
+hit_dm = SimpleDataModule(hit_train, hit_test,
+   batch_size=32, num_workers=min(4, max_num_workers),
+   validation=hit_test)
 
-# 예측
-.predict(X_test)
-```
-- 라쏘 회귀 모델
-```python
-# 데이터 학습 + 변환 과정 결합
-scaler.fit_transfrom(X_train)
-# 적합
-grid.fit(X_train, Y_train)
-# 예측
-.predict(X_test)
-```
-- 신경망 모델
-```python
-# 입력 데이터 1차원 배열로 평탄화
-self.flatten()
-
-# 신경망 계층 순차적 정의
-# 입력 차원을 50개의 뉴런으로 매핑 / 비선형 활성화 함수 -> 음수 입력을 0으로 만듬 / 과적합 방지를 위해 뉴런 40%를 임의로 비활성화 / 50개 뉴런을 최종 출력인 1차원으로 매핑
-self.sequential = nn.Sequential(
-            nn.Linear(input_size, 50), nn.ReLU(), nn.Dropout(0.4), nn.Linear(50, 1)
-        )
-# Hitters의 19개 특성이 50차원으로 매핑 -> 50 * (19+1)의 파라미터가 됨
-# 이후 40%의 드롭아웃 계층을 거침
-# 마지막으로 1차원으로의 선형 매핑, 다시 편향이 도입됨 50 +1
-# 따라서 전체 파라미터는 1000 + 50 + 1 --> 1051임
-```
-- PyTorch
-```python
-# NumPy배열에서 파이토치 텐서로 변환
-torch.tensor(X_train.astype(np.float32))
-
-# 회귀 모델 설정, 평가 지표로 평균 절대 오차 사용
+# 회귀 모델 설정, 회귀 작업에 적합한 손실 함수와 최적화 설정을 포함
+# hit_model은 HittersModel의 인스턴스, 실제 신경망 구조임
+# 모델 성능 평가를 위해 평균 절대 오차(MAE)를 메트릭으로 사용함
 hit_module = SimpleModule.regression(hit_model, metrics={'mae':MeanAbsoluteError()})
 
+# 모델의 훈련 과정을 관리함
+# 동일한 코드와 동일한 데이터로 여러 번 훈련되더라도 같은 결과를 내도록 하는 설정
+# 최대 50 에폭 동안 모델을 훈련함
+## 에폭은 전체 훈련 데이터셋이 모델을 통과하는 횟수임
+# 5개의 훈련 스텝마다 로그 기록
+# 로그를 기록하는 로거 객체
+# 콜백은 훈련 중 특정 이벤트가 발생했을 때 호출되는 함수 집합
+## ErrorTracker()는 오류를 추적함
+hit_trainer = Trainer(deterministic=True,
+              max_epochs=50, 
+              log_every_n_steps=5, 
+              logger=hit_logger, 
+              callbacks=[ErrorTracker()]) 
+# 모델 훈련을 시작함
+# hit_moudle은 위에서 회귀 모델을 설정한 것, hittersModel의 인스턴스를 지님
+# datamodule은 SimpleDataModule을 통해 설정, 데이터를 제공하는 데이터 모듈
+## 훈련, 검증, 테스트 데이터셋을 로딩하고 처리
 # SGD(확률적 경사 하강법)은 데이터셋의 일부만을 사용, 각 단계에서 그리디언트 계산하고 모델 매개변수를 업데이트함
-# 에폭 계산, 에폭은 훈련 데이터셋을 한 번 순회하는 것을 의미함 hit_dm에서 batch_size를 32로 지정했으므로, 한 에폭은 175/32 = 5.5 SGD 단계임 --> 총 6번의 단계가 필요하게 됨
+# 에폭 계산, 에폭은 훈련 데이터셋을 한 번 순회하는 것을 의미함 hit_dm에서 batch_size를 32로 지정했으므로, 한 에폭은 175/32 = 5.5 SGD 단계임 --> 총 6번의 단계가 필요하게 됨 
+hit_trainer.fit(hit_module, datamodule=hit_dm)
+
+# 테스트 데이터를 통해 성능 평가
+hit_trainer.test(hit_module, datamodule=hit_dm)
+
+# 모델을 평가 모드로 설정, 드롭아웃과 같은 레이어 비활성화
+# HittersModel의 인스턴스임을 명심하라
+hit_model.eval()
 ```
 
-- 모델 평가
-```python
-# 모델을 평가 모드로 설정, 드롭아웃과 같은 레이어 비활성화
-.eval()
-```
 
 - Multilayer Network on the MNIST Digit Data
 ```python
-self.layer1 = nn.Sequential(
-            nn.Flatten(),
-            nn.Linear(28*28, 256),
-            nn.ReLU(),
-            nn.Dropout(0.4))
-        self.layer2 = nn.Sequential(
-            nn.Linear(256, 128),
-            nn.ReLU(),
-            nn.Dropout(0.3))
-        self._forward = nn.Sequential(
+class MNISTModel(nn.Module):
+  def __init__(self):
+    super(MNISTModel, self).__init__()
+    self.layer1 = nn.Sequential(
+      # 1*28*28의 이미지를 28*28 요소의 1D 벡터로 평탄화, 784개의 feature을 갖는 벡터 생성됨
+      nn.Flatten(),
+      # 평탄화된 벡터를 256차원의 히든 레이어로 선형 변환
+      # 이때 파라미터 --> 785 * 256 = 200,960
+      nn.Linear(28*28, 256),
+      # 활성화 함수
+      nn.ReLU(),
+      # 과적합 방지 드롭아웃
+      nn.Dropout(0.4))
+    self.layer2 = nn.Sequential(
+      # 256 -> 128
+      # 257 * 128 = 32,896
+      nn.Linear(256, 128),
+      # 활성화 함수
+      nn.ReLU(),
+      # 과적합 방지 드롭아웃
+      nn.Dropout(0.3))
+    self._forward = nn.Sequential(
             self.layer1,
             self.layer2,
+            # 128 -> 10
+            # 129 * 10 = 1,290
             nn.Linear(128, 10))
-# 1*28*28의 이미지를 28*28 요소의 1D 벡터로 평탄화
-# 평탄화된 벡터를 256차원의 히든 레이어로 선형 변환
-# 이때 파라미터 --> 785 * 256 = 200, 960
+  def forward(self,x):
+    return self._forward(x)
 
-# 256 -> 128
-# 257 * 128 = 32,896
+# data 로드 및 관리
+mnist_dm = SimpleDataModule(mnist_train,
+            # 학습 데이터 세트 중 20%를 검증 데이터로 분류
+            mnist_test, validation=0.2, 
+            # 데이터 로딩 시 사용할 병렬 처리 작업자의 수
+            num_workers=max_num_workers, 
+            # 한 번에 네트워크로 전달되는 데이터 샘플의 수
+            batch_size=256)
 
-# 128 -> 10
-# 129 * 10 = 1,290
+# 분류 모델 설정, 내부적으로 크로스 엔트로피 손실 함수를 사용
+# mnist_model은 MNISTModel() 인스턴스
+# num_classes는 분류 모델이 최종적으로 생성하는 출력을 설정
+mnist_module = SimpleModule.classification(mnist_model, num_classes =10)
+
+# 모델의 훈련 과정 관리
+# 이전 모델과 별반 다를 것 없음
+mnist_trainer = Trainer(deterministic=True,
+                max_epochs=30,
+                logger=minst_logger,
+                callbacks=[ErrorTracker()])
+
+# 모델 훈련
+mnist_trainer.fit(mnist_module, datamodule=mnist_dm)
+
+# 테스트 데이터를 통한 성능 평가
+mnist_trainer.test(mnist_module, datamodule=mnist_dm)
 ```
-- 다중 클래스 로지스틱 회귀 모델
-```python
-# 분류 모델 생성, (훈련 모델, 클래스 수)
-SimpleModule.classification(mlr_model, num_classes=10)
-
-# 모델 적합
-.fit(mlr_module, datamoudle=mnist_dm)
-
-# 모델 평가
-.test(mlr_module, datamodule=mnist_dm)
-```
-
+- Softmax는 입력의 상대적 차이에 의존
+  - 과적합 문제를 지니고 있음
+  - 정규화, 확률적 경사 하강법(SGD)로 해결 가능
 ## Convolutional Nerual Networks(CNN)
 - CNN은 이미지 인식과 분류 작업에서 탁월한 딥러닝 모델
 - 여러 계층으로 구성
@@ -276,27 +325,21 @@ SimpleModule.classification(mlr_model, num_classes=10)
   - 폴링으로 크기가 감소함에 따라 필터의 수는 일반적으로 증가
 
 ### Data Augmentation(데이터 증강)
+- 주어진 원본 데이터에 여러 변형을 적용, 데이터의 양을 인위적으로 늘리는 방법
+  - 과적합을 방지
+  - 파라미터를 보다 효율적으로 활용하여 학습 가능
 - 각 학습 이미지는 여러번 복제 되고, 각 복제본은 임의로 왜곡됨
   - 이때 이 외곡은 확대, 수평 및 수직 이동, 회전 등을 포함함
   - 인간의 이식에는 영향을 미치지 않음
-- 학습 데이터 셋을 상당히 확장하여 다른 예제를 생성하는 방법
-  - 이로써 과적합을 방지함
 - 일종의 정규화 처럼 동작
+  - 정규화는 파라미터에 직접적인 제약을 가해 과적합이 되는 것을 방지함
+  - ex) 드롭아웃
 
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/f259842b-e15e-49a5-86a6-71eb59abedb5)
 
 ### Lab in Python
 - CNN on CIFAR100 data
 ```python
-# 텐서들을 하나의 텐서로 결합
-torch.stack()
-
-# 난수 생성기 객체 rng 초기화 --> 시드 값은 결과의 재현성 보장
-rng = np.random.default_rng(4)
-
-# 데이터 셋에서 고유한 인덱스 무작위 선택
-rng.choice()
-
 # 입력 채널 수와 출력 채널 수를 기반으로 3*3 커널 크기의 convolution 연산을 정의
 # 패딩이 same, 입력과 출력의 공간 크기를 유지함
 # 예를 들어, 입력 이미지가 6*6이고 필터가 3*3, 스트라이드(필터가 한 번에 움직이는 칸 수)가 1이라 하자
@@ -304,17 +347,35 @@ rng.choice()
 # (6-3+1)/1 =4 --> 4*4 출력 이미지가 생성된다.
 # 패딩이 있는 경우, 패딩은 (필터 크기 - 1)/2 이므로, (3-1)/2 =1 이고, 각 변에 패딩1을 추가한다.
 # 즉, 입력 이미지의 각 변에 패딩을 추가하여 입력 이미지의 크기를 키우고, 전체 이미지에 대한 합성곱을 수행한다.
-        self.conv = nn.Conv2d(in_channels=in_channels, out_channels=out_channels, kernel_size=(3,3), padding='same')
-        self.activation = nn.ReLU()
-        # 2*2 맥프 룰링이 연속적으로 적용
-        self.pool = nn.MaxPool2d(kernel_size=(2,2))
+
+def __init__(self,in_channels,out_channels):
+  super(BuildingBlock, self).__init__()
+  # 컨볼루션 레이어 정의
+  # Conv2d는 2차원 컨볼루션 레이어를 생성
+  # in_channels와 out_channels를 통해 입력과 출력의 채널 수를 지정함
+  self.conv = nn.Conv2d(in_channels=in_channels, 
+                out_channels=out_channels, 
+                # 컨볼루션 필터 크기 설정
+                kernel_size=(3,3), 
+                # 패딩 설정
+                padding='same')
+  # 활성화 함수
+  self.activation = nn.ReLU()
+  # 2*2 맥스 룰링이 연속적으로 적용
+  self.pool = nn.MaxPool2d(kernel_size=(2,2))
+
+def forward(self,x):
+  return self.pool(self.activation(self.conv(x)))
 
 # CIFAR100의 이미지 크기는 3 * 32 * 32임, 3개 채널, 32*32 픽셀
 # 현재 필터의 크기가 3*3 이므로 BuildingBlock(3,32)에서 파라미터 개수는 다음과 같음
-# input --> (3 * 3 * 3(차원)) * 32 + 32
+# input --> (3 * 3 * 3(차원)) * 32 + 32 = 896
 # 32 -> 64는 어떠한가?
 # 3*3*32*64 +64
 # 64->128, 128->256 또한 마찬가지이다.
+def __init__(self):
+  super(CIFARModel, self).__init__()
+        # 각 BuildingBlock에 대한 입력 및 출력 채널을 정의함
         sizes = [(3,32), (32,64), (64,128), (128,256)] 
         self.conv = nn.Sequential(*[BuildingBlock(in_, out_) for in_, out_ in sizes])
         self.output = nn.Sequential(
@@ -327,14 +388,28 @@ rng.choice()
             # 마찬가지로 파라미터는 512*100 + 100
             nn.Linear(512, 100)
         )
-```
 
-- Using Pretrained CNN Models
-```python
-# mps와 같은 GPU 기반 가속화 기술을 통해 훈련 속도를 크게 높임
-cifar_trainer_mps = Trainer(accelerator='mps', deterministic=True, max_epochs=30) cifar_trainer_mps.fit(cifar_module, datamodule=cifar_dm) cifar_trainer_mps.test(cifar_module, datamodule=cifar_dm)
-```
+def forward(self, x):
+  val = self.conv(x)
+  val = torch.flatten(val, start_dim=1)
+  return self.output(val)
 
+cifar_optimizer = RMSprop(cifar_modelparameters(), lr=0.001)
+
+cifar_module = SimpleModule.classification(cifar_model, num_classes=100, optimizer = cifar_optimizer)
+
+cifar_trainer = Trainer(deterministic = True,
+                max_epochs=30,
+                logger=cifar_logger,
+                callbacks=[ErrorTracker()])
+cifar_trainer.fit(cifar_module, datamodule=cifar_dm)
+```
+- MAE(mean absolute error)
+  - 모델의 예측 성능을 평가하는 지표
+  - 낮을 수록 좋다
+- R^2
+  - 모델의 설명력을 나타내는 지표
+  - 1에 가까울 수록 모델이 데이터를 잘 설명함
 ## Recurrent Nerual Networks
 - IMDB(인터넷 영화 데이터베이스)에 대한 리뷰 분류
 - 25,000개의 리뷰를 포함하는 세트, 테스트 세트 레이블
@@ -348,7 +423,6 @@ cifar_trainer_mps = Trainer(accelerator='mps', deterministic=True, max_epochs=30
     - 단어의 존재 유무만을 고려, 순서나 문맥은 고려하지 않음
     - 이는 유니그램으로, 이 대신 바이그램이나 m-그램을 사용할 수 있음
       - 두 단어의 조합이나 더 많은 단어의 조합
-  - 라쏘 회귀와 두 개의 은닉층을 가진 신경망 모델 비교
 ### Lasso logisitc regression vs Two-calss Neural Network
 - 두 경우 모두에서 훈련 정확도가 단조롭게 증가
 - 라쏘는 특성 선택(**glmnet**)을 통해 모델을 단순화하고 계산 비용을 줄일 수 있음
@@ -371,7 +445,7 @@ cifar_trainer_mps = Trainer(accelerator='mps', deterministic=True, max_epochs=30
   - 관측치의 특성은 벡터의 시퀀스, {X1, X2, ..., Xn}과 같이 표현됨
     - ex) X_12가 단어를 나타내고, 전체 X가 IMDb 영화 리뷰 문서 등을 나타낼 수 있음
 - 타깃 Y는 일반적으로 단일변수나 다중 클래스를 위한 one-hot vector와 같은 형태를 취할 수 있음
-  - 혹은 시퀀스일 수도 이씅ㅁ
+  - 혹은 시퀀스일 수도 있음
 - 결론적으로, RNN은 연속적 흐름을 파악, 이전 정보를 활용하는 능력을 갖추고 있고 이로 인해 시퀀스 데이터 처리 작업에 매우 적합함 
 
 ### RNN Architecture
@@ -390,7 +464,7 @@ cifar_trainer_mps = Trainer(accelerator='mps', deterministic=True, max_epochs=30
     - X는 p개의 컴포넌트를 가진 입력 벡터
     - A는 K개의 컴포넌트를 가진 은닉 상태 벡터
   - 계산
-    - 각 은닉 유닛 Ak의 계싼은 입력 X와 이전 은닉 상태 A에 대한 가중치 행렬 W와 U를 사용함
+    - 각 은닉 유닛 Ak의 계산은 입력 X와 이전 은닉 상태 A에 대한 가중치 행렬 W와 U를 사용함
     - 이 공식은 A_k = g(WkX + UkA)로 표현됨
       - g는 비선형 활성화 함수
   - 가중치
@@ -407,6 +481,7 @@ cifar_trainer_mps = Trainer(accelerator='mps', deterministic=True, max_epochs=30
   - 일반적으로 모든 문서를 동일한 단어 수 L로 자르거나 채워 문서의 길이를 통일
 - 단어의 표현
   - 각 단어 Wi는 10,000길이의 one-hot 인코딩된 벡터 X로 표현됨
+    - 원핫 인코딩은 단어 집합 크기만큼 벡터 차원을 가짐
     - 모두 0이고, 해당 단어의 사전 내 위치에만 1 표시
 - 단어 임베딩
   - 미리 학습된 임베딩 행렬E 사용
@@ -453,20 +528,31 @@ cifar_trainer_mps = Trainer(accelerator='mps', deterministic=True, max_epochs=30
 
 ### Lab in Python
 ```python
-# 입력 크기에서 16개의 노드로 데이터를 변환하는 연결층 생성
-# inputsize가 10003, output이 16 --> 10003 * 16 +16 = 160,064
-self.dense1 = nn.Linear(input_size, 16) 
-# 활성화 함수로 ReLU 사용
-self.activation = nn.ReLU() 
-# 두 번째 선형층, 16개의 노드에서 16개의 노드로 데이터 전달
-# 16*16 + 16 = 272
-self.dense2 = nn.Linear(16, 16) 
-# 출력층, 마지막 16개의 노드를 최종 출력 노드 1개로 변환
-# 16*1 + 1 = 17
-self.output = nn.Linear(16, 1)
+def __init__(self, input_size):
+  super(IMDBModel, self).__init__()
+  # 입력 크기에서 16개의 노드로 데이터를 변환하는 연결층 생성
+  # inputsize가 10003, output이 16 --> 10003 * 16 +16 = 160,064
+  self.dense1 = nn.Linear(input_size, 16) 
+  # 활성화 함수로 ReLU 사용
+  self.activation = nn.ReLU() 
+  # 두 번째 선형층, 16개의 노드에서 16개의 노드로 데이터 전달
+  # 16*16 + 16 = 272
+  self.dense2 = nn.Linear(16, 16) 
+  # 출력층, 마지막 16개의 노드를 최종 출력 노드 1개로 변환
+  # 16*1 + 1 = 17
+  self.output = nn.Linear(16, 1)
+def forward(self,x):
+  val = x
+  for _map in[self.dense1,
+        self.activation,
+        self.dense2,
+        self.activation,
+        self.output]:
+      val = _map(val)
+    return torch.flatten(Val)
 
 # 이진 분류 작업을 위한 모듈 생성
-imdb_module = SimpleModule.binary_classification( imdb_model, optimizer=imdb_optimizer)
+imdb_module = SimpleModule.binary_classification(imdb_model, optimizer=imdb_optimizer)
 
 # 모듈에 대한 훈련 실행
 imdb_trainer.fit(imdb_module, datamodule=imdb_dm)
