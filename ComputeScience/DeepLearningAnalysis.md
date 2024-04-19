@@ -504,3 +504,303 @@ self.dense = nn.Linear(12, 1)
 self.dropout = nn.Dropout(0.1)
 ```
 
+## Fitting Neural Networks
+- CNN(합성곱 신경망)은 이미지 분류와 모델링에서 유용
+  - ex) MR, x-ray
+- RNN(순환 신경망)
+  - 시간에 따라 변하는 데이터 또는 시퀀스 데이터 모델링에 적합
+  - 말의 흐름 인식, 문맥 파악으로 번역의 정확도 높임 등
+- 오캄의 면도날 원칙
+  - 가능하다면 더 단순한 모델 선호, 모델이 해석하기 쉬워짐
+  - 잡음이 많은 경우, 더 간단한 모델이 더 잘 작동할 수 있음
+- non-convex(비블록)
+  - 전역 최적점을 찾기 어려움
+  - 경사 하강법(Gradient Descent)등을 이용해 해결
+- 기계 학습에서 중요한 몇 가지 기법
+  - Slow learning
+    - 경사 하강법의 속도를 늦춤
+  - Stochastic gradient descent(확률적 경사 하강법)
+    - 전체 데이터 대신 미니배치를 사용하여 기울기를 계산
+  - epoch
+    - 전체 데이터 세트가 한 번 처리될 때까지의 미니배치 업데이트 회수
+  - Regularization
+    - Ridge와 lasso는 가중치를 축소
+    - dropout과 augmentation은 데이터 다양성을 증가
+- 드롭아웃
+  - SGD 업데이트 중 특정 확률로 뉴런을 비활성화 하는 기법
+    - 릿지 규제(모든 가중치를 축소)와 같이, 다른 유닛들이 제거된 유닛들을 대신하여 가중치는 더 가까워짐
+- Data augmentation(데이터 증가)
+  - 라벨은 변경되지 않으나, 훈련 이미지에 자연스러운 변형을 적용, 각 원본 훈련 이미지 주변에 이미지의 구름을 만듬
+- Double Descent
+  - 너무 적은 것보다 많은 숨겨진 유닛이나 층을 가지는 것이 더 나음
+  - 모델이 복잡해짐에 따라 표현령이 증가하고, 복잡한 패턴을 학습할 수 있음
+    - 그러나 과적합의 위험이 커짐
+  - 실제로 이중 감소 오류 곡선은 복잡성이 증가할 수록 훈련 데이터에 대한 오류는 감소하지만 일정 지점을 넘어서면 다시 오류가 증가하는 현상이 나옴
+    - 모델의 복잡성이 계속 증가하면 오류가 다시 감소하기 시작하는 이중 감소 현상이 나타남
+    - 고차원에서 모델의 복잡성이 특정 임계값을 넘어가면, 추가적 모델 복합성이 모델의 성능을 개선할 수 있음
+
+## Tensorflow
+```python
+# 난수 생성(shape, 최소, 최대)
+tf.random.uniform([1],0,1)
+# 정규분포 난수
+tf.random.normal([4],0,1)
+```
+- 뉴런 만들기
+  - 뉴런은 입력, 가중치, 활성화함수, 출력으로 구성
+  - ex) 입력에 가중치를 곱한뒤 활성화함수를 취해 출력을 얻는 형태
+  - 변하는 것은 가중치! 가중치가 변하며 원하는 출력에 가까워지는 가중치를 얻음
+  - 활성화함수는 뉴런의 출력값을 정하는 함수
+    - sigmoid보단 ReLU가 더 많이 사용됨 max(0,z)
+    - 입력이 0인 경우 등을 대비해 편향(bias)을 추가할 수 있음
+- AND 신경망 네트워크
+  - 입력이 2개, 편향이 1개
+  - Y = f(X1*w1 + X2*w2 +1*b)
+- XOR 네트워크
+  - 첫 번째 입력이 두 번째 입력보다 큰 영향을 미침
+  - 편향은 거의 영향을 미치지 않음
+  - 중간 계산값이 0에 가까워지고, 최종 출력이 0.5에 가까워지는 경향
+  - 반면 AND 네트워크는 중간 계싼값이 다양하게 나옴
+    - 두 가중치가 비슷, 입력 2개가 비슷한 중요도를 가짐
+    - 편향은 큰 음수, 중간 계산값을 음수로 보내는 경향
+  - XOR의 경우 두가중치와 편향이 매우 작은 값으로, 어떤 일을 하려는지 명확하지 않음
+  - 즉, 하나의 퍼셉트론으로 간단한 XOR 연산자도 만들어 낼 수 없음
+    - XOR problem
+      - 여러 개의 퍼셉트론으로 해결 가능
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/f1580b85-ead0-4888-9bdc-83a9c91317fc)
+```python
+model = tf.keras.Sequential([
+  # layer를 정의하는 명령, unit으로 해당 layer를 구성하는 뉴런 수 정의
+tf.keras.layers.Dense(units=2, activation='sigmoid', input_shape=(2,)), 
+tf.keras.layers.Dense(units=1, activation='sigmoid')
+])
+# optimizer는 최적화 함수로 딥러닝 학습식 정의
+# SGD는 확률적 경사하강법, 기울기 낮은 쪽으로 가중치 업데이트
+# 확률적 --> 전체를 한 번에 계산 x 확률 적으로 일부 샘플을 구해서 계산
+# loss를 계산하기 위해 평균 제곱 오차(Mean Squared Error) 계산
+model.compile(optimizer=tf.keras.optimizers.SGD(learning_rate=0.1), loss='mse')
+
+# model.fit()을 통해 epochs에 지정된 횟수만큼 학습
+# batch_size는 한 번에 학습시키는 수, x와 y는 입력과 기대 출력
+history = model.fit(x, y, epochs=2000, batch_size=1)
+
+# XOR 네트워크 평가
+model.predict(x)
+
+# XOR 네트워크의 가중치와 편향 확인
+for weight in model.weights: 
+  print(weight)
+  # 레이어 사이 뉴런 연결 시 사용되는 가중치는 kernel
+  # 편향과 연결된 가중치는 bias
+  # 가중치에 이름을 붙일 때는 위첨자로 레이어, 아래첨자로 뉴런의 인덱스 표시
+  # ex) W1_21은 1번 레이어의 입력측 2번 뉴련 출력측 1번 뉴런임
+```
+
+## 회귀(Regression)
+- 선형 회귀(Linear Regression)
+  - 데이터의 경향성을 가장 잘 설명하는 하나의 직선 예측
+- 평균 제곱 오차(MSE, Mean Squared Error)
+  - 실제값과 예측값간의 차이의 제곱을 취하고, 결과의 평균을 구함
+  - 작을 수록 모델의 성능이 좋음
+```python
+# 예측값
+y_pred = a*X + b
+tf.reduce_mean((Y-y_pred)**2)
+```
+- 최적화함수로 Adam Optimizer 사용
+- 다항 회귀
+  - x^2, x^3등의 다항식을 이용한 비선형 회귀
+- tanh
+  - 실수를 입력 받아 -1과 1사이의 값을 반환하는 활성화 함수
+- 보스턴 주택 가격 데이터셋
+  - 훈련 데이터, 검증 데이터, 테스트 데이터로 나눠서 학습
+  - train_X, train_Y로 훈련 데이터와 검증 데이터를 합쳐 받은 후 추후 분리
+  - Training data가 404개, test data가 102개, 8:2 비율
+    - 추후 training, validation, test 비율을 6 2 2 정도가 되도록 함
+```python
+# 데이터 속성이 13개, 4개의 layer
+# 활성화 함수로 ReLU
+## 여러 개의 layer를 겹쳐 사용할 때, 시그모이드나 tanh보다 좋은 결과를 얻을 수 있음
+# 파라미터는 (13+1)*52 / (52+1)*39 / (39+1) * 26 / (26+1) * 1 이 될것임
+model = tf.keras.Sequential([
+tf.keras.layers.Dense(units=52, activation='relu', input_shape=(13,)),
+tf.keras.layers.Dense(units=39, activation='relu'), 
+tf.keras.layers.Dense(units=26, activation='relu'), tf.keras.layers.Dense(units=1)
+])
+# 최적화 함수로 Adam Optimizer 사용
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.07), loss='mse')
+
+# validation_split을 0.25정도로 설정, 25%정도의 데이터를 validation data로 사용
+# 25번 학습 진행, 한 번에 32만큼 학습 진행
+history = model.fit(train_X, train_Y, epochs=25, batch_size=32, validation_split=0.25)
+
+# callbacks 인수에 EarlyStopping 함수를 지정, 3회의 epochs를 수행하는 동안 최고 기록을 갱신하지 못한다면 학습 종료
+# 이런식으로 과적합을 방지할 수 있음
+callbacks=[tf.keras.callbacks.EarlyStopping(patience=3, monitor='val_loss')])
+```
+
+## 분류(Classfication)
+- 이항 분류
+  - 정답의 범주가 2개인 분류 문제
+- 레드 와인, 화이트 와인 문제
+```python
+# 레드 와인 - 화이트 와인 순서 데이터를 sample() 함수로 랜덤하게 섞어줌
+# frac=1이므로, 100% 데이터를 뽑아서 섞음
+wine_shuffle = wine_norm.sample(frac=1) 
+
+# 와인 데이터셋 분류 모델 생성
+# Classfication 문제이므로 활성화 함수로는 마지막 layer에서 softmax를 사용할 예정
+# e를 지수로 사용, 모두 더한 값으로 나눔
+# ax함수의 약화된 버전, 확률값으로 인자의 확률 총합을 다 더하면 1이됨
+# 지수함수는 큰 값은 강조, 작은 값은 약화하는 효과가 있음
+import tensorflow as tf
+model = tf.keras.Sequential([
+tf.keras.layers.Dense(units=48, activation='relu', input_shape=(12,)), 
+tf.keras.layers.Dense(units=24, activation='relu'), 
+tf.keras.layers.Dense(units=12, activation='relu'), 
+tf.keras.layers.Dense(units=2, activation='softmax')
+])
+# 최적화 함수는 Adam 사용, 손실 함수 지정
+# 손실 함수로 크로스 엔트로피 사용
+# 엔트로피란 확률의 역수에 로그를 취한 값임, 불확실성을 수치화하는 개념
+# 확률이 높은 사건일수록 정보량(놀라움)이 적다고 판단
+# 비가 올 확률이 1%, 비가 오지 않을 확률이 99%인 경우
+# 비가 오는 경우(엔트로피 4.605)는 
+# 비가 오지 않는 경우(엔트로피 0.010)보다 460배 더 놀라운 사건이 됨
+# 엔트로피의 기대값은 각 엔트로피에 확률을 곱한 값
+# 비가 오는 경우 0.0461, 비가 오지 않는 경우 0.0099
+# 엔트로피의 기대값이 더 높은 사건을 더 가치 있는 사건으로 분류함
+# 비가 오지 않는 사건의 엔트로피가 더 낮긴 하지만
+# 전체적으로 봤을 때 비가 오는 사건의 기대 엔트로피가 더 가치 있음
+# 다만 기대값이 아닌 단순 높은 엔트로피는 높은 불확실성을 의미
+# 엔트로피를 줄이면 불확실성이 낮아지고 의미 있는 정보를 얻을 수 있음
+# 크로스 엔트로피가 낮을 수록 예측을 잘하는 네트워크임
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=0.07), loss='categorical_crossentropy', metrics=['accuracy'])
+```
+- 다항 분류
+  - 정답의 범주가 여러개인 범주 문제
+  - 와인의 품질 예측
+```python
+# 균일한 데이터를 위해 품질을 3개의 범주로 재분류(좋음, 보통, 나쁨)
+# 와인 데이터셋 다항 분류 모델 생성 및 학습
+model = tf.keras.Sequential([ 
+ tf.keras.layers.Dense(units=48, activation='relu', 
+input_shape=(12,)),
+ tf.keras.layers.Dense(units=24, activation='relu'), 
+ tf.keras.layers.Dense(units=12, activation='relu'), 
+ tf.keras.layers.Dense(units=3, activation='softmax') ])
+model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate =0.07), loss='categorical_crossentropy', metrics=['accuracy'])
+
+history = model.fit(train_X, train_Y, epochs=25, batch_size=32, validation_split=0.25)
+```
+
+- Fashion MNIST
+  - grayscale, 28 pixel, class 10, 0~255
+```python
+# 최소, 최대를 알고 있기에 255로 나누기만 하면 정규화 가능
+# Fashion MNIST 분류 모델
+model = tf.keras.Sequential([
+  # 2차원 array를 Flatten을 통해 일렬로 정렬 
+  tf.keras.layers.Flatten(input_shape=(28,28)), 
+  tf.keras.layers.Dense(units=128, activation='relu'),
+  # 마지막 레이어의 뉴런 수는 범주의 수와 같은 10개
+  tf.keras.layers.Dense(units=10, activation='softmax') ])
+# 정답 행렬로 one-hot encoding을 사용하지 않기 때문에
+# cateogorical_crossentropy가 아니라 sprase_categorical_Crossentropy를 사용함
+# [0,0,0,0,0,0,0,0,0,1] 대신 9fmf tkdyd
+model.compile(optimizer=tf.keras.optimizers.Adam(), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+# Fashion MNIST 분류 모델 학습
+history = model.fit(train_X, train_Y, epochs=25, validation_split=0.25)
+```
+## Single Layer Neural Network
+- dense layer를 하면 connected된다
+- inputlayer의 inputvarialbe의 weight가 들어가고, bias가 포함된다.
+- K는 히든 레이어에 있는 유닛 notation.. 파라미터 개수 구할 수 있어야한다!
+- 이거 수식 잘 확인할 것!!!
+### MNIST Digits
+- Output Layer, Classfication 문제에서는 카테고리가 여러개가 존재할 수 있다
+- HiddenLayer가 여러개 있는 경우 파라미터 계산!
+  - Hidden layers and Output layer 페이지 잘 볼것
+- MLP의 Input Data 2D Tensor: Samples, Features
+  - Sample 개수와 파라미터 개수는 아무 연관이 없다는 점
+  - Feature가 중요하다!
+
+### Lab in Python
+- 다른거 보지말고, 실제로 모델이 어떻게 만들어지는지를 잘 확인할 것!!!
+- class HittersModel에 해당하는 내용
+  - 생성자와 함수..
+  - Flatten(), Sequential, Linear 등..
+  - 생성이 돼서 forward를 돌리게 되면, flatten으로 피고 sequential로 돌리는..
+- 실제로 돌릴 때는 Module을 만들고... ex) SimpleDataModule
+  - 이때 train, test, batch_size등 이런 의미들을 알고 있어야 한다!
+  - hit_trainer에서 max_epochs, callback함수 등
+  - 이때 SGD는 어떻게 되는가??
+  - 파라미터 개수는 어떻게 계산되는가?
+- Multilayer Network on the MNIST Digit Data
+  - MNISTModel 어떻게 정의되는지!
+  - Trainer를 활용, fit..
+
+## CNN
+- Convolution Layer
+  - Filter, 파라미터가 실제로 filter안에 들어가 있음
+  - 패딩을 통해 값을 채워넣을 수 있다 ㅇㅇ
+- Pooling Layer
+  - 이미지 사이즈를 줄여주기 위한 작업
+- Architecture of CNN
+  - RGB 차원 3개 --> filter 2개니까 convolve하고 6차원됨 --> Pooling 하면 절반으로 줄어서 16*16됨... 이거 반복
+- Data Augmentation 정의를 잘 알아둘 것
+  - data를 늘리는 것, data를 늘린다 = parameter를 줄인다는 것인데, 어떤 의미인가?
+  - regularization?
+- Input data For CNN
+  - 4 data!
+  - Sample, Height, Width, Channel
+
+### Lab in Python
+- CIFATModel 어떻게 정의되는지?
+- 4개의 convolution layer를 집어 넣겠다!
+- size에서는 channel을 정의하는..
+- BuildingBlock 안을 보면, convolution layer와 pooling layer 또한 확인할 수 있음
+  - convolve에서 3*#, pooling 커널은 2*2
+- 이렇게 정의된 Building Block을 통해 CIFAR Model 구조화 시켜서 만듬
+- convolve 하고 pool 하고..
+  - 2*2만큼 작아진 것을 256만큼 feature로... 512개의 output이 만들어짐
+- 그래서 파라미터 어떻게 나오고 ㅇㅇ...
+- Trainer에서 에폭이 어떻게 들어가는지 정도.. 확인
+- pretrained는 굳이 보지 말 것!
+
+## RNN
+- Input Data for RNN
+  - #Sample, #Time Steps, #Features
+  - Feature는 파라미터와 관련이 있음
+  - Time step은 예를 들어 단어 개수 (문서를 어디까지 볼 것인가?)
+    - 주식 같은건 5일만 잘라서 보겠다 등..
+- RNN Architecutre
+  - 재귀적이라는 말이 나오는건, 반복이 된다는거임!!
+  - 반복적으로 update 해나감..
+- 수식
+  - 두 개 input인데, feature는 p개의 component
+  - unit 개수 같은 경우는, 해당하는 RNN Layer안에 몇 개의 Unit을 집어 넣을 것인지?
+  - U와 W 를 합치면 K(K+P+1)이 되겠지
+- 임베딩 레이어, 원 핫 인코딩.. 10K를 학습하기 위해서!
+  - 파라미터가 확 줄고 학습이 빨라지게 됨
+- RNN Forecaster
+  - NYSE에서 sample 수가 어떻게 되는지?
+  - feature은 각각 3개씩 존재
+  - AR 모델을 활용해서 학습 가능
+  - 3L+1이 된다?!
+    - 16개 있다 ㅇㅇ...
+    - RNN은 205개 있다 ㅇㅇ...
+### Lab in Python 
+- batch_size는 512개
+- IMDBModel 정의
+  - RNN은 안돌리고 그냥 MLP를 돌린거임 이건
+  - data가 10003개로 들어가 있고..
+  - 10004 * 16 하면 160,064가 나올거임
+- LSTMModel은 배우지 않았음!! 근데 왜 설명하는거야?
+  - 10,003개를 32개로 Embedding 하여 진행
+  - LSTM 코드 시험 안낸대 ㅇㅇ
+  - 파라미터 공부할 때는, 우리가 앞의 슬라이드에서 봤던걸 기준으로 공부하도록 하여라
+
+### 숙제
+- 숙제를 보면
