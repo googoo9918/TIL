@@ -38,6 +38,8 @@
     - [Downhill Simplex Method](#downhill-simplex-method)
     - [Grnetic Algorithm](#grnetic-algorithm)
     - [Example](#example-4)
+  - [Deep Neural Network](#deep-neural-network)
+    - [Neural Networks(NN)](#neural-networksnn)
 # 인공지능
 ## Introduction to Artificial Intelligence
 ### What is Intelligence?
@@ -740,3 +742,98 @@
    - 우리가 왜 먹어가고 있는지?
    - uncertainty 기반 search 수행은 왜 하는 것?
      - time limit이 있고, search를 다 못하고 evalutaion function이 필요한데 그러면 어떻게 해야 하는가?, evaluation function과의 관계와 필요성
+ 
+
+ ## Deep Neural Network
+ ### Neural Networks(NN)
+ - 유닛
+   - 신호를 전송
+     - 신호는 항상 스칼라임
+   - 유닛은 함수 𝜙를 나타냄
+   - 스칼라 값(x)가 유닛으로 전송 시, 함수 𝜙가 적용되고, 결과 𝜙(x)가 나가는 화살표로 전송됨
+ - 가중치
+   - ![image](https://github.com/googoo9918/TIL/assets/102513932/8fc85621-2f45-4789-83d0-713b21265beb)
+   - 스칼라 값 x가 입력될 때, 각 화살표는 가중치 w로 간주됨
+     - 가중치가 곱해짐
+   - f(x) = 𝜙(wx)
+ - ![image](https://github.com/googoo9918/TIL/assets/102513932/b24ba699-ae72-467f-928c-d2b13f63128e)
+   - 해당 이미지를 잘 이해할 것
+ - Feed-Forward Networks
+   - 유닛들을 ℒ1, ..., ℒK와 같은 그룹으로 배열할 수 있음
+   - 연결은 오직 그룹 ℒK에서 그룹 ℒK+1로만 전달됨
+   - 주의점
+     - 계층 내에서의 연결은 없음
+     - 역방향 연결 없음
+     - 계층을 건너뛰는 연결 없음
+ - ![image](https://github.com/googoo9918/TIL/assets/102513932/b2576cf4-b96d-4fea-a6f5-abad358f0ebf)
+   - 위 그림은 다음과 같이 표현됨
+   - ![image](https://github.com/googoo9918/TIL/assets/102513932/5a853338-bd05-4eee-9c22-31f9b4289e31)
+   - 벡터화
+     - 스칼라 곱을 축약할 수 있음
+     - ![image](https://github.com/googoo9918/TIL/assets/102513932/41c0448f-27c4-4c83-ad4e-7884024360e2)
+     - ![image](https://github.com/googoo9918/TIL/assets/102513932/d185df2a-da58-4b01-b34f-bedfd7cfc26f)
+     - 어떤식으로 축약 되는지 정확하게 이해할 것
+ - ![image](https://github.com/googoo9918/TIL/assets/102513932/e60c3865-47e8-48d0-817f-453ab0c19bb6)
+   - 각 계층은 함수를 나타냄
+   - 상위 노드의 출력값이 y1, y2라고 가정 시
+   - 두 번째 계층 f2의 함수는 다음과 같이 정의됨
+     - ![image](https://github.com/googoo9918/TIL/assets/102513932/87f2f4e5-abac-4257-94b3-6d7f3f30bce4)
+       - 이부분 이해가 잘 안가는듯? 위 슬라이드와 비교했을 때... 달라진 것이 없지 않은가
+- Layers and Composition
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/23acbd9f-e4a3-4c49-a800-68c4a9e60af8)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/b677aafe-2e41-4232-8a43-3b35e7478774)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/7b11a707-7698-4cc6-8039-b25b773f64a4)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/8a430412-fa7d-4e0a-8096-c36ad40c7596)
+      - feed-forward 네트워크는 여러 함수의 구성으로 하나의 함수를 나타냄
+        - 각 함수는 네트워크의 한 계층에 의해 제공됨
+  - General feed-forward networks
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/3bdae4e3-9d67-47a8-9793-cf3746e81337)
+      - k개의 계층으로 구성된 피드포워드 네트워크는 하나의 함수를 나타냄
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/59677300-6a47-4f91-8953-e719f8503799)
+      - 각 계층은 함수 f(k)를 나타냄
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/2adcc0f4-dedc-4949-9b8e-14afcaea21c4)
+      - dk는 k번째 계층의 노드 수로, 계층의 너비라고도 함
+- Recall: Linear Classification
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/cec26fa2-400e-4765-9e9f-2df963626d18)
+    - v(벡터)
+      - 분류기의 방향을 나타냄
+    - x(데이터 포인트)
+      - 임의의 데이터 포인트 x가 벡터로 표현, v에 수직인 선을 따라 투영됨
+    - <x,v>/ ||v||
+      - 데이터 포인트 x가 분류기 벡터 v에 수직으로 투영된 위치를 나타냄
+    - f(x)
+      - 함수는 각 데이터 포인트 x에 대해 sgn((x,v)-c)를 계산, 해당 포인트가 어느 클래스에 속하는지 결정
+      - c는 임계값, 결정 경계를 조정
+- Linear Classifier in R^2 as Two-Layer NN
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/055332d0-4153-43a1-b855-72916e852dd9)
+    - 2차원 공간에서의 선형 분류기를 2중 신경망으로 나타내는 구조
+    - 입력층에는 두 입력 값 x1, x2 존재
+    - 각 입력은 해당 가중치와 곱해지며, 이 결과들은 편향 -c와 함께 합산됨
+    - 현재 활성화 함수는 지시 함수
+      - 0보다 클 경우 1 출력(작을 경우 0 출력)
+    - 출력 함수 f(x)
+      - I{v1x1 + v2x2 + -c >0}으로 정의됨
+      - 입력 신호의 선형 조합이 편향을 감안한 임계값을 넘으면 1, 그렇지 않으면 0 을 반환
+    - sgn(<v,x>-c) = 2f(x) -1
+      - f(x)는 0 또는 1을 출력하고, sgn(<v,x>-c)함수는 -1또는 1로 출력을 제공해야하기 떄문
+        - 출력을 일치시키기 위해 위와 같은 변환이 사용된다
+    - 일반적으로 R^d에서의 선형 이진 분류기를 나타내기 위해서
+      - 차원마다 하나의 입력 유닛을 추가해야 함
+      - layer function은 2로 동일함
+      - ex) 10차원에서의 선형 이진 분류기
+        - 10개의 입력 노드와 1개의 편향 노드
+        - 단일 출력을 내는 하나의 유닛
+        - 계층은 2개로 동일함
+- Hidden Layers and Nonlinear Fuinctions
+  - 은닉 유닛
+    - 네트워크 내의 입력층이나 출력층이 아닌 모든 노드는 은닉 노드임
+  - 선형 및 비선형 네트워크
+    - 네트워크에 은닉 유닛이 없다면
+      - f_i(x) = 𝜙((w_i,x))형태의 선형 함수임
+        - 𝜙는 최종적으로 적용되는 비선형 함수일 수 있음
+        - 즉, 선형 결정 경계밖에 표현을 못함(기준 선이 한 개)
+    - 최소한 하나의 은닉층을 포함해야, 비선형 변환이 가능하게됨
+      - 이를 통해 신경망은 비선형 결정 경계를 생성할 수 있게됨
+      - 즉, layer가 추가될 때 마다, 기준 선이 한 개씩 추가됨
+        - 10개 layer가 있으면, Linear Classifier가 10개가 되는 것임
+- 
