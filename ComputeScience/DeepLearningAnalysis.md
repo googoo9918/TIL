@@ -887,3 +887,5 @@ history = model.fit(train_X, train_Y, epochs=25, validation_split=0.25)
   - 10,003개를 32개로 Embedding 하여 진행
   - LSTM 코드 시험 안낸대 ㅇㅇ
   - 파라미터 공부할 때는, 우리가 앞의 슬라이드에서 봤던걸 기준으로 공부하도록 하여라
+
+## Convolution Neural Network(CNN)
