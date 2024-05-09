@@ -1,3 +1,44 @@
+## 목차
+- [딥러닝 분석](#딥러닝-분석)
+  - [딥러닝](#딥러닝)
+    - [딥러닝](#딥러닝-1)
+    - [은닉층](#은닉층)
+    - [딥러닝의 기본 모형](#딥러닝의-기본-모형)
+  - [Neural Networks](#neural-networks)
+    - [Single Layer Neural Networks](#single-layer-neural-networks)
+    - [Activation Function](#activation-function)
+    - [Activation Function and Fitting](#activation-function-and-fitting)
+    - [Multilayer Neural Network](#multilayer-neural-network)
+    - [Lab in Python](#lab-in-python)
+  - [Convolutional Nerual Networks(CNN)](#convolutional-nerual-networkscnn)
+    - [How Work](#how-work)
+    - [컨볼루션 계층(Convolution Layer)](#컨볼루션-계층convolution-layer)
+    - [Pooling Layser](#pooling-layser)
+    - [Architecture of CNN](#architecture-of-cnn)
+    - [Data Augmentation(데이터 증강)](#data-augmentation데이터-증강)
+    - [Lab in Python](#lab-in-python-1)
+  - [Recurrent Nerual Networks](#recurrent-nerual-networks)
+    - [Lasso logisitc regression vs Two-calss Neural Network](#lasso-logisitc-regression-vs-two-calss-neural-network)
+    - [RNN(Recurrent Neural Networks)](#rnnrecurrent-neural-networks)
+    - [RNN Architecture](#rnn-architecture)
+    - [RNN and IMDB Reviews](#rnn-and-imdb-reviews)
+    - [Time Series Forecasting(시계열 예측)](#time-series-forecasting시계열-예측)
+    - [RNN Forecaster](#rnn-forecaster)
+    - [RNN Results for NYSE Data](#rnn-results-for-nyse-data)
+    - [Autoregression Forecaster](#autoregression-forecaster)
+    - [Lab in Python](#lab-in-python-2)
+  - [Fitting Neural Networks](#fitting-neural-networks)
+  - [Tensorflow](#tensorflow)
+  - [회귀(Regression)](#회귀regression)
+  - [분류(Classfication)](#분류classfication)
+  - [Single Layer Neural Network](#single-layer-neural-network)
+    - [MNIST Digits](#mnist-digits)
+    - [Lab in Python](#lab-in-python-3)
+  - [CNN](#cnn)
+    - [Lab in Python](#lab-in-python-4)
+  - [RNN](#rnn)
+    - [Lab in Python](#lab-in-python-5)
+  - [Convolution Neural Network(CNN)](#convolution-neural-networkcnn)
 # 딥러닝 분석
 ## 딥러닝
 ### 딥러닝
@@ -468,9 +509,14 @@ cifar_trainer.fit(cifar_module, datamodule=cifar_dm)
     - 이 공식은 A_k = g(WkX + UkA)로 표현됨
       - g는 비선형 활성화 함수
   - 가중치
-    - W: K * (p+1)행렬, 입력층의 가중치
+    - W: K * p행렬, 입력층의 가중치
+      - 입력 피처의 수(입력 차원)d와 레이어의 유닛 수 n을 곱한 값, 즉 d*n
+      - 이때 n=p, d=k임
     - U: K*K 행렬, 은닉층에서 이전 은닉 상태로부터 다음 은닉 상태로의 전이를 결정
+      - n*n이라고 생각할 것
     - B: 출력층의 가중치 벡터, K+1 차원
+      - b = n임
+    - 결과적으로, 총 가중치는 n(d+n+1)임
   - 출력
     - 출력 O는 O = BA로 계산됨
     - B는 출력층의 가중치임
