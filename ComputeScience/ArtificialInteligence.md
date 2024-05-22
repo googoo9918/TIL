@@ -40,6 +40,11 @@
     - [Example](#example-4)
   - [Deep Neural Network](#deep-neural-network)
     - [Neural Networks(NN)](#neural-networksnn)
+    - [Neural Networks for Machine Learning](#neural-networks-for-machine-learning)
+  - [Backpropagation](#backpropagation)
+    - [Training Nerual Networks](#training-nerual-networks)
+    - [Backpropagation Algorithm](#backpropagation-algorithm)
+    - [Examples](#examples-1)
 # 인공지능
 ## Introduction to Artificial Intelligence
 ### What is Intelligence?
@@ -834,6 +839,225 @@
         - 즉, 선형 결정 경계밖에 표현을 못함(기준 선이 한 개)
     - 최소한 하나의 은닉층을 포함해야, 비선형 변환이 가능하게됨
       - 이를 통해 신경망은 비선형 결정 경계를 생성할 수 있게됨
-      - 즉, layer가 추가될 때 마다, 기준 선이 한 개씩 추가됨
-        - 10개 layer가 있으면, Linear Classifier가 10개가 되는 것임
-- 
+      - 은닉층은 비선혈 활성화 함수를 통해 데이터를 비선형적으로 변환하기 때문
+- The XOR Problem
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/829f4b1e-abb6-42f8-9bd6-1cb053030c8b)
+  - XOR 문제는 두 개의 이진 입력 값을 받아 출력 값과 입력 값이 서로 다를 때만 1을 반환하는 문제
+  - 서로 다른 위치에 있는 Two ridges(두 개의 능선)을 빼서 특정 영역을 생성
+    - 은닉층이 입력 데이터를 비선형적으로 변환, 복잡한 결정 경계를 형성하는 것을 보여줌
+  - 선형 분류기는 XOR 문제를 해결할 수 없으며, 선형 분류기가 비선형 결정 경계를 표현할 수 없기 때문임
+  - 최소 하나의 은닉층을 가진 신경망은 비선형 변환을 통해 XOR 문제를 해결할 수 있음
+-  Neural Networks(Summary)
+   - ![image](https://github.com/googoo9918/TIL/assets/102513932/8332517a-d57a-4b48-95f9-15777d508ecd)
+     - 신경망의 유닛들은, 방향성이 있으며 순환이 없는(유향 비순환 그래프(Directe Acyclic Graph)) 그래프로 연결할 수 있음
+     - 신경망의 정보 흐름이 한 방향으로만 진행되고, 순환이 없음
+     - 이러한 구조는 Feed-forward 신경망을 형성함
+       - 입력층에서 출력층으로 정보가 한 방향으로만 흐름
+         - 또한, 유닛들은 레이어로 그룹화되어 있음
+   - ![image](https://github.com/googoo9918/TIL/assets/102513932/4010cb95-7039-438c-a9bd-36a4a614495c)
+     - ϕ는 활성화 함수
+     - W는 가중치 행렬
+     - x는 입력 벡터, b는 바이어스
+     - 단일 출력 뉴런의 경우, b는 스칼라임
+     - 다수의 출력 뉴런인 경우, b는 벡터임
+     - 상기 이미지에서 b는 크기가 4인 벡터임
+- Importance of Activation Functions(Nonlinearity)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/d520ac1d-1a77-4c8e-a486-651fab40e1be)
+    - 선형 레이어의 연속은 단일 선형 레이어로 표현됨
+      - 여러 개의 선형 레이어를 연속으로 사용하는 것은 단 하나의 선형 레이어를 사용하는 것과 다를게 없음
+    - 깊은 선형 네트워크는 선형 함수만을 표현함
+      - 활성화 함수가 없는 깊은 신경만은 선형 함수만을 표현
+        - 따라서 선형 회귀와 동일한 표현력을 가짐
+    - 따라서 비선형 활성화 함수를 통해 신경망이 복잡한 비선형 패턴을 학습
+      - 이러한 신경망은 이론적으로 임의의 함수를 임의의 정확도로 근사할 수 있음
+      - 보편 근사 정리
+- Width vs Depth
+  - 단일 은닉층을 가진 three-layer neural network는 이론적으로 어떤 연속적인 함수도 근사할 수 있음
+  - 다만, 정확도를 높이기 위해 은닉층에 많은 유닛이 필요하며, 이는 네트워크가 넓어지는 것을 의미함
+  - 최근 연구에 따르면 너비를 제한하고 깊이를 늘리는게 더 좋은 결과를 얻을 수 있음
+    - 즉, 많은 유닛을 가진 하나의 은닉층 대신 여러 개의 은닉층을 쌓는 것이 효과적임
+  - 다만, 아직 일관된 이론은 아직 존재하지 않음
+### Neural Networks for Machine Learning
+- Neural Networks for Machine Learning
+  - Hypothesis(가설)
+    - 신경망은 복잡한 비선형 가설 함수를 구성, 데이터의 패턴을 학습함
+  - Loss(손실)
+    - 손실 함수는 모델의 성능을 평가, 모델이 잘못된 예측을 수정하는 데 사용
+    - ex) 로지스틱, 소프트맥스, 제곱 오차, 절대 오차 등
+  - Optimization(최적화)
+    - 모델의 성능을 향상시키기 위해 손실 함수를 최소화 하는 방향으로 가중치 조정
+    - ex) 경사 하강법, 확률적 경사 하강법 등
+- Linear Hypotheses and Feature Learning
+  - 선형 가설
+    - 입력 데이터를 비선형적으로 변환한 특징 공간에서 선형 결합을 사용하여 모델을 학습하는 방법
+  - 특징의 중요성
+    - 좋은 특징을 만들어내는 능력이 모델의 성능에 중요한 역할을 함
+      - 데이터를 잘 설명할 수 있도록
+  - 자동 특징 학습
+    - 알고리즘이 스스로 유용한 특집을 학습할 수 있도록 하는 것이 딥러닝의 주요 목표
+- Feature Learning
+  - Two-stage hypothesis(이단계 가설 클래스)
+    - 하나의 선형 함수가 특징을 생성하고, 다른 선형 함수가 최종 가설을 만듬
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/e44109b0-c6d5-4546-9a63-72d2f58c34a2)
+      - 이는 여전히 단순한 선형 분류기(linear classifier)와 동일함
+        - 즉, 추가된 복잡성은 기본 가설 함수를 실제로 변경하지 않음
+        - 두 개의 선형 함수를 사용해도, 이를 조합한 최종 함수는 여전히 선형 함수임
+    - 모델의 표현력을 높이기 위해서는 비선형 활성화 함수를 도입해야 함
+    - 즉, 단순히 선형 변환을 여러 번 사용한다고 해서 모델의 본질적인 표현력은 향상되지 않으며, 비선형 변환이 필요함
+- Neural Networks
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/2a55580e-a912-4df9-b0c6-293307bdeea3)
+    - 여기서 f1,f2는 비선형 함수
+    - 신경망(Neural Networks)은 각 선형 변환 후에 비선형 함수를 추가로 적용하는 단순 확장임
+      - 머신러닝의 특징 변환과는 달리, 각 단계에서 비선형성을 도입함
+    - 비선형 신경망을 기본으로 한 특징 변환 학습(We want to learn the feature transformation based on nonlinear neural layers)
+      - 신경망은 비선형 신경층을 통해 자동으로 특징 변환을 학습함
+      - 사람이 직접 특징을 설계할 필요 없이, 데이터로부터 자동으로 유용한 특징을 학습할 수 있게 함
+- Illustrating Neural Networks
+  - 신경망은 입력, 은닉, 출력층으로 구성
+    - 각 선형 변환 후에 비선형 함수 적용
+  - 은닉층은 입력 데이터를 비선형적으로 변환, 고차원적인 특징 학습
+  - 은닉층에서 학습된 특징은 알고리즘에 의해 자동으로 결정, 표현 학습(representation learning)의 중요한 개념
+- Neural Networks for Machine Learning
+  - 단순히 머신 러닝 기법으로 해결할 수 있는 문제는 전체의 45%정도
+  - 복잡한 문제는 최신 딥러닝 기술을 필요로 하고, 이는 전체 문제의 5%에 해당함
+  - 50%는 현재 기술로 해결할 수 없는 문제들
+- Solving Problems with Deep Learning
+  - 문제를 맞닦드렸을 때, 먼저 선형 회귀/분류, 비선형 특징을 사용한 선형 회귀/분류, 그래디언트 부스틩 등의 머신러닝 기법을 사용해보고 실패했을 때
+  - 혹은 성능을 1~2% 향상시키고 싶은 경우 딥 러닝을 적용하는 것이 좋음
+- The Execptions
+  - 다만, 구조화된 데이터(이미지, 오디오, 텍스트)에서는 딥 러닝이 뛰어난 성과를 보임
+  - 또한, 이미 학습된 네트워크를 사용하여 데이터를 저차원 표현으로 변환하는 특징 추출기로 사용할 수 있음
+    - pretrained network를 사용하면 편리하다 정도로 이해할 것
+
+## Backpropagation
+### Training Nerual Networks
+- Feature Learning
+  - 신경망은 데이터를 더 유용한 특징 공간으로 변환하고, 머신 러닝 작업에 도움이 되는 특징을 학습하는 것임
+  - 입력 데이터를 선형 분리가 쉬운 새로운 특징 공간으로 매핑하는 것이 목적
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/f886adcb-0f04-4ce2-b058-c47223303bfe)
+  - 추상화 수준
+    - 신경망 설계 시
+      - 네트워크 , 레이어, 벡터화된 연산, 산술 연산의 여러 추상화 수준을 고려해야함
+- Training neural Netwokrs
+  - 신경망의 구조를 결정하고, 각 유닛의 활성화 함수를 고정함
+  - 모든 가중치를 하나의 벡터로 모아, 네트워크의 파라미터로 사용
+  - 주어진 데이터를 사용하여 네트워크를 훈련시킴
+    - 이 과정에서 가중치 벡터 w를 최적화 함
+  - 분류 문제
+    - 이진 분류 문제에서는 출력 유닛이 하나인 구조를 사용
+      - 데이터를 훈련, 검증, 테스트로 나눠 모델을 평가함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/2a975322-1e03-4554-912a-036798b1f62f)
+    - 각 훈련 데이터 포인트 Xi를 신경망 Fw에 통과시키고, 예측된 값 Fw(Xi)를 실제 라벨 Yi와 비교하여 오류를 측정함
+    - 경사 하강법
+      - 오류를 줄이는 방향으로 가중치를 조금씩 변경하여 최적화
+    - 가중치 업데이트 후 오류 재측정
+      - 가중치를 변경한 후, 다시 오류를 측정하여 변경된 가중치의 효과를 평가
+  - 오류측정
+    - 손실 함수, 목적 함수, 오류 함수라고도 불림
+    - 네트워크 출력과 정답을 비교, 오류를 측정하는 방법을 정의함
+    - 문제에 따라 적절한 오류 측정 함수 선택
+  - 일반적 오류 측정법
+    - 분류 문제에서는 교차 엔트로피 손실 사용
+    - 회귀 문제에서는 MSE 사용
+  - 최적화 문제로서의 훈련
+    - 훈련 데이터를 기반으로 오류 측정 함수를 사용하여 총 오류를 정의
+      - 이를 최소화하는 방향으로 네트워크를 훈련
+### Backpropagation Algorithm
+- Backpropagation
+  - 훈련 문제
+    - 신경만 훈련은 최적화 문제를 해결하는 것을 목표로 함
+    - 이떄 feed-forward network에서는 경사 하강법을 사용하여 최적화를 수행
+    - feed-forward network에서 경사 하강법은 Backpropagaion 형태를 취함
+  - 실제 훈련 과정: 확률적 경사 하강법(Stochastic Gradient Descent, SGD);
+    - 고차원 가중치 벡터의 그래디언트를 계산하는 것은 계산 비용이 많이 듬
+    - 전체 데이터셋을 사용하여 손실 함수를 계산하는게 아닌, 미니배치를 사용하여 계산 비용을 절감함
+- Stochastic Gradient Descent
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/f6989fe1-333e-47fb-8b35-5a35c50566dd)
+    - 전통적 경사 하강법은 모든 샘플에 대한 손실의 합에 대해 그래디어트를 계산 및 파라미터를 조정함
+      - 전체 데이터셋을 기반으로 하는 그래디언트 계산은 비용이 많이 듬
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/d1946ee9-755b-4c35-85ee-1e5419700472)
+    - 대안으로, 확률적 경사 하강법은 한 번에 하나의 샘플(또는 미니배치)을 기반으로 파라미터를 조정함
+    - 시그마가 사라진 것을 확인할 수 있음
+    - 여기서 X(i)와 Y(i)는 단일 샘플 또는 미니배치를 나타냄
+      - 매번 전체 데이터셋을 통과하지 않고도 업데이트 수행 가능, 계산 비용을 줄일 수 있음
+      - 미니배치를 사용함으로써, 각 반복에서 여러 샘플의 평균 그래디언트를 사용, 파라미터를 업데이트함
+  - 반복과 에폭
+    - 반복(Iteration)
+      - 각 샘플에 대해 파라미터를 한 번 업데이트 하는 과정
+    - 에폭(Epoch)
+      - 전체 데이터셋을 한 번 통과하는 과정, 여러 번의 반복(iteration)으로 구성됨
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/203931f7-d1f0-45ac-8496-a6292a1cb7d3)
+    - 경사 하강법은 매번 미끄러운 경로를 따라 최적화
+    - SGD는 경로가 좀 더 불규칙적이고, 지그재그 형태를 보임
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/8ea466a3-bef3-4f96-9629-da1afa7d0c73)
+    - 각 반복(iteration)마다 훈련 데이터의 배치를 부분 샘플링 하는 경우
+    - x축: 반복 횟수 또는 훈련 시간
+    - y축: 정확도
+    - full_grad
+      - 전체 경사 하강법을 사용, 전체 데이터 셋에 대해 그래디언트 계산
+      - 초기에는 느리지만, 점진적으로 높은 정확도에 도달
+    - sgd10
+      - 배치 크기가 10인 SGD
+      - 변동이 크지만 빠르게 수렴
+        - 배치 크기가 작으니 계산량이 적겠지만, 안정성은 떨어지겠지
+    - sgd100
+      - 배치 크기가 100인 sgd
+      - 변동성이 적고 안정적으로 높은 정확도에 도달
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/7be4322f-752d-46de-af63-90faaea33f38)
+    - 이전 최적화 경로를 상대적 시간에 따라 스케일링
+    - 결과 자체는 이전 이미지와 동일
+      - 배치 크기의 차이에 따라 속도와 변동성의 차이를 인지할 것
+- Chain rule
+  - 연쇄 법칙은 합성 함수의 미분을 계산하는 방식임
+  - 최적화 문제를 해결하기 위해서는 손실 함수의 미분을 계산해야 하고, 이때 연쇄 법칙을 사용해야 함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/1cffb152-10fd-43be-b984-2da96fab56be)
+    - z는 모델 식, y는 활성화 함수, L은 손실 함수
+    - 우리는 손실 함수를 미분해야 함
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/23232a0c-fc31-4308-87c9-91bee543f679)
+      - 손실 함수 L에 대해 가중치 w와 편향 b에 대한 편미분을 계산해야함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/22fe68d0-1937-42e3-80d3-f0e42642da30)
+    - 손실 함수의 y에 대한 편미분 계산
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/1c4881e4-6c01-4485-a65e-4cbd04eaf7b0)
+    - 손실 함수의 z에 대한 편미분 계산
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/ad9f6000-d2bc-4952-8d99-6b2d48c9ae25)
+        - y는 활성화 함수의 출력이므로, y는 z의 함수임
+        - 상기 이미지는 연쇄 법칙을 작용한 것
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/0aaeb373-3073-44ce-81bf-8b5332e9b049)
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/c0244851-1bab-4256-9e19-7ff8b718d7ac)
+    - 손실 함수의 w에 대한 편미분 계산
+      - z는 w의 함수
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/09e0be44-af1d-40ae-bb24-6acb09ca82d5)
+        - 이때 ∂z/∂w = x이므로
+        - ![image](https://github.com/googoo9918/TIL/assets/102513932/9d355df2-2a83-4c5a-8e88-d5520685cc28)
+    - 손실 함수의 b에 대한 편미분 계산
+      - z는 b의 함수
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/e6b307d4-879f-4011-932a-3d66153150c2)
+      - 이때 ∂z/∂b = 1이므로
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/492a247b-750b-4730-807a-5ce3a191dec1)
+- Backpropagation Algorithm
+  - 순전파
+    - 입력 데이터
+      - 입력 벡터 x를 사용, 각 층의 출력을 계산함
+      - 각 층 k에 대해 함수 ![image](https://github.com/googoo9918/TIL/assets/102513932/235af749-9661-4ce2-b881-7409620703d8)를 적용, 출력을 계산
+      - f(k)는 층 k에서 사용하는 활성화 함수
+      - 이 과정을 모든 층에 대해 반복함
+  - 역전파
+    - 마지막 층 K부터 시작하여 w(K)를 업데이트함
+    - 이때 손실함수 D에 대해 gradient dsecent를 수행
+    - 손실 함수 D는 가중치 w(K), 출력 z(K), 그리고 실제 값 y의 함수
+    - 업데이트된 가중치를 ~w(K)로 나타냄
+    - 이전 층으로 이동
+      - 각 층에서 이전 층으로 이동하여 가중치 w(k)를 업데이터
+      - 이때 w(K),...,w(k+1)의 업데이트된 값을 사용
+  - 반복
+    - 모든 층의 가중치를 업데이트한 후, 다시 순전파 단계로 돌아가 z(k) 값을 업데이트된 가중치를 사용하여 재계산
+    - 가중치가 수렴할 때까지 신경망을 훈련시킴
+### Examples
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/5044fd13-f2bf-4c19-a5d3-d7914707bf7c)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/f3dac73d-1d2f-492f-b263-0e1004574869)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/55602e5d-8464-4550-a8ba-6cfb6aa1fbc7)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/13502e51-9260-492b-9d27-e8b9964bd039)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/8e25c02e-b857-45d3-a6ac-d59642778546)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/ae8d7a36-f5c1-413e-82a4-1bd288896598)
+
+
