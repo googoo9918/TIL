@@ -1077,7 +1077,8 @@
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/8e25c02e-b857-45d3-a6ac-d59642778546)
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/ae8d7a36-f5c1-413e-82a4-1bd288896598)
 - Local descent와 Global descent를 곱해야 함을 명심하라!
-- ![image](https://github.com/googoo9918/TIL/assets/102513932/703cc302-dea3-4e8a-b59f-026fd22c866f)
+- ![KakaoTalk_20240523_135246530](https://github.com/googoo9918/TIL/assets/102513932/f8046f1b-cdd1-45be-96aa-09d837b6f145)
+
   - 이 사진을 정확히 이해하면 문제 없음
 ### Gradient Vanishing Problem
 - 심층 신경망에서 그래디언트가 전달되다가, 점점 0에 가까워지는 현상
