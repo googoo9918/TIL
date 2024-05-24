@@ -58,6 +58,10 @@
     - [Data Augmentation](#data-augmentation)
   - [Objective Functions](#objective-functions)
     - [Regularization term](#regularization-term)
+  - [SUMMAYR](#summayr)
+    - [Neural Network](#neural-network)
+    - [Neural Networks for Machine Learning](#neural-networks-for-machine-learning-1)
+    - [Backpropagaion](#backpropagaion)
 # 인공지능
 ## Introduction to Artificial Intelligence
 ### What is Intelligence?
@@ -1073,7 +1077,7 @@
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/8e25c02e-b857-45d3-a6ac-d59642778546)
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/ae8d7a36-f5c1-413e-82a4-1bd288896598)
 - Local descent와 Global descent를 곱해야 함을 명심하라!
-- ![image](https://github.com/googoo9918/TIL/assets/102513932/b579b215-12c6-4b54-8d54-597ba72c0042)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/703cc302-dea3-4e8a-b59f-026fd22c866f)
   - 이 사진을 정확히 이해하면 문제 없음
 ### Gradient Vanishing Problem
 - 심층 신경망에서 그래디언트가 전달되다가, 점점 0에 가까워지는 현상
@@ -1656,3 +1660,65 @@
     - output 자체를 ovefitting 해보자!
 - confidence한 penalty를 규제하겠다!
   - output 엔트로피를 늘리는 방향으로....
+
+## SUMMAYR
+### Neural Network
+- 차원과 입력 유닛의 개수는 feature에 따라 결정됨을 명심하라
+  - 선형 이진 분류기에서 layer function은 2로 동일
+  - 10차원에서의 선형 이진 분류기의 입력 노드는 10개, 출력 노드는 1개, 계층은 2개이다.
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/0b279422-1509-4ff1-a9a4-a9e20bac0e3c)
+  - 은닉층이 없는, 최종 출력값에 비선형 변환을 적용하는 경우
+    - ex) 단층 퍼셉트론, 로지스틱 회귀 모델
+  - 선형 결정 경계밖에 포현 못함
+  - 최소 하나의 은닉층을 포함해야 비선형 변환이 가능
+- 비선형 활성화 함수를 사용하지 않으면 어떻게 되는가?
+  - 모든 층이 선형 변환으로 축소되고, 신경망의 깊이가 아무런 의미가 없어짐
+    - 그냥 가중치와 입력값의 곱만이 연속되게 됨
+  - 복잡한 함수를 표현할 수 없게 되므로, 신경망의 학습 능력이 크게 제한됨
+- 출력층에 비선형 활성화 함수를 사용할 경우
+  - 주로 분류 문제
+    - 장점
+      - 값의 범위를 제한함으로써 출력값을 확률로 해석할 수 있음
+  - 사용하지 않는 경우(선형을 사용하는 경우)
+    - 주로 회귀 문제
+      - 제한되지 않는 연속적인 출력값이 필요하고, 유연한 예측이 가능하게 됨
+### Neural Networks for Machine Learning
+- 손실 함수
+  - 손실 함수는 모델의 성능을 평가하고, 잘못된 예측을 수정하는 데 사용
+    - 로지스틱, 소프트맥스, MSE 등
+- 최적화
+  - 모델 성능 향상을 위해 손실 함수를 최소화 하는 방향으로 가중치 조정
+    - 경사 하강법, SGD 등
+- 결국 좋은 특징을 모델이 스스로 잘 학습하는 것이 목표임
+- 머신러닝의 PCA(주성분 분석)과 같은 방법은 주로 선형 변환을 사용
+
+### Backpropagaion
+- Stochastic Gradient Descent
+  - 왜 사용?
+    - 전체 데이터셋을 사용하는 배치 경사 하강법은 너무 많은 계산을 필요로함
+      - 계산 비용이 높음
+      - SGD는 무작위로 선택된 샘플에 대해서만 계산
+        - 계산 비용이 낮음
+    - 빠른 수렴
+      - SGD는 각 샘플에 대해 즉시 가중치를 업데이트
+        - 초기 단계에서 더 빠르게 수렴 
+    - 더 나은 일반화
+      - 각 반복에서 샘플이 무작위로 선택되므로, 최적화 과정에 노이즈가 도입
+      - 과적합을 방지할 수 있음
+  - 어떻게 사용?
+    - 무작위 샘플 선택 --> 경사 계산 -> 가중치 업데이트
+    - 에폭이 iteraion보다 큰 단위
+      - SGD의 가중치 업데이트는 iteration 단위로 이루어진다
+  - 장점
+    - 왜 사용? 으로 답변 가능
+  - 단점
+    - 최적화 과정에서 진동이 발생할 수 있음
+    - 학습률 설정에 어려움이 있을 수 있음
+    - 진동이 심한 경우 수렴 속도가 느려질 수 있음
+  - 미니배치 크기가 클 수록
+    - 장점
+      - 더 빠르게 수렴
+      - 계산량이 적음
+    - 단점
+      - 안정성이 떨어짐
+- 
