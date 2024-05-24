@@ -62,6 +62,11 @@
     - [Neural Network](#neural-network)
     - [Neural Networks for Machine Learning](#neural-networks-for-machine-learning-1)
     - [Backpropagaion](#backpropagaion)
+    - [Convolutional Nerual Networks](#convolutional-nerual-networks)
+    - [Training the Neural Networks](#training-the-neural-networks-1)
+    - [Weight initialization](#weight-initialization-1)
+    - [Hyperparameter search](#hyperparameter-search-1)
+  - [Objective Functions](#objective-functions-1)
 # 인공지능
 ## Introduction to Artificial Intelligence
 ### What is Intelligence?
@@ -1078,7 +1083,6 @@
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/ae8d7a36-f5c1-413e-82a4-1bd288896598)
 - Local descent와 Global descent를 곱해야 함을 명심하라!
 - ![KakaoTalk_20240523_135246530](https://github.com/googoo9918/TIL/assets/102513932/f8046f1b-cdd1-45be-96aa-09d837b6f145)
-
   - 이 사진을 정확히 이해하면 문제 없음
 ### Gradient Vanishing Problem
 - 심층 신경망에서 그래디언트가 전달되다가, 점점 0에 가까워지는 현상
@@ -1593,7 +1597,7 @@
   - 시그모이드 함수 사용
   - 이진 분류에서 MSE의 문제점
     - 위에서 언급한 것과 같음
-- Logistic Activation Function
+-  Function
   - Logistic Regression
     - 로지스틱 회귀에서는 예측값이 확률값으로 해석됨
       - 0과 1사이의 값임
@@ -1601,7 +1605,7 @@
   - ![image](https://github.com/googoo9918/TIL/assets/102513932/531dd212-478c-473e-ab19-5eedaa2ad3f8)
     - 위 수식은 꼭 암기하고 있도록 하자
   - ![image](https://github.com/googoo9918/TIL/assets/102513932/88a00125-91fb-4514-a5f0-8840a9747f7b)
-    - t가 1인 경우, y가 1에 가까울 수록 손실이 작아짐
+    - t가 1인 경우, y가 1에 가까울 수록Logistic Activation 손실이 작아짐
       - y는 t=1일 확률
     - t가 0인 경우, y가 0에 가까울 수록 손실이 작아짐
       - y는 t=0일 확률
@@ -1667,6 +1671,14 @@
 - 차원과 입력 유닛의 개수는 feature에 따라 결정됨을 명심하라
   - 선형 이진 분류기에서 layer function은 2로 동일
   - 10차원에서의 선형 이진 분류기의 입력 노드는 10개, 출력 노드는 1개, 계층은 2개이다.
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/07f09934-fe9c-4414-ab68-522156c8af02)
+  - 단일 출력 뉴런의 경우 b는 스칼라, 다수 출력 뉴런인 경우 b는 벡터임
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/e7983293-470f-4aae-8b6c-7394cbeaf2d2)
+  - 입력 벡터 x의 차원이 3차원 벡터라 하자
+  - 가중치 행렬 W1의 차원은 4x3
+  - 가중치 행렬 W2의 차원은 5x4
+  - W3은 2x5
+  - 따라서 전체 행렬 W'은 2x3 차원
 - ![image](https://github.com/googoo9918/TIL/assets/102513932/0b279422-1509-4ff1-a9a4-a9e20bac0e3c)
   - 은닉층이 없는, 최종 출력값에 비선형 변환을 적용하는 경우
     - ex) 단층 퍼셉트론, 로지스틱 회귀 모델
@@ -1722,4 +1734,241 @@
       - 계산량이 적음
     - 단점
       - 안정성이 떨어짐
-- 
+- Example 
+  - ![KakaoTalk_20240523_135246530](https://github.com/googoo9918/TIL/assets/102513932/f8046f1b-cdd1-45be-96aa-09d837b6f145)
+
+### Convolutional Nerual Networks
+- Fully connected layers, Locally conneceted layers, Convolution layers
+  - 각 은닉 유닛이 전체 이미지를 봄
+    - 이미지 내 객체의 위치 이동을 잘 처리하지 못함(일반화 능력 떨어짐)
+  - 각 은닉 유닛이 이미지의 작은 영역을 봄
+    - 모든 위치의 동일한 특징 검출기 적용 불가
+    - 가중치 공유 x -> 파라미터 많이 필요
+    - 당연히 공간적 불변성도 X
+  - 각 은닉 유닛의 column이 이미지의 작은 영역을 봄 + weight 공유
+    - 공간적 불변성(Natural Invariances) + 파라미터 수 줌
+- 필터의 깊이는 이미지의 깊이와 동일
+  - 각 필터는 하나의 activation map을 생성함
+- 제로 패딩
+  - 필터 크기 F, 스트라이드 s인 경우
+  - (F-S)/2를 제로 패딩으로 설정 가능
+- Receptive Fields
+  - 수용 영역은 출력 이미지의 각 요소가 입력 이미지의 어느 부분에 의존하는지를 나타냄
+  - 여러 레이어를 거치면 최종 출력 뉴런은 더 큰 입력 영역에 의존
+    - 네트워크 내부에서 다운 샘플링 이용 --> 효율적으로 수용 영역 확장
+      - Stride, Pooling
+- Strided Convolution
+  - 필터가 이동 시 한 번에 이동하는 픽셀 수
+- Pooling Layer
+  - 계산 효율을 높이고, 과적합을 방지(노이즈 추가)
+- CNN에서 이미지 사이즈는 왜 고정되어야 하는가?(왜 resize해서 인풋으로 넣어야 하는가?)
+  - 컨볼루션 연산은 이미지 위를 슬라이딩 윈도우 방식으로 이동하기 때문에, 입력 이미지의 크기와 직접적인 상관이 없음
+  - Fully Connected Layer가 문제이고, FC 계층은 고정된 크기의 입력을 필요로 하기 때문
+    - FC 계층에 전달되는 텐서의 크기가 달라지면, 연산이 불가능해진다
+    - Global average Pooling으로 해결할 수 있음
+- Global average Pooling
+  - 네트워크의 마지막 부분에서, 각 특징 맵의 모든 값을 평균내어 하나의 값으로 변환한다
+    - ex) Convolution Layer와 Activation 종료 후 16x16x32 크기의 feature 맵을 평균을 계산하여 1x1x32로 줄임
+    - 이를 통해 FC Layer를 대체하거나, FC Layer의 입력 텐서의 크기를 맞춰줌
+- 전이 불변성(translation invariant)
+  - FC
+    - 불가능
+    - FC는 고정된 위치의 특징을 학습, 입력 이미지가 이동하면 계층의 출력이 크게 달라짐
+  - GAP
+    - 가능
+      - 각 특징 맵의 평균을 계산하므로, 위치 변화에 덜 민감함
+- 회전 불변성(rotation invariant)
+  - FC
+    - 불가능
+    - 위 이유와 같음
+  - GAP
+    - 불가능
+    - 컨볼루션 계층에서 학습된 필터가 여전히 방향성을 가지므로
+- 머신 러닝에서 과잉 적합 문제를 해결할 수 있는 방법
+  - Data augmentation(데이터 증대)
+  - 더 많은 데이터 수집
+  - 드롭아웃
+  - Early Stopping
+  - 앙상블
+  - L1, L2 정규화
+- PCA에서 주성분 벡터가 의미하는 바를 기술하고, 정의를 써라
+  - 데이터의 최대 변동성을 설명하는 방향을 나타내는 벡터, 이 벡터는 공분산 행렬의 고유벡터로 각 주성분 벡터는 데이터의 중요한 패턴을 유지하면서 차원을 축소하는 역할을 함
+### Training the Neural Networks
+- 하이퍼 파라미터 선택
+  - 훈련 데이터에서 가장 잘 동작하는 하이퍼 파라미터 선택 시
+    - 훈련 데이터에서는 항상 완벽히 동작하지만, 새로운 데이터에 일반화되지 않음
+    - 즉, 과적합
+  - 테스트데이터에서 가장 잘 작동하는 하이퍼 파라미터 선택
+    - 과적합 + 테스트 데이터에 대한 과도한 낙관
+  - 데이터를 훈련, 검증, 테스트 셋으로 나눔
+    - 검증 데이터에서 하이퍼 파라미터 선택, 테스트 데이터에서 평가
+  - cross-validation
+    - 데이터를 여러 폴드를 나누고, 각 폴드를 검증 데이터로 사용
+    - 단점
+      - 훈련 시간이 김
+- Model selection
+  - Bias는 평균 예측과 실제 값 간의 차이
+  - Variance는 다른 데이터 셋에 대한 예측의 변동성
+    - 높으면 다른 훈련 데이터셋에 따라 크게 변함
+- Model Selection(Complexity&Regularization)
+  - 과소적합의(데이터의 패턴을 제대로 파악하지 못함) 주요 특징
+    - 높은 Bias
+    - 낮은 Variance
+    - 모델 복잡도 증가, 학습 시간 증대, 추가 특성 사용등으로 해결
+  - 과적합의 주요 특징
+    - 낮은 Bias
+    - 높은 Variance
+- Activation Function
+  - 시그모이드의 단점
+    - Gradient Vanishing
+      - 입력이 너무 작거나 너무 큰 경우
+    - 지수 함수 계산이므로 계산 비용이 너무 높음
+    - 출력이 0을 중심으로 하지 않음(not-zero centered)
+    - 뉴런에 입력되는 값이 항상 양수일 때, 가중치 w에 대한 그래디언트는 어떻게 되는가?
+      - 도함수는 항상 양수, x도 항상 양수
+      - ![image](https://github.com/googoo9918/TIL/assets/102513932/0effc426-5645-4872-9011-9214ea96aa68)
+        - ∂L/∂σ에 의해 결정되게 됨(upstream gradient)
+    - 미니배치를 통해 해결 가능(여러 샘플의 평균으로 그래디언트 계산)
+- zero centered가 되어야 하는 이유
+  - gradient가 양수와 음수로 고르게 분포될 수 있게하여, weight 업데이트가 더 균형 잡히게 이루어질 수 있음
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/50869908-2671-4f1a-9752-f9ffd9022a8e)
+  - tanh
+    - zero-centered이나, gradient 소실 문제가 남아 있음, 계산 비용 비쌈
+  - ReLU
+    - 양수 영역에서 그래디언트가 소실되지 않음
+    - 계산이 효율적, 수렴속도가 빠름
+    - not-zero centered
+      - weight 업데이트가 균형 잡히지 않을 수 있음
+    - 입력값이 0이하이면, 그래디언트는 0이 되어 업데이트가 일어나지 않음
+  - Leaky ReLU
+    - max(0.01x,x)
+      - 입력이 음수일 때 작은 기울기 유지, 죽은 ReLU 문제를 해결
+      - 단점
+        - not-zero centered
+        - 음수 영역에서도 기울기를 유지, gradient explosin 문제 발생 가능
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/0c6811dd-5758-48ff-894f-c353e6031ad7)
+  - ∂σ/∂x는 local gradient
+  - gradient가 vanishing 되고 있다면 뭐가 문제인가?
+    - 시그모이드에서는 미분 최대 값은 0.25이므로, 작은 gradient가 연쇄적으로 곱해지면서 기울기가 점점 더 작아지게 됨(upstream gradient)
+    - 혹은 입력값이 크다면 local gradient 그 자체로 문제일 것임
+- gradient vanishing은 왜 문제인가?
+  - 역전파 과정에서 깊은 층의 가중치가 거의 업데이트되지 않게 만들기 때문
+  - 복잡한 패턴을 학습하는 능력이 제한됨
+  - 학습을 불안정하게 만듬
+
+### Weight initialization
+- 가중치 초기화
+  - W를 상수 값으로 초기화 시
+    - 모든 뉴런이 동일한 출력을 생성
+  - 가중치가 너무 작은 경우
+    - 활성화 값이 0에 가까워지고, 기울기도 0에 가까워짐
+  - 가중치가 너무 큰 경우
+    - 활성화 함수의 출력이 포화 상태에 이름
+    - 기울기가 0에 가까워짐
+  - Xavier와 ReLU 함께 사용 시?
+    - 양수 입력에 대해서만 활성화 하므로 학습이 이뤄지지 않음
+### Hyperparameter search
+- 1. 초기 손실 확인
+- 2. 작은 샘플에 과적합 시도
+- 3. 손실을 감소시키는 학습률 찾기
+- 4. 대략적인 그리드 탐색(1~5 epoch)
+- 5. 세부 그리드 탐색
+- 6. 손실과 정확도 곡선 확인
+- Hyperparameter Search
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/e26331f7-4379-42af-ac16-60c54c6a2676)
+    - 정확도가 계속 올라가고 있음, 더 오래 훈련시켜야 함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/3642f009-a7e7-446e-a835-af7d1d955e10)
+    - 훈련과 검증 데이터 간의 격차가 없음
+      - 과소적합을 의미, 더 오래 훈련시키거나, 더 큰 모델을 사용해야 함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/50e4a73f-cc68-4663-8a91-1e7fddf11cce)
+    - 훈련 데이터와 검증 데이터 간의 큰 격차가 발생, 과적합을 의미
+      - 정규화기법을 사용하거나 더 많은 데이터를 확보해야 함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/cce12adb-33d4-4973-a13a-826d9a8fa60b)
+    - Training Loss
+      - 초기 반복에서 손실 값이 넢지만, 반복이 진행됨에 따라 점점 감소
+      - 손실 값(실제 - 예측)들이 다소 불규칙하게 분포, 노이즈가 있을 수 있으므로 이평선을 통해 전반적 추세를 확인해야함
+    - Train / Val Accuracy
+      - 반복이 진행됨에 따라 훈련 데이터는 98%에 도달
+      - 검증 데이터는 95%에서 안정화
+      - 차이가 존재하며, 과적합 가능성을 나타냄
+- Generalization
+  - 편향, 분산 트레이드 오프
+    - 고복잡성에서의 낮은 평향, 높은 분산은 과적합 문제를 일으킴
+    - 저복잡성에서의 높은 평향, 낮은 분산은 과소적합 문제를 일으킴
+    - 저복잡성(파라미터 수 적음)에서는 테스트 에러, 훈련 에러 모두 높음
+    - 고복잡성(파라미터 수 적음)에서는 훈련 오류는 낮아졌지만, 테스트 오류는 다시 증가
+      - 훈련 데이터에 지나치게 맞춰짐
+    - 차수가 낮은 경우, 과소적합일 수 있음 + 차수가 너무 높은 경우, 과적합일 수 있음
+- Data Augmentation
+  - 언제/왜 하면 좋은가?
+    - 데이터 부족 시, 과적합 방지(노이즈 추가), 데이터 불균형, 일반화 능력 향상
+  - 데이터 증강은 오직 훈련 데이터에만 적용, 테스트 데이터에는 적용하지 않음
+- Reducing the Number of Parameters
+  - 매개변수 수를 줄이는 것은 복잡도를 낮추고 과적합을 방지할 수 있음
+    - ex) 병목층 생성
+  - 언제 해야되는가?
+    - 데이터가 적은 경우, 모델이 너무 크고 느린 경우, 과적합 발생 시
+  - 언제 하면 안되는가?
+    - 과소적합 발생 시, 복잡한 패턴 학습 시, 리소스 허용 시
+- Weight Decay(가중치 정규화)
+  - 큰 가중치 값을 패넡티, 가중치의 크기를 작게 만듬
+  - 작게 유지함으로써 모델의 복잡성을 줄이고 과적합 방지
+- Batch Normalization
+  - 배치 정규화
+  - 각 차원을 제로 평균과 단위 분산으로 맞춤
+    - 제약이 너무 엄격한 경우 모델의 표현력이 제한될 수 있음
+  - 학습 중 미니배치에 의존하기 때문에 테스트 단계에서는 사용 불가
+    - 테스트 단계에서는 학습중 계산된 러닝 평균과 분산 사용
+      - stochastic한 요소가 들어감
+  - FC 뒤, activation function 전에 삽입
+- Ensemble
+  - 여러 모델의 예측 결과 평균 사용
+- Stochastic Regularization
+  - 앙상블로서의 드롭아웃
+    - 드롭아웃은 네트워크의 서브셋 학습, 마치 2^D개의 다른 아키텍처를 갖는 앙상블 학습과 같음
+    - 가중치도 공유하고 있음
+  - Dropout
+    - 테스트 시 드롭아웃 미사용, 드롭아웃 비율을 p라고 할 떄 테스트시에는 1-p를 곱함
+    - 테스트 단계에서는 예측의 일관성과 안정성이 중요하기 때문
+      - 다만, 기대 출력과 동일하게 하기 위해 가중치 조절
+- 12.1. (20점) 인공 신경망의 출력층에서 softmax 함수를 사용하면 합이 1로 표현이 되어 확률 값처럼 표현될 수 있다. 하지만 이 값이 확률 값으로 해석될 수 없는 이유를 학습 데이터의 관점에서, 혹은 다른 합당한 이유를 통해 설명하세요. 
+  - softmax는 주어진 입력에 대해 신경망이 갖고 있는 신뢰도를 출력, 그러나 학습 데이터와 테스트 데이터의 분포가 다를 수 있고, 과적합 되었을 가능성도 배제할 수 없기에 확률 값으로 해석할 수 없음
+  - 또한 데이터셋이 불균형한 경우, 신경망은 특정 클래스에 대해 편향된 예측을 하게 될 수 있음
+- 12.2 Dropout 규제 기법을 활용하면 인공 신경망의 앙상블 추론 효과를 얻을 수 있다. 그 이유를 학습과 추론의 관점에서 설명하세요. 
+  - 각 학습 단계에서 랜덤하게 일부 뉴런을 비활성화 하는 드롭아웃은 노이즈를 주입하는 효과를 가지며, 마치 앙상블 처럼2^D 개의 서로 다른 모델이 학습하는 것과 같은 효과를 가질 수 있으며, 추론 과정에서 다양한 뉴런 조합을 통해 학습된 여러 모델들의 가중치가 반영되기 때문에 이는 앙상블에서 평균을 구하는 것과 비슷한 효과를 가질 수 있다.
+- 12.3. (10점) Pretrained model을 활용하여 전이 학습을 수행하고자 한다. 이 때 학습 데이터가 불충분한 경우에 문제가 될 부분을 명시하고 이를 해결하기 위한 방법을 기술하세요. 
+  - 학습 데이터가 불충분한 경우, 모델이 작은 데이터셋에 과도하게 적응하여 과적합 될 수 있음
+    - 모델이 새로운 데이터에 대해 일반화하지 못하게 함
+  - 이를 해결하기 위해 Data Augmentation을 통해 학습 데이터의 양을 늘리고, 다양성을 높임으로써 모델이 다양한 패턴을 학습할 수 있도록 해야하며, Dropout등의 정규화 기법을 사용하여 과적합을 방지해야 함
+
+## Objective Functions
+- Logistic Activation Function
+  - Logistic Regression
+    - 로지스틱 회귀에서는 예측값이 확률값으로 해석됨
+      - 0과 1사이의 값임
+      - 로지스틱 함수는 시그모이드 함수의 일종
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/531dd212-478c-473e-ab19-5eedaa2ad3f8)
+    - 위 수식은 꼭 암기하고 있도록 하자
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/88a00125-91fb-4514-a5f0-8840a9747f7b)
+    - t가 1인 경우, y가 1에 가까울 수록Logistic Activation 손실이 작아짐
+      - y는 t=1일 확률
+    - t가 0인 경우, y가 0에 가까울 수록 손실이 작아짐
+      - y는 t=0일 확률
+- 다중 클래스 분류와 binary classification
+  - 원 핫 벡터를 사용하기 때문에, loss function의 학습 차원에서 어느 정도 잘못되었는지를 알 수 없음
+  - 입력값과 상관없이 같은 손실의 정도를 갖게 되므로, 틀린 정도를 제대로 학습시킬 수 없음
+- 소프트맥스와 로지스틱 함수
+  - K=2인경우 동일하게 동작하지만
+  - 소프트맥스의 경우 확률분포와 같이 이루어져있기에 손실 함수에 각각 상대적인 weight이 자연스럽게 loss로 들어오게 되고, 상대적 중요도를 반영할 수 있게됨
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/2d1119a7-6e98-4fa6-b243-02a96656952d)
+  - L1 정규화는 가중치가 집중되기를 원함, 안볼 feature가 명확해짐
+  - L2 정규화는 가중치가 넓게 퍼지도록(spread out)하는 경향이 있음
+- 예측 결과의 과적합 방지
+  - 확률적 출력 분포에 대한 패널티를 부여함
+    - 정규화 항으로 음의 엔트로피를 사용
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/20c36b22-cfd7-4b65-b332-2241d7018188)
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/34e113b0-ec70-45e5-b7cc-20d72a8465a7)
+      - H 함수는 예측 확률 분포의 엔트로피를 나타냄
+      - 엔트로피는 불확실성, 정보량을 의미함
+        - 정하지 못할 때가 가장 높음
+      - 일반화 성능이 향상됨
