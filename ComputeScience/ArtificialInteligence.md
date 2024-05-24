@@ -56,6 +56,8 @@
     - [Hyperparameter search](#hyperparameter-search)
   - [Generalization](#generalization)
     - [Data Augmentation](#data-augmentation)
+  - [Objective Functions](#objective-functions)
+    - [Regularization term](#regularization-term)
 # 인공지능
 ## Introduction to Artificial Intelligence
 ### What is Intelligence?
@@ -1520,3 +1522,137 @@
       - 평균과 분산은 학습 중 미니배치에 의존하기 때문에, 테스트 단계에서는 사용할 수 없음
         - 테스트 단계에서는 배치 내의 데이터가 없기 때문
         - 따라서 테스트 단계에서는 학습중 계산된 러닝 평균과 분산을 사용함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/81912ff0-959c-4891-b32e-1dd7963119d0)
+    - 배치 정규화는 일반적으로 완전 연결층이나 합성곱 층(Convolutional Layer) 뒤에, 그리고 비선형 활성화 함수 앞에 삽입됨
+    - 장점
+      - 신경망의 학습을 쉽게 만듬
+      - 기울기 소실 문제 완화
+      - 높은 학습률 사용 가능
+      - 가칭치 초기화에 강해짐
+      - 학습 중 규제 역할
+      - 테스트 단계에서 오버헤드 없음
+        - 테스트 단계에서는 선형 연산자로 동작, 합성곱 층과 결합
+    - 주의사항
+      - 학습과 테스트 단계에서 다르게 동작함
+        - 학습단계
+          - 미니배치의 평균과 분산 사용
+        - 테스트 단계
+          - 학습 중 계산된 러닝 평균과 분산 사용
+          - 따라서 stochastic한 요소가 들어감
+- Ensemble(앙상블)
+  - 여러 후보 모델이 있을 때, 각각의 모델의 예측 결과 평균을 사용하는 방법
+  - 장점
+    - 일반화 성능 향상
+    - 머신러닝 벤치카므에서의 성능
+  - 단점
+    - 비용이 많이 듬
+    - 해석 어려움
+- Stochastic Regularization(확률적 정규화)
+  - 과적합 방지
+    - 계산에 노이즈를 주입함으로써 정규화하는 방식을 확률적 정규화라 칭함
+  - 드롭아웃
+    - 일부 유닛을 무작위로 비활성화함
+  - 훈련 단계
+    - 학습 단계마다 일부 유닛을 비활성화
+    - 특정 유닛이나 경로에 과도하게 의존하지 않도록 만듬
+  - 테스트 단계
+    - 모든 유닛을 사용하되, 각 유닛의 출력을 학습 단계에서 비활성화된 확률만큼 조정
+  - 앙상블로서의 드롭아웃
+    - 드롭아웃은 네트워크의 서브셋을 학습하는 것, 이는 마치 2^D개의 다른 아키텍처를 갖는 앙상블을 학습하는 것과 같음
+    - 여기서 D는 유닛의 수
+    - 공유된 가중치
+      - 이 앙상블은 모든 하위 네트워크가 가중치를 공유
+  - 다른 확률적 정규화
+    - 배치 정규화(Batch Normalization)
+    - 확률적 경사 하강법(SGD)
+- Dropout
+  - 네트워크를 여러 번 독립적으로 실행, 다양한 드롭아웃 마스크를 사용하여 각 실행의 예측 값을 평균냄
+  - 테스트 시 드롭아웃 미사용
+    - 테스트 단계에서는 드롭아웃을 적용하지 않고, 학습 시 드롭아웃 비율로 가중치를 조정함
+    - 드롭아웃 비율을 p라고 할 때, 모든 가중치를 1-p로 곱함
+    - 이유
+      - 학습에서는 앙상블을 적용하기 위해 드롭아웃을 적용하여 특정 노드나 경로에 과도하게 의존하는 것을 방지하지만
+      - 테스트 단계에서는 예측의 일관성과 안정성이 중요하기 때문에 모든 노드를 활성화한 상태로 예측을 수행함
+        - 다만, 학습 단계에서의 기대 출력과 동일하게 맞추기 위해 가중치를 조절하는 것임
+## Objective Functions
+- 손실 함수(목적 함수)
+  - 특정 목적을 기준으로 loss를 디자인
+  - 손실 함수가 역전파해야 할 오류를 결정하게 됨
+- Mean Squared Error(MSE) for Regression
+  - 예측 값과 실제 목표값의 평균 제곱 오차를 통해 차이를 정량화
+  - 비용 함수는 손실 함수를 평균한 값임
+  - 분류 문제에서는 MSE 대신 크로스 엔트로피와 같은 손실 함수를 사용
+    - 회귀에서는 출력이 연속적 실수 값 범위에 있으므로 적합하나, 분류 문제에서는 출력값이 확률 값이기 때문에, 확률 분포의 특성을 잘 반영하지 못함
+    - 또, 확률 값을 다룰 때 gradient descent의 학습 속도를 비효율적으로 만들고, 클래스 경계를 명확히 구분하지 못함
+- Binary Linear Classification
+  - 시그모이드 함수 사용
+  - 이진 분류에서 MSE의 문제점
+    - 위에서 언급한 것과 같음
+- Logistic Activation Function
+  - Logistic Regression
+    - 로지스틱 회귀에서는 예측값이 확률값으로 해석됨
+      - 0과 1사이의 값임
+      - 로지스틱 함수는 시그모이드 함수의 일종
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/531dd212-478c-473e-ab19-5eedaa2ad3f8)
+    - 위 수식은 꼭 암기하고 있도록 하자
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/88a00125-91fb-4514-a5f0-8840a9747f7b)
+    - t가 1인 경우, y가 1에 가까울 수록 손실이 작아짐
+      - y는 t=1일 확률
+    - t가 0인 경우, y가 0에 가까울 수록 손실이 작아짐
+      - y는 t=0일 확률
+  - 로지스틱 크로스 엔트로피
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/49f0e4b0-aef0-42e3-b279-53560fd8cca3)
+    - 로지스틱 함수와 크로스 엔트로피 손실 함수를 결합하여 단일 손실함수로 만듬
+      - 큰 값이나 작은 값이나 안정적 계산 제공
+- Multiclass Classification
+  - 다중 클래스 분류
+  - 목표 값을 원-핫 벡터로 표현
+    - 하나의 요소만 1이고, 나머지 요소는 모두 0임
+    - 가장 높은 선호도를 가진 클래스를 1로 변환
+  - 입력값의 선형 함수로 시작, 편향을 제거(가중치 행렬 확장 + 더미 변수 추가)
+  - 기존에 진행했던 방식과 뭐가 다른가?
+    - 즉, binary classification과 one-hot prediction과 무엇이 다르고, 어떤 문제가 생길 수 있는가?
+    - 문제점
+      - 어느 정도 잘못되었는지, loss function의 학습 차원에서 알 수가 없음
+        - 1000이든, 10000이든 1이라는 값으로 변환됨
+      - -100이라는 값이 있다면 엄청 잘못됐을 수 있는데, 다 0으로 처리되므로 같은 손실의 정도를 갖게 됨
+      - 모델 학습이 제대로 이루어질 수 없음, 즉 틀린 정도를 제대로 학습시킬 수 없다
+  - How does the case of K=2 relate to the prediction rule in binary linear classifiers?
+- softmax Regression
+  - 확률처럼 0에서 1 사이의 값을 가지며, 합이 1인 예측을 원함
+    - 다만 정확한 probability는 아니지만, 이러한 꼴로 만드는 것임
+  - K=2인경우 소프트맥스 함수는 로지스틱 함수와 동일하게 동작함
+    - 다만, 확률분포처럼 되어 있기 때문에 손실 함수에 각각 상대적인 weight이 자연스럽게 loss로 들어오게 됨
+    - 따라서 상대적 중요도를 반영할 수 있음
+  - softmax-cross-entropy
+    - 로지스틱 크로스 엔트로피처럼, 크로스 엔트로피에 소프트맥스를 넣는 것
+
+### Regularization term
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/12c79b9b-7695-4327-afb7-b98fbc47030f)
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/547a075c-c196-45a5-896d-e62efd8f4b40)
+  - L1을 적용했을 때는 둘 다 1이지만
+  - L2를 적용했을 때 w2는 0.25가 됨
+    - L2 정규화는 가중치가 넓게 퍼지도록(spread out)하는 경향이 있음
+  - L1 쓰면 안볼 feature가 명확해짐(0이 많이 나와서)(sparse)
+    - L1 정규화는 가중치가 집중되기를 원함
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/102b1660-a8f5-4def-9e44-8280dd875101)
+- Penalizing confident output distribution(uncertainty estimation)
+  - 예측 결과의 과적합을 방지하기 위해서 어떻게 해야 하는가?
+  - 확률적 출력 분포의 과도한 자신감을 패널티 하기 위함
+    - 모델이 매우 높은 확신을 가지고 예측을 하는 것은, 과적합의 신호일 수 있고 새로운 데이터에 대해 일반화 할 수 없게 됨
+  - 불확실성을 평가할 수 있어야 함
+- 확률적 출력 분포에 대한 패널티 부여
+  - 정규화 항으로 음의 엔트로피를 사용
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/1297e325-3d2b-4ecd-9d2a-5e8d602b4ca9)
+      - H는 예측 확률 분포의 엔트로피를 나타냄
+      - 엔트로피는 분포의 불확실성을 측정하는 척도
+      - 높은 엔트로피는 불확실성이 높음, 정보량이 많음을 의미함
+      - 일반화 성능을 향상시킴
+    - ![image](https://github.com/googoo9918/TIL/assets/102513932/78d38ba7-0553-4c23-81fb-b92d4c5fd189)
+- output 자체의 분포를 regularization 할 수는 없는가?
+  - 방금까지는 wight, 파라미터를 loss function에 넣었다면.... output 자체의 prediction을 원하는 값으로 만들고 싶음
+  - 확률적 추론이 고르게 분포되어 있는게 훨씬 안정적인 거임
+    - 한 개만 100%에 가까운 확률을 보이는 것은 좋지 않은 확률 분포임
+    - output 자체를 ovefitting 해보자!
+- confidence한 penalty를 규제하겠다!
+  - output 엔트로피를 늘리는 방향으로....
