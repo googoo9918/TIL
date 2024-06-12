@@ -39,6 +39,19 @@
   - [RNN](#rnn)
     - [Lab in Python](#lab-in-python-5)
   - [Convolution Neural Network(CNN)](#convolution-neural-networkcnn)
+    - [특징 추출](#특징-추출)
+    - [주요 레이어 정리](#주요-레이어-정리)
+    - [Convolution 레이어](#convolution-레이어)
+    - [Dropout 레이어](#dropout-레이어)
+    - [Fashion MNIST 데이터셋에 적용](#fashion-mnist-데이터셋에-적용)
+    - [퍼포먼스 높이기](#퍼포먼스-높이기)
+    - [더 많은 레이어 쌓기](#더-많은-레이어-쌓기)
+    - [이미지 보강(Image augmentation)](#이미지-보강image-augmentation)
+  - [순환 신경망(RNN, Recurrent Neural Network)](#순환-신경망rnn-recurrent-neural-network)
+    - [SimpleRNN 레이어](#simplernn-레이어)
+    - [LSTM 레이어](#lstm-레이어)
+    - [GRU 레이어](#gru-레이어)
+    - [Embedding 레이어](#embedding-레이어)
 # 딥러닝 분석
 ## 딥러닝
 ### 딥러닝
@@ -935,3 +948,273 @@ history = model.fit(train_X, train_Y, epochs=25, validation_split=0.25)
   - 파라미터 공부할 때는, 우리가 앞의 슬라이드에서 봤던걸 기준으로 공부하도록 하여라
 
 ## Convolution Neural Network(CNN)
+### 특징 추출
+- CNN은 이미지 뿐 아니라 텍스트나 음성 등에도 사용
+- 이미지 데이터에서는 연구자가 스스로 특징을 찾아야함
+  - convolution 연산은 **특징 추출(Feature extraction)** 기법 
+    - 원본 이미지와 필터의 합성곱(내적)
+- 특징 추출
+  - 필터에 따라 컨볼루션 연산의 결과값이 달라짐
+  - **Hand-crafted feature(수작업으로 설계한 특징)**임
+    - 문제점
+      - 전문적 지식 요망
+      - 시간과 비용이 많이 듬
+      - 다른 분야로 적용이 힘듬
+- CNN은 특징을 추출하는 필터를 자동으로 생성
+  - Hand-crafted feature의 문제점 해결
+
+### 주요 레이어 정리
+- 컨볼루션 신경망은 **특징 추출기(Feature Extractor)**, **분류기(Classifier)**가 합쳐진 상태
+  - Input, Convolution, Pooling
+  - Dense, Output
+    - Flatten은 어디에도 들어가지 않음
+- 특징 추출기
+  - 컨볼루션 레이어와 풀링 레이어가 교차되며 배치
+- 분류기
+  - Dense레이어 배치, 과적합 방지를 위해 Dropout 레이어가 Dense 레이어 사이에 배치
+  
+### Convolution 레이어
+- Convolution 연산 진행
+- 필터는 네트워크 학습을 통해 자동으로 추출
+  - 당연히 필터의 수가 많을 수록 다양한 특징 추출 가능
+- 2차원을 기준으로 설명, 보통 컬러 이미지에는 R, G, B 3개 채널 존재
+- **새로운 이미지(Feature map)의 마지막 차원 수는 필터의 수와 동일**
+- Conv2D 레이어 생성 코드
+```python
+# Conv2D 레이어 생성 코드
+conv1 = tf.keras.layers.Conv2D(kernel_size=(3,3),strides=(2,2),padding='valid' ,filters=16)
+# 필터 행렬의 크기
+# 스트라이드 크기
+# valid: 패딩 사용 안함
+# same: 빈 값을 넣어 출력 이미지의 크기를 입력과 같도록 보존
+# filters: 필터의 개수(너무 많으면 학습 속도 저하 및 overfitting 가능)
+
+# 인접한 픽셀은 비슷한 정보를 갖고 있는 경우가 많음
+# 이미지 크기를 줄이며 중요한 정보만 남기기 위해 사용
+# 효율적 메모리 사용 + overfitting 방지
+# MaxPool2D 레이어 생성 코드
+pool1 = tf.keras.layers.MaxPool2D(pool_size=(2,2), strides=(2,2))
+# 한 번에 Max 연산을 수행할 범위
+```
+
+### Dropout 레이어
+- 네트워크의 과적합을 막음
+  - **공모(conspiracy)**를 막고 과적합(overfitting) 감소
+- 무작위로 뉴런의 부분집합 제거
+```python
+# Dropout 레이어 생성 코드
+pool1 = tf.keras.layers.Dropout(rate=0.3)
+# 제외할 뉴런의 비율
+```
+
+### Fashion MNIST 데이터셋에 적용
+- 흑백 이미지는 1개의 채널을 가짐
+  - 하지만 CNN에서는 (height, width, channels)의 형태를 가져야 함
+  - 따라서 데이터의 가장 뒤쪽에 채널 차원을 추가
+  - 데이터의 수는 달라지지 않음
+```python
+# 데이터를 채널을 가진 이미지 형태(3차원)으로 바꾸기
+# reshape 이전
+print(train_X.shape, test_X.shape)
+
+# -1은 자동으로 결정됨(어차피 데이터의 개수니까)
+train_X = train_X.reshape(-1, 28, 28, 1) test_X = test_X.reshape(-1, 28, 28, 1)
+
+# reshape 이후print(train_X.shape, test_X.shape)
+# (60000, 28, 28) (10000, 28, 28)
+# (60000, 28, 28, 1) (60000, 28, 28, 1)
+# 60000, 10000은 Sample 수를 가리킴
+```
+
+```python
+# Fashion MNIST 분류 컨볼루션 신경망 모델 정의
+model = tf.keras.Sequential([
+  # 필터의 수를 2배로 늘리고 있음
+    tf.keras.layers.Conv2D(input_shape=(28, 28, 1), kernel_size=(3, 3), filters=16),
+    # 출력 (None, 26, 26, 16)
+    # padding이 없으므로 출력 이미지 크기 작아짐
+    # 파라미터 수 160 (3*3*1*16) + 16
+    # 필터 하나의 크기 3x3, 필터 수 16, 입력 채널 수 1
+    # 헷갈리면 필터 한 개의 파라미터 수를 계산해보라
+    # 필터 크기: 3x3 = 9, 입력 채널 수:1, 바이어스:1
+    # 3*3+1 = 10, 필터 개수 16 --> 160
+
+    tf.keras.layers.Conv2D(kernel_size=(3, 3), filters=32),
+    # 출력(None, 24, 24, 32)
+    # 파라미터 수: (3*3*16 + 1) * 32 = 4640
+
+    tf.keras.layers.Conv2D(kernel_size=(3, 3), filters=64),
+    # 출력(None, 22, 22, 64)
+    # 파라미터 수: (3*3*32 + 1) * 64
+  # 2D 출력을 1D 벡터로 변환
+    tf.keras.layers.Flatten(),
+    # 출력(None, 30976)
+    # 22 * 22 * 64 = 30976
+
+    tf.keras.layers.Dense(units=128, activation='relu'),
+    # 파라미터 수: 30976 * 128 + 128
+    
+    tf.keras.layers.Dense(units=10, activation='softmax')
+    # 파라미터 수: 128 * 10 + 10
+])
+
+# 모델 컴파일
+model.compile(optimizer=tf.keras.optimizers.Adam(), loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+
+# Fashion MNIST 분류 컨볼루션 신경망 모델 학습
+# 데이터의 25%를 검증 데이터로 사용
+history = model.fit(train_X, train_Y, epochs=25, validation_split=0.25)
+
+# 모델 평가
+model.evaluate(test_X, test_Y, verbose=0)
+
+# loss는 학습 데이터에 대한 손실 값
+# val_loss는 검증 데이터에 대한 손실 값(일반화 정도를 나타냄)
+# 당연히 낮아야 좋은거임
+
+# accuracy: 학습 데이터에 대한 정확도 값
+# val_accuracy: 검증 데이터에 대한 정확도 값
+```
+
+- 네트워크에 풀링 레이어와 드롭아웃 레이어 추가
+```python
+tf.keras.layers.MaxPool2D(strides=(2,2))
+# Output Shape가 작아지기 때문에 parameter 개수가 엄청나게 줄어듬
+# (None, 11, 11, 64) --> (None, 5, 5, 64)
+
+tf.keras.layers.Dropout(rate=0.3)
+```
+
+### 퍼포먼스 높이기
+- 딥러닝이 말전할 수록 컨볼루션 레이어가 중첩된 더 깊은 구조가 나타남
+  - 더 많은 레이어 쌓기
+  - 이미지 보강(Image Augmentation) 기법
+
+### 더 많은 레이어 쌓기
+- **VGGNet** 스타일의 컨볼루션 신경망 정의
+  - 아래 예시는 VGG-7(Convolution 레이어 개수 + Dense 레이어 개수)
+```python
+model = tf.keras.Sequential([
+    tf.keras.layers.Conv2D(input_shape=(28, 28, 1), kernel_size=(3, 3), filters=32, padding='same', activation='relu'),
+    tf.keras.layers.Conv2D(kernel_size=(3, 3), filters=64, padding='same', activation='relu'),
+    tf.keras.layers.MaxPool2D(pool_size=(2, 2)),
+    tf.keras.layers.Dropout(rate=0.5),
+    
+    tf.keras.layers.Conv2D(kernel_size=(3, 3), filters=128, padding='same', activation='relu'),
+    tf.keras.layers.Conv2D(kernel_size=(3, 3), filters=256, padding='valid', activation='relu'),
+    tf.keras.layers.MaxPool2D(pool_size=(2, 2)),
+    tf.keras.layers.Dropout(rate=0.5),
+    
+    tf.keras.layers.Flatten(),
+    tf.keras.layers.Dense(units=512, activation='relu'),
+    tf.keras.layers.Dropout(rate=0.5),
+    tf.keras.layers.Dense(units=256, activation='relu'),
+    tf.keras.layers.Dropout(rate=0.5),
+    tf.keras.layers.Dense(units=10, activation='softmax')
+])
+```
+
+### 이미지 보강(Image augmentation)
+- 훈련 데이터에 없는 이미지를 새롭게 만들어내서 훈련 데이터 보강
+  - 가로로 뒤집거나, 회전 시키거나, 기울이거나, 일부 확대, 평행이동 등
+
+
+## 순환 신경망(RNN, Recurrent Neural Network)
+- **순서가 있는 데이터**(eg. 날씨, 주가)를 입력으로 받음
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/1aca23ae-35c9-4b6b-9b4a-ceebf9a95a4e)
+  - 새로운 입력 Xn과 출력 Yn을 동시에 입력으로 받음
+  - 입력과 출력 길이에 제한이 없음
+    - 다양한 형태의 네트워크 생성 가능
+
+### SimpleRNN 레이어
+- 가장 간단한 형태의 RNN
+- 활성화함수
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/7022b089-a55c-4266-8f90-b80a23969ae9)
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/cd91cd06-adf3-4f2f-9950-0e9c60c85f78)
+- SimpleRNN 레이어 생성 코드
+```python
+rnn1 = tf.keras.layers.SimpleRNN(units=1, activation='tanh', return_sequences=True)
+# 전체 출력
+
+# 시퀀스 예측 모델 정의
+model = tf.keras.Sequential([
+  # 각 시퀀스는 4개의 타임스탭을 가지고, 입력 차원은 1임
+  # [[0.0], [0.1], [0.2], [0.3]],  # 첫 번째 시퀀스
+  # 각 시퀀스는 4개의 타임 스탭을 갖고 있으며, 각 타임스텝에서 입력되는 데이터는 하나의 값(1차원)임
+  # 마지막 타임스텝의 출력만 반환
+    tf.keras.layers.SimpleRNN(units=10, return_sequences=False, input_shape=[4,1]),
+    # 파라미터 수 : (입력크기 + 유닛 수)* 유닛 수 + 유닛 수
+    # (1+10) * 10 + 10
+
+    tf.keras.layers.Dense(units=1)
+    # 파라미터 수: 10*1 + 1
+])
+
+model.compile(optimizer='adam', loss='mse')
+model.summary()
+```
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/99ea3de8-1dd5-48d9-bcf7-a9dbcdb8c153)
+- 다만, 학습되지 않은 데이터에 대한 예측은 좋지 않음
+
+### LSTM 레이어
+- SimpleRNN의 **장기 의존성(Long-Term Dependency)** 문제
+  - 입력 데이터가 길어질 수록(데이터의 타임스텝이 커질 수록) 학습 능력이 떨어짐
+  - 입력 데이터와 출력 사이의 길이가 멀어질 수록, 연관관계가 적어짐
+- **LSTM(Long Short Term Memory)** 레이어
+  - 출력 외에 LSTM 셀 사이에만 공유되는 **셀 상태(cell state)**를 갖는 레이어
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/b58e2ff7-c932-4146-b3cd-56c3a088b333)
+    - Xt: 입력 데이터
+    - H_t-1 이전 타입스탭의 은닉 상태
+    - C_t-1: 이전 타입스탭의 셀 상태
+    - 타임스탭을 가로지르며 셀 상태가 보존됨
+      - 따라서 장기 의존성 문제를 해결할 수 있음
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/197e8295-e69a-4705-ad5b-49a32d453a85)
+  - Ct
+    - Forget게이트 출력에 이전 타임스탭의 셀 상태가 얼만큼 남길지 결정됨
+    - 새로 입력된 input 게이트의 출력과 ~Ct값을 곱해 위와 더하고, 다음 스텝의 셀 상태를 만듦
+  - Ht
+    - 계산된 Ct(셀 상태)에 tanh를 취한 값을 output 게이트의 출력에 곱합
+```python
+# 곱셈 문제, 고려해야할 실수의 범위가 100개, 마킹 인덱스가 되어 있는 두 실수를 곱한 값을 출력 해야함
+
+# LSTM 레이어를 사용한 곱셈 문제 모델 정의
+model = tf.keras.Sequential([
+# 파라미터 수: 2* 30 + 30*30 + 30 = 990 * 4 = 3960
+# 4를 곱하는 이유는 망각 게이트, 입력 게이트, 새로운 셀 상태 생성, 출력 게이트 때문임
+tf.keras.layers.LSTM(units=30, return_sequences=True, input_shape=[100, 2]),
+
+# 파라미터 수
+# 30 * 30 + 30 * 30 + 30 = 1830 * 4 = 7320
+    tf.keras.layers.LSTM(units=30),
+
+# 파라미터 수 : 30 * 1 + 1 = 31
+    tf.keras.layers.Dense(units=1)
+])
+model.compile(optimizer='adam', loss='mse') model.summary()
+``` 
+
+### GRU 레이어
+- **GRU(Gated Recurrent Unit)** 레이어는 LSTM레이어보다 구조가 간단
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/69cdd66d-f840-498e-8d33-5fc9f63e5c11)
+  - LSTM과 다르게 셀 상태가 없고, 다만 h_t가 비슷한 역할을 함
+  - r_t
+    - 리셋게이트, 이전 타임스텝의 정보를 얼마나 남길 것인가?
+  - z_t
+    - Update 게이트
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/326a8376-4129-4d18-a89d-dbea636045fc)
+    - tanh를 통과한 ~h_t와 이전 타임스텝의 출력인 h_t-1은 z_t 값에 따라 최종 출력에서 어느 정도의 비율을 점유할지 결정됨
+```python
+# GRU 레이어를 사용한 곱셈 문제 모델 정의
+model = tf.keras.Sequential([
+# 파라미터 수: 2 * 30 + 30 * 30 + 30 = 990 * 3 = 2970
+tf.keras.layers.GRU(units=30, return_sequences=True, input_shape=[100,2]),
+
+# 파라미터 수 30 * 30 + 30 * 30 + 30 = 1930 * 3 = 5490
+tf.keras.layers.GRU(units=30),
+tf.keras.layers.Dense(units=1)
+])
+model.compile(optimizer='adam', loss='mse') model.summary(
+```
+
+### Embedding 레이어
+- 임베딩 레이어는 자연어를 수치 정보로 바꾸기 위한 레이어
