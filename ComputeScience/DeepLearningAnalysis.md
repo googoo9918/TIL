@@ -52,6 +52,12 @@
     - [LSTM 레이어](#lstm-레이어)
     - [GRU 레이어](#gru-레이어)
     - [Embedding 레이어](#embedding-레이어)
+    - [긍정, 부정 감정 분석](#긍정-부정-감정-분석)
+    - [자연어 생성](#자연어-생성)
+  - [오토인코더](#오토인코더)
+  - [K-평균 클러스터링](#k-평균-클러스터링)
+  - [강화 학습](#강화-학습)
+  - [큐러닝(Q-Learning)](#큐러닝q-learning)
 # 딥러닝 분석
 ## 딥러닝
 ### 딥러닝
@@ -1218,3 +1224,250 @@ model.compile(optimizer='adam', loss='mse') model.summary(
 
 ### Embedding 레이어
 - 임베딩 레이어는 자연어를 수치 정보로 바꾸기 위한 레이어
+- 원 핫 인코딩은 차원 수만큼의 단어 표현 가능, 사용 메모리에 비해 너무 적은 정보량 표현
+  - 임베딩은 정수 대신 **실수 값 사용, 한정된 벡터에서도 무한한 단어 표현** 가능
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/8627ba9b-cd52-4d41-875b-c7a7a4840300)
+  - 정수 인덱스를 단어 임베딩 벡터로 변환
+  - 임베딩 레이어는 정수 인덱스에 저장된 단어 수만큼 단어 임베딩 벡터를 갖고 있음
+    - 필요할 때 꺼내 쓸 수 있는 저장 공간
+  - 정수 인덱스로 저장하지 않는 단어에 대한 임베딩 값도 별도로 마련함
+- 입력은 토큰화(Tokenization)하고 정제(Cleaning)하여 사용
+  - 띄어쓰기 단위로 나누고, 불필요한 기호 등 제거
+
+### 긍정, 부정 감정 분석
+- 입력을 문장, 단어 수준으로 분리
+- 문장 길이를 단어 수로 제한(25)
+- 단어의 길이도 조정(5)
+- 25단어가 되지 않는 문장은 0으로 padding 추가
+```python
+model = tf.keras.Sequential([
+  # 단어 집합의 크기, 임베딩 벡터의 차원, 입력 문장의 최대 길이(최대 25개의 단어)
+  # 파라미터 수: 단어 집합의 크기 * 임베딩 벡터의 차원 = 6,000,000
+    tf.keras.layers.Embedding(20000, 300, input_length=25),
+  # 파라미터 수: 300 * 50 + 50 * 50 + 50 = 17,550 * 4 = 70,200
+    tf.keras.layers.LSTM(units=50),
+  # 파라미터 수: 50*2 + 2 = 102
+    tf.keras.layers.Dense(units=2, activation='softmax')
+])
+
+model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+model.summary()
+
+history = model.fit(train_X, train_Y, epochs=5, batch_size=128, validation_split=0.2)
+
+model.evaluate(test_X, test_Y, verbose=0)
+```
+
+### 자연어 생성
+- 문자 단위의 순환 신경망으로 Latex 등의 구조화된 문서도 생성할 수 있음
+- Tokenizer를 쓰지 않고 직접 토큰화
+  - Tokenizer는 단어의 빈도 수로 단어 정렬
+  - 단어의 수가 많고 모든 단어를 사용하기 때문에 여기서는 사용 X
+- UNK는 임의의 문장 입력 시 텍스트에 존재하지 않는 단어를 나타낼 때 사용
+```python
+total_words = len(vocab)
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Embedding(total_words, 100, input_length=seq_length),
+    tf.keras.layers.LSTM(units=100, return_sequences=True),
+    tf.keras.layers.Dropout(0.2),
+    tf.keras.layers.LSTM(units=100),
+    tf.keras.layers.Dense(total_words, activation='softmax')
+])
+
+model.compile(optimizer='adam',
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+model.summary()
+
+```
+
+## 오토인코더
+- 지도 학습
+  - 하나 이상의 입력 변수를 기반, 출력 변수를 추정하거나 예측
+- 비지도학습
+  - 출력변수 없이 입력변수만으로 자료의 상관관계나 특징을 찾아냄
+- 오토인코더
+  - 입력에 대한 출력을 학습해야 한다는 점은 다른 지도학습과 동일하나
+  - 출력이 입력과 동일하다는 점이 특이함
+    - 차원 축소, 데이터 압축, 노이즈 제거 등에 사용
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/5ef71f56-e5c8-40db-bba2-780cf0228bc7)
+  - 인코더
+    - 입력에서 잠재변수를 만듦
+  - 디코더
+    - 잠재변수를 출력으로 만듦
+  - 잠재변수
+    - 특징 추출기인 인코더를 통해 추출된 **일차원 벡터**, 데이터의 특징을 잘 표현함
+  - 인코더와 디코더는 동일한 레이어를 대칭되는 구조로 쌓음
+  - 오토 인코더는 손실 압축으로 입력과 출력이 완전히 동일하지 않음
+    - 다만 압축률이 크게 상승
+    - 압축률을 높이는 과정에서 특징을 잘 나태는 효율적인 방법을 찾음
+      - 적은 양의 데이터로 많은 양의 정보를 표현해야 하기 때문
+
+```python
+import tensorflow as tf
+
+# 데이터 전처리
+train_X = train_X.reshape(-1, 28 * 28)
+test_X = test_X.reshape(-1, 28 * 28)
+print(train_X.shape, train_Y.shape)
+
+# Dense 오토인코더 모델 정의
+model = tf.keras.Sequential([
+  # 인코더
+    tf.keras.layers.Dense(784, activation='relu', input_shape=(784,)),
+  # 잠재변수 레이어는 인코더와 디코더에 비해 뉴런의 수가 꽤 적음
+    tf.keras.layers.Dense(64, activation='relu'),
+  # 디코더
+    tf.keras.layers.Dense(784, activation='sigmoid')
+])
+
+# 모델 컴파일
+model.compile(optimizer=tf.optimizers.Adam(), loss='mse')
+
+# 모델 요약 출력
+model.summary()
+
+# Dense 오토인코더 모델 학습
+# 입력 데이터와 출력 데이터가 동일
+model.fit(train_X, train_X, epochs=10, batch_size=256)
+```
+
+```python
+import tensorflow as tf
+
+# 데이터 전처리
+train_X = train_X.reshape(-1, 28, 28, 1)
+test_X = test_X.reshape(-1, 28, 28, 1)
+
+# 컨볼루션 오토인코더 모델 정의
+model = tf.keras.Sequential([
+  # 파라미터 수
+  # 2*2*1*32 + 32 = 160
+  # 출력 차원: (14, 14, 32)
+  # strid(2,2)로 설정, 풀링 레이어를 적용한 것과 같은 효과가 나오게 함
+    tf.keras.layers.Conv2D(filters=32, kernel_size=2, strides=(2,2), activation='relu', input_shape=(28, 28, 1)),
+  
+  # 파라미터 수
+  # 2*2*32*64 + 64 = 8256
+  # 출력 차원: (7, 7, 64)
+    tf.keras.layers.Conv2D(filters=64, kernel_size=2, strides=(2,2), activation='relu'),
+
+  # 출력 형태(None, 7*7*64 = 3136) 
+    tf.keras.layers.Flatten(),
+
+  # 파라미터 수: 3136 * 64 + 64 = 200768 
+    tf.keras.layers.Dense(64, activation='relu'),
+  # 파라미터 수: 64 * 3136 + 3136 = 203840
+    tf.keras.layers.Dense(7*7*64, activation='relu'),
+  # 출력 형태 (7,7,64)
+    tf.keras.layers.Reshape(target_shape=(7, 7, 64)),
+  # 2*2*64*32 + 32 = 8224
+  # Conv2DTranspos는 Conv2D레이어가 하는 일의 반대 되는 계산
+  # 입력이 되는 하나의 값을 Convolution
+    tf.keras.layers.Conv2DTranspose(filters=32, kernel_size=2, strides=(2,2), padding='same', activation='relu'),
+  # 2*2*32*1 + 1 = 129
+    tf.keras.layers.Conv2DTranspose(filters=1, kernel_size=2, strides=(2,2), padding='same', activation='sigmoid')
+])
+
+# 모델 컴파일
+model.compile(optimizer=tf.optimizers.Adam(), loss='mse')
+
+# 모델 요약 출력
+model.summary()
+
+```
+- **Conv2DTranspose**
+  - 디컨볼루션 레이어
+  - 입력이 되는 하나의 값을 Convolution에 통과, 여러 값을 계산해주는 레이어
+- **elu**
+  - ReLU와 달리 음수를 받았을 때 0보다 조금 작은 음수를 출력
+
+## K-평균 클러스터링
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/7822a24e-9d9d-4bb2-9066-2f0c44e7154d)
+- 주어진 입력 중 K개의 클러스터 중심을 임의로 정함
+- 각 데이터와 K개의 중심과의 거리를 비교해서 가장 가까운 클러스터로 배당
+- K개의 중심의 위치를 해당 클러스터로 옮기고, 이를 반복
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/90847c88-cc9d-4caa-9794-379d23923dc0)
+  - 클러스터 집합 C_1, C_2, ...., C_K
+  - 클러스터 내의 관측치들이 서로 다른 정도
+  - 클러스터 C_k 내의 관측치들이 중심으로부터 얼마나 떨어져 있는지?
+  - |C_k|는 k번째 클러스터 내의 관측치 수
+  - x_ij는 관측치 i의 j번째 특징
+  - x_tj는 클러스터 중심의 j번째 특징 값
+  - ![image](https://github.com/googoo9918/TIL/assets/102513932/fcf1bcd0-b28d-46af-9845-94fb6516f0b5)
+    - 목표는 결국 W(C_K)를 최소화 하는 것!
+      - 클러스터 내 변동의 총합 최소화
+- K-means 알고리즘은 데이터셋을 K개의 클러스터로 나누는 **비지도 학습**
+  - 1. 초기 클러스터 할당
+  - 2. 반복
+    - 클러스터 중심 계산
+    - 가장 가까운 클러스터로 할당
+- 주요 문제점
+  - 지역 최적화
+    - 클러스터 할당이 랜덤으로 이뤄짐
+    - 최종 클러스터링 결과는 초기 할당에 따라 달라질 수 있음
+- **t-SNE**
+  - 고차원의 데이터를 저차원의 시각화를 위한 데이터로 변환
+  - SNE: Stochastic Neightbor Embedding(확률적 이웃 임베딩)
+  - 가까운 거
+
+## 강화 학습
+- 강화학습
+  - 실수와 보상을 통해 배우는 알고리즘
+  - 강화학습은 좋은 선택과 나쁜 선택에서 모두 배움
+  - 문제가 주어진 **환경**, 문제를 풀기 위한 **에이전트** 존재
+  - **행동**으로 환경에 영향을 주고, 결과에 다라 **보상**을 받음
+    - 좋은 보상을 받으면 에이전트는 그 행동을 더 많이 하게 됨
+    - 나쁜 보상을 받으면 그 행동을 덜 하도록 하는 것이 강화학습의 기본
+- MountatinCar-v0
+  - 두 바퀴가 달린 차(에이전트)로 언덕(환경)을 올라가는 문제
+    - **행동 공간(actions space)**에이전트가 취할 수 있는 행동은 '왼쪽으로 이동', '정지', '오른쪽으로 이동'
+    - 왼쪽과 오른쪽으로 반복해서 움직이며 가속도를 붙여야만 언덕에 오를 수 있음
+  - 보상
+    - 각 시간 단위마다 -1이 주어지고, 오른쪽 깃발에 도달하면 하나의 episode가 끝남
+  - episode를 빨리 끝낼 수록 한 episode에 얻는 보상의 총합이 커짐
+    - 따라서 가장 짧은 시간내에 언덕을 올라가야 함
+    - 200스텝 안에 깃발에 도달해야 함
+- 상태와 행동을 분류 신경망의 입력과 출력으로 사용해볼 수 있음
+
+```python
+# 분류 신경망 정의
+import tensorflow as tf
+model = tf.keras.Sequential([
+  # 열만 표시되어 있음 주의!! 2개의 특징을 갖는 1차원 벡터임
+tf.keras.layers.Dense(128, input_shape=(2,), activation='relu'),
+tf.keras.layers.Dense(32, activation='relu'),
+tf.keras.layers.Dense(3, activation='softmax')
+])
+model.compile(optimizer=tf.optimizers.Adam(), loss='sparse_categorical_crossentropy', metrics=['accuracy’]) model.summary()
+```
+- **`model.predict()`**로 행동 예측
+- **`np.argmax()`**로 행동 결정
+
+## 큐러닝(Q-Learning)
+- 강화학습의 대표적인 방법론
+- 행동 공간이 이산적이지 않고 연속적인 환경
+  - -1과 1사이의 값을 지정, 왼쪽이나 오른쪽으로 움직일 수 있게됨
+- 큐러닝
+  - 관찰 상태에서 취할 수 있는 모든 행동의 **Q(Quality)** 값을 학습
+  - 특정 상태에서 어떤 행동의 Q값이 다른 행동 보다 높다면, Q값이 높은 행동을 우선적으로 선택
+  - 가장 높은 Q값을 가진 행동을 선택하거나, softmax 함수로 각 Q값을 입력으로 삼아 확률을 기반으로 한 행동을 선택할 수도 있음
+  - 모든 행동의 Q값을 구한 것이 Q 테이블
+    - Q테이블을 학습시키는 과정이 큐러닝
+  - Q테이블은 관찰공간(2) + 행동공간(1) = 3차원
+- 어떤 상태의 큐 함수를 구하려면 현재 가치와 미래 가치를 모두 고려해야 함
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/2b39ff97-41b9-4ada-8ddc-36ac186edd45)
+  - 미래 가치는 각 스텝마다 받는 보상과 행동의 결과로 바뀐 다음 상태에서 얻는 큐함수의 값
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/b850577b-d207-4fb7-9990-6113860ac054)
+  - 미래에 받는 보상은 불확실성 떄문에 현재보다 가치가 낮아 감가율 적용
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/12805240-00d9-43c9-bdac-d79354799831)
+  - 취할 수 있는 행동 중 큐함수의 값이 제일 높은 행동을 할 것이기에
+  - 최대값만 고려하면 됨
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/6ebee74d-f3ae-4e61-ac1b-af505708efb7)
+  - n번째 수인 An을 더해 새로운 평균을 구하는 수식
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/23a697e7-3ca9-42d3-b5a1-c1c2e2d7d5ce)
+  -  α(학습률)로 바꾸면 평균값을 일정하게 변화할 수 있음
+- ![image](https://github.com/googoo9918/TIL/assets/102513932/05e90340-966e-4d2f-ba83-6cd2bedd36f4)
+  - 어렵구만
