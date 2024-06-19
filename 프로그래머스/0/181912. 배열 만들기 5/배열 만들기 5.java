@@ -1,22 +1,22 @@
 import java.util.*;
+
 class Solution {
     public int[] solution(String[] intStrs, int k, int s, int l) {
         List<Integer> list = new ArrayList<>();
-        for(int i=0; i<intStrs.length; i++){
-            String stmp = "";
-            for(int j=0; j<l; j++){
-                stmp = stmp + intStrs[i].charAt(s+j);
-            }
+        
+        for(String str : intStrs){
+            String stmp = str.substring(s, s + l);
             int itmp = Integer.parseInt(stmp);
             if(itmp > k){
                 list.add(itmp);
             }
         }
+        
         int[] answer = new int[list.size()];
-        int idx = 0;
-        for(int i : list){
-            answer[idx++] = i; 
+        for(int i = 0; i < list.size(); i++){
+            answer[i] = list.get(i);
         }
+        
         return answer;
     }
 }
