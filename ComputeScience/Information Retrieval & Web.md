@@ -19,6 +19,9 @@
   - AJAX는 비동기적인 데이터 전송 방식을 가능하게 함
     - 웹 페이지의 일부만을 업데이트할 수 있도록 해줌
     - Web 2.0은 사용자 상호작용이 강화된 동적인 웹을 지칭
+  - MVC -> Multi-view 시스템에 대응
+    - HTML 3개 만들거? -> x
+    - JSON/XML - 동적으로 HTML 재구성
   - JSON(내용) + HTTP(전송)
     - 데이터 전송을 위해 HTML 대신 JSON 형식 사용
   - 웹 서버와 클라이언트 역할
@@ -130,7 +133,31 @@
   - 아파치와 같은 웹 서버가 요청 수신 후, 이를 웹 애플리케이션 서버 전달
   - 웹 애플리케이션 서버가 JSP, PHP 등의 동적 페이지 실행하여 HTML 생성 -> 아파치 서버로 반환 -> 클라이언트에게 전달
 
+### CDN(Content Delivery Network)
+- CDN은 콘텐츠를 빠르게 제공하기 위해 전 세계에 분산된 서버를 통해 레이턴시(지연 시간) 문제를 해결함
+  - 사용자와 물리적으로 가까운 서버에 데이터를 저장, 사용자가 요청할 때 더 빠르게 콘텐츠를 제공
+  - 자주 요청되는 콘텐츠를 이 서버들에 미리 복제해 둠
+    - 가장 가까운 서버에서 콘텐츠를 보내므로, 지연 시간을 줄일 수 있음
 ### 캐싱
+- 캐시
+  - 자주 사용되는 데이터를 임시로 저장하는 메모리
+  - 지역성
+    - 시간적 지역성
+    - LRU(Least Recently Used)
+    - 공간적 지역성
+    - LFU(Least Frequently Used)
+  - Write 정책
+    - Write-through
+      - 캐시와 메모리를 동시 업데이트
+    - Write-back
+      - 캐시에서 먼저 업데이트, 추후에 메모리에 기록
+      - ex) 변경된 데이터를 버퍼에 모아 두았다가, 메모리에 한 번에 쓰는 방식
+- 버퍼
+  - 주로 입출력 장치 간에 속도 차이를 해결하기 위해 사용
+    - ex) 데이터를 순차적으로 읽거나 쓰는 과정에서 빠르게 데이터를 받아들이고 나중에 처리
+    - ex) 대규모 데이터 처리 -> 데이터가 한꺼번에 들어오는 경우, 버퍼에 저장해 두고 천천히 처리하는 방식으로 시스템 성능을 향상시킴
+  - 큐, 우선순위 큐
+    - 우선순위 큐는 프로세스/스레드 스케줄링에 주로 사용
 - 브라우저 캐시
   - 브라우저는 방문한 웹 페이지의 자원(HTML,CSS,JS 등)을 로컬에 저장
   - 재방문 시 빠르게 페이지 로드가 가능하게 함
@@ -155,11 +182,13 @@
 - L4 스위치
   - 네트워크 계층에서 동작
   - TCP/UDP 프로토콜과 포트 정보를 기반으로 트래픽 분산
+  - AWS NLB
 - L7 스위치
   - 애플리케이션 계층에서 동작
   - HTTP/HTTPS 요청의 헤더와 내용을 기반으로 트래픽 분산
     - URL, HTTP 메서드, 콘텐츠 종류 등 분석하여 분산 가능
     - 요청 내용을 세부적으로 분석할 수 있음 -> 세밀한 트래픽 관리 가능
+  - AWS ALB
 
 ### 방화벽/웹 방화벽/IDS/IPS
 - 방화벽
@@ -329,3 +358,682 @@
   - Master/Slave 구성
   - Active / Stand-by
   - Active / Active
+
+## HTML1
+- 웹서버
+  - Apache2 / Nginx
+  - 주로 정적 컨텐츠 실행
+  - 주로 80번 포트 사용
+    - 암호화 사용 시에는 443 사용
+- 서블릿/JSP 엔진
+  - Apache Tomcat / Resin
+  - 주로 동적 컨텐츠 실행 
+  - 주로 8080번 포트 사용
+    - 암호화 사용 시 8443 포트 사용
+- HTTP 암호화
+  - 7계층 암호화
+    - ALS(Application Layer Security)
+      - Secure Http(shttp://)
+        - 현재는 사용x
+        - 응용 프로그램별 암호화
+  - 4계층 암호화
+    - TLS(Transport Layer Security)
+      - HTTP with SSL/TLS(443/8443)
+      - https://
+      - 포트별 암호화
+  - 3계층 암호화
+    - NLS(Network Layer Security)
+      - IP Security(IPsec)
+      - IP별 암호화
+      - 데이터 패킷 암호화, 주로 VPN에서 사용
+- 웹서버(스태틱 + 다이나믹) 연동
+  - HTML과 JSP/Servlet의 웹서버 연동
+    - `http://a.b.c.d:80/sample.html`은 80번 포트를 사용, 정적 HTML을 제공
+    - `https://a.b.c.d/sample.html`은 443 포트를 사용, 암호화된 형태로 THML을 제공
+  - JSP/Servlet 처리
+    - `http://a.b.c.d:8080/sample.jsp`은 8080 포트를 통해 JSP/Servlet 제공
+    - `https://a.b.c.d:8443/sample.jsp`은 8443 포트를 통해 JSP/Servlet에 HTTPS 암호화를 적용한 경우
+- Apache와 톰캣 연동
+  - `http://a.b.c.d:80/sample.jsp`는 Apache 웹 서버와 Tomcat 서블릿 엔진이 연동된 형태
+    - 정적 콘턴츠와 동적 콘텐츠를 함께 처리
+- SSL/TLS
+  - Secure Socket Layer, Transport Layer Security
+    - 전송 계층에서 데이터를 암호화
+      - 제3자가 데이터를 가로채더라도 내용을 이해하지 못하게 함
+  - SSL 1.0 -> SSL 2.0 -> SSL 3.0 -> TLS 1.0 -> TLS 1.1 -> TLS 1.2 -> TLS 1.3
+- 웹 브라우저의 기능
+  - HTML 파서
+    - 서버로부터 전달받은 HTML 문서를 파싱
+  - HTML 렌더러
+    - 파싱된 정보를 토대로 웹 페이지를 화면에 실제로 그리는 과정
+  - HTTP 클라이언트
+- HTML의 역사와 변화
+  - HTML 4.0
+    - CSS의 분화
+      - 콘텐츠와 스타일을 분리하는 CSS(Cascading Style Sheets)가 도입됨
+      - HTML3.2/CSS1.0 -> HTML4/CSS2 -> HTML5/CSS3
+  - 파편화
+    - HTML4.0에서는 Dynamic HTML(DHTML)의 개념이 도입됨
+      - JS와 CSS를 사용해 웹 페이지를 동적으로 변경
+  - UX와 RIA(Rich Internet Application)
+    - Adobe Flex와 같은 기술을 통해 더 풍부한 사용자 인터페이스와 상호작용이 가능
+- Tag 기반 언어
+  - HTML은 태그 기반 언어, 각 태그는 특정 기능을 나타냄
+  - `<태그명>` 으로 열고, `</태그명>`으로 닫음
+  - `<br>`, `<hr>`(수평선) 등은 태그 x
+- Well-formed vs Ill-formed
+  - Well-formed
+    - 문법에 맞게 작성된 HTML
+  - Ill-formed
+    - 문법이 잘못된 HTML
+    - `<br>`과 `<br/>`은 모두 사용할 수 있지만, XHTML 표준에서는 소문자 사용과 태그를 닫는 방식이 더 엄격하게 요구됨
+    - XHTML은 HTML의 확장형, 모든 태그는 반드시 소문자로 쓰이고, 닫는 태그를 포함해야 함
+- HTML 예시
+  - ![image](https://github.com/user-attachments/assets/4af12221-9b82-4280-b105-862a271258b1)
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hello World</title>
+    </head>
+    <body>
+        <h1>Hello World</h1>
+    </body>
+</html>
+<!-- <head>는 메타 정보나 스타일을 정의, 브라우저 탭에 표시됨 -->
+<!-- <body>는 실제 화면에 나타나는 내용을 작성 -->
+```
+
+```html
+<h1>Hello World</h1>
+<!-- 이렇게 작성해도 위와 같은 결과가 나옴 -->
+```
+- Doctype
+  - 문서의 스키마를 정의
+  - 웹 브라우저는 Doctype 선언을 보고 어떤 HTML 버전으로 해석할지 결정
+  - `<!DOCTYPE html>`
+    - HTML5 문서임을 명시
+- Tags
+  - 태그를 사용하여 문서 구조 정의
+  - `<h1>` ~ `<h6>`
+    - 제목을 나타내는 태크
+    - `<h1>`이 가장 큰 제목을 의미, `<h6>`은 가장 작은 제목을 의미
+  - `<p>`
+    - 문단을 나타내는 태그
+    - 텍스트 블록을 구분하는 데 사용
+  - `<a>`
+    - 하이퍼링크를 나타내는 태그
+  - `<img>`
+    - 이미지를 삽입하는 태그
+  - 태그명은 소문자로 사용하는 것이 권장
+    - XHTML에서는 소문자로 사용하는 것이 필수
+- Tags / Attributes
+  - 태그는 각기 속성을 가질 수 있으며, 속성은 태그의 추가적인 정보를 정의함
+  - `<a href="">`
+    - href 속성은 <a>태그의 링크 경로를 지정
+  - `<img src="">`
+    - src 속성은 <img>태그의 이미지 파일의 경로를 지정함
+  - 태그명뿐 아니라 속성명도 소문자로 작성하는 것이 권장됨
+    - XHTML에서는 필수
+  - 속성은 보통 `key="value"` 형식으로 작성됨
+    - ex) `checked="checked"`는 체크박스가 선택된 상태를 나타냄
+- 주석
+  - `<!-- -->`로 주석처리
+- 예시
+  - ![image](https://github.com/user-attachments/assets/1fd177df-f7ca-4966-b600-8a1f9c1309f0)
+```html
+<table border="1">
+    <tr>
+        <th>name</th>
+        <th>email</th>
+    </tr>
+    <tr>
+        <td>seokjae ha</td>
+        <td>sjha72@gmail.com</td>
+    </tr>
+</table>
+<!-- <table>: 테이블을 생성하는 태그(border 떄문에 테이블에 테두리 표시) -->
+<!-- <tr>: 테이블의 행을 정의 -->
+<!-- <th> 테이블의 헤더 셀을 정의, 각 열의 제목이 됨 -->
+<!-- <td> 테이블의 실제 데이터를 담는 셀 정의 -->
+```
+
+- 예제3
+  - ![image](https://github.com/user-attachments/assets/ab90940b-1427-4c98-822b-c530f7d57ebc)
+```html
+<ul>
+    <li>seokjae ha</li>
+    <li>sjha72@gmail.com</li>
+</ul>
+
+<ol>
+    <li>seokjae ha</li>
+    <li>sjha72@gmail.com</li>
+</ol>
+<!-- <ul> : 순서 없는 목록 -->
+<!-- <ol> : 순서 있는 목록 -->
+<!-- 둘 다 <li>(list item)을 통해 항목 나열 -->
+```
+
+- Block/Inline Elements
+  - 블록 엘리먼트
+    - 페이지에서 전체 너비를 차지하는 요소
+    - 한 줄을 독립적으로 처리, 다음 엘리먼트는 자동으로 새 줄로 넘어감
+    - 대부분의 태그
+  - 인라인 엘리먼트
+    - 여러 개를 나열하면 한 줄로 출력(가로로 나열)
+    - ex) `<a>` , `<img>`, `<span>`
+- `<div>`와 `<span>`
+  - `<div>` 태그(블록 엘리먼트)
+    - 전체 영역을 묶어 레이아웃을 관리
+  - `<span>`태그(인라인 엘리먼트)
+    - 텍스트 일부에 스타일 적용 시 사용
+
+- 웹 페이지의 레이아웃
+  - 테이블을 이용한 화면 구성
+    - border = "0"을 통해 테이블의 테두리를 없애고 레이아웃 구조만 사용
+      - 과거에 사용
+  - 리스트를 이용한 화면 구성
+    - 현대에서는 리스트 `<u1>`, `<o1>`, `<li>`와 같은 요소에 css를 결합하여 사용
+    - pc와 모바일 같은 여러 환경에 대응하기 위해서는 리스트 기반 레이아웃이 더 유연함
+      - 반응형 웹 디자인
+- CSS
+  - 웹 페이지 스타일(폰트, 크기, 색상, 문단정렬 등)을 CSS로 지정
+  - 페이지 내용과 스타일 분리
+- CSS 예제
+  - ![image](https://github.com/user-attachments/assets/eb739c6f-baae-48a0-9347-a33f0a1426eb)
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        p {
+            color: red;
+            text-align: center;
+            background-color: rgb(0, 0, 255);
+        }
+    </style>
+</head>
+<body>
+    <p>Hello World!</p>
+</body>
+</html>
+<!-- <style>태그를 통해 CSS 지정 -->
+<!-- <p> 태그에 대한 CSS 스타일 정의, 모든 <p> 태그에 이 스타일이 적용됨 -->
+```
+
+- CSS 스타일 지정 방법
+  - 해당 태그에 직접 지정
+    - `<h1 style="color: red;">Hello World!</h1>`
+      - 개별 태그에만 스타일 적용
+  - `<style>` 태그를 이용한 내부 스타일링
+    - `<head>` 태그 내에 `<style>` 태그 사용
+  - 외부 스타일 시트 사용
+    - `<link>` 태그를 사용해 외부 css 파일 연결
+    - `<link href="styles/style.css" rel="stylesheet" type="text/css">`
+- CSS 셀렉터
+  - 태그 선택자
+  ```html
+  p {
+    color: green;
+  }
+  <!-- 페이지의 모든 <p> 태그에 적용 -->
+  ```
+  - ID 선택자
+  ```html
+  #header {
+    background-color: yellow;
+  }
+  <!-- id = "header"을 가진 요소에 적용 -->
+  ```
+  - 클래스 선택자
+  ```html
+  .highlight {
+    font-weight: bold;
+  }
+  <!-- class = "highlight"를 가진 모든 요소에 적용 -->
+  ```
+- ID 선택자 예시
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #para1 {
+            text-align: center;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <p id="para1">Hello World!</p>
+    <p>Hello World!</p>
+</body>
+</html>
+```
+- 클래스 선택자 예시
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .center {
+            text-align: center;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="center">Hello World!</h1>
+    <h1>Hello World!</h1>
+    <p class="center">Hello World!</p>
+</body>
+</html>
+```
+- 복합 선택자 예시
+```html
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        h1, h2, p {
+            text-align: center;
+            color: red;
+        }
+        p.center {
+            text-align: center;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello World!</h1>
+    <h2>Hello World!</h2>
+    <p>Hello World!</p>
+    <p class="center">Hello World!</p>
+</body>
+</html>
+```
+
+- CSS color
+  - `color :azure;`
+    - CSS에서 색상 지정 시 색상 이름 사용 가능
+  - RGB(Red, Green, Blue)
+    - `rgb(255,0,0)`
+  - HSL(Hue, Saturation, Lightness)
+    - 색조, 채도, 밝기 등을 사용하여 색상 지정
+    - 디자이너가 주로 사용
+  - RGBA
+    - RGB 값에 투명도(Alpha)를 추가한 방식
+    - 0(투명) ~ 1(불투명) 설정 가능
+- CSS background-color
+  - `background-color: lightblue`
+    - 배경색 역시 색상 이름으로 지정 가능
+  - Color Code(색상 코드)
+    - `background-color: #ffcc00;`
+  - `background-color: rgba(255, 0, 0, 0.5);  /* 반투명 빨간색 */`
+  - `opacity: 0.7;  /* 요소 전체가 70% 불투명 */`
+  - 알파 채널은 투명도를 의미
+  - 24 비트 / 32비트 색상은 각각 3바이트(R,G,B)와 4바이트(R,G,B,A)로 색상을 표현
+- CSS Border(경계선) 개념
+  - CSS Border 스타일
+```html
+p {
+    border-style: solid;
+}
+<!-- 실선 경계선이 적용된 <p> 태그 스타일 -->
+<!-- solid(실선), dashed(점선), dotted(점점선) 사용-->
+```
+
+  - CSS Border 폭(width)
+```html
+p {
+    border-width: 25px 10px 4px 35px;
+}
+<!-- 순서대로 위, 오른쪽, 아래, 왼쪽 -->
+<!-- 네 면의 경계선 두께가 설정됨 -->
+```
+  - 축약 표현
+    - 한 줄에 경계선 스타일, 두께, 색상을 모두 정의
+    - `border: 25px solid red`
+      - 경계선 두께는 25px, 실선, 색상은 빨간색
+
+- CSS Box Model
+  - ![image](https://github.com/user-attachments/assets/8e8562f0-23ce-4b73-9cbc-4e5366cfeead)
+  - HTML 요소를 박스 형태로 모델링
+    - 내용, 안쪽 여백, 경계선, 바깥 여백
+```css
+div {
+    width: 300px;
+    border: 15px solid green;
+    padding: 50px;
+    margin: 20px;
+}
+/* 콘텐츠 영역의 너비 300 */
+/* 15픽셀 두께의 녹색 실선 경계선 설정 */
+/* 안쪽 여백 50픽셀 */
+/* 바깥 여백 20픽셀 */
+```
+- CSS Text
+  - Color
+    - `color: red`
+  - Alignment
+    - `text-aling: center;`
+  - Transformation
+    - `text-transform: uppercase`
+  - shadow
+    - `text-shadow: 2px 2px 5px grey`
+- CSS Link
+  - `a:link { color: blue }`
+    - 방문하지 않은 일반 링크에 스타일 적용
+  - `a:visited { color: purple }`
+    - 방문한 링크에 스타일 적용
+  - `a:hover { color: red; }`
+    - 마우스를 링크 위에 올렸을 때 적용
+  - `a:active { color: green; }`
+    - 사용자가 클릭하는 순간 링크에 적용
+- CSS List
+  - 불릿 스타일(Bullet Style)
+    - `<u1>`이나 `<o1>`과 같은 목록에 대해 불릿 모양 변경 가능
+  - 이미지 불릿
+    - 불릿 기호를 이미지로 변경할 수 있음
+```css
+ul {
+    list-style-image: url('bullet.png');
+}
+/* list-style-image를 통해 이미지로 불릿 기호 대체 가능 */
+```
+- CSS Table
+```css
+/* 테이블의 경계썬 병합 */
+table {
+    border-collapse: collapse;
+}
+
+/* 테이블 행에 마우스를 올릴 때 배경색 변경 */
+tr:hover {
+    background-color: yellow;
+}
+
+/* 짝수 행마다 다른 배경색을 적용 */
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+```
+
+- CSS Display
+  - 화면에서 감추기
+  - `display: none`
+    - 요소를 화면에서 완전히 제거
+  - `visibility: hidden`
+    - 요소를 보이지 않게 하지만, 공간은 유지됨
+  - 인라인/블록 표시 변경
+    - `display: inline`
+      - 요소를 인라인 요소로 표시, 블록 요소를 한 줄에 표시하고 싶을 때 사용
+    - `display: block`
+      - 요소를 블록 요소로 변환, 줄바꿈이 발생
+
+## HTML#3(자바스크립트)
+- jQuery.js
+  - 브라우저 간 호환성 문제를 해결하기 윟 ㅐ만들어짐
+  - 개발자는 다양한 브라우저에서 동일하게 동작하는 js 코드 작성 가능
+- 실행 환경
+  - 브라우저에서만 실행
+    - 기본적으로 브라우저에서 실행
+    - 일반적으로 HTML 문서 안에 포함되어 실행
+  - 서버측 실행
+    - Node.js 사용
+    - 비동기 방식 실행
+- Typescript
+  - 객체 지향 버전의 자바스크립트
+  - ex) Angular.js(필수), vue.js 및 React.js (권장 or 선택)
+- JS 출력 예제
+```Javascript
+<!DOCTYPE html>
+<html>
+<head>
+    <title>JavaScript Example</title>
+</head>
+<body>
+    <h1>JavaScript Example</h1>
+    <p id="demo"></p>
+    <script>
+        // id="demo"로 설정된 요소의 내용을 My First JavaScript로 변경
+        document.getElementById("demo").innerHTML = "My First JavaScript";
+
+        // HTML 문서에 hello라는 텍스트 출력, 페이지 로딩 시 텍스트를 추가로 출력하는 데 사용
+        document.write("hello");
+
+        // 사용자에게 경고창을 띄움
+        window.alert("hi");
+
+        // 브라우저 콘솔에 logging이라는 메시지 출력
+        console.log("logging");
+    </script>
+</body>
+</html>
+```
+- JS HTML 이벤트 연동 예제
+```Javascript
+<!DOCTYPE html>
+<html>
+<head>
+    <script>
+    // 버튼 클릭 시 실행되는 함수
+    // id="demo"로 지정된 <p>태그의 내용을 Paragraph changed로 변경함
+        function myFunction() {
+            document.getElementById("demo").innerHTML = "Paragraph changed.";
+        }
+    </script>
+</head>
+<body>
+    <h2>Demo JavaScript in Head</h2>
+    <p id="demo">A Paragraph</p>
+    // 버튼을 클릭하면 myFunction() 함수가 실행됨
+    <button type="button" onclick="myFunction()">Try it</button>
+</body>
+</html>
+```
+
+### DOM(Document Object Model)
+- DOM이란
+  - HTML이나 XML 문서를 객체 형태로 변환하여 다루는 방식
+  - 파일을 트리 구조로 인식, 문서의 각 요소를 객체로 다룸
+- SAX vs DOM 파서
+  - SAX(Simple API for XML)는 특정 태그만 파싱할 때 사용, DOM 파서보다 상대적으로 빠름
+    - ex) `<a href="">가 몇 개인가?
+  - DOM 파서는 문서 전체 구조를 파악한 후 처리, 속도는 느릴 수 있지만 문서 전체에 대해 작업
+- DOM을 통한 문서 구조 변경
+  - 브라우저에서 DOM을 사용해 문서 구조를 파악, 실시간 변경 가능
+- DOM 특징 및 Virtual DOM
+  - HTML DOM
+    - HTML 파일이 DOM 파서를 통해 트리 구조로 변환
+    - 요소 간 관계를 파악하고, JS를 사용해 조작 가능
+  - DOM 단점
+    - 트리 변환과 네비게이션이 느린 점이 있음, DOM을 조작하는 데 많은 성능 자원 소모
+  - Virtual DOM
+    - 실제 DOM을 변경하는 대신, 가상으로 메모리 상에서 DOM을 처리, 변경 사항이 생길 때만 실제 DOM에 반영
+    - Double/Triple Buffering과 유사한 방식
+  - JSON 변환
+    - JSON -> HTML 변환 작업도 DOM을 통해 처리됨
+- HTML과 DOM 트리
+  - ![image](https://github.com/user-attachments/assets/b79bebe8-bf3a-436a-a417-b0c57563c632)
+    - HTML 문서는 트리 구조로 변환됨
+    - 각 태그 안 텍스트나 속성도 텍스트 노드와 속성 노드로 표현됨
+- XML DOM vs HTML DOM
+  - XML은 문서의 구조가 엄격하게 정의되어 있음
+  - XML DOM은 DTD나 XML Schema와 같은 문서 구조 정의를 따라야 함
+    - 모든 요소가 규칙에 맞는지 트리 형식으로 확인
+  - HTML DOM은 유연한 규칙을 따름
+    - 웹 페이지 요소를 트리 구조로 파악해 조작가능
+- SAX와 DOM
+  - DOM 트리 탐색
+    - DOM 트리에서 자식, 형제, 부모 노드에 접근할 수 있음
+    - `childNodes[0]`은 첫 번째 자식을 가져옴
+    - `nextSibling` , `previousSibling`
+      - 다음/이전 형제 노드를 가져옴
+    - `parentNode`
+      - 부모 노드를 가져옴
+  - DOM 트리의 마지막 노드
+    - 마지막 노드는 반드시 텍스트 노드임
+  - `innerHTML`은 DOM API가 아님
+    - 표준 API가 아니라 브라우저에 따라 다르게 동작할 수 있는 기능임
+    - 따라서 `childNodes`나 `appendChild()`같은 함수를 사용해 요소의 자식을 다루는 것이 권장됨
+- DOM 예제
+```javascript
+<script>
+  // 새로운 <p> 요소를 생성
+  const para = document.createElement("p");
+  // 텍스트 노드 생성, 새 텍스트 추가
+  const node = document.createTextNode("This is new.");
+  para.appendChild(node); // <p>부모 요소에 새로운 자식 요소 추가</p>
+  const element = document.getElementById("div1");
+  element.appendChild(para); // <div id="div1">.... <p>This is new.</p></div>
+</scripnt>
+```
+- DOM 요소 선택 메서드
+  - `const element = document.getElementById("main");`
+    - 특정 ID를 가진 HTML 요소 선택
+  - `const element = document.getElementsByTagName("p");`
+    - 특정 태그 이름을 가진 모든 요소를 선택
+    - 접근은 인덱스 사용 ex) `element[0].innerHTML = "New Content`
+  - `const element = document.getElementsByClassName("intro");`
+    - 특정 클래스 이름을 가진 모든 요소를 선택
+    - 접근은 인덱스 사용
+- innerHTML과 nodeValue
+  - innerHTML
+  - `const myTitle = document.getElementById("demo").innerHTML;`
+    - 요소의 전체 내용을 가져오거나 변경 시
+    - HTML 태그를 포함하여 콘텐츠 설정
+  - `const myTitle = document.getElementById("demo").childNodes[0].nodeValue;`
+    - 텍스트 노드의 내용을 가져올 때 사용
+    - `childNodes` 배열을 통해 텍스트 노드에 접근
+- `documenth.body` 
+  - 문서의 `<body>` 요소를 가리킴
+- DOM 노드 추가/수정/삭제
+```javascript
+// 새로운 요소를 생성
+const para = document.createElement("p"); 
+
+// 텍스트 노드를 생성하여 요소에 텍스트 추가
+const node = document.createTextNode("This is new.");
+
+// 부모 요소에 새로운 자식 요소를 추가
+para.appendChild(node); // <p>This is new.</p>
+document.body.appendChild(para); // 본문에 추가
+
+document.body.replaceChild(A, B) //기존 노드를 교체
+node.remove(); // 요소 삭제
+```
+
+- 자바스크립트의 특징
+  - 비동기 실행이 기본
+    - 파일 로딩이 끝나기 전에 코드 실행
+    - 실행 순서 문제 발생 가능
+  - 가이드라인
+    - `<script>` 태그를 문서의 제일 끝부분에 넣는 것이 권장됨
+- 실행순서 보장 및 동기화
+  - 콜백함수를 통해 동기화할 수 있음
+  - 어떤 작업이 완료된 후 실행될 함수를 미리 지정
+- 콜백 지옥
+  - 콜백 함수를 연달아 사용하다 보면 코드가 중첩 구조가 깊어져 가독성이 떨어지는 문제
+
+### jQuery
+- jQuery의 특징
+  - 브라우저 파편화 문제 해결
+    - 모든 브라우저에서 동일하게 동작하는 API 제공
+  - 비표준 기술
+    - 표준이 아니지만js의 기능을 간편하게 사용할 수 있도록 만들어진 라이브러리
+  - 비동기 실행 및 편의성 개선
+    - `document.getElementById()` -> `$("#id")`
+    - `$(document).ready()`
+      - 페이지가 완전히 로딩된 후 실행 보장
+- jQuery 예제
+```javascript
+// 페이지가 로딩된 후 실행될 코드를 넣음
+$(document).ready(function(){
+  // 모든 <p> 요소를 선택하고 해당 요소를 클릭했을 때 alert() 창을 띄우는 이벤트 핸들러
+    $("p").click(function(){
+        alert("You entered p1!");
+    });
+});
+```
+
+### 동기/비동기
+- 동기와 비동기(하드웨어)
+  - 동기
+    - clock이 동일한 경우
+    - 시스템 구성 요소가 같은 clock 속도로 동작
+    - 예시
+      - CPU, RAM, SSD
+    - 고신뢰성
+  - 비동기
+    - clock이 다른 시스템 간의 통신
+    - 예시
+      - TCP의 AKC
+        - 동기보단 낮은 신뢰성, but 유연성
+- 동기와 비동기(소프트웨어)
+  - 동기
+    - 동기 함수 호출은 함수가 완료될 때까지 프로그램이 기다리는 방식
+    - 블록킹
+      - 함수가 완전히 끝나기 전까지 프로그램이 멈춘 상태로 대기하는 것
+      - 성능 저하나 타임아웃 문제 발생 가능
+  - 비동기
+    - 함수가 리턴되길 기다리지 않고, 다른 작업 실행 가능
+    - 성능 향상 기여 가능, 결과를 예측하기 어려움
+- 동기/비동기(성능 및 효율)
+  - 동기
+    - 동기화 기법 사용, 여러 스레드나 프로세스가 일관성 있는 결과를 내도록 조정 가능
+    - 이를 통해 성능과 결과의 안정성을 보장
+    - 세마포어, 뮤텍스, 크리티컬 섹션
+      - 다양한 동기화 기법을 통해 Thread-safe한 코드 구현 가능
+  - 멀티스레딩과 멀티프로세싱
+    - 멀티스레딩
+      - 동기 기반 스레드 처리 포함
+      - 여러 작업을 동시에 처리할 수 있지만 동기화 문제 주의
+    - 멀티프로세싱
+      - 각 프로세스가 독립적으로 실행
+  - 자바스크립트의 비동기 특성
+    - 자바스크립트는 기본적으로 비동기적으로 동작
+      - 다만, 동시에 동기적 특성도 지원함
+- JS의 동기 함수
+  - 파일 읽기
+    - 비동기 : `fs.readFile()`
+    - 동기 : `fs.readFileSync()`
+- 비동기 vs 동기
+  - Promise(ES7 추가)
+    - JS의 비동기 실행을 더 관리하기 쉽게 만들어줌
+    - 비동기 작업의 완료 여부와 결과를 표현
+    - 예외 처리 코드와 유사한 구조
+  - Async/Await(ES8 추가)
+    - 사용자가 비동기 또는 동기 실행 방식 선택
+    - `async` 키워드는 함수 앞에 붙어 비동기 실행을 나타냄
+    - `await` 키워드는 비동기 작업이 완료 될 때까지 기다린 후 다음 코드 실행(동기)
+- Javascript Framework
+  - SPA(Single Page Application)
+    - 하나의 페이지에서 모든 기능을 처리하는 방식, 페이지 전체를 다시 로드하지 않고 필요한 부분만 업데이트
+    - 빠른 사용자 경험 제공
+  - 주요 JavaScript 프레임워크
+    - Angular
+      - Typescript 사용
+    - React
+      - Virtual DOM활용
+    - Vue.js
+  - Virtual Dom
+
+### Node.js
+- Standalone JavaScript
+  - 브라우저 외부에서 js 실행할 수 있는 런타임 환경
+  - 웹 브라우저 없이 서버에서 자바스크립트를 동작
+    - 백엔드 개발에 주로 사용
+- 라이브러리 및 엔진
+  - 서버 작업 지원
+  - 크롬의 V8엔진 기반
+- 블로킹, 논블로킹, 비동기
+  - 블로킹
+    - 파일이나 네트워크 I/O 작업에서 결과가 나올 때까지 기다리는 방식
+  - 논블로킹
+    - 결과가 아직 나오지 않았더라도 즉시 제어를 반환하여 프로그램이 계속해서 실행
+  - 비동기
+    - 작업을 호출한 후 다른 일을 계속하다가 작업이 완료되면 알림을 통해 결과를 처리
+- 논블로킹은 단순히 즉시 제어를 반환하는 것이라면, 비동기는 결과를 언제 처리할지에 대한 논리적 처리방식까지 포함
