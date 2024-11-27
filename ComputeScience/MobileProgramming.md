@@ -1,3 +1,342 @@
+## Lecture1
+### cpp vs java
+  - OS마다 별도 실행 파일 생성 vs Write Once, Run Anywhere
+  - 클래스 이름과 파일 이름 일치 필요x vs 클래스 이름과 파일 이름 반드시 일치
+  - 무슨 타입이던지 stack과 heap 할당 가능 vs 객체 타입은 오직 heap(기본은 둘다 ㄱㄴ)
+  - 포인터, 참조, pass by value, pass by reference 지원 vs 기본은 pass by value, 객체는 pass by reference, 배열 경계 체크 존재
+  - 소멸자 지원 vs garbage collection(gc) 지원
+  - 연산자 오버로딩 o vs x
+  - 정적 클래스 vs 동적 클래스
+  - 정적 바인딩 기본 vs 동적 바인딩 기본
+### 객체 생성
+```java
+Matrix m1 = new Matrix();
+matrix m2 = m1; //x
+matrix m2 = new Matrix(m1); //o
+```
+### 생성자 작성법
+  - 리턴형x, public
+  - 복잡한 동작x
+  - 서브클래스 생성자는 수퍼클래스 생성자 반드시 호출
+### 접근제어자
+  - private
+    - 해당 클래스 내부
+  - default
+    - 해당 클래스 내부
+    - 클래스 간 공유하는 변수 정의 시 유용
+  - protected
+    - default + 서브 클래스
+    - get_dy, get_dx와 같은 메서드 사용 대신 직접 접근 가능
+    - 재사용성 증가
+### final 키워드
+  - 상수 or 오버라이딩 불가 or 상속 불가 클래스
+    - 변수는 블록 안에서 사용 전에 1회만 초기화 가능
+  - 파라미터
+    - 해당 메서드 안에서 변경 불가
+    - 다만, 파라미터가 객체라면, 객체 내부 필드는 변경 가능함 
+```java
+public final class FinalClass {
+    public final int FINAL_VAR = 100;
+
+    public final void finalMethod(){}
+}
+```
+
+### 실습 1~3
+```java
+String.format();
+Double.parseDouble();
+String.valueOf();
+
+int a2[] = {1, 2, 3, 4, 5};
+int[] a4 = new int[]{1,2,3,4,5};
+
+a2.equals(a4); // false
+Arrays.equlas(a2,a4) // true
+```
+
+### Static 선언
+  - 변수
+    - 인스턴스 사이에서 공유되는 변수
+    - 클래스에 소속, 객체에 소속되지 않음
+  - 메서드
+    - 서브클래스에서 재정의 불가
+    - 인스턴스 변수에 접근 불가, static 변수에만 접근 가능
+  - 클래스
+    - 블록 밖에서 선언된 클래스는 static 클래스
+    - 블록 안은 기본적으로 dynamic 클래스
+  - 결국 중요한 것은, 생성 시점이 언제인가?
+```java
+class Nested{
+  int dy;
+  static int dx;
+  Nested(int dy, int dx){
+    this.dy = dy;
+    this.dx = dx;
+  }
+
+  public class InnerD{
+    public int get_dy(){return dy;}
+  }
+
+  public static class InnerS{
+    public int get_dx(){return dx;}
+  }
+}
+
+public static void main(String[] args){
+  Nested m1 = new Nested(1,2); 
+  Nested m2 = new Nested(3,4);
+  System.out.println(m1.getDy(), m1.getDx()); //1, 4
+  System.out.println(m1.getDy(), m1.getDx()); //3, 4
+
+  Nested.InnerD d1 = m1.new InnerD(); //d1.dy:1 d1.dx:4
+  //외부 클래스를 생성해야 내부 클래스를 생성 가능하다
+
+  Nested.InnerS s1 = new Nested.InnerS(); //s1.dx:4
+  //외부 클래스 생성 없이 바로 내부 클래스 생성 가능하다(static)
+}
+```
+```java
+public class StaticExample {
+    static int staticVar = 0;
+
+    static void display() {
+        System.out.println("Static variable: " + staticVar);
+    }
+
+    public static void main(String[] args) {
+        StaticExample.display(); // 클래스 이름으로 호출
+        StaticExample.staticVar = 10;
+        StaticExample.display();
+    }
+}
+```
+
+## Lecture2
+### Object
+- Object 클래스는 모든 클래스의 슈퍼 클래스
+- `finalize()`
+  - 객체가 gc에 의해 회수되기 전에 finalize가 호출
+  - 오버라이드 시 상위 클래스에 finalize를 호출해야 함
+- `wait()`, `notify()`, `norifyAll()`
+  - 쓰레드 동기화에 사용
+
+```java
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        Matrix m = new Matrix(10, 10); // 기본 객체 하나 생성
+
+        for (int i = 0; i < 999; i++) {
+            m = new Matrix(10, 10);
+        }
+
+        //garbage Collcection 강제 호출(객체 소멸 유도)
+        System.gc();
+
+        System.out.println("nAlloc = " + m.get_nAlloc()); // 생성된 객체 수 출력, 1000
+        System.out.println("nFree = " + m.get_nFree());   // 소멸된 객체 수 출력, 999
+        //gc에 실행에 따라, 다른 수가 나올 수 있음(비결정적)
+    }
+}
+class Matrix {
+    private static int nAlloc = 0; // 생성된 객체 수
+    private static int nFree = 0;  // 소멸된 객체 수
+    public Matrix(int cy, int cx) {
+        nAlloc++;
+    }
+    @Override
+    //finalize는 Throwable을 던질 수 있도록 선언되어있음 주의
+    //Object에서 protected로 선언되어 있고, 재정의할 때 접근 범위를 축소할 수 없음
+    //동일하게 protected로 선언
+    protected void finalize() throws Throwable {
+        super.finalize(); // 부모 클래스(Object)의 finalize 호출
+        nFree++; // 소멸된 객체 수 증가
+    }
+    public int get_nAlloc() {
+        return nAlloc;
+    }
+    public int get_nFree() {
+        return nFree;
+    }
+}
+```
+### Exception
+- 에러 발생 지점과 에러 원인 메시지를 출력해 디버깅을 도움
+- 메서드에서 에러 발생 시 그 지점에서 적절한 exception 객체 생성하여 throw 
+  - 해당 메서드 안에서 발생 가능한 모든 exception을 커버할 수 있어야 함
+- 발생 지점 이후 처음에 만나는 try-catch 블록에서 처리
+- Throwable 클래스
+  - Error 클래스
+    - ex) OutOfMemoryError, StackOverflowError
+  - Exception 클래스
+    - Checked Exceptions
+      - 컴파일 타임에 반드시 처리하거나, throws로 선언
+      - ex) IOException, SQLException
+      - 많은 exception 타입 열거 대신, exception tree 설계 필요
+    - Unchecked Exceptions(Runtime Exceptions)
+      - 런타임에서만 발생, 컴파일러가 처리 여부를 강제하지 않음
+      - ex) NullPointerException, ArrayIndexOutOfBoundsException
+- 당연히 catch는 Exception의 하위 클래스부터 진행해야 함
+## Lecture3
+- 안드로이드 특징
+  - 리눅스 커널 기반
+  - 애플리케이션 프레임워크
+  - 그래픽 OpenGL ES 2.0 규격 기반
+  - SQLite DB 지원
+  - 블루투스, EDGE, 3G, WiFi 지원
+  - 카메라, GPS, 나침판, 가속도계 지원
+  - 에뮬레이터, 메모리와 성능 프로파일링
+- 안드로이드의 구조
+  - 리눅스 커널, HAL(Hardware Abstraction Layer), Native c/c++ Libiraries + Android Runtime, Java API Framework, System Apps
+- 이종 개발 환경
+  - 안드로이드 스튜디오로 개발, 에뮬레이터(AVD)에서 실행
+- 안드로이드 스튜디오
+  - Gradle 기반
+  - 다중 apk 파일 생성
+  - 공통 특징을 지원하는 코드 템플릿 제공
+  - 드래그앤 드롭 방식의 레이아웃 에디터
+  - 구글 클라우드 플랫폼 지원
+
+## Lecture4
+### 컴포넌트
+- 앱은 컴포넌트로 이뤄짐
+  - 적어도 하나의 액티비티는 필수적으로 포함
+  - 다 사용할 필요는 없음
+  - 액티비티(activity), 서비스(service), 방송 수신자(broadcast receiver), 컨텐트 제공자(content provider)
+  - 액티비티
+    - UI를 관리하는 앱 화면의 단위
+  - 서비스
+    - 백그라운드 작업 수행 
+  - Broadcast receiver
+    - 시스템 및 앱 간 이벤트 수신 및 처리
+  - Content provider
+    - 앱 간 데이터 공유
+- Pc vs Android App
+  - PC에서는 한 프로그램이 다른 프로그램의 코드 호출
+  - 안드로이드에서는 한 앱에서 다른 앱의 컴포넌트를 호출
+- 인텐트(intent)
+  - 애플리케이션 컴포넌트 간 작업 요청이나 데이터 전달을 위한 메시징 객체
+- 앱의 구성
+  - XML, Java, 리소스
+    - 사용자 인터페이스
+    - 앱의 로직
+- 패키지 폴더 설명
+  - manifest
+    - 앱의 전반적 정보(이름, 컴포넌트 구성)
+    - 앱에 적재된 모든 컴포넌트에 대해 기술
+  - res
+    - 레이아웃, 이미지, 문자열 모두 리소스로 취급
+    - XML 이용 정의
+  - MainActivity.java
+    - 메인 액티비티를 정의
+    - 앱이 시작할 때 가장 먼저 보여지는 화면
+  - activity_main.xml
+    - MainActivity.java에서 정의한 액티비티의 UI 설계 및 레이아웃 정의
+```java
+public class MainActivity extends AppCompatActivity{
+  @Override
+  //Activity 생성 시 호출
+  protected void onCreate(Bundle savedInstanceState){
+    //기본 초기화 작업 수행
+    super.onCreate(savedInstanceState);
+    //Activity에서 사용할 화면 레이아웃을 지정
+    setContentView(R.layout.activity_main);
+  }
+}
+```
+- 안드로이드에는 main()이 없음
+  - 액티비티별로 실행
+  - 액티비티 중에서는 `onCreate()`메서드가 가장 먼저 실행됨
+- XML을 사용한 UI
+  - 선언적 방식
+    - UI 구성을 선언적으로 표현
+  - UI와 로직 분리 
+    - XML은 UI의 외형 담당
+    - 자바는 로직을 담당하여 분리
+  - 빠른 UI 구축
+    - 직관적 XML 태그와 속성으로 UI를 빠르게 설계하고 수정
+### XML
+- 요소
+  - `<Greeting> Hello, World. </Greeting>`
+- 속성
+  - `<img src="madonna.jpg" alt='by Raphael'/>`
+- ![image](https://github.com/user-attachments/assets/a88f87f0-2aa8-4071-b984-424e6f64af97)
+- 코드에서 리소스를 참조하는 법
+  - `setContentView(R.layout.activity_main)`
+
+### Gradle
+- 빌드 및 종속성 관리
+- `compileSdk`
+  - 컴파일러가 사용하는 SDK 버전
+- `minSdk`
+  - 앱을 설치할 수 있는 장치의 최소 SDK 버전
+- `targetSdk`
+  - 목표로 하는 타겟 장치의 SDK 버전
+
+### Summary
+- 앱은 컴포넌트들의 조합
+- 코드와 리소스는 철저히 분리
+- 코드와 리소스는 R.java에 의해 서로 연결
+
+## Lecutre5
+### UI
+- View, ViewGroup
+  - 레이아웃
+  - 컨트롤(위젯)
+- ![image](https://github.com/user-attachments/assets/9492c82f-d7d2-458a-b033-0889a214524f)
+  - TextView는 아이디가 필요 없음
+  - 나머지는 아이디 설정, `findViewById`로 위젯을 찾아서 작업
+- 위젯의 위치와 크기
+  - ![image](https://github.com/user-attachments/assets/dc2dc864-f70a-4644-89bf-8073e24e699e)
+    - 픽셀은 권장 x, 화면마다 밀도 다름
+    - dp로 지정하면 화면의 밀도가 다르더라도 항상 동일한 크기로 표시
+    - sp는 사용자가 지정한 폰트 크기에 영향
+    - pt는 1/72인치
+    - px는 픽셀
+    - mm은 밀리미터
+    - in은 인치
+- 마진과 패딩
+  - ![image](https://github.com/user-attachments/assets/e88cfcee-6d71-4d02-8a1f-6e2692bd9304)
+- 화면에 보이기 속성
+  - visible(0)
+    - 화면에 보이게 함
+  - invisible(1)
+    - 표시되지 않음, 그러나 배치에서 공간 차지
+  - gone(2)
+    - 완전히 숨겨짐
+### 버튼의 이벤트 처리
+- XML 파일에 이벤트 처리 메서드 등록
+  - 클릭 이벤트만 처리 가능
+  - 버튼 이벤트 처리 메서드 조건
+    - public
+    - void
+    - View를 메서드의 인자로 가짐
+```java
+public class MainActivity extends AppCompatActivity{
+  EditText eText1;
+  EditText eText2;
+  EditText eText3;
+
+  @Override
+  protected void onCreate(Bundle savedInstanceState){
+    super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
+    Button bPlus = (Button)findViewById(R.id.buttion1);
+    eText1 = (EditText)findViewById(R.id.edit1);
+    eText2 = (EditText)findViewById(R.id.edit2);
+    eText3 = (EditText)findViewById(R.id.edit3);
+  }
+
+  public void cal_plus(View e){
+    String s1 = eText1.getText().toString();
+    String s2 = eText2.getText().toString();
+    int result = Integer.parseInt(s1) + Integer.parseInt(s2);
+    eText.setText("" + result);
+  }
+}
+```
 ## Lecutre6
 ### 레이아웃
 - ![image](https://github.com/user-attachments/assets/716dc4d6-edf9-4b48-ad48-3db227449c70)
@@ -280,4 +619,96 @@ public void onSaveInstanceState(Bundle outState){
     super.onSaveInstanceState(outState);
     outState.putInt("count", count);
 }
+```
+
+## Lecture 9
+### 커스텀 뷰
+- 직접 View 클래스를 상속받아 새로운 위젯을 만들 수 있음
+- ![image](https://github.com/user-attachments/assets/a6ed98c2-9896-48a6-9853-ca71c4e09d14)
+- ![image](https://github.com/user-attachments/assets/26efd5ee-bee0-420e-a7c6-b37d5f617b6c)
+- ![image](https://github.com/user-attachments/assets/b3b86973-fe07-449c-ad3f-f7b2dfd43f69)
+- ![image](https://github.com/user-attachments/assets/9c7e1f7b-4e24-4938-abbb-3fb7f2a6b513)
+- 커스텀 뷰를 XML에서 참조하기
+  - CustomView.java 파일을 생성하고 레이아웃 파일에서 참조
+```java
+//XML에서 뷰를 참조하려면 이 생성자를 반드시 구현해야 함
+public CustomView(Context context, AttributeSet attrs){
+  super(context);
+  setBackGroundColor(Color.YELLOW);
+}
+```
+  - acitity_main.xml에 커스텀 뷰의 풀네임을 적어주기
+
+### 색상
+- R, G, B 성분을 8비트로 표시하여 나타냄
+  - 24bit면 하나의 색상 표현 가능
+  - 16진수로 표시하는 것이 일반적
+  - ![image](https://github.com/user-attachments/assets/cf3fa179-63e8-4e12-8d8c-cce5ad7a0329)
+  - ![image](https://github.com/user-attachments/assets/62c155c5-14b4-438d-b32b-667224d005dd)
+
+### 콜백 메서드
+- 키 이벤트 처리 시 `onKeyDown()` 메서드 재정의
+- 터치 이벤트 처리 시 `onTouchEvent` 재정의
+- 터치 이벤트 종류
+  - ![image](https://github.com/user-attachments/assets/48718694-e953-4bcd-b981-8c28e3c64d8f)
+
+## Lecutre 10
+- 기본적으로 애플리케이션 안의 모든 컴포넌트는 동일 프로세스의 동일 스레드로 실행됨
+  - 이 기본적 스레드를 메인 스레드로 지칭
+- ![image](https://github.com/user-attachments/assets/86b677f8-4c89-4ced-8050-2b2970730e9e)
+- ![image](https://github.com/user-attachments/assets/f0e4cb3e-017b-4693-881f-3280b7c5a750)
+  - 메인 스레드는 UI 위젯에게 이벤트를 전달하거나 화면을 그림
+  - UI 스레드로 지칭하기도 함
+    - UI 스레드는 블록시키면 안 되고
+    - 외부에서 안드로이드 UI 툴킷을 조적하면 안 됨
+- 작업 스레드
+  - 별도 생성 스레드
+  - 배경 스레드라고도 지칭
+  - 작성법
+    - ![image](https://github.com/user-attachments/assets/e26bcf37-4c8d-4ba5-bf59-a7e8b0758cf6)
+    - Thread 클래스를 상속받아서 스레드 작성
+    - Runnable 인터페이스 구현 후 Thread 객체에 전달
+```java
+class Worker implements Runnable{
+  public void run(){}// 작업 기술
+}
+
+public class ThreadTest extends Activity{
+  public void onStart(){
+    w = new Thread(new Worker());
+    w.start();
+  }
+}
+```
+- ![image](https://github.com/user-attachments/assets/44396bda-fe56-4160-be51-bb7e1e17b3e8)
+
+### 스레드에서 UI를 조작하는 방법
+- 스레드에서 직접적으로 UI 위젯을 변경하면 안 됨
+- 해결법
+  - `View.post(Runnable)` 사용
+    - 작업 포스트에서 `Vies.post()`호출, UI 업데이트 스케줄링
+```java
+yourView.post(new Runnable(){
+  @Override
+  public void run(){
+    yourView.setText("새로운 텍스트");
+  }
+});
+```
+- Post 메서드는 메인 스레드와 작업 스레드 간 작업을 전달하기 위해 사용
+  - Runnable 작업을 메인 스레드에 메시지 큐에 추가하고 실행
+- Handler 사용법
+
+```java
+new Thread(new Runnable(){
+  @Override
+  public void run(){
+    handler.post(new Runnable(){
+      @Override
+      public void run(){
+        textView.setText("새로운 텍스트");
+      }
+    });
+  }
+})
 ```
