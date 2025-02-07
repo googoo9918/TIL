@@ -1,4 +1,29 @@
 # JS 문법 기초
+## 목차
+- [JS 문법 기초](#js-문법-기초)
+    - [목차](#목차)
+    - [변수](#변수)
+        - [var, let, const](#var-let-const)
+    - [기본형](#기본형)
+    - [참조형](#참조형)
+    - [연산자](#연산자)
+    - [조건문, 반복문](#조건문-반복문)
+    - [함수](#함수)
+    - [코어 라이브러리](#코어-라이브러리)
+    - [jQuery](#jquery)
+        - [jQuery 문법 구조](#jquery-문법-구조)
+        - [jQuery 선택자](#jquery-선택자)
+        - [jQuery 주요 메서드](#jquery-주요-메서드)
+        - [jQuery 이벤트 처리](#jquery-이벤트-처리)
+    - [| `.on("이벤트", "선택자", function() {...})` | 동적으로 추가된 요소에도 이벤트 적용 | `$(document).on("click", "#btn", function() {...});` |](#-on이벤트-선택자-function---동적으로-추가된-요소에도-이벤트-적용--documentonclick-btn-function--)
+    - [DOM](#dom)
+        - [DOM 요소 선택](#dom-요소-선택)
+        - [DOM 요소(노드)의 CRUD](#dom-요소노드의-crud)
+    - [스타일 변경 메서드](#스타일-변경-메서드)
+    - [속성 변경 메서드](#속성-변경-메서드)
+    - [요소의 위치 및 크기](#요소의-위치-및-크기)
+    - [애니메이션](#애니메이션)
+    - [클래스](#클래스)
 ## 변수
 ### var, let, const
 - 재선언, 재할당 가능
@@ -326,6 +351,7 @@ $$
 ### jQuery 이벤트 처리
 
 - HTML 요소에 이벤트 추가
+
 | 메서드 | 설명 | 예제 |
 |--------|------|------|
 | `.click()` | 클릭 이벤트 | `$("#btn").click(function() {...});` |
@@ -334,6 +360,7 @@ $$
 | `.change()` | 입력 값 변경 감지 | `$("#dropdown").change(function() {...});` |
 | `.on("이벤트", "선택자", function() {...})` | 동적으로 추가된 요소에도 이벤트 적용 | `$(document).on("click", "#btn", function() {...});` |
 ---
+
 ```js
 <button id="btn">클릭하세요</button>
 <p id="text">변경될 문장</p>
@@ -409,6 +436,7 @@ document
 
 ### DOM 요소 선택
 - JS에서 노드 찾기
+
 | 선택 방법 | 설명 | 예제 |
 |------------|-----------------------------|----------------------------------|
 | `getElementById` | `id` 속성으로 요소 선택 | `document.getElementById("title")` |
@@ -418,6 +446,7 @@ document
 | `querySelectorAll` | CSS 선택자 방식 (모든 요소 선택) | `document.querySelectorAll("p")` |
 
 - jQuery에서 노드 찾기
+
 | 선택자 | 설명 | 예제 |
 |--------|--------------|---------|
 | `$("태그")` | 특정 태그 선택 | `$("p")` |
@@ -437,6 +466,7 @@ console.log(paragraphs[0].innerText); // "JavaScript로 조작할 수 있어요.
 ### DOM 요소(노드)의 CRUD
 
 - **1️⃣ 노드 생성 (Create)**
+
 | 방법 | 설명 | 예제 |
 |------|------|------|
 | `document.createElement("태그")` | 새로운 HTML 요소 생성 | `let newDiv = document.createElement("div");` |
@@ -448,6 +478,7 @@ console.log(paragraphs[0].innerText); // "JavaScript로 조작할 수 있어요.
 ---
 
 - **2️⃣ 노드 읽기 (Read)**
+
 | 방법 | 설명 | 예제 |
 |------|------|------|
 | `document.getElementById("id")` | `id`로 요소 찾기 | `document.getElementById("title");` |
@@ -459,6 +490,7 @@ console.log(paragraphs[0].innerText); // "JavaScript로 조작할 수 있어요.
 ---
 
 - **3️⃣ 노드 수정 (Update)**
+
 | 방법 | 설명 | 예제 |
 |------|------|------|
 | `.innerText` | 요소의 텍스트 변경 | `title.innerText = "새로운 제목";` |
@@ -473,6 +505,7 @@ console.log(paragraphs[0].innerText); // "JavaScript로 조작할 수 있어요.
 ---
 
 - **4️⃣ 노드 삭제 (Delete)**
+
 | 방법 | 설명 | 예제 |
 |------|------|------|
 | `.removeChild(노드)` | 특정 자식 요소 삭제 | `parent.removeChild(childNode);` |
@@ -481,6 +514,7 @@ console.log(paragraphs[0].innerText); // "JavaScript로 조작할 수 있어요.
 ---
 
 - **5️⃣ 노드 이동 (Move)**
+
 | 방법 | 설명 | 예제 |
 |------|------|------|
 | `.appendChild(노드)` | 부모 요소의 마지막으로 이동 | `parent.appendChild(moveNode);` |
