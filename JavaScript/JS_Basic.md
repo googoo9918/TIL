@@ -15,7 +15,6 @@
         - [jQuery 선택자](#jquery-선택자)
         - [jQuery 주요 메서드](#jquery-주요-메서드)
         - [jQuery 이벤트 처리](#jquery-이벤트-처리)
-    - [| `.on("이벤트", "선택자", function() {...})` | 동적으로 추가된 요소에도 이벤트 적용 | `$(document).on("click", "#btn", function() {...});` |](#-on이벤트-선택자-function---동적으로-추가된-요소에도-이벤트-적용--documentonclick-btn-function--)
     - [DOM](#dom)
         - [DOM 요소 선택](#dom-요소-선택)
         - [DOM 요소(노드)의 CRUD](#dom-요소노드의-crud)
@@ -293,9 +292,9 @@ $(선택자).동작();
 | `$("tag")` | 특정 태그 선택 | `$("p")` (모든 `<p>` 요소 선택) |
 | `$("#id")` | `id` 속성으로 요소 선택 | `$("#title")` |
 | `$(".class")` | `class` 속성으로 요소 선택 | `$(".box")` |
-$$
+
 - 이 외에도, 계층, 속성, 필터, 폼 등 여러 선택자 존재
-- ex
+
 ```js
 <p>첫 번째 문장</p>
 <p class="text">두 번째 문장</p>
@@ -359,7 +358,7 @@ $$
 | `.keydown()` | 키 입력 이벤트 | `$("#input").keydown(function() {...});` |
 | `.change()` | 입력 값 변경 감지 | `$("#dropdown").change(function() {...});` |
 | `.on("이벤트", "선택자", function() {...})` | 동적으로 추가된 요소에도 이벤트 적용 | `$(document).on("click", "#btn", function() {...});` |
----
+
 
 ```js
 <button id="btn">클릭하세요</button>
@@ -373,11 +372,13 @@ $$
     });
 </script>
 ``` 
+
 - 동적 요소 이벤트 추가 (`.on()`)
     - 동적으로 추가된 요소에도 이벤트 적용
     - 일반적인 이벤트 등록 방식은, 초기 존재 요소에만 적용
     - `.on()` 사용 시 추후 동적으로 추가된 요소에도 이벤트 자동 적용
     - 여기서 추후란, html이 렌더링 된 이후, js가 실행되는 순간을 얘기함
+
 ```JS
 //추후 새로운 .dynamic-btn 버튼 추가 시, 이벤트 적용 불가
 $(".dynamic-btn").click(function(){
@@ -394,6 +395,7 @@ $(document).on("click", ".dynamic-btn", function(){
 //다만, 항상 이벤트를 document에 위임하면 성능이 저하될 수 있음
 //이벤트가 포함될 가능성이 높은 상위 요소에 이벤트를 위임
 ```
+
 ## DOM
 - HTML을 JavaScript에서 조작할 수 있도록 만드는 인터페이스
     - 웹 페이지 요소 동적 변경 가능
