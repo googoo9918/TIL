@@ -243,6 +243,60 @@ console.log(str); //'{"name": "Alice", "age":25}'
 ```
 
 ## jQuery
+- jQuery 라이브러리 로드
+```html
+<!-- jQuery 사용을 위해 CDN 또는 로컬 파일 호출 -->
+
+<!-- CDN 방식 -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- 로컬 파일 방식 -->
+<script src="js/jquery-3.6.0.min.js"></script>
+
+<!-- defer 속성 사용 시, HTML 모두 로드된 후 실행 -->
+ <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script>
+```
+
+- jQuery 기본 문법
+    - `$` 기호를 사용, jQuery 객체 생성 가능
+
+```js
+$(document).ready(function() {
+    console.log("jQuery 로드 완료!");
+});
+// DOM이 완전히 로드된 후 실행됨
+```
+
+- jQuery 코드 실행 방식
+    - `.ready()` 사용
+```js
+$(document).ready(function() {
+    console.log("DOM이 준비되었습니다.");
+});
+```
+    - `$(function() { })`: 축약형 사용 가능
+```js
+$(function() {
+    console.log("위와 같은 기능을 함")
+})
+```
+
+- jQuery 객체와 JavaScript 객체의 차이
+    - `$(selector)`로 선택한 요소는 jQuery 객체임
+    - JavaScript의 `document.querySelector()`와 다름
+        - JS는 HTML 요소(Node)를 반환하게 됨
+```javascript
+let jsElement = document.getElementById("myElement");
+let jqElement = $("#myElement");
+
+console.log(jsElement); //HTML 요소 반환
+console.log(jqElement); //jQuery 객체 반환
+
+//jQuery 객체를 JavaScript 객체로 변환
+let jsElement = $("myElement")[0]; //또는 .get(0)
+
+// JavaScript 객체를 jQuery 객체로 변환
+let jqElement = $(document.getElementByID("myElement"));
 - jQuery는 js 라이브러리
 - HTML 요소 조작, 이벤트 처리, 애니메이션, AJAX 요청 처리 가능
 - 비교 예제
