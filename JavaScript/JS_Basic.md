@@ -80,8 +80,6 @@ person = {name: "Bob", age: 30} // 오류 발생
 - Heap 저장
 - `Object`
     - `{name: "Alice", age:25 }`
-    - 실제 Map과 차이: 키에 문자열, Symbol만 가능
-    - 큰 데이터 처리 비효율적
 - `Array`
     - `[1,2,3,4,5]`
 - `Function`
