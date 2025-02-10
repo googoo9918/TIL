@@ -279,3 +279,53 @@
 </ul>
 ```
 
+## EL(Expression Language)
+- JSP에서 Java 코드를 최소화 하고, 데이터를 더 직관적으로 다룰 수 있도록 지원
+- `request`, `session` 등의 데이터
+    - `request.getAttribute("name")` 대신 `${name}`과 같은 간단한 문법으로 접근
+- 가독성 증가 및 유지보수 용이
+    - 산술, 논리, 비교 연산도 지원
+
+- EL 내장 객체
+    - 별도 객체를 생성하지 않고 내장 객체 사용 가능
+
+| EL 내장 객체 | 설명 | 예제 |
+|-------------|----------------------------------------|-------------------------|
+| **pageScope** | 현재 페이지(Page) 범위에서 저장된 데이터 접근 | `${pageScope.name}` |
+| **requestScope** | 요청(Request) 범위에서 저장된 데이터 접근 | `${requestScope.name}` |
+| **sessionScope** | 세션(Session) 범위에서 저장된 데이터 접근 | `${sessionScope.name}` |
+| **applicationScope** | 애플리케이션(Application) 범위에서 저장된 데이터 접근 | `${applicationScope.name}` |
+| **param** | 요청 파라미터 값 가져오기 (`request.getParameter()`) | `${param.username}` |
+| **paramValues** | 배열 형태의 요청 파라미터 값 가져오기 | `${paramValues.fruit[0]}` |
+| **header** | HTTP 요청 헤더 값 가져오기 | `${header.User-Agent}` |
+| **headerValues** | 다중 헤더 값 가져오기 | `${headerValues.Accept[0]}` |
+| **cookie** | 클라이언트의 쿠키 값 가져오기 | `${cookie.username.value}` |
+| **initParam** | `web.xml`에 설정된 초기화 파라미터 가져오기 | `${initParam.siteName}` |
+| **pageContext** | `pageContext` 객체 접근 | `${pageContext.request.method}` |
+
+- 요청 파라미터(`param`)
+
+```jsp
+<p>입력한 이름: ${param.username}</p>
+
+<!-- ?username=John 이 포함된 URL로 요청 시, John 출력 -->
+```
+
+- 요청 범위 데이터(`requestScope`)
+
+```jsp
+<%
+    request.setAttribute("message", "Hello, JSP!");
+%>
+<p> 메시지: ${requestScope.message} </p>
+<!-- request.setAttribute("message", "Hello, JSP!"); 값이 requestScope에서 출력 -->
+```
+
+- 세션 데이터(`sessionScope`)
+```jsp
+<%
+    session.setAttribute("user", "JohnDoe");
+%>
+<p>현재 로그인한 사용자: ${sessionScope.user}</p>
+<!-- 세션에 저장된 user 데이터를 가져옴 -->
+```

@@ -80,6 +80,8 @@ person = {name: "Bob", age: 30} // 오류 발생
 - Heap 저장
 - `Object`
     - `{name: "Alice", age:25 }`
+    - js는 클래스 생성하지 않고도 객체 생성 가능
+        - 블록 스코프 사용
 - `Array`
     - `[1,2,3,4,5]`
 - `Function`
