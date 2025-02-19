@@ -11,7 +11,6 @@
     - [함수](#함수)
     - [코어 라이브러리](#코어-라이브러리)
     - [jQuery](#jquery)
-        - [jQuery 문법 구조](#jquery-문법-구조)
         - [jQuery 선택자](#jquery-선택자)
         - [jQuery 주요 메서드](#jquery-주요-메서드)
         - [jQuery 이벤트 처리](#jquery-이벤트-처리)
@@ -243,6 +242,17 @@ console.log(str); //'{"name": "Alice", "age":25}'
 ```
 
 ## jQuery
+- jQuery는 js 라이브러리
+- HTML 요소 조작, 이벤트 처리, 애니메이션, AJAX 요청 처리 가능
+- 비교 예제
+```js
+//js로 HTML 요소 숨기기
+document.getElementById("box").style.display = "none";
+
+//jQuery로 HTML 요소 숨기기
+$("#box").hide();
+```
+
 - jQuery 라이브러리 로드
 ```html
 <!-- jQuery 사용을 위해 CDN 또는 로컬 파일 호출 -->
@@ -297,16 +307,7 @@ let jsElement = $("myElement")[0]; //또는 .get(0)
 
 // JavaScript 객체를 jQuery 객체로 변환
 let jqElement = $(document.getElementByID("myElement"));
-- jQuery는 js 라이브러리
-- HTML 요소 조작, 이벤트 처리, 애니메이션, AJAX 요청 처리 가능
-- 비교 예제
-```js
-//js로 HTML 요소 숨기기
-document.getElementById("box").style.display = "none";
 
-//jQuery로 HTML 요소 숨기기
-$("#box").hide();
-```
 
 ### jQuery 문법 구조
 ```js
