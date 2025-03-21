@@ -50,7 +50,7 @@
         - 여기서부터 모르겠어서 준호프로님께 요청을 청했음
 - 준호 프로님은 디버깅을 먼저 찍어보셨음
     - 큰 의미 없었음
-- **catch 부문에, `e.printStackTrac()` 찍어보심**
+- **catch 부문에, `e.printStackTrace()` 찍어보심**
     - 자세한 로그를 통해, isMine의 `NumberFormatException`임을 확인할 수 있었다.
     - 그렇다면 왜 MyBatis는 Y를 숫자로 변환하려고 하였을까??
         - 전체 검색으로 isMine을 찾아봤을 때, isMine이 Boolean형으로 선언된 것을 확인할 수 있었음

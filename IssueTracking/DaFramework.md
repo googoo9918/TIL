@@ -1,7 +1,11 @@
 # DAFramework
-## WEB_INF_meta_bangmun.xls
+## WEB_INF
+### meta_bangmun.xls
+- 현재 프레임워크에 서블릿매핑이 없음
+    - 엑셀로 관리
+    - WAS heap memory에 엑셀이 올라감
+        - Servelet Mapping을 대신하게 됨
 - Command
-    - 자바 클래스 파일을 의미한다.
     - 각 이벤트에 대한 메타데이터, KEY 중복이 불허
         - 중복 시 FW 기동중지
     - Command = [UC_ID] + '.' + [EV_ID]
@@ -50,3 +54,11 @@
     - BRANCH: 타 이벤트 분기
     - CHAINED-TX: CHAINED의 트랜잭션 연동형
     - BRANCH-TX: BRANCH의 트랜잭션 연동
+
+### conf
+- 설정 파일 저장
+- 유의깊게 살펴볼만한 것은 딱히 없는듯..?
+
+### components
+- class 파일 저장
+
