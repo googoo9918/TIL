@@ -2,7 +2,7 @@
 1. 폐쇄망에서는 gradle을 가져올 수 없기 때문에, 인터넷망에서 의존성을 다운받고, 폐쇄망으로 옮기는 작업을 진행해야 한다.
 - 이때, gradle 파일은 총 두 곳에서 관리된다.
     - 첫 번째는 Gradle user home
-        - 홈 디렉토리(전역)의 gralde이다.
+        - 홈 디렉토리(전역)의 gradle이다.
         - 주로 `C:\Users\DBInc\.gradle`에서 관리된다.
         - Settings/Build, Execution, Deployment/Gradle에서 지정할 수 있다.
         - 전역 설정 파일, 다운로드된 의존성 캐시, 로그 파일, Gradle 배포판 등이 존재
