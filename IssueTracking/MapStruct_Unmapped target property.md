@@ -57,3 +57,10 @@ C:\Users\DBInc\Project\visit\src\main\java\com\inc\visit\domain\visit\mapper\Vis
 - 임시방편에 불과한 코드일 수 있으나, 변수명을 아예 수정하지 않는 이상 어쩔 수 없는 방법인 듯
 - 어쩌면 contribute를 할 수 있는 좋은 기회가 될 수 있지 않을까? 싶기도 하다.
     - 혹은 이미 해결된 문제인데 나의 버전이 낮아 남아있는 문제일지도.
+
+### 이유 확인
+- 이유를 찾았음
+    - MapStruct는 내부적으로 `자바빈 프로퍼티` 이름을 기준으로 매핑 대상을 찾음
+    - `Introspector.decapitalize(String name)` 메서드는 JavaBeans 규약에 따라 getter 메서드 이름에서 프로퍼티 이름을 뽑아낼 때 사용하는 유틸 함ㅅ
+    - 이 함수의 동작 방식에 의하면, 이름의 첫 두 글자가 모두 대문자인 경우, 첫 글자를 소문자로 바꾸지 않고 그대로 사용함
+- MapStruct는 `getDInDisk()` 에서 `DInDisk`를 인식하기 때문에 위와 같이 동작하는 것임.
