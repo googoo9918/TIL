@@ -62,3 +62,15 @@
 ### components
 - class 파일 저장
 
+```java
+// 실제로 값이 담겨져 있다고 가정
+LTO subject = new LTO();
+for(int i=0; i< subject.size(); i++){
+			System.out.println("jdg2: subject:" + subject.get(i).getMap());
+}
+```
+LTO는 LIST + MTO(HashMap) --> 실제 데이터는 List에만 저장된다.
+subject를 List에 저장.
+근데 get을 하면.. a.get(idx)를 MTO로 변환해서 반환?????
+넣을 떄 mto로 넣었음.
+그니까 사실 LTO는, ArrayList<MTO> 인거임 이건 즉, ArrayList<HashMap>과 동일함.

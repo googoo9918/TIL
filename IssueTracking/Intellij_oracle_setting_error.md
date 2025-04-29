@@ -8,6 +8,9 @@
 - 최차장님께서 ojdbc8을 gradle이 가져오지 못해서, 직접 `java build path`를 하셨다고 말씀하여
     - runtimeOnly이던 jdbc:ojdbc8을 implementation으로 바꿔보자, 나도 해당 의존성을 제대로 가져오지 못하고 있는 것을 확인할 수 있었다
         - **왜??? 인지는 아직도 잘 모르겠다..**
+        - 흠 지금 보니, 로컬에서 바꾼게 아니니까, 홈 디렉토리에 의존성이 있다고 하더라도, 로컬 .gradle에 캐시가 없으니까 안된거 아닐까????
+        - 혹은 runtimeOnly로 설정이 되어있었으니, 인터넷망에서는 알아서 잘 가져오던 것이 implementation이라면 동작하지 않는다?
+        - 흠... 확실하진 않지만, 의존성 추가할게 있어서 implemetation으로 8을 빌드하고 다시 압축해서 가져와봤는데 정상 동작하지 않았음 ㅠ
     - 따라서 이를 추가하기 위해 프로젝트 루트/libs에 `ojdbc8-21.9.0.0.jar`를 추가하였다.
         - 이후 Project Structure에서
             - Libraries -> ojdbc8-21.9.0.0 추가
