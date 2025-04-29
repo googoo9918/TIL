@@ -61,6 +61,13 @@ C:\Users\DBInc\Project\visit\src\main\java\com\inc\visit\domain\visit\mapper\Vis
 ### 이유 확인
 - 이유를 찾았음
     - MapStruct는 내부적으로 `자바빈 프로퍼티` 이름을 기준으로 매핑 대상을 찾음
-    - `Introspector.decapitalize(String name)` 메서드는 JavaBeans 규약에 따라 getter 메서드 이름에서 프로퍼티 이름을 뽑아낼 때 사용하는 유틸 함ㅅ
+    - `Introspector.decapitalize(String name)` 메서드는 JavaBeans 규약에 따라 getter 메서드 이름에서 프로퍼티 이름을 뽑아낼 때 사용하는 유틸 함수
     - 이 함수의 동작 방식에 의하면, 이름의 첫 두 글자가 모두 대문자인 경우, 첫 글자를 소문자로 바꾸지 않고 그대로 사용함
 - MapStruct는 `getDInDisk()` 에서 `DInDisk`를 인식하기 때문에 위와 같이 동작하는 것임.
+
+### 새 해결책
+- 이와 비슷한 문제가, RequestDto에서 @NoArgsConstruct를 추가하자 발생하였다.
+- `@RequestBody`가 자바빈 프로퍼티 이름을 기준으로 매핑 대상을 찾기 때문
+- 따라서 문제가 되는 해당 필드에 getter를 추가하였다.
+    - ex) `getCDiskImportSize()` --> `getcDiskImportSize()`
+- 그냥 맨 두번째 글자가 대문자가 오는 필드를 최대한 지양하는게 좋아 보임
