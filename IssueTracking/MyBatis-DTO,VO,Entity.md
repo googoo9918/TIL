@@ -265,3 +265,13 @@ public interface AdminMapper {
     - expression을 사용하지 않은 `adminVoToAdminResponse` 등에서도
         - maskSecondCharacter, maskPhoneNumber 등의 메서드를 사용하려고 하였다.
     - 따라서 `@Named`, `qualifiedByName`등을 사용하여 해결하였다.
+
+### 추가적 의문점
+- 사실 어떻게 생각해보면 당연한 것인데, 왜 여태까지 이런 생각이 안 들었는지는 모르겠다.
+- 현재 쓰기 작업의 경우, reuqestDto를 WriteVo 등으로 변환해주고 있는데, 이러면 Service 계층에서 쓸만한 데이터 구조가 존재하지 않는다.
+- requestDto를 쓰기에도 역할에 맞지 않고, Vo를 쓰기에도 불변 객체라는 점에서 비즈니스 로직을 처리하기에는 부적합하다.
+- 그렇다고 Service 계층을 위한 별도 데이터 구조를 추가하기에도 복잡성 측면에서 무리가 있는지라, 다음과 같은 구조를 취하기로 했다.
+- 조회 작업
+    - requestDto -> QueryResponseDto -> ResponseDto
+- 쓰기 작업(insert, update, delete)
+    - requestDto -> QueryRequestDto
