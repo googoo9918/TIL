@@ -112,7 +112,7 @@
     - MyBatis는 Entity LifeCycle을 관리하지 않기에 영속성 컨텍스트에서 관리되진 않지만, 다음과 같은 이유로 DTO를 사용
     - 조회(select) 작업의 경우
         - ![Image](https://github.com/user-attachments/assets/3eb9ac41-d45f-43b7-8bae-63011b5d8df6)
-    - 쓰기(insert, update, delete) 작업의 경우 클라이언트에서 요청하는 request를 requestDto로 받아 service 계층에서 사용, repository로 넘길 때 VisitRequestDto로 변환
+    - 쓰기(insert, update, delete) 작업의 경우
         - ![Image](https://github.com/user-attachments/assets/bcc89692-6f1a-4a0b-8331-246b87d6cf23)
         - 장점
             - 타입 안정성
