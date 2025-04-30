@@ -1,4 +1,16 @@
-## DaFrame -> Spring 변환 정리
+## 목차
+- [목차](#목차)
+- [DaFrame -\> SpringBoot 변환 과정 중 컨셉 정리](#daframe---springboot-변환-과정-중-컨셉-정리)
+    - [Client 기본 컨셉](#client-기본-컨셉)
+    - [Controller 기본 컨셉](#controller-기본-컨셉)
+    - [DTO 기본 컨셉](#dto-기본-컨셉)
+    - [DTO vs Map 비교 요약](#dto-vs-map-비교-요약)
+    - [Mapper 계층 컨셉](#mapper-계층-컨셉)
+- [이슈 정리](#이슈-정리)
+    - [세팅 이슈](#세팅-이슈)
+    - [MyBatis 이슈](#mybatis-이슈)
+    - [기능 이슈](#기능-이슈)
+## DaFrame -> SpringBoot 변환 과정 중 컨셉 정리
 ### Client 기본 컨셉
 - 결국 JSP + SpringBoot를 사용한 SSR 방식이고, SPA를 구현할 수는 없음
     - 기존 PPR(Partial Page Rendering) 방식 + window.hisotry를 추가하는 방식으로 구현
