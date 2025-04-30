@@ -137,6 +137,190 @@
 - 변환 뿐 아니라 간단한 포맷팅, 마스킹 등의 Java 메서드(표현식 등) 사용 가능(`@expression` or `@qualifiedByName`, `@Named` 사용)
 
 >> cf) 이름 혼용 방지를 위해 기존 MyBatis Mapper를 의미하던 Mapper 계층은, Repository 계층으로 이름 변경
+- 예시 코드
+```java
+/**
+ * 도메인 계층 간 변환 역할을 하는 Mapper 인터페이스
+ * mapstruct.mapper를 사용, 필드명이 같은 경우 자동 변환(build 폴더에 MapperImpl 생성)
+ * 만약 빌더 패턴이 생성되어 있으면 빌더로 생성/ @Getter와 @AllArgsConstruct만 있는 경우 / @Setter와 @NoargsConstruct가 있는 경우 모두 다르게 생성
+ * 1. 조회 결과의 QueryResponseDto를 ResponseDto로 변환
+ * 2. RequestDto를 쓰기 작업(insert, update, delete 등)의 WriteRequestDto 로 변환
+ */
+@Mapper(componentModel = "spring")
+public interface AdminMapper {
+
+    @Mapping(target = "adminId", source = "id")
+    @Mapping(target = "adminPassword", source = "pass")
+    @Mapping(target = "adminType", source = "type")
+    @Mapping(target = "adminSysCode", source = "syscode")
+    AdminResponseDto.AdminResponse adminQueryResponseToAdminResponse(AdminQueryResponseDto.AdminQueryResponse adminQueryResponse);
+
+    @Mapping(target = "lockerRoomNumber", source = "codeNm")
+    @Mapping(target = "visitorName", source = "vstNm", defaultValue = "-") //defalutValue: null인 경우 기본 값
+    AdminResponseDto.LockerRoomResponse lockerRoomQueryResponseToLockerRoomResponse(AdminQueryResponseDto.LockerRoomQueryResponse lockerRoomQueryResponse);
+
+    List<AdminResponseDto.LockerRoomResponse> lockerRoomQueryResponseListToLockerRoomResponseList(List<AdminQueryResponseDto.LockerRoomQueryResponse> lockerRoomQueryResponseList);
+
+
+    AdminWriteRequestDto.AdminActionHistoryCreate visitUpdateRequestToAdminActionHistoryCreate(VisitRequestDto.VisitUpdateRequest visitUpdateRequest);
+
+    AdminWriteRequestDto.AdminActionHistoryCreate visitDeleteRequestToAdminActionHistoryCreate(VisitRequestDto.VisitDeleteRequest visitDeleteRequest);
+
+    AdminWriteRequestDto.AdminUpdate adminUpdateRequestToAdminUpdate(AdminRequestDto.AdminUpdateRequest adminUpdateRequest);
+}
+```
+
+```java
+/**
+ * 도메인 계층 간 변환 역할을 하는 Mapper 인터페이스
+ * mapstruct.mapper를 사용, 필드명이 같은 경우 자동 변환(build 폴더에 MapperImpl 생성)
+ * 만약 빌더 패턴이 생성되어 있으면 빌더로 생성/ @Getter와 @AllArgsConstruct만 있는 경우 / @Setter와 @NoargsConstruct가 있는 경우 모두 다르게 생성
+ * 1. 조회 결과의 QueryResponseDto를 ResponseDto로 변환
+ * 2. RequestDto를 쓰기 작업(insert, update, delete 등)의 WriteRequestDto 로 변환
+ */
+@Mapper(componentModel = "spring")
+public interface VisitMapper {
+    @Mapping(target = "managerId", source = "empId")
+    @Mapping(target = "managerName", source = "empNm")
+    @Mapping(target = "managerPosition", source = "titleNm")
+    @Mapping(target = "managerDepartment", source = "orgNm")
+    @Mapping(target = "managerPhoneNumber", source = "hpNo")
+    @Mapping(target = "managerOfficeNumber", source = "officeTel")
+    VisitResponseDto.ManagerResponse managerQueryResponseToManagerResponse(VisitQueryResponseDto.ManagerQueryResponse managerQueryResponse);
+
+    List<VisitResponseDto.ManagerResponse> managerQueryResponseListToManagerResponseList(List<VisitQueryResponseDto.ManagerQueryResponse> managerQueryResponseList);
+
+    @Mapping(target = "visitStartYmd", expression = "java(visitRequest.getVisitDateStart().substring(0, 8))")
+    @Mapping(target = "visitStartHour", expression = "java(visitRequest.getVisitDateStart().substring(8, 10))")
+    @Mapping(target = "visitStartMinute", expression = "java(visitRequest.getVisitDateStart().substring(10, 12))")
+    @Mapping(target = "visitEndYmd", expression = "java(visitRequest.getVisitDateEnd().substring(0, 8))")
+    @Mapping(target = "visitEndHour", expression = "java(visitRequest.getVisitDateEnd().substring(8, 10))")
+    @Mapping(target = "visitEndMinute", expression = "java(visitRequest.getVisitDateEnd().substring(10, 12))")
+    VisitWriteRequestDto.VisitHistoryCreate visitRequestToVisitHistoryCreate(VisitRequestDto.VisitRequest visitRequest);
+
+//    @InheritConfiguration(name = "visitRequestToVisitMasterCreate")
+    VisitWriteRequestDto.VisitMasterCreate visitRequestToVisitMasterCreate(VisitRequestDto.VisitRequest visitRequest);
+
+    @Mapping(target = "cDiskImportSize", source = "cDiskImportSize")
+    @Mapping(target = "dDiskImportSize", source = "dDiskImportSize")
+    @Mapping(target = "eDiskImportSize", source = "eDiskImportSize")
+    VisitWriteRequestDto.VisitItemCreate visitRequestToVisitItemCreate(VisitRequestDto.VisitRequest visitRequest);
+
+    @Mapping(target = "rowNumber", source = "rownum")
+    @Mapping(target = "visitorName", source = "vstNm", qualifiedByName = "maskSecondCharacter") //인터페이스 하단부 변경 메서드(maskSecondCharacter) 사용
+    //자바 표현식 사용(formatDate는 인터페이스 하단부 구현)
+    @Mapping(target = "visitDateStart", expression = "java(formatDate(visitQueryResponse.getVstStaYmd(), visitQueryResponse.getVstStaHh(), visitQueryResponse.getVstStaMm()))")
+    @Mapping(target = "visitDateEnd", expression = "java(formatDate(visitQueryResponse.getVstEndYmd(), visitQueryResponse.getVstEndHh(), visitQueryResponse.getVstEndMm()))")
+    @Mapping(target = "visitorCompany", source = "comNm")
+    @Mapping(target = "visitPurpose", source = "codeNm")
+    @Mapping(target = "visitorPhoneNumber", source = "hpNo", qualifiedByName = "maskPhoneNumber")
+    @Mapping(target = "managerName", source = "apprId", qualifiedByName = "maskSecondCharacter")
+    @Mapping(target = "accessCardNumber", source = "passNo")
+    @Mapping(target = "transferItem", source = "itemNm")
+    @Mapping(target = "vehicleNumber", source = "vstCarNo")
+    @Mapping(target = "lockerRoom", source = "roomId")
+    @Mapping(target = "visitState", source = "state")
+    VisitResponseDto.VisitResponse visitQueryDtoToVisitResponse(VisitQueryResponseDto.VisitQueryResponse visitQueryResponse);
+
+    List<VisitResponseDto.VisitResponse> visitQueryResponseListToVisitResponseList(List<VisitQueryResponseDto.VisitQueryResponse> visitQueryResponseList);
+
+    VisitWriteRequestDto.VisitMasterUpdate visitUpdateRequestToVisitMasterUpdate(VisitRequestDto.VisitUpdateRequest visitUpdateRequest);
+
+    @Mapping(target = "visitStartYmd", expression = "java(visitUpdateRequest.getVisitDateStart().substring(0, 8))")
+    @Mapping(target = "visitStartHour", expression = "java(visitUpdateRequest.getVisitDateStart().substring(8, 10))")
+    @Mapping(target = "visitStartMinute", expression = "java(visitUpdateRequest.getVisitDateStart().substring(10, 12))")
+    @Mapping(target = "visitEndYmd", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(0, 8))")
+    @Mapping(target = "visitEndHour", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(8, 10))")
+    @Mapping(target = "visitEndMinute", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(10, 12))")
+    VisitWriteRequestDto.VisitHistoryUpdate visitUpdateRequestToVisitHistoryUpdate(VisitRequestDto.VisitUpdateRequest visitUpdateRequest);
+
+    VisitWriteRequestDto.VisitItemDetailCreate visitUpdateRequestToItemCreate(VisitRequestDto.VisitUpdateRequest visitUpdateRequest);
+
+    @Mapping(target = "cDiskImportSize", source = "cDiskImportSize")
+    @Mapping(target = "cDiskExportSize", source = "cDiskExportSize")
+    @Mapping(target = "dDiskImportSize", source = "dDiskImportSize")
+    @Mapping(target = "dDiskExportSize", source = "dDiskExportSize")
+    @Mapping(target = "eDiskImportSize", source = "eDiskImportSize")
+    @Mapping(target = "eDiskExportSize", source = "eDiskExportSize")
+    VisitWriteRequestDto.VisitItemUpdate visitUpdateRequestToItemUpdate(VisitRequestDto.VisitUpdateRequest visitUpdateRequest);
+
+    @Mapping(target = "vstId", source = "vstId")
+    @Mapping(target = "vstNo", source = "vstNo")
+    @Mapping(target = "visitorName", source = "vstNm")
+    @Mapping(target = "visitorCompany", source = "comNm")
+    @Mapping(target = "phonePrefix", expression = "java(visitHistoryDetailQueryResponse.getHpNo().substring(0, 3))")
+    @Mapping(target = "phoneMiddle", expression = "java(visitHistoryDetailQueryResponse.getHpNo().substring(3, 7))")
+    @Mapping(target = "phoneEnd", expression = "java(visitHistoryDetailQueryResponse.getHpNo().substring(7, 11))")
+    @Mapping(target = "visitPurpose", source = "vstPurpose")
+    @Mapping(target = "otherPurpose", source = "vstPurposeEtc")
+    @Mapping(target = "visitLocation", source = "vstZone")
+    @Mapping(target = "visitClient", source = "companyId")
+    @Mapping(target = "otherClient", source = "companyName")
+    @Mapping(target = "vehicleModel", source = "vstCarType")
+    @Mapping(target = "vehicleNumber", source = "vstCarNo")
+    @Mapping(target = "visitDateStart", expression = "java(formatDate(visitHistoryDetailQueryResponse.getVstStaYmd(), visitHistoryDetailQueryResponse.getVstStaHh(), visitHistoryDetailQueryResponse.getVstStaMm()))")
+    @Mapping(target = "visitDateEnd", expression = "java(formatDate(visitHistoryDetailQueryResponse.getVstEndYmd(), visitHistoryDetailQueryResponse.getVstEndHh(), visitHistoryDetailQueryResponse.getVstEndMm()))")
+    @Mapping(target = "accessCardNumber", source = "passNo")
+    @Mapping(target = "idCardCheckYn", source = "identityYn")
+    @Mapping(target = "systemCheckYn", source = "systemCk")
+    @Mapping(target = "lockerRoom", source = "roomId")
+    @Mapping(target = "visitState", source = "state")
+    VisitResponseDto.VisitHistoryDetailResponse visitHistoryDetailQueryResponseToVisitHistoryDetailResponse(VisitQueryResponseDto.VisitHistoryDetailQueryResponse visitHistoryDetailQueryResponse);
+
+    @Mapping(target = "transferItem", source = "itemNm")
+    @Mapping(target = "transferReason", source = "itemReason")
+    @Mapping(target = "cDiskImportSize", source = "inDisk")
+    @Mapping(target = "cDiskExportSize", source = "outDisk")
+    @Mapping(target = "dDiskImportSize", source = "DInDisk")
+    @Mapping(target = "dDiskExportSize", source = "DOutDisk")
+    @Mapping(target = "eDiskImportSize", source = "EInDisk")
+    @Mapping(target = "eDiskExportSize", source = "EOutDisk")
+    @Mapping(target = "otherDiskImportSize", source = "FInDisk")
+    @Mapping(target = "otherDiskExportSize", source = "FOutDisk")
+    @Mapping(target = "diskSizeChangeReason", source = "itemInReason")
+    VisitResponseDto.VisitItemDetailResponse visitItemDetailQueryResponseToVisitItemDetailResponse(VisitQueryResponseDto.VisitItemDetailQueryResponse visitItemDetailQueryResponse);
+
+    // -----------------------------
+    // 유틸리티 메서드
+    // -----------------------------
+
+    // 두번째 글자 마스킹
+    @Named("maskSecondCharacter")
+    default String maskSecondCharacter(String name) {
+        if (name != null && name.length() > 1) {
+            char[] arr = name.toCharArray();
+            arr[1] = '*';
+            return new String(arr);
+        }
+        return name;
+    }
+
+    // 날짜 포매팅
+    default String formatDate(String ymd, String hh, String mm) {
+        if (ymd == null || ymd.length() < 8) {
+            return "";
+        }
+        return String.format("%s/%s/%s %s:%s",
+                ymd.substring(0, 4),   // 년
+                ymd.substring(4, 6),   // 월
+                ymd.substring(6, 8),   // 일
+                hh,                    // 시
+                mm                     // 분
+        );
+    }
+
+    // 번호 마스킹
+    @Named("maskPhoneNumber")
+    default String maskPhoneNumber(String phoneNumber) {
+        if (phoneNumber != null && phoneNumber.length() > 7) {
+            return phoneNumber.substring(0, 3)
+                    + "-****-"
+                    + phoneNumber.substring(7);
+        }
+        return phoneNumber;
+    }
+}
+```
 - Mapper 사용 시 Issue
     - [상속 구조 사용 시 Mapper 에러]()
     - [Mapstruct 매핑 관련 에러(자바빈 프로퍼티)]()
