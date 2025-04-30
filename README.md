@@ -11,6 +11,7 @@
     - [Cloud](#cloud)
     - [네트워크(Network)](#네트워크network)
     - [프론트엔드(Front End)](#프론트엔드front-end)
+    - [전공지식(Computer Science)](#전공지식computer-science)
     - [ETC](#etc)
 # Today I Learned (TIL)
 ### 자바(Java)
@@ -277,9 +278,22 @@
 - [와이어프레임(Wire frame)](https://github.com/googoo9918/TIL/blob/main/FrontEnd/WireFrame.md)<br><br>
 
 
+### 전공지식(Computer Science)
+--------------------------------
+- [인공지능(ArtificialInteligence)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/ArtificialInteligence.md)<br><br>
+- [빅데이터 분석(BigDataAnalysis)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/BigDataAnalysis.md)<br><br>
+- [데이터베이스(DataBase)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/DataBase.md)
+- [데이터베이스 응용(DataBaseApplication)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/DateBase_Application.md)
+- [딥러닝분석(DeepLearningAnalysis)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/DeepLearningAnalysis.md)
+- [모바일프로그래밍(MobilProgramming)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/MobileProgramming.md)
+- [운영체제(OperationSystem)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/OperatingSystem.md)
+- [소프트웨어 분석 및 설계(SoftwareAnalysis&Design)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/SoftwareAnalysis%26Design.md)
+- [소프트웨어공학(SoftwareEngineering)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/SoftwareEngineering.md)
+- [시스템 프로그래밍(System Programming)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/SystemProgramming.md)
 ### ETC
 -------------------------
 - [마크다운 기초 문법(MD Basic)](https://github.com/googoo9918/TIL/blob/main/ETC/MDgrammer.md) <br><br>
 - [CLI(Command Line Interface)](https://github.com/googoo9918/TIL/blob/main/ETC/CLI.md)<br><br>
 - [Git](https://github.com/googoo9918/TIL/blob/main/ETC/Git.md)<br><br>
-
+- [DMZ(Demilitarized Zone)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/DMZ.md)
+- [SPA & MPA](https://github.com/googoo9918/TIL/blob/main/ComputeScience/SPA%20%26%20MPA.md)
