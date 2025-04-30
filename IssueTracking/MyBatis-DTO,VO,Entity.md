@@ -271,6 +271,7 @@ public interface AdminMapper {
 - 현재 쓰기 작업의 경우, reuqestDto를 WriteVo 등으로 변환해주고 있는데, 이러면 Service 계층에서 쓸만한 데이터 구조가 존재하지 않는다.
 - requestDto를 쓰기에도 역할에 맞지 않고, Vo를 쓰기에도 불변 객체라는 점에서 비즈니스 로직을 처리하기에는 부적합하다.
 - 그렇다고 Service 계층을 위한 별도 데이터 구조를 추가하기에도 복잡성 측면에서 무리가 있는지라, 다음과 같은 구조를 취하기로 했다.
+    - WriteVo를 QueryReqeustDto로 변환, 이를 Service 계층에서 사용하도록 하였다.
 - 조회 작업
     - requestDto -> QueryResponseDto -> ResponseDto
 - 쓰기 작업(insert, update, delete)
