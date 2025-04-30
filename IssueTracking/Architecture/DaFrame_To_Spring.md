@@ -321,6 +321,23 @@ public interface VisitMapper {
     }
 }
 ```
+- 쿼리 단에서 Alias 등을 사용하면 위와 같이 Mapper 사용을 하지 않을 수 있지만(Alias를 사용하여 QueryResponse 필드명과 일치)
+    - 코드 수정이 쿼리에 영향을 끼치는 것은 적합하지 않다 생각해 위와 같은 구조를 취하였음
+- 위에 대한 고민은 [DTO 사용 관련 고찰](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Architecture/MyBatis-DTO%2CVO%2CEntity.md)에 자세히 나와 있으며, 일부를 발췌하자면 다음과 같다.
+```
+mapstruct Mapper를 사용하여 @Mapping을 사용하여 필드명을 변환해주고 있는데, 여기서 고민이 생김 -> 20개 이상의 컬럼을 조회하는 SQL문이 있는데 이 경우 @Mapping이 너무 많이 생기게 됨
+
+그렇다고 static 메서드를 써서 생성하자니, 필드 간의 매핑이 명시적으로 드러나지 않는다고 생각 -> 컬럼명(QueryResponseDto)와 ResponseDto 간 필드명이 대충 비슷하기만 하다면 크게 문제가 되지 않겠지만 비정규화가 많이 되어있는 테이블이기 때문에 지금은 상당부분 상이함(테이블 명과 일치 시킬 수 있다면 아무런 문제가 되지 않는다.)
+
+그리고 보일러플레이트 코드 또한 너무 많아지는 것 같고... 만약 static method를 사용하여 매핑을 진행한다면, mapper 계층을 열어보고, of 메서드를 본 다음에야 어떤 필드가 어떤 필드와 매핑되는지 찾아본 다음에야 알게 될 것임.
+
+그런데 그렇다고 모든 매핑을 @Mapping으로 처리하자니, 추후에 마스킹이나 포매팅 등 QueryResponseDto -> responseDto로 변환하는데 별도 로직이 생긴다면, 모든 @Mapping을 삭제하고 of 메서드 등으로 수정해야 하잖아. 이건 너무 변경에 닫혀있는거 아닐까??
+
+근데 이렇게 생각해보면, 사실 QueryResponseDto와 responseDto로 분리한 이유가 위와 같은 별도 로직을 위해서가 가장 크니까.. 아예 mapstruct mapper를 사용 안 하는게 맞나 싶기도 하고??
+
+완전 간단한 변환 로직을 제외하고는 다 static 메서드 등을 사용하여 변환을 하는게 맞는 것 같은데..
+```
+
 - Mapper 사용 시 Issue
     - [상속 구조 사용 시 Mapper 에러]()
     - [Mapstruct 매핑 관련 에러(자바빈 프로퍼티)]()
