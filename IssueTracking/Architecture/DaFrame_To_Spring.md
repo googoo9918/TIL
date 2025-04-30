@@ -7,9 +7,11 @@
     - [DTO vs Map 비교 요약](#dto-vs-map-비교-요약)
     - [Mapper 계층 컨셉](#mapper-계층-컨셉)
 - [이슈 정리](#이슈-정리)
+    - [Mapper 사용 시 이슈](#mapper-사용-시-이슈)
     - [세팅 이슈](#세팅-이슈)
     - [MyBatis 이슈](#mybatis-이슈)
     - [기능 이슈](#기능-이슈)
+
 ## DaFrame -> SpringBoot 변환 과정 중 컨셉 정리
 ### Client 기본 컨셉
 - 결국 JSP + SpringBoot를 사용한 SSR 방식이고, SPA를 구현할 수는 없음
@@ -350,11 +352,11 @@ mapstruct Mapper를 사용하여 @Mapping을 사용하여 필드명을 변환해
 완전 간단한 변환 로직을 제외하고는 다 static 메서드 등을 사용하여 변환을 하는게 맞는 것 같은데..
 ```
 
-- Mapper 사용 시 Issue
-    - [상속 구조 사용 시 Mapper 에러](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/Mapstruct_mapper_extends.md)
-    - [Mapstruct 매핑 관련 에러(자바빈 프로퍼티)](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/MapStruct_Unmapped%20target%20property.md)
-
 ## 이슈 정리
+### Mapper 사용 시 이슈
+- [상속 구조 사용 시 Mapper 에러](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/Mapstruct_mapper_extends.md)
+- [Mapstruct 매핑 관련 에러(자바빈 프로퍼티)](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/MapStruct_Unmapped%20target%20property.md)
+
 ### 세팅 이슈
 - [DaFrame 내부 톰캣 세팅](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Setting/DaFrameIntellijSetting.md)
 - [폐쇄망 gradle 세팅](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Setting/Intellij_gradle_setting_error.md)
