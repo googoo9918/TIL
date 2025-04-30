@@ -3,39 +3,79 @@
 - 결국 JSP + SpringBoot를 사용한 SSR 방식이고, SPA를 구현할 수는 없음
     - 기존 PPR(Partial Page Rendering) 방식 + window.hisotry를 추가하는 방식으로 구현
         - ITMS에는 PPR은 구현되어 있으나, 새로고침 시 main.jsp 부터 다시 시작 하는 불편함 존재
-    - 현재는 controller 단 AJAX 요청 체크(URL 직접 접근 및 새로고침 방지) + window.onpopstate를 통해 앞으로가기, 뒤로가기 요청 처리
-    - ENUM을 통해 페이지 URL 관리
+    - 현재는 PPR + `window.onpopstate`를 통해 앞으로 가기/뒤로가기 요청 처리
+        - ![Image](https://github.com/user-attachments/assets/164db518-3aa2-4f59-ba2e-892510a21449)
 
 - 기존에는 모든 api 요청은, POST로 처리 / jsp 파일 요청 ajax는 GET으로 처리
-    - 방문관리 시스템은 동작하고자 하는 Http Method에 따라 Restful Api 규약에 맞춰 getHtml, getRequest, postRequest, putRequest, deleteRequest 등으로 구분
+- 방문관리 시스템은 동작하고자 하는 Http Method에 따라 Restful Api 규약에 맞춰 다음과 같이 구분 
+    - getHtml, getRequest, postRequest, putRequest, deleteRequest로 구분
+    - `getHtml`
+        - JSP 페이지 요청 function
+        - ![Image](https://github.com/user-attachments/assets/4e90395f-aef3-4987-961f-0f6cf9ac818c)
+    - `handleError`
+        - Rest API 공통 에러 함수
+        - ![Image](https://github.com/user-attachments/assets/5be6ba1e-0f5d-476c-81fe-0772e0493ea9)
+    - `getRequest`
+        - ![Image](https://github.com/user-attachments/assets/e6ad483c-4642-41c0-993c-7d488ea261ac)
+    - `postRequest`
+        - ![Image](https://github.com/user-attachments/assets/6c65e7e5-154d-4d2e-bafc-95b5fb58e56a)
+    - `putRequest`
+        - ![Image](https://github.com/user-attachments/assets/a890978e-0eb5-40f2-990f-87fc2379a345)
+    - `deleteRequest`
+        - ![Image](https://github.com/user-attachments/assets/30635062-92fb-4e84-a758-c85f1c42c845)
 
 ### Controller 기본 컨셉
 - jsp를 반환하는 ViewController와, Rest api 요청을 처리하는 RestController로 분리
+    - ViewController에서는 Controller 계층 AJAX 요청 체크 및 ENUM을 통한 페이지 URL 관리
+        - Controller 계층 AJAX 요청 체크
+            - ![Image](https://github.com/user-attachments/assets/c2504d5c-6644-4c05-94c2-ff86358991f2)
+                - AJAX 요청 시 Partial Page 반환
+                - url 직접 접근 or 새로고침 시 layout 포함하여 반환
+            - ![Image](https://github.com/user-attachments/assets/52b574f0-15c4-4071-a4a6-b3effcc92c21)
+                - 일반적으로 `X-Requested-with` 헤더는 일반적으로 Ajax 요청에서만 포함
+                - 추가적으로 `XMLHttpRequest`인지 확인
+        - `PageType` ENUM을 통해 페이지 URL 관리
+            - ![Image](https://github.com/user-attachments/assets/26615eeb-9dae-4e9e-8c85-9e922caa3ae6)
 
 - RESTful API 설계
     - ITMS는 리소스 기반이 아닌 동작 위주의 URL / Http Method는 모두 POST를 사용(페이지 요청 제외) / HTTP 상태 코드 활용하지 않음(에러 발생 시에도 200 반환)
         - 위와 같은 이유로 RESTful API라고 보기 어려움
         - 따라서 방문관리 시스템에서는 최대한 RESTful api url 규약에 맞춰, 엔드포인트를 설계하고자 했음
     - ViewController는 화면 기준 도메인으로 작성, jsp 파일 네이밍은 기존 ITMS 방식을 차용하였음
-    - RestController는 리소스 기반 URL 작성, 예를 들어 admin_m01_s02에서 사용하는 API라고 하더라도, VisitRestController에 존재.
+    - RestController는 리소스 기반 URL 작성, 예를 들어 admin_m01_s02 페이지에서 사용하는 API라고 하더라도, VisitRestController/VisitService에 존재(리소스 기반)
+        - URL 예시
+            - `VisitRestController`
+                - ![Image](https://github.com/user-attachments/assets/b69e7cd0-da09-41d6-81b4-d01ad31c16dc)
+                - ![Image](https://github.com/user-attachments/assets/3bc72207-7b82-4ac3-9c51-5ae803564bb0)
+                - ![Image](https://github.com/user-attachments/assets/0ae954aa-2045-4036-9c8b-e912a1267582)
+                - ![Image](https://github.com/user-attachments/assets/bd206765-a348-492c-aa53-0d04e62846a8)
+                - ![Image](https://github.com/user-attachments/assets/1bc2cef4-17cf-44b1-b308-5bb1f8ae1595)
+                - ![Image](https://github.com/user-attachments/assets/be589b27-408f-4467-a9b7-1abe98bfeea6)
 - 예외 처리 및 HTTP 상태 코드 활용
     - ITMS에서는 모든 Controller가 try-catch로 작성되어 있음
         - 다만, 각각의 컨트롤러에서 별도의 커스텀 에러처리를 하고 있는 것처럼 보이진 않음(모두 try-catch로 이루어져있는 의미가 없음)
-        - 따라서 try-catch가 우선 적용되어, @RestControllerAdvice가 실제 적용되지 않는 것으로 확인 됨
-    - 따라서 방문관리 시스템에서는 RestControllerAdvice + 커스텀 에러를 통해 Exception Handler를 최대한 전역적으로 해결하고자 했음.
-        - ITMS 에서는 에러가 발생했을 때 응답을 BodyResponse로 Wrapping하여, HttpStatus는 항상 200을 반환하고, SuccessYN을 통해 응답의 성공/실패 여부를 확인할 수 있었음
-        - 클라이언트에서도 에러가 발생했을 때, 200 응답을 받기 때문에 ajax의 success 콜백에서 별도 분기 처리를 통해 처리하는 것을 확인할 수 있었음
-    - 따라서 방문관리 시스템에서는 Response에 400번대, 500번대 HttpStatus를 같이 반환함으로써 ajax의 success, error 콜백을 사용하여 Status에 맞는 응답 처리를 진행하였음
-        - 보다 세부적으로 예를 들어 보자면, 세션 인증의 경우에는, ITMS에서는 AJAX 요청을 보내기 전 SessionCheck API를 통해 해결하고 있지만
-        - 방문관리 시스템의 AJAX 요청의 경우 Session Exception이 발생한 경우 401에러와 함께 redirectUrl을 반환함으로써 error 콜백에서 로그인 페이지로 전환할 수 있게 처리
-        - 혹은 페이지 요청의 경우(Window History, url 직접 접근 등) 어차피 서버에서 HttpStatus 및 응답을 받을 수 없으니, 서버 측에서 로그인 페이지로 리다이렉션 하도록 진행
-        - 이러한 작업을 통해 클라이언트 단에서 주도적으로 처리하기 보단, 서버의 응답을 통해 클라이언트의 행동을 지정하도록 하였음.
-    - 정리하자면, 기존 API 에서는 AJAX 요청을 보낼 때, 클라이언트 단에서 추가적인 AJAX 요청을 통해 세션을 먼저 확인하고, 이후 AJAX 요청에서 에러가 발생한다 하더라도 200 응답과 함께 Success 콜백에서 처리하고 있지만
-    - 현재 API에서는 AJAX 요청은 한 번만 이뤄지고, 세션에 대한 인증 또한 서버에서 진행되며, 클라이언트단에서 HTTP 상태 코드에 따라 작업을 진행하게 됨.
+        - 또한 위와 같은 문제 때문에 try-catch가 우선 적용되어, `@RestControllerAdvice`가 실제로 적용되지 않는 것으로 확인 됨
+        - 또한 ITMS 에서는 에러가 발생했을 때 응답을 BodyResponse로 Wrapping하여, HttpStatus는 항상 200을 반환하고, SuccessYN을 통해 응답의 성공/실패 여부를 확인함
+            - 클라이언트에서도 에러가 발생했을 때, 200 응답을 받기 때문에 ajax의 success 콜백에서 별도 분기 처리를 통해 처리하는 것을 확인할 수 있었음
+            - 내부적인 규약에 따른 것이긴 하지만, 일반적으로 통용되는 Restful API는 아님
+    - 방문관리 시스템에서는 `@RestControllerAdvice` + 커스텀 에러를 통해 Exception Handler를 최대한 전역적으로 해결하고자 했음.
+        - 또한 방문관리 시스템에서는 Response에 400번대, 500번대 HttpStatus를 같이 반환함으로써 ajax의 success, error 콜백을 사용하여 Status에 맞는 응답 처리를 진행하였음
+        - 보다 세부적으로 예를 들어 보자면, 세션 인증 예외처리의 경우에는, ITMS에서는 AJAX 요청을 보내기 전 추가적인 SessionCheck AJAX 요청을 통해 해결하고 있지만
+        - ![Image](https://github.com/user-attachments/assets/122dc625-8c80-4d10-a06e-fa6523e037a1)
+            - 방문관리 시스템의 AJAX 요청의 경우 Session Exception이 발생한 경우 401에러와 함께 redirectUrl을 반환함으로써 error 콜백에서 로그인 페이지로 전환할 수 있게 처리함
+            - 혹은 페이지 요청의 경우(Window History, url 직접 접근 등) 어차피 서버에서 HttpStatus 및 응답을 받을 수 없으니, 서버 측에서 로그인 페이지로 리다이렉션 하도록 진행
+        - 위와 같은 작업을 통해 클라이언트 단에서 주도적으로 처리하기 보단, 서버의 응답을 통해 클라이언트의 행동을 지정하도록 하였음.
+    - 정리하자면, 세션 인증에서 ITMS API 에서는 AJAX 요청을 보낼 때, 클라이언트 단에서 선제적인 AJAX 요청을 통해 세션을 먼저 확인하고, 이후 AJAX 요청에서 에러가 발생한다 하더라도 200 응답과 함께 Success 콜백에서 처리하고 있음
+        - 불필요한 통신 + 컨트롤러 기준 try-catch로 에러 핸들링 + RESTFul Api 규약에 맞지 않는 Http Status
+    - 현재 API에서는 AJAX 요청은 한 번만 이뤄지고, ExceptionHandler 또한 전역적으로 진행되며, 클라이언트단에서 HTTP 상태 코드에 따라 작업을 진행하게 됨.
 
 ### DTO 기본 컨셉
+- 기존 ORM(JPA) 사용 시
+    - ![Image](https://github.com/user-attachments/assets/2c476c1f-a20c-4c32-99c7-41916fd4d4cc)
+        - Service 계층 및 Repository 계층에서 Entity를 사용하고, **영속성 컨텍스트** 관리를 통한 용이성 제공
+        - Controller 계층과의 명확한 분리를 통해 여러 장점 제공
 - ITMS에서는 원시 자료구조인 Map을 통해 모든 Rest API의 요청과 응답을 처리
-    - 클라이언트에서 보내는 request를 @RequestBody Map<String, String>으로 받아 service, repository(Mybatis)에서 모두 Map으로 처리하고, 응답 또한 Map으로 내보내 service, controller, 클라이언트 응답 모두 Map으로 처리하는 경우
+    - ![Image](https://github.com/user-attachments/assets/3e948760-2f46-468e-8aa0-189d7887c310)
         - 장점
             - 유연성
                 - 클라이언트 전달 데이터 형식에 관계없이 유연한 처리 가능(동적 변경 데이터 or 필드 대응 용이)
@@ -55,8 +95,11 @@
                 - 클라이언트 - 서버 간 명확한 데이터 구조를 제공할 수 없음
                 - 특히, API 명세를 작성하기 매우 어려움
 - 방문관리 시스템에서의 DTO 사용
-    - 조회(select) 작업의 경우, 클라이언트에서 보내는 request(requestBody, requestParam)를 requestDto로 받아 service 계층, repository에서 사용하고 repository의 응답을 QueryResponseDto로 받아서 서비스에서 사용, controller에 ResponseDto로 변환하여 응답하고 client 단에 ResponseDto를 응답으로 보내주는 경우
+    - MyBatis는 Entity LifeCycle을 관리하지 않기에 영속성 컨텍스트에서 관리되진 않지만, 다음과 같은 이유로 DTO를 사용
+    - 조회(select) 작업의 경우
+        - ![Image](https://github.com/user-attachments/assets/3eb9ac41-d45f-43b7-8bae-63011b5d8df6)
     - 쓰기(insert, update, delete) 작업의 경우 클라이언트에서 요청하는 request를 requestDto로 받아 service 계층에서 사용, repository로 넘길 때 VisitRequestDto로 변환
+        - ![Image](https://github.com/user-attachments/assets/bcc89692-6f1a-4a0b-8331-246b87d6cf23)
         - 장점
             - 타입 안정성
                 - DTO 사용 시, 명확한 타입 정의 가능
@@ -73,6 +116,8 @@
                 - 개발 시간 증가, 코드량 증가
             - 유연성 감소
                 - API 변경 시, DTO 클래스 수정으로 이어짐
+- [DTO 사용 관련 고찰](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Architecture/MyBatis-DTO%2CVO%2CEntity.md)
+    - MyBatis에서의 DTO 사용에 대한 고민 흔적입니다.
 
 ### DTO vs Map 비교 요약
 | 기준                | `requestDto` (DTO)                                | `Map`                                    |
@@ -85,4 +130,13 @@
 | **코드 작성의 편리함**| 낮음 (DTO 객체 생성 필요)                       | 높음 (직접적으로 Map으로 처리 가능)         |
 
 
-### 
+### Mapper 계층 컨셉
+- DTO 간 자동 변환을 진행하기 위해, `org.mapstruct.Mapper`를 사용
+- 요청 타입과 응답 타입만 지정해주면, 자동 변환 진행
+    - 필드 명이 다른 경우, `@Mapping(target = " ", source = " ")`을 통해 지정 요망
+- 변환 뿐 아니라 간단한 포맷팅, 마스킹 등의 Java 메서드(표현식 등) 사용 가능(`@expression` or `@qualifiedByName`, `@Named` 사용)
+
+>> cf) 이름 혼용 방지를 위해 기존 MyBatis Mapper를 의미하던 Mapper 계층은, Repository 계층으로 이름 변경
+- Mapper 사용 시 Issue
+    - [상속 구조 사용 시 Mapper 에러]()
+    - [Mapstruct 매핑 관련 에러(자바빈 프로퍼티)]()
