@@ -290,10 +290,12 @@
 - [소프트웨어 분석 및 설계(SoftwareAnalysis&Design)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/SoftwareAnalysis%26Design.md)
 - [소프트웨어공학(SoftwareEngineering)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/SoftwareEngineering.md)
 - [시스템 프로그래밍(System Programming)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/SystemProgramming.md)
+
 ### ETC
 -------------------------
 - [마크다운 기초 문법(MD Basic)](https://github.com/googoo9918/TIL/blob/main/ETC/MDgrammer.md) <br><br>
 - [CLI(Command Line Interface)](https://github.com/googoo9918/TIL/blob/main/ETC/CLI.md)<br><br>
 - [Git](https://github.com/googoo9918/TIL/blob/main/ETC/Git.md)<br><br>
-- [DMZ(Demilitarized Zone)](https://github.com/googoo9918/TIL/blob/main/ComputeScience/DMZ.md)
-- [SPA & MPA](https://github.com/googoo9918/TIL/blob/main/ComputeScience/SPA%20%26%20MPA.md)
+- [DMZ(Demilitarized Zone)](https://github.com/googoo9918/TIL/blob/main/IssueTracking/ETC/DMZ.md)
+- [SPA & MPA](https://github.com/googoo9918/TIL/blob/main/IssueTracking/ETC/SPA%20%26%20MPA.md)
+- [FireWall&VPN](https://github.com/googoo9918/TIL/blob/main/IssueTracking/ETC/FireWall%26VPN.md)
