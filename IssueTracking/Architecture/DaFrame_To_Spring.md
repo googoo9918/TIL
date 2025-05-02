@@ -8,9 +8,13 @@
         - [ViewController(Jsp 페이지 반환)](#viewcontrollerjsp-페이지-반환)
         - [RESTful API](#restful-api)
         - [예외 처리 with HTTP 상태 코드](#예외-처리-with-http-상태-코드)
-    - [DTO 기본 컨셉](#dto-기본-컨셉)
+    - [Data Transfer 기본 컨셉](#data-transfer-기본-컨셉)
+        - [ORM(JPA) 사용 시](#ormjpa-사용-시)
+        - [ITMS](#itms)
+        - [방문관리 시스템](#방문관리-시스템)
     - [DTO vs Map 비교 요약](#dto-vs-map-비교-요약)
     - [Mapper 계층 컨셉](#mapper-계층-컨셉)
+        - [예시 코드](#예시-코드)
 - [이슈 정리](#이슈-정리)
     - [Mapper 사용 시 이슈](#mapper-사용-시-이슈)
     - [세팅 이슈](#세팅-이슈)
@@ -76,10 +80,11 @@
                 - ![Image](https://github.com/user-attachments/assets/1bc2cef4-17cf-44b1-b308-5bb1f8ae1595)
                 - ![Image](https://github.com/user-attachments/assets/be589b27-408f-4467-a9b7-1abe98bfeea6)
             - [RESTful API 네이밍 래퍼런스](https://restfulapi.net/resource-naming/)
+
 #### 예외 처리 with HTTP 상태 코드
 - ITMS에서는 모든 Controller가 try-catch로 작성되어 있음
     - 다만, 각각의 컨트롤러에서 별도의 커스텀 에러처리를 하고 있는 것처럼 보이진 않음(모두 try-catch로 이루어져있는 의미가 없음)
-    - 또한 위와 같은 문제 때문에 try-catch가 우선 적용되어, `@RestControllerAdvice`로 작성된 `ExceptionHandler`가 실제로 적용되지 않는 것으로 확인 됨
+    - **또한 위와 같은 문제 때문에 try-catch가 우선 적용되어, `@RestControllerAdvice`로 작성된 `ExceptionHandler`가 실제로 적용되지 않는 것으로 확인 됨**
     - 또한 ITMS에서는 에러가 발생했을 때 응답을 BodyResponse로 Wrapping하여, HttpStatus는 항상 200을 반환하고, SuccessYN을 통해 응답의 성공/실패 여부를 확인함
         - 클라이언트에서도 에러가 발생했을 때, 200 응답을 받기 때문에 ajax의 success 콜백에서 별도 분기 처리를 통해 처리하는 것을 확인할 수 있었음
         - 내부적인 규약에 따른 것이긴 하지만, 일반적으로 통용되는 RESTful API는 아님
@@ -89,17 +94,21 @@
     - 보다 세부적으로 예를 들어 보자면, 세션 인증 예외처리의 경우에는, ITMS에서는 AJAX 요청을 보내기 전 추가적인 SessionCheck AJAX 요청을 통해 해결하고 있지만
     - ![Image](https://github.com/user-attachments/assets/122dc625-8c80-4d10-a06e-fa6523e037a1)
         - 방문관리 시스템의 AJAX 요청의 경우 Session Exception이 발생한 경우 401에러와 함께 redirectUrl을 반환함으로써 error 콜백에서 로그인 페이지로 전환할 수 있게 처리함
-        - 혹은 페이지 요청의 경우(Window History, url 직접 접근 등) 어차피 서버에서 HttpStatus 및 응답을 받을 수 없으니, 서버 측에서 로그인 페이지로 리다이렉션 하도록 진행
+        - 혹은 페이지 요청의 경우(Window History, url 직접 접근 등) 어차피 서버에서 HttpStatus 및 응답을 받을 수 없으니, 서버 측에서 로그인 페이지로 리다이렉션 하도록 진행함
     - 위와 같은 작업을 통해 클라이언트 단에서 주도적으로 처리하기 보단, 서버의 응답을 통해 클라이언트의 행동을 지정하도록 하였음.
 - 정리하자면, 세션 인증에서 ITMS API에서는 AJAX 요청을 보낼 때, 클라이언트 단에서 선제적인 AJAX 요청을 통해 세션을 먼저 확인하고, 이후 AJAX 요청에서 에러가 발생한다 하더라도 200 응답과 함께 Success 콜백에서 처리하고 있음
-    - 불필요한 통신 + 컨트롤러 기준 try-catch로 에러 핸들링 + RESTFul Api 규약에 맞지 않는 Http Status
+    - **불필요한 통신 + 컨트롤러 기준 try-catch로 에러 핸들링 + RESTFul Api 규약에 맞지 않는 Http Status**
 - 현재 API에서는 AJAX 요청은 한 번만 이뤄지고, ExceptionHandler 또한 전역적으로 진행되며, 클라이언트단에서 HTTP 상태 코드에 따라 작업을 진행하게 됨.
 
-### DTO 기본 컨셉
-- 기존 ORM(JPA) 사용 시
-    - ![Image](https://github.com/user-attachments/assets/2c476c1f-a20c-4c32-99c7-41916fd4d4cc)
-        - Service 계층 및 Repository 계층에서 Entity를 사용하고, **영속성 컨텍스트** 관리를 통한 용이성 제공
-        - Controller 계층과의 명확한 분리를 통해 여러 장점 제공
+### Data Transfer 기본 컨셉
+#### ORM(JPA) 사용 시
+- ![Image](https://github.com/user-attachments/assets/2c476c1f-a20c-4c32-99c7-41916fd4d4cc)
+    - Service 계층 및 Repository 계층에서 Entity를 사용하고, **영속성 컨텍스트** 관리를 통한 용이성 제공
+        - 캐시, 지연 로딩, 변경 감지 등
+    - Controller 계층과의 명확한 분리를 통해 여러 장점 제공
+    - 엔티티 중심 설계 가능
+        - 쿼리 중심 개발이 아닌, 객체 중심 개발 가능
+#### ITMS
 - ITMS에서는 원시 자료구조인 Map을 통해 모든 Rest API의 요청과 응답을 처리
     - ![Image](https://github.com/user-attachments/assets/3e948760-2f46-468e-8aa0-189d7887c310)
         - 장점
@@ -119,34 +128,55 @@
                 - `@Valid` 등의 어노테이션을 사용할 수 없고, 필드별 유효성 검증을 진행하기 어려움
             - 클라이언스 - 서버 간 규약 부족
                 - 클라이언트 - 서버 간 명확한 데이터 구조를 제공할 수 없음
-                - 특히, API 명세를 작성하기 매우 어려움
+                - 특히, API 문서를 작성하기 매우 어려움
+                    - 작성하더라도 변경에 따라 수동 유지보수가 진행되어야 함
+#### 방문관리 시스템
 - 방문관리 시스템에서의 DTO 사용
     - MyBatis는 Entity LifeCycle을 관리하지 않기에 영속성 컨텍스트에서 관리되진 않지만, 다음과 같은 이유로 DTO를 사용
     - 조회(select) 작업의 경우
         - ![Image](https://github.com/user-attachments/assets/3eb9ac41-d45f-43b7-8bae-63011b5d8df6)
+            - `QueryResponseDto`는 DB Column명 중심 
+                - DB 스키마 기반 필드, 직접 쿼리 결과를 매핑
+            - `ResponseDto`는 화면 구성 중심
+                - 클라이언트에게 반환할 최종 응답
+            - 클라이언트 변경이 생겨도 DB 구조에 영향을 끼치지 않고, DB 구조에 영향을 끼쳐도 클라이언트에 영향을 끼치지 않음
     - 쓰기(insert, update, delete) 작업의 경우
         - ![Image](https://github.com/user-attachments/assets/bcc89692-6f1a-4a0b-8331-246b87d6cf23)
+            - `RequestDto`
+                - 클라이언트에서 전달한 요청 값을 담음
+                    - UI 양식 기반
+            - `WriteRequestDto`
+                - DB제약 조건 및 처리 로직에 맞춤
+                - 나중에 DB 저장 구조가 변경되어도, `writeRequestDto`만 수정하면 됨
+                    - `RequestDto`는 UI 변경이 없으면 그대로 재사용 가능
         - 장점
+            - 관심사 분리
+                - DB 결과와 화면 응답은 각각 변화 주기가 다름
+                - 이를 분리하여 **서로 영향을 주지 않음**
             - 타입 안정성
                 - DTO 사용 시, 명확한 타입 정의 가능
             - 가독성 향상
                 - 요청 및 응답 데이터 명확히 정의
             - Validation 및 제약 조건 적용 가능
-                - 검증 용이
+                - 검증 용이(`@Valid`, `@NotNull`, `@Patter` 등)
             - API 문서화 용이(Swagger, Spring Rest Docs 등)
             - 각 작업에 맞는 DTO 사용(단일 책임)
                 - 유지보수 용이 
-                    - 코드 재사용성 증가, 데이터 명확성
+                    - 변경이 필요한 영역만 수정(변경 영향 최소화)
+                    - 데이터 명확성
+                    - 코드 재사용성 증가(포함, 상속, 재사용 가능)
         - 단점
             - DTO 클래스 및 이를 변환하는 코드 추가적으로 필요
-                - 개발 시간 증가, 코드량 증가
+                - 초기 개발 시간 증가, 코드량 증가
+                - 관리 복잡도 증가
             - 유연성 감소
                 - API 변경 시, DTO 클래스 수정으로 이어짐
 - [DTO 사용 관련 고찰](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Architecture/MyBatis-DTO%2CVO%2CEntity.md)
-    - MyBatis에서의 DTO 사용에 대한 고민 흔적입니다.
+    - MyBatis에서의 DTO 사용에 대한 고민 흔적으로, 조회 작업과 쓰기 작업에 대한 보다 자세한 내용이 포함되어 있음
+    - 약 세 차례 정도 구조 변경이 있었으며, 개인적인 기록이므로 가독성이 매우 떨어질 수 있음
 
 ### DTO vs Map 비교 요약
-| 기준                | `requestDto` (DTO)                                | `Map`                                    |
+| 기준                | `Dto`                               | `Map`                                    |
 |-------------------|-------------------------------------------------|---------------------------------------------|
 | **타입 안전성**      | 강함 (컴파일 타임에 체크)                        | 약함 (런타임에 오류 발생 가능)               |
 | **가독성**           | 좋음 (명확한 필드 명)                           | 나쁨 (필드가 동적으로 관리되어 직관적이지 않음)|
@@ -158,12 +188,15 @@
 
 ### Mapper 계층 컨셉
 - DTO 간 자동 변환을 진행하기 위해, `org.mapstruct.Mapper`를 사용
+    - Mapper는 단순 변환 책임만 가짐
+    - 복잡한 변환 로직은 Service에서 처리
 - 요청 타입과 응답 타입만 지정해주면, 자동 변환 진행
     - 필드 명이 다른 경우, `@Mapping(target = " ", source = " ")`을 통해 지정 요망
 - 변환 뿐 아니라 간단한 포맷팅, 마스킹 등의 Java 메서드(표현식 등) 사용 가능(`@expression` or `@qualifiedByName`, `@Named` 사용)
 
 >> cf) 이름 혼용 방지를 위해 기존 MyBatis Mapper를 의미하던 Mapper 계층은, Repository 계층으로 이름 변경
-- 예시 코드
+
+#### 예시 코드
 ```java
 /**
  * 도메인 계층 간 변환 역할을 하는 Mapper 인터페이스
