@@ -337,6 +337,7 @@ public interface VisitMapper {
 ```
 - 쿼리 단에서 Alias 등을 사용하면 위와 같이 Mapper 사용을 하지 않을 수 있지만(Alias를 사용하여 QueryResponse 필드명과 일치)
     - 코드 수정이 쿼리에 영향을 끼치는 것은 적합하지 않다 생각해 위와 같은 구조를 취하였음
+    - 물론 DB 컬럼과 같은 필드명을 사용한다면, 위와 같은 @Mapping은 모두 필요 없음
 - 위에 대한 고민은 [DTO 사용 관련 고찰](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Architecture/MyBatis-DTO%2CVO%2CEntity.md)에 자세히 나와 있으며, 일부를 발췌하자면 다음과 같다.
 ```
 mapstruct Mapper를 사용하여 @Mapping을 사용하여 필드명을 변환해주고 있는데, 여기서 고민이 생김 -> 20개 이상의 컬럼을 조회하는 SQL문이 있는데 이 경우 @Mapping이 너무 많이 생기게 됨
