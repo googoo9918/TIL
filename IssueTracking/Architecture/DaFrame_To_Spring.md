@@ -16,7 +16,7 @@
 ### Client 기본 컨셉
 - 결국 JSP + SpringBoot를 사용한 SSR 방식이고, SPA를 구현할 수는 없음
     - 기존 PPR(Partial Page Rendering) 방식 + window.hisotry를 추가하는 방식으로 구현
-        - ITMS에는 PPR은 구현되어 있으나, 새로고침 시 main.jsp 부터 다시 시작 하는 불편함 존재
+        - **ITMS에는 PPR은 구현되어 있으나, 새로고침 시 main.jsp 부터 다시 시작 하는 불편함 존재**
     - 현재는 PPR + `window.onpopstate`를 통해 앞으로 가기/뒤로가기 요청 처리
         - ![Image](https://github.com/user-attachments/assets/164db518-3aa2-4f59-ba2e-892510a21449)
 - 기존에는 모든 api 요청은, POST로 처리 / jsp 파일 요청 ajax는 GET으로 처리
@@ -48,8 +48,8 @@
             - ![Image](https://github.com/user-attachments/assets/c2504d5c-6644-4c05-94c2-ff86358991f2)
                 - 일반적으로 `X-Requested-with` 헤더는 일반적으로 Ajax 요청에서만 포함
                 - 추가적으로 `XMLHttpRequest`인지 확인
-        - `PageType` ENUM을 통해 페이지 URL 관리
             - ![Image](https://github.com/user-attachments/assets/26615eeb-9dae-4e9e-8c85-9e922caa3ae6)
+                - `PageType` ENUM을 통해 페이지 URL 관리
 
 - RESTful API 설계
     - ITMS는 리소스 기반이 아닌 동작 위주의 URL / Http Method는 모두 POST를 사용(페이지 요청 제외) / HTTP 상태 코드 활용하지 않음(에러 발생 시에도 200 반환)
