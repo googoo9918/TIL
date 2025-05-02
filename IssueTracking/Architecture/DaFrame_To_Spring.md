@@ -42,10 +42,10 @@
     - ![Image](https://github.com/user-attachments/assets/f8edd7f2-3089-46ac-ab3b-facdf866fd28), ![Image](https://github.com/user-attachments/assets/6f314bdd-0acb-4b33-bf23-3babf4c4bf01)
     - ViewController에서는 Controller 계층 AJAX 요청 체크 및 ENUM을 통한 페이지 URL 관리
         - Controller 계층 AJAX 요청 체크
-            - ![Image](https://github.com/user-attachments/assets/c2504d5c-6644-4c05-94c2-ff86358991f2)
+            - ![Image](https://github.com/user-attachments/assets/52b574f0-15c4-4071-a4a6-b3effcc92c21)
                 - AJAX 요청 시 Partial Page 반환
                 - url 직접 접근 or 새로고침 시 layout 포함하여 반환
-            - ![Image](https://github.com/user-attachments/assets/52b574f0-15c4-4071-a4a6-b3effcc92c21)
+            - ![Image](https://github.com/user-attachments/assets/c2504d5c-6644-4c05-94c2-ff86358991f2)
                 - 일반적으로 `X-Requested-with` 헤더는 일반적으로 Ajax 요청에서만 포함
                 - 추가적으로 `XMLHttpRequest`인지 확인
         - `PageType` ENUM을 통해 페이지 URL 관리
