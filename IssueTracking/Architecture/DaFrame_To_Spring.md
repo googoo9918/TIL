@@ -21,7 +21,7 @@
         - ![Image](https://github.com/user-attachments/assets/164db518-3aa2-4f59-ba2e-892510a21449)
 - 기존에는 모든 api 요청은, POST로 처리 / jsp 파일 요청 ajax는 GET으로 처리
 - 방문관리 시스템은 동작하고자 하는 Http Method에 따라 Restful Api 규약에 맞춰 다음과 같이 구분 
-    - getHtml(페이지 요청), getRequest, postRequest, putRequest, deleteRequest로 구분
+    - getHtml(페이지 요청), getRequest, postRequest, putRequest, deleteRequest로 구분(Patch 미사용)
     - `getHtml`
         - JSP 페이지 요청 function
         - ![Image](https://github.com/user-attachments/assets/4e90395f-aef3-4987-961f-0f6cf9ac818c)
@@ -38,8 +38,8 @@
         - ![Image](https://github.com/user-attachments/assets/30635062-92fb-4e84-a758-c85f1c42c845)
 
 ### Controller 기본 컨셉
-- jsp를 반환하는 ViewController와, Rest api 요청을 처리하는 RestController로 분리
-    - ![Image](https://github.com/user-attachments/assets/f8edd7f2-3089-46ac-ab3b-facdf866fd28)
+- 도메인 별로, jsp를 반환하는 ViewController와 Rest api 요청을 처리하는 RestController로 분리
+    - ![Image](https://github.com/user-attachments/assets/f8edd7f2-3089-46ac-ab3b-facdf866fd28), ![Image](https://github.com/user-attachments/assets/6f314bdd-0acb-4b33-bf23-3babf4c4bf01)
     - ViewController에서는 Controller 계층 AJAX 요청 체크 및 ENUM을 통한 페이지 URL 관리
         - Controller 계층 AJAX 요청 체크
             - ![Image](https://github.com/user-attachments/assets/c2504d5c-6644-4c05-94c2-ff86358991f2)
