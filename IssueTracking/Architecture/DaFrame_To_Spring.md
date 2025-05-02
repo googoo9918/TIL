@@ -79,18 +79,19 @@
 #### 예외 처리 with HTTP 상태 코드
 - ITMS에서는 모든 Controller가 try-catch로 작성되어 있음
     - 다만, 각각의 컨트롤러에서 별도의 커스텀 에러처리를 하고 있는 것처럼 보이진 않음(모두 try-catch로 이루어져있는 의미가 없음)
-    - 또한 위와 같은 문제 때문에 try-catch가 우선 적용되어, `@RestControllerAdvice`가 실제로 적용되지 않는 것으로 확인 됨
-    - 또한 ITMS 에서는 에러가 발생했을 때 응답을 BodyResponse로 Wrapping하여, HttpStatus는 항상 200을 반환하고, SuccessYN을 통해 응답의 성공/실패 여부를 확인함
+    - 또한 위와 같은 문제 때문에 try-catch가 우선 적용되어, `@RestControllerAdvice`로 작성된 `ExceptionHandler`가 실제로 적용되지 않는 것으로 확인 됨
+    - 또한 ITMS에서는 에러가 발생했을 때 응답을 BodyResponse로 Wrapping하여, HttpStatus는 항상 200을 반환하고, SuccessYN을 통해 응답의 성공/실패 여부를 확인함
         - 클라이언트에서도 에러가 발생했을 때, 200 응답을 받기 때문에 ajax의 success 콜백에서 별도 분기 처리를 통해 처리하는 것을 확인할 수 있었음
         - 내부적인 규약에 따른 것이긴 하지만, 일반적으로 통용되는 RESTful API는 아님
 - 방문관리 시스템에서는 `@RestControllerAdvice` + 커스텀 에러를 통해 Exception Handler를 최대한 전역적으로 해결하고자 했음.
     - 또한 방문관리 시스템에서는 Response에 400번대, 500번대 HttpStatus를 같이 반환함으로써 ajax의 success, error 콜백을 사용하여 Status에 맞는 응답 처리를 진행하였음
+        - [HTTP Method 분리](#http-method-분리) 참고
     - 보다 세부적으로 예를 들어 보자면, 세션 인증 예외처리의 경우에는, ITMS에서는 AJAX 요청을 보내기 전 추가적인 SessionCheck AJAX 요청을 통해 해결하고 있지만
     - ![Image](https://github.com/user-attachments/assets/122dc625-8c80-4d10-a06e-fa6523e037a1)
         - 방문관리 시스템의 AJAX 요청의 경우 Session Exception이 발생한 경우 401에러와 함께 redirectUrl을 반환함으로써 error 콜백에서 로그인 페이지로 전환할 수 있게 처리함
         - 혹은 페이지 요청의 경우(Window History, url 직접 접근 등) 어차피 서버에서 HttpStatus 및 응답을 받을 수 없으니, 서버 측에서 로그인 페이지로 리다이렉션 하도록 진행
     - 위와 같은 작업을 통해 클라이언트 단에서 주도적으로 처리하기 보단, 서버의 응답을 통해 클라이언트의 행동을 지정하도록 하였음.
-- 정리하자면, 세션 인증에서 ITMS API 에서는 AJAX 요청을 보낼 때, 클라이언트 단에서 선제적인 AJAX 요청을 통해 세션을 먼저 확인하고, 이후 AJAX 요청에서 에러가 발생한다 하더라도 200 응답과 함께 Success 콜백에서 처리하고 있음
+- 정리하자면, 세션 인증에서 ITMS API에서는 AJAX 요청을 보낼 때, 클라이언트 단에서 선제적인 AJAX 요청을 통해 세션을 먼저 확인하고, 이후 AJAX 요청에서 에러가 발생한다 하더라도 200 응답과 함께 Success 콜백에서 처리하고 있음
     - 불필요한 통신 + 컨트롤러 기준 try-catch로 에러 핸들링 + RESTFul Api 규약에 맞지 않는 Http Status
 - 현재 API에서는 AJAX 요청은 한 번만 이뤄지고, ExceptionHandler 또한 전역적으로 진행되며, 클라이언트단에서 HTTP 상태 코드에 따라 작업을 진행하게 됨.
 
