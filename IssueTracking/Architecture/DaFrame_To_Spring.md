@@ -22,7 +22,7 @@
 
 - 기존에는 모든 api 요청은, POST로 처리 / jsp 파일 요청 ajax는 GET으로 처리
 - 방문관리 시스템은 동작하고자 하는 Http Method에 따라 Restful Api 규약에 맞춰 다음과 같이 구분 
-    - getHtml, getRequest, postRequest, putRequest, deleteRequest로 구분
+    - getHtml(페이지 요청), getRequest, postRequest, putRequest, deleteRequest로 구분
     - `getHtml`
         - JSP 페이지 요청 function
         - ![Image](https://github.com/user-attachments/assets/4e90395f-aef3-4987-961f-0f6cf9ac818c)
