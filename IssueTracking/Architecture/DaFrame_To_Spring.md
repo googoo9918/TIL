@@ -1,6 +1,6 @@
 ## 목차
 - [목차](#목차)
-- [DaFrame -\> SpringBoot 변환 과정 중 컨셉 정리](#daframe---springboot-변환-과정-중-컨셉-정리)
+- [DaFrame -\> SpringBoot 변환 과정 컨셉 정리](#daframe---springboot-변환-과정-컨셉-정리)
     - [Client 기본 컨셉](#client-기본-컨셉)
         - [브라우저 탐색 이벤트 처리](#브라우저-탐색-이벤트-처리)
         - [HTTP Method 분리](#http-method-분리)
@@ -21,7 +21,7 @@
     - [MyBatis 이슈](#mybatis-이슈)
     - [기능 이슈](#기능-이슈)
 
-## DaFrame -> SpringBoot 변환 과정 중 컨셉 정리
+## DaFrame -> SpringBoot 변환 과정 컨셉 정리
 ### Client 기본 컨셉
 #### 브라우저 탐색 이벤트 처리
 - 결국 JSP + SpringBoot를 사용한 SSR 방식이고, SPA를 구현할 수는 없음
