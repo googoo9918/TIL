@@ -710,6 +710,7 @@
             - 결과물을 Amazon S3에 저장하며, KMS로 암호화 처리
             - 암호화된 데이터는 Amazon Bedrock 및 PostgreSQL 연동을 위해 필요 시 복호화되어 사용
         - PostgreSQL Vector DB에 저장
+- ![Image](https://github.com/user-attachments/assets/cb6d7f66-dbad-464b-9d6e-22c92dffb7a2)
     - 사용자가 Slack에서 질문 입력
     - 춘시리 RAG Query API 실행
         - 입력 질문 임베딩 처리
@@ -719,7 +720,7 @@
         - Claude 모델이 Prompt 기반으로 자연어 응답 생성
         - Amazon Bedrock Guardrails를 통해 안전성 검토 수행
     - Slack으로 응답 전송
-- ![Image](https://github.com/user-attachments/assets/cb6d7f66-dbad-464b-9d6e-22c92dffb7a2)
+- ![Image](https://github.com/user-attachments/assets/031e1aa0-6762-4a77-b2f4-53f6fa43367f)
     - AWS KMS
         - Amazon S3에 저장되는 모든 데이터는 KMS 키를 이용해 암호화
         - 기업 보안 정책 및 규제 컴플라이언스 대응
@@ -735,7 +736,6 @@
                 - 기본적으로 VPC 내부에서 통신이 이뤄지고, 외부로 데이터가 나가지 않음
                     - PrivateLink 적용 가능
 
-- ![Image](https://github.com/user-attachments/assets/031e1aa0-6762-4a77-b2f4-53f6fa43367f)
 - ![Image](https://github.com/user-attachments/assets/0ce409df-94fc-4d44-84ae-4e89949ccf19)
 - ![Image](https://github.com/user-attachments/assets/000461b3-db74-4a90-a2dd-fe41b41cd902)
 - ![Image](https://github.com/user-attachments/assets/d3416ae3-dd3d-4866-9f47-566445819447)
@@ -746,3 +746,29 @@
 - ![Image](https://github.com/user-attachments/assets/044b8d14-5ae8-4b88-b068-1fba4de1bca5)
 - ![Image](https://github.com/user-attachments/assets/e8cad67f-81fd-4930-b5f8-4db907e86f45)
 - ![Image](https://github.com/user-attachments/assets/7ff7ad8d-2d4c-44ba-b96d-95c2805fbf43)
+    - IaC
+        - 인프라 자동화 코드 (ex: Terraform)
+    - Cloud Platform
+        - AWS, Azure 등
+    - CI/CD Platform
+        - Jenkins, ArgoCD 등
+    - HR System
+        - 사용자, 조직 정보 연계
+    - Logging Platform
+        - 로그 수집 및 연계
+    - Notification Platform
+        - 알림 전달(Slack 등)
+    - Review & Approval
+        - 승인 플로우 관리
+    - Container Platform(MCP)
+        - 쿠버네티스 기반 앱 배포
+    - Monitoring Platform(MCP)
+        - Prometheus 등으로 모니터링
+    - Test Automation Platform
+        - 테스트 자동화와 통합
+    - 다양한 MCP 통합
+        - 위 기능을 하나로 통합
+    - 기대효과
+        - 플랫폼 레벨에서 일관된 운영 정책과 표준화된 구성 제공
+        - 여러 플랫폼을 유기적으로 연동, DevOps 생산성 향상
+        - 보안, 메트릭, 승인, 협업 요소까지 통합 운영
