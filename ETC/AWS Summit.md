@@ -596,7 +596,7 @@
             - 서비스 호출 및 외부 인터페이스 연결
         - 도메인은 외부 시스템의 존재를 모르며, 단지 Port로 정의된 인터페이스만 알고 있음
             - 테스트 용이성 + 유지보수 용이
-- ![Image](https://github.com/user-attachments/assets/b33c0e02-6a21-499d-a729-5fbb313f88d4)
+- ![Image](https://github.com/user-attachments/assets/718c7647-c522-4d2b-824a-a9a00ca6e0a3)
     - Bounded Context가 서로 다른 요구사항을 가질 때, 독립적인 Micro Service로 빠르게 전환
     - 녹취 서비스
         - Ports를 통해 외부와 연결
@@ -613,15 +613,13 @@
             - 필요 시 확장 및 교채
     - DDD 설계 기반 서비스 간 독립성, 응집도 확보
         - 요구사항 변화에 빠르게 대응 가능한 유연한 구조
-- ![Image](https://github.com/user-attachments/assets/b33c0e02-6a21-499d-a729-5fbb313f88d4)
-
-- ![Image](https://github.com/user-attachments/assets/718c7647-c522-4d2b-824a-a9a00ca6e0a3)
-
+    - 600개 이상 API 존재
 - ![Image](https://github.com/user-attachments/assets/e71f09e8-e179-4107-8829-2e47fe1eb231)
 
 - ![Image](https://github.com/user-attachments/assets/eea0fdf5-053b-4114-b576-bd6ae82b088c)
 
 - ![Image](https://github.com/user-attachments/assets/fff70da0-c5a2-4c54-8557-a30b24c86184)
+
 ### ai와 개발 생산성의 만남 - 카카오페이증권의 aMAZON bEDROCK 도입기
 - 플랫폼 엔지니어링
 - 프로젝트-춘시리
