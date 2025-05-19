@@ -408,11 +408,11 @@
 
 - ![Image](https://github.com/user-attachments/assets/29922586-0d01-43af-9e0f-a98fc59507df)
 
-- ![Image](https://github.com/user-attachments/assets/70c16eaf-77ca-4c57-8720-7fa4650b3d95)
+- ![Image](https://github.com/user-attachments/assets/df5c0eab-818a-4662-b330-62533e793601)
     - 프로젝트 타임라인 및 기존시스템 한계점
         - 업무확대와 변화에 유연한 AWS 기반 AI금융상담시스템 재구축
 
-- ![Image](https://github.com/user-attachments/assets/df5c0eab-818a-4662-b330-62533e793601)
+- ![Image](https://github.com/user-attachments/assets/d8292f17-8f7e-46c4-8b0f-30b25b5f4237)
     - 애자일 방법론
         - 스토리 매핑
             - 사용자의 실제 업무 흐름 시각화 + 기능 요구사항 도출
@@ -424,10 +424,10 @@
             - 스프린트 계획 수립 기준 마련
         - 스프린트 리뷰
             - 개발 결과물을 현업과 함께 시연, 피드백을 받아 개선
-- ![Image](https://github.com/user-attachments/assets/d8292f17-8f7e-46c4-8b0f-30b25b5f4237)
+- ![Image](https://github.com/user-attachments/assets/e66283b5-bf5b-4ed8-a202-3b17ab6942f0)
     - 좌측 요구사항
     - 우측 아키텍처 설계 방향
-- ![Image](https://github.com/user-attachments/assets/e66283b5-bf5b-4ed8-a202-3b17ab6942f0)
+- ![Image](https://github.com/user-attachments/assets/533cd678-6339-4292-9902-cf2802eb1b48)
     - 개발 및 배포 파이프라인(DevOps)
         - Git -> Jenkins -> ArgoCD
             - GitOps 기반 CI/CD 자동화
@@ -497,7 +497,7 @@
                     - Elasticsearch 기반 검색, 로그 분석 서비스
             - Amazon ECR(Elastic Container Registry)
                 - Docker 이미지 저장소
-- ![Image](https://github.com/user-attachments/assets/533cd678-6339-4292-9902-cf2802eb1b48)
+- ![Image](https://github.com/user-attachments/assets/f8767df4-f9a2-49c3-b7f3-59f4c71f6f9c)
     - EKS 클러스터
         - Kubernetes 클러스터 서비스
         - 다양한 워크로드 격리, 자동화, 확장서 있게 관리
@@ -516,7 +516,7 @@
             - Namespace 단위로 리소스 사용 제한(CPU, Memory 등) 설정
         - Role/RoleBinding
             - RBAC 기반 접근 제어
-- ![Image](https://github.com/user-attachments/assets/f8767df4-f9a2-49c3-b7f3-59f4c71f6f9c)
+- ![Image](https://github.com/user-attachments/assets/5a46e3a6-f9fe-4ebd-a475-df93dfb60dab)
     - 우측: EKS 클러스터 구종
         - Amazon VPC 내부에서 클러스터 운영
         - 가용 영역 1 / 2(AZ1 / AZ2)에 워커 노드 분산 배치
@@ -542,7 +542,7 @@
             - POD#2 (delete)가 AZ2에서 삭제 예약
             - 새롭게 동일한 역할의 POD#2(new) 생성 및 준비
             - 준비 완료 시 트래픽 전환, 이후 기존 POD 제거
-- ![Image](https://github.com/user-attachments/assets/5a46e3a6-f9fe-4ebd-a475-df93dfb60dab)
+- ![Image](https://github.com/user-attachments/assets/2c015f76-dd0d-4afb-b2a4-88a183046978)
     - 커스텀 메트릭 기반 HPA
         - 기본 CPU/메모리 외의 지표를 기반으로 Pod를 자동 스케일링하는 구조
     - 외부 커스텀 메트릭 기반의 HPA
@@ -561,7 +561,7 @@
             - Prometheus 메트릭을 Kubernets HPA에서 이해할 수 있도록 변환
         - HPA가 Scale in/out 수행
             - 메트릭 지누 초과 시 Pod 증가 / 기준 미만 시 Pod 축소
-- ![Image](https://github.com/user-attachments/assets/2c015f76-dd0d-4afb-b2a4-88a183046978)
+- ![Image](https://github.com/user-attachments/assets/fc857670-9fce-4990-94e5-ee4fe088ee03)
     - 클라우드 네이티브 아키텍처에서 DDD(도메인 주도 설계) 적용
     - 복잡한 시스템을 업무 중심의 도메인으로 나누고, 각 도메인을 독립적으로 설계, 개발, 배포
     - Core Domain
@@ -582,7 +582,7 @@
         - 모듈화와 Micro Service 분할의 핵심 단위
         - 각 도메인은 내부적으로 하나의 경계된 의미적/기술적 맥락
         - 예를 들어, 녹취와 녹취 검증은 같은 녹취 도메인이지만, 서로 다른 컨텍스트에서 작동
-- ![Image](https://github.com/user-attachments/assets/fc857670-9fce-4990-94e5-ee4fe088ee03)
+- ![Image](https://github.com/user-attachments/assets/b5872ac6-b479-46aa-99e1-532d4861ac82)
     - 헥사고날 아키텍처(Hexagonal Architecture)
         - 애플리케이션 중심에 도메인 로직을 두고, 외부 시스템과의 연결을 Port와 Adapter를 통해 느슨하게 연결
     - 중심: 녹취 Domain Logic
@@ -596,7 +596,7 @@
             - 서비스 호출 및 외부 인터페이스 연결
         - 도메인은 외부 시스템의 존재를 모르며, 단지 Port로 정의된 인터페이스만 알고 있음
             - 테스트 용이성 + 유지보수 용이
-- ![Image](https://github.com/user-attachments/assets/b5872ac6-b479-46aa-99e1-532d4861ac82)
+- ![Image](https://github.com/user-attachments/assets/b33c0e02-6a21-499d-a729-5fbb313f88d4)
     - Bounded Context가 서로 다른 요구사항을 가질 때, 독립적인 Micro Service로 빠르게 전환
     - 녹취 서비스
         - Ports를 통해 외부와 연결
