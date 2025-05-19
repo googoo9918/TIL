@@ -613,17 +613,136 @@
             - 필요 시 확장 및 교채
     - DDD 설계 기반 서비스 간 독립성, 응집도 확보
         - 요구사항 변화에 빠르게 대응 가능한 유연한 구조
-    - 600개 이상 API 존재
+    - 비즈니스 도메인 기준, 600개 이상 API 존재
 - ![Image](https://github.com/user-attachments/assets/e71f09e8-e179-4107-8829-2e47fe1eb231)
-
+    - 서비스 간 결합도를 낮추기 위해 Kafka 기반 Event Broker(Amazon MSK)도입
+        - 메시지 기반 인터페이스로 서비스 간 통신 구성
+    - 녹취 검증 서비스
+        - REST API, JSON-RPC, HTTP Client 등 동기 인터페이스도 존재하지만
+        - Amazon MSK(Kafka) 기반 비동기 메시징 구조를 통신 수단으로 사용
+            - Producer / Consumer 역할 분리
+            - Zero-Payload 방식으로 메시지 라우팅 효율화
+        - Context Provider / MCP Server 등을 통해 메시지 구조 표준화
+    - 녹취 제어 서비스
+        - WebSocker 기반 양방향 통신
+        - 음성인식 기능과 직접적으로 연결
+            - 음성인식 기능 #1, #2는 독립된 Micro Service
+    - 도입 효과
+        - 서비스 간 결합도 감소
+            - Kafka 기반 메시징, API 의존도 최소화
+        - 유연한 서비스 확장
+            - 기능 추가 시 메시지 구독만으로 연동 가능
+        - MSA 전환
+            - 각 도메인 별 독립 배포 및 개발 가능
+        - 실시간 처리
+            - Websocket, Kafka 등 실시간 처리를 위한 통신 채널 확보
 - ![Image](https://github.com/user-attachments/assets/eea0fdf5-053b-4114-b576-bd6ae82b088c)
-
+    - 모니터링 및 로깅 아키텍처
+        - 서비스 품질, 성능, 장애 대응을 위한 3대 관측 요소(APM, Metrics, Logs) 통합 사례
+    - 애플리케이션 레벨 관측(APM)
+        - APM Agent
+            - 각 Pod 내부에 주입되어 성능 데이터 수집
+                - 응답 시간, 호출 트레이스 등
+        - Jennifer APM
+            - 수집된 데이터 시각화 및 병목 구간 식별 도구
+    - 매트릭 기반 모니터링
+        - ServiceMonitor
+            - 커스텀 애플리케이션 메트릭
+        - dcgm-exporter
+            - GPU 사용량
+        - node-exporter
+            - CPU, 메모리, 디스크, 네트워크 등 노드 리소스
+        - kube-state-metrics
+            - Kubernetes 오브젝트 상태(Pod 수, Replica 상태 등)
+        - 메트릭은 모두 Prometheus에서 수집 -> Grafna를 통해 실시간 대시보드 시각화
+    - 로그 수집 및 분석
+        - fluent-bit
+            - 각 Pod에서 발생하는 로그 수집 및 전달
+        - Amazon OpenSearch
+            - 로그 저장, 검색, 분석(Elasticsearch 기반)
 - ![Image](https://github.com/user-attachments/assets/fff70da0-c5a2-4c54-8557-a30b24c86184)
+    - AWS 기반 클라우드 네이티브 전환을 통해 비용 절감, 유연성 확보, 규제 대응과 디지털 혁신 동시 달성
 
-### ai와 개발 생산성의 만남 - 카카오페이증권의 aMAZON bEDROCK 도입기
-- 플랫폼 엔지니어링
-- 프로젝트-춘시리
-- 확장
-- mcp(mODEL /CONTEXT pROTOCOL)
-- 앞으로
-- 
+## ai와 개발 생산성의 만남 - 카카오페이증권의 Amazon Bedrock 도입기
+### 플랫폼 엔지니어링
+- ![Image](https://github.com/user-attachments/assets/573a9c5f-c725-4743-a2a9-f4fb6726a20a)
+    - 애플리케이션을 더 빠르고 안전하게 배포하고 운영할 수 있도록 지원하는 내부 개발 플랫폼(IDP, Internal Developer Platform) 제공
+- ![Image](https://github.com/user-attachments/assets/0f0c8cd4-a793-494d-b154-dbc2b7c4858b)
+    - Amazon Bedrock
+        - Anthropic, Cohere, Meta, Mistral AI, Stability AI, Amazon 등 주요 AI 기업의 기성 고성능 생성형 AI 모델(FM) 사용 가능
+            - API 방식으로 통합 제공하는 완전관리형 서비스
+            - 복잡한 인프라 관리 없이 생성형 AI 빠르게 구축 가능
+        - 기업 화녁ㅇ에서 데이터 거버넌스, 보안, 개인정보 보호 요구사항 충족하면서 AI 기능 내재화 가능
+- ![Image](https://github.com/user-attachments/assets/fac9c672-e83a-4c8d-ac87-67d3f9c4de75)
+    - 정보 추적의 비효율
+    - 배포 위치나 운영 환경 정보가 불명확하거나 문서화되어 있지 않음
+    - 아키텍처 설계의 의사결정 히스토리가 남아있지 않음
+        - 변경 이유와 근거 추적의 어려움
+    - 연동 방식이 명확히 드러나지 않아 매번 반복적인 커뮤니케이션 발생
+    - 공통 용어 정의가 없거나, 팀 간 용어 사용이 일관되지 않음
+    - 지나치게 많은 시간을 **찾는 데** 사용하고 있음
+- ![Image](https://github.com/user-attachments/assets/f7523914-554e-4083-9725-e03596ad9972)
+    - 많은 정보가 파편하되어 있거나 문서화가 부족
+    - 신규 입사자가 업무를 시작하는 데까지 오랜 시간과 시행착오가 필요함
+### 해결책: 프로젝트-춘시리
+- ![Image](https://github.com/user-attachments/assets/f92b6817-f871-46a9-8568-c9a4da9b5573)
+
+- ![Image](https://github.com/user-attachments/assets/ebb5cfe7-1074-4dbe-a316-3e421a333e6a)
+    - Confluence Wiki 문서 기반의 질문-답변 시스템 구축
+    - Amazon Bedrock의 생성형 AI와 연결
+        - 자연어 기반 사내 정보 검색/응답 서비스 구현
+    - Amazon Bedrock - Titan Text Embeddings V2
+        - Wiki 문서에서 추출한 텍스트를 벡터로 변환(임베딩)
+    - 춘시리 임베딩 엔진
+        - Confluence 문서를 파싱, 벡터로 전환하여 DB에 저장
+    - PostgreSQL
+        - 벡터 DB 형태로 임베딩 데이터 저장
+    - Amazon Bedrock - Claude 3.5 Sonnet
+        - 사용자 질문에 대해 문맥 + 응답 생성
+    - 춘시리 RAG Query API
+        - 질문을 받아 관련 문서를 검색, Claude 모델로 응답 생성
+    - Amazon Bedrock Guardrails
+        - 응답에 대한 필터링/안전성 검사 수행
+- ![Image](https://github.com/user-attachments/assets/1d4da7ea-fa9e-477f-9ca0-4383edb4571a)
+    - Confluence Wiki 텍스트 데이터 처리 -> 청크(chunk) 생성
+    - 춘시리 임베딩 엔진
+        - 청크를 Titan Text Embeddings V2로 벡터화
+            - 결과물을 Amazon S3에 저장하며, KMS로 암호화 처리
+            - 암호화된 데이터는 Amazon Bedrock 및 PostgreSQL 연동을 위해 필요 시 복호화되어 사용
+        - PostgreSQL Vector DB에 저장
+    - 사용자가 Slack에서 질문 입력
+    - 춘시리 RAG Query API 실행
+        - 입력 질문 임베딩 처리
+        - PostgreSQL에서 유사도 검색 -> 관련 문서 벡터 추출
+        - Prompt + 검색 결과 조합 -> Calude Sonnet에 전달
+    - Amazon Bedrock 응답 생성
+        - Claude 모델이 Prompt 기반으로 자연어 응답 생성
+        - Amazon Bedrock Guardrails를 통해 안전성 검토 수행
+    - Slack으로 응답 전송
+- ![Image](https://github.com/user-attachments/assets/cb6d7f66-dbad-464b-9d6e-22c92dffb7a2)
+    - AWS KMS
+        - Amazon S3에 저장되는 모든 데이터는 KMS 키를 이용해 암호화
+        - 기업 보안 정책 및 규제 컴플라이언스 대응
+    - 개인정보 보호
+        - Amazon Bedrock Guardrails
+            - AI 응답 중 개인정보 탐지 및 마스킹 기능 수행
+            - LLM이 응답하는 도중에 정규식 기반 혹은 사전 학습된 패턴으로 민감 정보를 탐지, 마스킹하거나 필터링
+        - 정규표현식 기반 민감정보 탐지
+            - Slack 응답 전, 추출 답변에 대해 추가 필터링 수행
+            - 민감 정보(주민번호, 전화번호, 계좌 등) 포함 시, 사용자에게 알림 전송 또는 마스킹 처리
+        - 외부 요청 응답 제어
+            - Prompt 흐름은 모두 Amazon Bedrock을 통해 처리
+                - 기본적으로 VPC 내부에서 통신이 이뤄지고, 외부로 데이터가 나가지 않음
+                    - PrivateLink 적용 가능
+
+- ![Image](https://github.com/user-attachments/assets/031e1aa0-6762-4a77-b2f4-53f6fa43367f)
+- ![Image](https://github.com/user-attachments/assets/0ce409df-94fc-4d44-84ae-4e89949ccf19)
+- ![Image](https://github.com/user-attachments/assets/000461b3-db74-4a90-a2dd-fe41b41cd902)
+- ![Image](https://github.com/user-attachments/assets/d3416ae3-dd3d-4866-9f47-566445819447)
+- ![Image](https://github.com/user-attachments/assets/ffbcb158-23cf-474d-871b-1eff5de3a08a)
+- ![Image](https://github.com/user-attachments/assets/76039a6e-01e8-409f-8cf9-bc6a2503a86c)
+- ![Image](https://github.com/user-attachments/assets/b70ae7c2-83c7-4592-9e39-9c3f47436a57)
+- ![Image](https://github.com/user-attachments/assets/04e06fb0-5932-4529-beba-d69eb300f92b)
+- ![Image](https://github.com/user-attachments/assets/044b8d14-5ae8-4b88-b068-1fba4de1bca5)
+- ![Image](https://github.com/user-attachments/assets/e8cad67f-81fd-4930-b5f8-4db907e86f45)
+- ![Image](https://github.com/user-attachments/assets/7ff7ad8d-2d4c-44ba-b96d-95c2805fbf43)
