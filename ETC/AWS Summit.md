@@ -389,47 +389,230 @@
 - ![Image](https://github.com/user-attachments/assets/9f81585c-9275-4c70-af38-844ddc2da98e)
 
 - ![Image](https://github.com/user-attachments/assets/3ed85ed4-7a21-4eae-b9de-6538f9825be3)
-### 엄부확대와 변화에 유연한 aws 기반 ai금융상담시스템 구축 사례
-- ![Image](https://github.com/user-attachments/assets/53d52982-2326-419d-8ad7-bd9a0f485810)
-
-- ![Image](https://github.com/user-attachments/assets/d92c3919-8fcf-4637-8971-e5172a485035)
-
+### 업무확대와 변화에 유연한 aws 기반 ai금융상담시스템 구축 사례
 - ![Image](https://github.com/user-attachments/assets/b6d0da16-39aa-449b-b187-11a7f70f976f)
-
+    - 금융소비자 보호법 6대 판매원칙을 준수하면서, 붕완전판매를 예방하기 위한 AI 시스템 역할
+    - 설명의무(녹취의무)
+        - 상품 내용에 대해 충분히 설명하고 증빙(녹취)까지 확보해야 함
+    - 불완전판매 예방
+        - AI 시스템이 상담 대화 내용, 상품 권유 프로세스, 고객 응답 등을 자동 기록 및 검증
+            - 설명의무 이행 여부 체크
+            - 불완전판매로 인한 법적 분쟁 가능성을 줄임
+- ![Image](https://github.com/user-attachments/assets/53d52982-2326-419d-8ad7-bd9a0f485810)
+- ![Image](https://github.com/user-attachments/assets/d92c3919-8fcf-4637-8971-e5172a485035)
 - ![Image](https://github.com/user-attachments/assets/15a66593-7cd9-461c-bff7-7e80a7a05ce2)
-
 - ![Image](https://github.com/user-attachments/assets/9e0fc6f8-2219-48b2-8bff-f86eb9e43751)
-
 - ![Image](https://github.com/user-attachments/assets/3f7c6081-6e71-4fd5-8e7e-22e2cd2de082)
-
 - ![Image](https://github.com/user-attachments/assets/fb5b961c-99d5-4739-a5b6-db4a27d82a03)
-
 - ![Image](https://github.com/user-attachments/assets/b875c4ac-bcba-4f7f-8d83-35b041418f74)
 
 - ![Image](https://github.com/user-attachments/assets/29922586-0d01-43af-9e0f-a98fc59507df)
 
-- ![Image](https://github.com/user-attachments/assets/3b5bc5d3-9f02-4fc4-8c50-119172fb68e7)
-
 - ![Image](https://github.com/user-attachments/assets/70c16eaf-77ca-4c57-8720-7fa4650b3d95)
+    - 프로젝트 타임라인 및 기존시스템 한계점
+        - 업무확대와 변화에 유연한 AWS 기반 AI금융상담시스템 재구축
 
 - ![Image](https://github.com/user-attachments/assets/df5c0eab-818a-4662-b330-62533e793601)
-
+    - 애자일 방법론
+        - 스토리 매핑
+            - 사용자의 실제 업무 흐름 시각화 + 기능 요구사항 도출
+            - 현업 사용자와 개발자 참여
+            - 이해 기반의 공감 설계로 시작
+        - 백로그 정제
+            - 사용자 요구사항을 기반으로 우선순위 설정, 개발 항목 선정
+            - 요구사항 정리, 우선순위 도축, 개발 예측치 설정
+            - 스프린트 계획 수립 기준 마련
+        - 스프린트 리뷰
+            - 개발 결과물을 현업과 함께 시연, 피드백을 받아 개선
 - ![Image](https://github.com/user-attachments/assets/d8292f17-8f7e-46c4-8b0f-30b25b5f4237)
-
+    - 좌측 요구사항
+    - 우측 아키텍처 설계 방향
 - ![Image](https://github.com/user-attachments/assets/e66283b5-bf5b-4ed8-a202-3b17ab6942f0)
-
+    - 개발 및 배포 파이프라인(DevOps)
+        - Git -> Jenkins -> ArgoCD
+            - GitOps 기반 CI/CD 자동화
+            - 개발자가 코드 커밋 -> Jenkins 빌드 -> ArgoCD 자동 배포
+        - Reverse Proxy / L4(내부망 경로)
+            - 내부 사용자 접근 시 프록시와 L4 로드밸런서로 경로 처리
+    - AWS Cloud 환경
+        - ALB(Application Load Balancer) + Network Load Balancer
+            - 외부에서 들어오는 트래픽을 분산 처리, Amazon EKS로 전달
+    - 중앙 블록: EKS 클러스터 내 도메인별 워크로드
+        - 비즈니스 도메인
+            - Pod, HPA, Ingress 리소스 구성(핵심 비즈니스 기능 실행)
+            - Pod
+                - Kubernetes에서 가장 작은 실행 단위
+                - 하나 이상의 컨테이너 포함
+                - 동일 네트워크(IP), 스토리지 공유, 동일 프로세스처럼 동작
+            - HPA(Horizontal Pod AutoScaler)
+                - CPU, 메모리 등의 리소스 사용량에 따라 Pod 수를 자동으로 조절하는 컨트롤러
+                - ex) CPU 사용률 70% 초과시 3개 -> 6개 확장
+            - Ingress
+                - 외부 트래픽을 내부 서비스로 라우팅하는 HTTP(S) 기반 진입점
+        - 음성인식 도메인
+            - 음성 관련 처리 애플리케이션(STT 등)
+        - 영상합성 도메인
+            - AI 휴먼, TTS 등 미디어 처리 영역
+        - 각 도메인은 Service Mesh(istio)로 연결, 서비스 간 통신 효율적 제어
+    - 하단: Service Mesh 및 관측 도구
+        - istio, kiali, jaeger
+            - 서비스 간 트래픽, 모니터링, 트레이싱 구현
+            - Istio
+                - Kubernets 기반 서비스 간 통신 제어 및 보안 관리
+            - Kiali
+                - Istio 시각화 대시보드
+            - Jaeger
+                - 분선 추적 시스템
+                - 서비스 호출 간 시간 측정 및 병목 탐지
+                - MSA 성능 분석
+    - 우측: 서포팅 리소스 및 통합 관리
+        - Logging
+            - fluent-bit
+                - 가볍고 빠른 로그 수집 및 전송 에이전트
+                - 컨테이너 로그 수집 -> OpenSearch, CloudWatch 등으로 전달
+        - Monitoring
+            - Prometheus, node-exporter, dcgm-exporter, kube-state-metric
+            - Prometheus
+                - 시계열 기반 모니터링 시스템
+            - node-exporter
+                - Prometheus에서 노드 리소스 정보 수집
+            - dcgm-exporter
+                - GPU를 사용하는 Pod에서 GPU 메트릭 수집
+            - kube-state-metrics
+                - Kubernetes 오브젝트의 상태 정보를 Prometheus 메트릭으로 제공
+                - Deployment 수, Ready 상태, 스케일링 정보 등
+        - Infra 관리
+            - cluster autoscaler
+                - 워커 노드 자원이 부족할 경우 노드 수 자체를 자동으로 증가/감소
+            - aws load balancer controller
+        - AWS 리소스
+            - Amazon S3, RDS, MSK, EFS
+                - MSK(Managed Streaming for Apache Kafka)
+                - Kafka 메시지 브로커 서비스 매니징
+                    - 실시간 데이터 스트리밍 처리(로그, 이벤트, 센서 등)
+                - EFS(Elastic File System)
+                    - 리눅스 기반 NFS 공유 스토리지
+            - Cloud Watch, OpenSearch
+                - OpenSearch
+                    - Elasticsearch 기반 검색, 로그 분석 서비스
+            - Amazon ECR(Elastic Container Registry)
+                - Docker 이미지 저장소
 - ![Image](https://github.com/user-attachments/assets/533cd678-6339-4292-9902-cf2802eb1b48)
-
+    - EKS 클러스터
+        - Kubernetes 클러스터 서비스
+        - 다양한 워크로드 격리, 자동화, 확장서 있게 관리
+    - 도메인 구성 및 Namespace
+        - Namespace
+            - Kubernetes에서 리소스를 논리적으로 분리하는 단위
+            - 팀/기능별로 클러스터를 공유하되, 자원 격리와 권한 관리 기능
+        - 각 도메인은 별도 Namespace로 관리, 격리성과 확장성 확보
+    - Pod, Service, Quota, Role
+        - Pod
+            - EKS 클러스터에서 실행되는 클러스터 그룹
+            - 100개 이상의 Pod가 다양한 도메인에 배포
+        - Service
+            - Pod 간 통신을 가능하게 하는 추상화된 네트워크 단위
+        - Quota
+            - Namespace 단위로 리소스 사용 제한(CPU, Memory 등) 설정
+        - Role/RoleBinding
+            - RBAC 기반 접근 제어
 - ![Image](https://github.com/user-attachments/assets/f8767df4-f9a2-49c3-b7f3-59f4c71f6f9c)
-
+    - 우측: EKS 클러스터 구종
+        - Amazon VPC 내부에서 클러스터 운영
+        - 가용 영역 1 / 2(AZ1 / AZ2)에 워커 노드 분산 배치
+        - ALB를 통해 트래픽 균등 분산
+        - 고가용성 구종
+            - AZ 하나가 장애나도서비스 유지
+            - Pod도 topology spread constraitns에 따라 AZ간 균형 배포
+    - 좌측: 기능별 구성
+        - Cluster Autoscaler
+            - Node가 부족하면 자동 증설, 사용량 감소 시 축소
+            - 유사 노드 그룹 간 균형 유지
+        - Pod 분산 배포 제어
+            - Pod가 가능한 고르게 각 AZ에 분산되도록 설정
+        - HPA
+            - Pod 수를 리소스 사용량 기준 자동 조절
+            - min ~ max 복제본 개수 설정
+        - ALB Controller
+            - 새 Pod 준비 완료 전까지 트래픽 받지 않게 설정
+        - 무중단 배포 구성
+            - 종료 직전 `preStop` Hook 활용, 서비스 연결을 안전히 끊고 종료 지연
+            - 롤링 배포 시 Pod 완료 -> 삭제
+        - EX)
+            - POD#2 (delete)가 AZ2에서 삭제 예약
+            - 새롭게 동일한 역할의 POD#2(new) 생성 및 준비
+            - 준비 완료 시 트래픽 전환, 이후 기존 POD 제거
 - ![Image](https://github.com/user-attachments/assets/5a46e3a6-f9fe-4ebd-a475-df93dfb60dab)
-
+    - 커스텀 메트릭 기반 HPA
+        - 기본 CPU/메모리 외의 지표를 기반으로 Pod를 자동 스케일링하는 구조
+    - 외부 커스텀 메트릭 기반의 HPA
+        - I/O Bound 애플리케이션
+            - 디스크/네트워크 입출력이 병목인 경우
+        - GPU Accelerated
+            - GPU 부하 기준 스케일링 필요
+        - Session 기반 애플리케이션
+            - ex) 스트리밍, AI 상담 봇 등에서 활성 세션 수에 따라 스케일링
+    - 커스텀 메트릭 기반 HPA 작동 흐름
+        - Custom metric 수집
+            - `ServiceMonitor`가 Prometheus에 Pod별 사용자 정의 메트릭 전송
+        - Prometheus 모니터링
+            - Prometheus가 해당 지표를 저장 및 시계열 분석
+        - Prometheus Adapter
+            - Prometheus 메트릭을 Kubernets HPA에서 이해할 수 있도록 변환
+        - HPA가 Scale in/out 수행
+            - 메트릭 지누 초과 시 Pod 증가 / 기준 미만 시 Pod 축소
 - ![Image](https://github.com/user-attachments/assets/2c015f76-dd0d-4afb-b2a4-88a183046978)
-
+    - 클라우드 네이티브 아키텍처에서 DDD(도메인 주도 설계) 적용
+    - 복잡한 시스템을 업무 중심의 도메인으로 나누고, 각 도메인을 독립적으로 설계, 개발, 배포
+    - Core Domain
+        - 핵심 가치 직접 구현
+        - ex)
+            - 녹취, 녹취 검증, 녹치 제어
+            - 개인화 스크립트
+    - Supporting Domain
+        - 핵심 도메인을 보조하며, 독립적으로 존재
+        - ex)
+            - 계좌 조회, 통합관리 시스템, 배치, 타 시스템 연계
+        - 핵심 로직은 아니지만 서비스 운영에 반드시 필요
+    - Generic Domain
+        - 여러 도메인에서 공통적으로 사용
+        - 음성 인식, 영상 합성
+            - 일반화도니 기술이나 라이브러리로 대체 가능
+    - Bounded Context
+        - 모듈화와 Micro Service 분할의 핵심 단위
+        - 각 도메인은 내부적으로 하나의 경계된 의미적/기술적 맥락
+        - 예를 들어, 녹취와 녹취 검증은 같은 녹취 도메인이지만, 서로 다른 컨텍스트에서 작동
 - ![Image](https://github.com/user-attachments/assets/fc857670-9fce-4990-94e5-ee4fe088ee03)
-
+    - 헥사고날 아키텍처(Hexagonal Architecture)
+        - 애플리케이션 중심에 도메인 로직을 두고, 외부 시스템과의 연결을 Port와 Adapter를 통해 느슨하게 연결
+    - 중심: 녹취 Domain Logic
+        - JPA Adapter
+            - DB 연동 -> Amazon RDS
+        - S3 Adapter
+            - 객체 스토리지 연동 -> Amazon S3
+        - Cache Adapter
+            - 캐싱 시스템 연동 -> Amazon ElastiCahce
+        - Service / Controller Port
+            - 서비스 호출 및 외부 인터페이스 연결
+        - 도메인은 외부 시스템의 존재를 모르며, 단지 Port로 정의된 인터페이스만 알고 있음
+            - 테스트 용이성 + 유지보수 용이
 - ![Image](https://github.com/user-attachments/assets/b5872ac6-b479-46aa-99e1-532d4861ac82)
-
+    - Bounded Context가 서로 다른 요구사항을 가질 때, 독립적인 Micro Service로 빠르게 전환
+    - 녹취 서비스
+        - Ports를 통해 외부와 연결
+        - 각 포트는 어댑터를 통해 인프라와 **느슨하게** 연결
+    - 녹취 검증 서비스
+        - HTTP Client, Kafka Producer/Consumer, Context Provider 등 다양한 포트를 통해 통신
+        - MCP Server 연동을 통해 다른 시스템과 메시지 처리
+    - 녹취 제어 서비스
+        - Proxy 역할, 도메인 논리 보유
+        - 별도 컨슈머 구조를 통해 메시지 소비
+        - AI Agent 또는 음성인식 모듈과 연동될 수 있도록 분리
+    - 기타 기능
+        - 음성인식 기능 #1, #2, AI Agent 등은 별도의 독립 Micro Service로 구성
+            - 필요 시 확장 및 교채
+    - DDD 설계 기반 서비스 간 독립성, 응집도 확보
+        - 요구사항 변화에 빠르게 대응 가능한 유연한 구조
 - ![Image](https://github.com/user-attachments/assets/b33c0e02-6a21-499d-a729-5fbb313f88d4)
 
 - ![Image](https://github.com/user-attachments/assets/718c7647-c522-4d2b-824a-a9a00ca6e0a3)
@@ -446,4 +629,3 @@
 - mcp(mODEL /CONTEXT pROTOCOL)
 - 앞으로
 - 
-## 나에게 맞춤 혜택을 큐레이션: 삼성카드의 AI 기반 실시간 추천 시스템 현대화 사례
