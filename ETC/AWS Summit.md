@@ -239,11 +239,90 @@
             - 각종 계정 관리
         - DMZ 아키텍처
             - ![Image](https://github.com/user-attachments/assets/99816f0f-0889-4852-9d2e-b1d98070281d)
+                - Hub & Spoke 네트워크 모델
+                    - 외부/내부에서 들어오는 모든 트래픽은 내부 방화벽(Hub) 반드시 경유
+                    - Hub
+                        - 모든 통신을 제어하는 중앙 방화벽
+                    - Spoke
+                        - 업무 단위 혹은 목적별 VPC
+                - Direct Connect 위에 VPN 터널을 추가로 올려 보안 계층 강화
+                - Transit Gateway(TGW)
+                    - 중앙 통합 라우팅 허브 역할
+                    - 다양한 VPC들이 TGW를 통해 통신
             - ![Image](https://github.com/user-attachments/assets/cd89947f-ea50-412b-b9f2-d2887478f640)
+                - 상단 영역
+                    - 형락 IDC
+                        - 온프레미스 환경
+                    - INGRESS VPC / EGRESS VPC
+                        - 외부에서 들어오는 트래픽
+                        - 내부에서 나가는 트래픽
+                    - 운영/개발 방화벽 VPC
+                        - 모든 0.0.0.0/0 트래픽 제어
+                        - TGW를 통해 라우팅 및 방화벽 통과 구조 구성
+                - 중간 영역
+                    - tgw-main-network
+                        - Transit Gateway 메인 네트워크
+                        - TGW Route Table에서 각 VPC로 연결
+                    - TGW Route Table Propagation / Association
+                        - Propagation
+                            - 라우팅 정보 전파
+                        - Association
+                            - 특정 라우팅 테이블 사용하도록 지정
+                - 하단 영역
+                    - DMZ 및 워크로드용 VPC들 모두 TGW를 통해 라우팅
+                    - 공통적으로 0.0.0.0/0 -> tgw-main 설정
+                - 흐름 요약
+                    - 외부 -> 내부
+                        - INGRESS VPC -> DMZ-운영 VPC -> 운영 방화벽 VPC -> 워크로드 VPC
+                    - 내부 -> 외부
+                        - EGRESS VPC -> 방화벽 VPC -> 형락 IDC(VPN) 경유
             - ![Image](https://github.com/user-attachments/assets/93036415-3dec-4e1b-bdff-b1d9bb4e3192)
+                - ![Image](https://github.com/user-attachments/assets/7b025b0b-8612-40e5-a47b-f11b27e57754)
+                    - GWLB(Gateway Load Balancer)
+                        - 외부 트래픽을 방화벽 어플라이언스로 유도
+                    - DMZ VPC
+                        - 외부와 내부를 격리하는 중간 보안 완충지대 
+                    - TGW 라우팅 분리
+                        - 목적지 기준 라우팅 정책을 통해 DMZ 논리 분리
+                    - 아키텍처 진화 단계
+                        - 보안 강화 -> 구성 단순화 -> 유연한 확장성 확보
         - EKS 워커노드 관리 방안
             - ![Image](https://github.com/user-attachments/assets/0827695d-ae09-4bc7-9088-19f6385b9df4)
+                - EKS(Elastic Kubernetes Service) 도입 시 기존 보안 솔루션 및 관리 정책이 갖는 한계점 식별
+                    - 새 운영 방식에 맞춘 관리 전략이 필요
+                - EKS 도입 시 발생하는 보안 관리 이슈
+                    - IaC(Infrastructure as Code) 기반으로 EKS가 자주 재배포되며 IP가 동적으로 자주 바뀜
+                        - 기존의 IP 기반 보안 정책 무력화
+                        - 일부 솔루션은 IP 변동에 민감, 오동작 및 정책 활용 어려움
+                    - 서버 접근 통제
+                        - EC2에 적용하던 통제 정책이 EKS 워커노드에는 직접 적용 불가
+                        - 필요 시점별, 용도별 접근 제어를 적용하기 어려움
+                    - 서비스 통신 제어
+                        - EC2 간 통신 제어는 적용 가능, EKS 내의 Pod-to-Pod, Pod-to-Service간 통신은 기존 방식으로는 가시성 및 제어 한계 발생
             - ![Image](https://github.com/user-attachments/assets/2c9a7566-1ec6-4e89-902d-2492a82c5443)
+                - 워커노드 관리 기준 수립
+                    - AWS Optimized AMI를 조직의 보안/운영 기준에 맞게 커스터마이징
+                        - 동일한 보안 기준과 설정이 적용된 노드를 자동으로 반복 생성 가능
+                        - 관리 일관성 & 보안 표준화 확보
+                    - Cloud Native 서비스 활용
+                        - AWS GuardDuty
+                            - 위협 탐지 및 이상 행위 분석
+                        - AWS Macie
+                            - 민감 정보 탐지 
+                        - Security Group
+                            - 네트워크 접근 제어
+                        - AWS에서 제공하는 네이티브 보안 서비스 적극 활용, 관리 부담 최소화
+                        - SaaS 기반으로 구성, 확장성 및 자동화에 유리
+                    - Cloud Native 3rd Party 보안 솔루션 활용
+                        - CWPP(Cloud Workload Protection Platform)
+                        - Micro Segmentation
+                            - 워크로드 간 세분화된 네트워크 제어
+                        - 기존 IP 기반 보안이 아닌 워크로드/컨테이너 기반 보안 방식
+                        - 3rd Party 솔루션
+                            - ex) Prisma Cloud,Sysdig, Lacework등 사용 가능
+                    - 클라우드 보안 정책 수립
+                        - 기술 구성 외에도 보안 거버넌스 정책 수립이 병행되어야 완전한 보호 가능
+                        - 조직 차원의 보안 운영 체계 마련 필요
 >> EKS: AWS의 Kubernetes 서비스, 컨테이너 기반 워크로드 실행
 - 랜딩존 구축 이후 과제
     - ![Image](https://github.com/user-attachments/assets/c398e796-6330-4cb4-b934-c1178971846c)
