@@ -25,6 +25,7 @@
 ### Client 기본 컨셉
 #### 브라우저 탐색 이벤트 처리
 - 결국 JSP + SpringBoot를 사용한 SSR 방식이고, SPA를 구현할 수는 없음
+    - [왜 SPA를 구현할 수 없는가?]()
     - 기존에는 PPR(Partial Page Rendering) 방식 사용
         - **ITMS에는 PPR은 구현되어 있으나, 새로고침 시 main.jsp 부터 다시 시작 하는 불편함 존재**
     - 현재는 PPR방식에 `window.onpopstate`를 활용, 앞으로 가기/뒤로가기 요청 처리
