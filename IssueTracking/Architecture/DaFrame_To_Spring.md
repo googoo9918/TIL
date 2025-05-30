@@ -17,7 +17,7 @@
         - [예시 코드](#예시-코드)
 - [이슈 정리](#이슈-정리)
     - [Mapper 사용 시 이슈](#mapper-사용-시-이슈)
-    - [세팅 이슈](#세팅-이슈)
+    - [세팅 이슈(In Intellij)](#세팅-이슈in-intellij)
     - [MyBatis 이슈](#mybatis-이슈)
     - [기능 이슈](#기능-이슈)
 
@@ -420,16 +420,16 @@ mapstruct Mapper를 사용하여 @Mapping을 사용하여 필드명을 변환해
 
 ## 이슈 정리
 ### Mapper 사용 시 이슈
-- [상속 구조 사용 시 Mapper 에러](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/Mapstruct_mapper_extends.md)
-- [Mapstruct 매핑 관련 에러(자바빈 프로퍼티)](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/MapStruct_Unmapped%20target%20property.md)
+- [상속 구조 사용 시 Mapper 에러(@SuperBuilder)](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/Mapstruct_mapper_extends.md)
+- [Mapstruct 매핑 관련 에러(자바빈 프로퍼티 명명 규약)](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/MapStruct_Unmapped%20target%20property.md)
 
-### 세팅 이슈
+### 세팅 이슈(In Intellij)
 - [DaFrame 내부 톰캣 세팅](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Setting/DaFrameIntellijSetting.md)
 - [폐쇄망 gradle 세팅](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Setting/Intellij_gradle_setting_error.md)
 - [폐쇄망 Dependency 추가 세팅](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Setting/Intellij_oracle_setting_error.md)
 
 ### MyBatis 이슈
-- [MyBatis-Dto 이슈](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/MyBatis-Dto%20Mapping%20Error.md)
+- [MyBatis-Dto 이슈(자바 리플렉션)](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/MyBatis-Dto%20Mapping%20Error.md)
 - [MyBatis/RequestDto Enum 사용](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/MyBatis-Dto%20Mapping%20Error.md)
 
 ### 기능 이슈
