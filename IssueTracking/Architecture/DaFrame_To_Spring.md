@@ -116,7 +116,7 @@
 
 ### Data Transfer 기본 컨셉
 #### ORM(JPA) 사용 시
-- ![Image](https://github.com/user-attachments/assets/2c476c1f-a20c-4c32-99c7-41916fd4d4cc)
+- ![Image](https://github.com/user-attachments/assets/a772bd5d-6b8a-4f49-b396-fe5cd2e5c74e)
     - Service 계층 및 Repository 계층에서 Entity를 사용하고, **영속성 컨텍스트** 관리를 통한 용이성 제공
         - 캐시, 지연 로딩, 변경 감지 등
     - Controller 계층과의 명확한 분리를 통해 여러 장점 제공
