@@ -263,20 +263,20 @@ public interface VisitMapper {
 
     List<VisitResponseDto.ManagerResponse> managerQueryResponseListToManagerResponseList(List<VisitQueryResponseDto.ManagerQueryResponse> managerQueryResponseList);
 
-    @Mapping(target = "visitStartYmd", expression = "java(visitRequest.getVisitDateStart().substring(0, 8))")
-    @Mapping(target = "visitStartHour", expression = "java(visitRequest.getVisitDateStart().substring(8, 10))")
-    @Mapping(target = "visitStartMinute", expression = "java(visitRequest.getVisitDateStart().substring(10, 12))")
-    @Mapping(target = "visitEndYmd", expression = "java(visitRequest.getVisitDateEnd().substring(0, 8))")
-    @Mapping(target = "visitEndHour", expression = "java(visitRequest.getVisitDateEnd().substring(8, 10))")
-    @Mapping(target = "visitEndMinute", expression = "java(visitRequest.getVisitDateEnd().substring(10, 12))")
+//    @Mapping(target = "visitStartYmd", expression = "java(visitRequest.getVisitDateStart().substring(0, 8))")
+//    @Mapping(target = "visitStartHour", expression = "java(visitRequest.getVisitDateStart().substring(8, 10))")
+//    @Mapping(target = "visitStartMinute", expression = "java(visitRequest.getVisitDateStart().substring(10, 12))")
+//    @Mapping(target = "visitEndYmd", expression = "java(visitRequest.getVisitDateEnd().substring(0, 8))")
+//    @Mapping(target = "visitEndHour", expression = "java(visitRequest.getVisitDateEnd().substring(8, 10))")
+//    @Mapping(target = "visitEndMinute", expression = "java(visitRequest.getVisitDateEnd().substring(10, 12))")
     VisitWriteRequestDto.VisitHistoryCreate visitRequestToVisitHistoryCreate(VisitRequestDto.VisitRequest visitRequest);
 
-//    @InheritConfiguration(name = "visitRequestToVisitMasterCreate")
+
     VisitWriteRequestDto.VisitMasterCreate visitRequestToVisitMasterCreate(VisitRequestDto.VisitRequest visitRequest);
 
-    @Mapping(target = "cDiskImportSize", source = "cDiskImportSize")
-    @Mapping(target = "dDiskImportSize", source = "dDiskImportSize")
-    @Mapping(target = "eDiskImportSize", source = "eDiskImportSize")
+//    @Mapping(target = "cDiskImportSize", source = "cDiskImportSize")
+//    @Mapping(target = "dDiskImportSize", source = "dDiskImportSize")
+//    @Mapping(target = "eDiskImportSize", source = "eDiskImportSize")
     VisitWriteRequestDto.VisitItemCreate visitRequestToVisitItemCreate(VisitRequestDto.VisitRequest visitRequest);
 
     @Mapping(target = "rowNumber", source = "rownum")
@@ -299,22 +299,22 @@ public interface VisitMapper {
 
     VisitWriteRequestDto.VisitMasterUpdate visitUpdateRequestToVisitMasterUpdate(VisitRequestDto.VisitUpdateRequest visitUpdateRequest);
 
-    @Mapping(target = "visitStartYmd", expression = "java(visitUpdateRequest.getVisitDateStart().substring(0, 8))")
-    @Mapping(target = "visitStartHour", expression = "java(visitUpdateRequest.getVisitDateStart().substring(8, 10))")
-    @Mapping(target = "visitStartMinute", expression = "java(visitUpdateRequest.getVisitDateStart().substring(10, 12))")
-    @Mapping(target = "visitEndYmd", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(0, 8))")
-    @Mapping(target = "visitEndHour", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(8, 10))")
-    @Mapping(target = "visitEndMinute", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(10, 12))")
+//    @Mapping(target = "visitStartYmd", expression = "java(visitUpdateRequest.getVisitDateStart().substring(0, 8))")
+//    @Mapping(target = "visitStartHour", expression = "java(visitUpdateRequest.getVisitDateStart().substring(8, 10))")
+//    @Mapping(target = "visitStartMinute", expression = "java(visitUpdateRequest.getVisitDateStart().substring(10, 12))")
+//    @Mapping(target = "visitEndYmd", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(0, 8))")
+//    @Mapping(target = "visitEndHour", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(8, 10))")
+//    @Mapping(target = "visitEndMinute", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(10, 12))")
     VisitWriteRequestDto.VisitHistoryUpdate visitUpdateRequestToVisitHistoryUpdate(VisitRequestDto.VisitUpdateRequest visitUpdateRequest);
 
     VisitWriteRequestDto.VisitItemDetailCreate visitUpdateRequestToItemCreate(VisitRequestDto.VisitUpdateRequest visitUpdateRequest);
 
-    @Mapping(target = "cDiskImportSize", source = "cDiskImportSize")
-    @Mapping(target = "cDiskExportSize", source = "cDiskExportSize")
-    @Mapping(target = "dDiskImportSize", source = "dDiskImportSize")
-    @Mapping(target = "dDiskExportSize", source = "dDiskExportSize")
-    @Mapping(target = "eDiskImportSize", source = "eDiskImportSize")
-    @Mapping(target = "eDiskExportSize", source = "eDiskExportSize")
+//    @Mapping(target = "cDiskImportSize", source = "cDiskImportSize")
+//    @Mapping(target = "cDiskExportSize", source = "cDiskExportSize")
+//    @Mapping(target = "dDiskImportSize", source = "dDiskImportSize")
+//    @Mapping(target = "dDiskExportSize", source = "dDiskExportSize")
+//    @Mapping(target = "eDiskImportSize", source = "eDiskImportSize")
+//    @Mapping(target = "eDiskExportSize", source = "eDiskExportSize")
     VisitWriteRequestDto.VisitItemUpdate visitUpdateRequestToItemUpdate(VisitRequestDto.VisitUpdateRequest visitUpdateRequest);
 
     @Mapping(target = "vstId", source = "vstId")
@@ -331,8 +331,14 @@ public interface VisitMapper {
     @Mapping(target = "otherClient", source = "companyName")
     @Mapping(target = "vehicleModel", source = "vstCarType")
     @Mapping(target = "vehicleNumber", source = "vstCarNo")
-    @Mapping(target = "visitDateStart", expression = "java(formatDate(visitHistoryDetailQueryResponse.getVstStaYmd(), visitHistoryDetailQueryResponse.getVstStaHh(), visitHistoryDetailQueryResponse.getVstStaMm()))")
-    @Mapping(target = "visitDateEnd", expression = "java(formatDate(visitHistoryDetailQueryResponse.getVstEndYmd(), visitHistoryDetailQueryResponse.getVstEndHh(), visitHistoryDetailQueryResponse.getVstEndMm()))")
+    @Mapping(target = "visitStartYmd", source = "vstStaYmd")
+    @Mapping(target = "visitStartHour", source = "vstStaHh")
+    @Mapping(target = "visitStartMinute", source = "vstStaMm")
+    @Mapping(target = "visitEndYmd", source = "vstEndYmd")
+    @Mapping(target = "visitEndHour", source = "vstEndHh")
+    @Mapping(target = "visitEndMinute", source = "vstEndMm")
+//    @Mapping(target = "visitDateStart", expression = "java(formatDate(visitHistoryDetailQueryResponse.getVstStaYmd(), visitHistoryDetailQueryResponse.getVstStaHh(), visitHistoryDetailQueryResponse.getVstStaMm()))")
+//    @Mapping(target = "visitDateEnd", expression = "java(formatDate(visitHistoryDetailQueryResponse.getVstEndYmd(), visitHistoryDetailQueryResponse.getVstEndHh(), visitHistoryDetailQueryResponse.getVstEndMm()))")
     @Mapping(target = "accessCardNumber", source = "passNo")
     @Mapping(target = "idCardCheckYn", source = "identityYn")
     @Mapping(target = "systemCheckYn", source = "systemCk")
