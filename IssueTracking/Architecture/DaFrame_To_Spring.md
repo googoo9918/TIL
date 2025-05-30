@@ -74,12 +74,25 @@
     - RestController는 리소스 기반 URL 작성, 예를 들어 ADMIN 도메인인 admin_m01_s02 페이지에서 사용하는 API라고 하더라도, 엔드포인트는 VisitController에 존재(리소스 기반)
         - URL 예시
             - `VisitRestController`
-                - ![Image](https://github.com/user-attachments/assets/b69e7cd0-da09-41d6-81b4-d01ad31c16dc)
-                - ![Image](https://github.com/user-attachments/assets/3bc72207-7b82-4ac3-9c51-5ae803564bb0)
-                - ![Image](https://github.com/user-attachments/assets/0ae954aa-2045-4036-9c8b-e912a1267582)
-                - ![Image](https://github.com/user-attachments/assets/bd206765-a348-492c-aa53-0d04e62846a8)
-                - ![Image](https://github.com/user-attachments/assets/1bc2cef4-17cf-44b1-b308-5bb1f8ae1595)
-                - ![Image](https://github.com/user-attachments/assets/be589b27-408f-4467-a9b7-1abe98bfeea6)
+                - `GET api/visits/managers`
+                    - 방문 담당자 정보 조회
+                - `POST api/visits`
+                    - 방문 생성(방문 신청)
+                - `GET api/visits`
+                    - 방문정보 리스트 조회
+                - `PUT api/visits/{vstNo}`
+                    - 방문정보(단건) 수정
+                - `DELETE api/visits/{vstNo}`
+                    - 방문정보(단건) 삭제
+            - `AdminRestController`
+                - `POST api/admins/login`
+                    - 관리자 로그인
+                - `POST api/admins/logout`
+                    - 관리자 로그아웃
+                - `GET api/admins/locker-rooms`
+                    - 락커룸 조회
+                - `GET api/admins/password`
+                    - 관리자 비밀번호 변경
             - [RESTful API 네이밍 래퍼런스](https://restfulapi.net/resource-naming/)
 
 #### 예외 처리 with HTTP 상태 코드
