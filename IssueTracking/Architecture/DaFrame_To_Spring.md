@@ -60,7 +60,7 @@
         - 예외처리 목적에 맞게 분리 가능
             - `@ControllerAdvice(assignableTypes = {})` 등 사용
         - 별도 인증 처리 전략을 가져갈 수 있음
-        - Swagger 문서 생성 시 RESP API만 스캔하도록 구분 가능
+        - Swagger 문서 생성 시 REST API만 스캔하도록 구분 가능
         - 테스트 용이성 증대
     - ![Image](https://github.com/user-attachments/assets/f8edd7f2-3089-46ac-ab3b-facdf866fd28), ![Image](https://github.com/user-attachments/assets/6f314bdd-0acb-4b33-bf23-3babf4c4bf01)
 
