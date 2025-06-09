@@ -430,7 +430,7 @@ mapstruct Mapper를 사용하여 @Mapping을 사용하여 필드명을 변환해
 | 항목 | 🔴 문제점 | ✅ 개선 방향 |
 |------|----------|---------------|
 | **1. 프론트엔드 구조(PPR)의 구조적 한계** | - JSP 기반 SSR + PPR 구조에서 SPA UX 불가<br>- 새로고침 시 항상 `main.jsp`부터 시작 → 사용자 경험 단절<br>- `window.history` 기반 앞/뒤 이동은 불완전함 | - 브라우저 히스토리, Ajax 요청의 상태 동기화를 명확히 처리<br>- 클라이언트 요청과 서버 응답을 철저히 분리<br>- SPA 전환이 불가하다면, PPR의 한계 내에서 UX 개선 전략 수립 |
-| **2. HTTP Method 및 API 설계 관점의 문제** | - 모든 API 요청을 POST로 처리 → RESTful 아님<br>- HTTP 상태 코드 무시 (에러도 200 OK)<br>- URL이 동작 중심으로 구성되어 있음 (`doInsertVisit` 등) | - HTTP Method 별 책임 분리 (`GET`, `POST`, `PUT`, `DELETE`)<br>- HTTP 상태 코드 기반 예외 처리 체계 확립<br>- 리소스 기반 RESTful URL로 전환 (`/api/visits/{id}` 등) |
+| **2. HTTP Method 및 API 설계 관점의 문제** | - 모든 API 요청을 POST로 처리 → RESTful 아님<br>- HTTP 상태 코드 무시 (에러도 200 OK)<br>- URL이 동작 중심으로 구성되어 있음| - HTTP Method 별 책임 분리 (`GET`, `POST`, `PUT`, `DELETE`)<br>- HTTP 상태 코드 기반 예외 처리 체계 확립<br>- 리소스 기반 RESTful URL로 전환 (`/api/visits/{id}` 등) |
 | **3. Exception 처리 구조의 문제** | - 모든 컨트롤러에 try-catch → `@RestControllerAdvice` 무력화<br>- 에러가 발생해도 항상 200 OK 응답 → 클라이언트는 SuccessYN 확인 | - `@RestControllerAdvice` 기반 전역 예외 처리 체계 확립<br>- Ajax 요청은 HTTP 상태코드 기반 분기(`success`, `error`)로 일원화<br>- 세션 인증 오류는 `401`, `403` 상태 코드로 처리 |
 | **4. DTO 미사용 및 Map 기반 개발의 한계** | - 모든 요청/응답이 `Map<String, Object>` 기반<br>- 타입 불안정, 가독성 저하<br>- Swagger, 자동 문서화 불가<br>- 유효성 검증 불가능 | - 요청/응답/DB 구조별 DTO 분리 (`RequestDto`, `ResponseDto`, `QueryDto` 등)<br>- `@Valid` 기반 유효성 검증 적용<br>- Swagger/OpenAPI 연동 가능한 구조 확립 |
 | **5. 쿼리와 객체 구조의 결합 문제** | - MyBatis에서 DTO 없이 SQL ↔ 화면 직접 매핑<br>- 쿼리 변경 시 화면 영향 발생<br>- 마스킹, 포맷팅 등의 표현 로직이 뷰에 혼재 | - DTO 변환 전용 Mapper 계층 명확화 (`MapStruct` 활용)<br>- `QueryResponseDto → ResponseDto` 변환 분리<br>- Mapper는 순수 변환 책임만 가지도록 설계 |
