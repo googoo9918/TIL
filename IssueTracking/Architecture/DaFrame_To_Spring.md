@@ -33,6 +33,9 @@
         - ![Image](https://github.com/user-attachments/assets/164db518-3aa2-4f59-ba2e-892510a21449)
 #### HTTP Method 분리
 - 기존에는 모든 api 요청은, POST로 처리 / jsp 파일 요청 ajax는 GET으로 처리
+    - RESTful API 원칙 위배
+    - GET 요청 캐싱 불가능
+    - 메서드별 정책 적용 어려움
 - 방문관리 시스템은 동작하고자 하는 Http Method에 따라 Restful Api 규약에 맞춰 다음과 같이 구분 
     - getHtml(페이지 요청), getRequest, postRequest, putRequest, deleteRequest로 구분(Patch 미사용)
     - `getHtml`
