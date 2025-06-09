@@ -51,6 +51,13 @@
 
 ### Controller 기본 컨셉
 - 도메인 별로, jsp를 반환하는 ViewController와 Rest api 요청을 처리하는 RestController로 분리
+    - `@Controller`와 `@RestController` 분리
+        - 뷰 렌더링 / 데이터 응답 책임 분리
+        - 예외처리 목적에 맞게 분리 가능
+            - `@ControllerAdvice(assignableTypes = {})` 등 사용
+        - 별도 인증 처리 전략을 가져갈 수 있음
+        - Swagger 문서 생성 시 RESP API만 스캔하도록 구분 가능
+        - 테스트 용이성 증대
     - ![Image](https://github.com/user-attachments/assets/f8edd7f2-3089-46ac-ab3b-facdf866fd28), ![Image](https://github.com/user-attachments/assets/6f314bdd-0acb-4b33-bf23-3babf4c4bf01)
 
 #### ViewController(Jsp 페이지 반환)
