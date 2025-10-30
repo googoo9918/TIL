@@ -454,3 +454,301 @@ erDiagram
     ORDERS ||--o{ ORDER_ITEM : "주문상품"
     ITEM ||--o{ ORDER_ITEM : "상품"
 ```
+
+
+```json
+const CACHE_NAME = 'portal-cache-v1';
+const APP_SHELL = [
+  '/', '/offline.html', '/css/main.css', '/js/app.js', '/images/logo.png'
+];
+
+// 1️⃣ 설치 단계: 앱 셸 캐싱
+self.addEventListener('install', event => {
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL))
+  );
+});
+
+// 2️⃣ 활성화 단계: 이전 캐시 정리
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+    )
+  );
+});
+
+// 3️⃣ 요청 가로채기(Fetch)
+self.addEventListener('fetch', event => {
+  const reqUrl = new URL(event.request.url);
+  const path = reqUrl.pathname;
+
+  // 민감 정보는 네트워크 전용
+  if (path.startsWith('/login') || path.startsWith('/logout') || path.startsWith('/secure/')) {
+    return; 
+  }
+
+  // 정적 리소스: Cache First
+  if (path.match(/\.(?:js|css|png|jpg|jpeg|gif|ico)$/)) {
+    event.respondWith(cacheFirst(event.request));
+    return;
+  }
+
+  // HTML 페이지 및 API: Network First
+  if (event.request.headers.get('accept')?.includes('text/html') || path.startsWith('/api/')) {
+    event.respondWith(networkFirst(event.request));
+    return;
+  }
+
+  // 기본 전략: Stale-While-Revalidate
+  event.respondWith(staleWhileRevalidate(event.request));
+});
+
+// 4️⃣ 기본 전략 함수들 (예시)
+async function cacheFirst(req) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(req);
+  return cached || fetch(req).then(res => {
+    cache.put(req, res.clone());
+    return res;
+  });
+}
+
+async function networkFirst(req) {
+  const cache = await caches.open(CACHE_NAME);
+  try {
+    const fresh = await fetch(req);
+    cache.put(req, fresh.clone());
+    return fresh;
+  } catch {
+    const cached = await cache.match(req);
+    return cached || caches.match('/offline.html');
+  }
+}
+
+async function staleWhileRevalidate(req) {
+  const cache = await caches.open(CACHE_NAME);
+  const cached = await cache.match(req);
+  const networked = fetch(req).then(res => {
+    cache.put(req, res.clone());
+    return res;
+  });
+  return cached || networked;
+}
+
+```
+
+## 오프라인 배너 예시
+```hmtl
+<!-- HTML -->
+<div id="offlineBanner" style="display:none; background:#d32f2f; color:white; padding:8px; text-align:center;">
+  ⚠ 현재 오프라인 상태입니다. 연결을 확인해주세요.
+</div>
+```
+
+## 네트워크 상태 감지 및 UI 제어 예시
+```js
+// JS (netMonitor.js)
+function updateNetworkStatus() {
+  const banner = document.getElementById('offlineBanner');
+  banner.style.display = navigator.onLine ? 'none' : 'block';
+}
+window.addEventListener('online', updateNetworkStatus);
+window.addEventListener('offline', updateNetworkStatus);
+updateNetworkStatus(); // 초기 상태 확인
+
+```
+
+
+## Code 1. 권한 요청 & 구독 생성(클라이언트, `app.js`)
+```js
+// VAPID 공개키(Base64 → Uint8Array 변환 함수는 별도 구현했다고 가정)
+const VAPID_PUBLIC_KEY = 'BExxxxx...';
+
+async function ensurePushSubscription() {
+  // 1) 서비스워커 등록
+  const reg = await navigator.serviceWorker.register('/sw.js');
+
+  // 2) 알림 권한 요청(명시적 동의)
+  const perm = await Notification.requestPermission();
+  if (perm !== 'granted') return null;
+
+  // 3) 구독 생성
+  const sub = await reg.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlB64ToUint8Array(VAPID_PUBLIC_KEY)
+  });
+
+  // 4) 서버에 구독 저장
+  await fetch('/api/push/subscribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(sub)
+  });
+  return sub;
+}
+```
+
+### Code 2-1. 구독 저장/해지 API(형식 예시, 서버)
+```http
+POST /api/push/subscribe
+Content-Type: application/json
+{
+  "endpoint": "...",
+  "expirationTime": null,
+  "keys": { "p256dh": "...", "auth": "..." }
+}
+
+DELETE /api/push/unsubscribe
+Content-Type: application/json
+{ "endpoint": "..." }
+```
+
+### Code 2-2. 서버 발송 예시(Spring 예시)
+```java
+// WebPushService.java
+import nl.martijndwars.webpush.Notification;
+import nl.martijndwars.webpush.PushService;
+
+public class WebPushService {
+    private static final String SUBJECT = "mailto:admin@company.com";
+    private static final String PUBLIC_KEY = "BExxxxx...";
+    private static final String PRIVATE_KEY = "xxxxxxxx...";
+
+    public void sendPush(String endpoint, String p256dh, String auth) throws Exception {
+        PushService pushService = new PushService(PUBLIC_KEY, PRIVATE_KEY, SUBJECT);
+
+        String payload = """
+        {
+          "title": "시스템 공지",
+          "body": "오늘 18:00 점검 예정",
+          "icon": "/icons/notify-192.png",
+          "badge": "/icons/badge-72.png",
+          "tag": "notice-ops",
+          "data": { "url": "/notice/123" }
+        }
+        """;
+
+        Notification notification = new Notification(endpoint, p256dh, auth, payload.getBytes());
+        pushService.send(notification);
+    }
+}
+```
+
+### Code 3-1. 수신 & 표시(Serivce Worker, `sw.js`)
+```js
+self.addEventListener('push', (event) => {
+  if (!event.data) return;
+  const payload = event.data.json();
+  const title = payload.title || '알림';
+  const options = {
+    body: payload.body,
+    icon: payload.icon,
+    badge: payload.badge,
+    tag: payload.tag,
+    data: payload.data
+  };
+  event.waitUntil(self.registration.showNotification(title, options));
+});
+```
+
+### Code 3-2. 클릭 액션(Service Worker, `sw.js`)
+```js
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = event.notification.data?.url || '/';
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then(list => {
+        const opened = list.find(w => w.url.includes(self.registration.scope));
+        if (opened) { opened.focus(); opened.navigate(url); }
+        else { clients.openWindow(url); }
+      })
+  );
+});
+```
+
+
+```mermaid
+flowchart LR
+    %% === 단계 1. 앱 설치 및 초기 구성 ===
+    A[Install App] --> B[Service Worker]
+    A --> C[Cache Storage]
+    B --> C
+    B --> D[Spring Boot WAS]
+
+    %% === 단계 2. 서비스 워커 등록 및 구독 ===
+    A -->|1. Subscribe| B
+    A -->|2. Receive Push| F[offline.html]
+
+    %% === 단계 3. WAS 처리 계층 ===
+    D --> G[Controller → Service → MyBatis]
+    G --> H[(DB)]
+    D --> I[JSP + JSTL → SSR HTML]
+
+    %% === 단계 4. 푸시 발송 및 수신 ===
+    B -->|3. Push Start| J[Push Server]
+    J --> K[Google / Apple Push Service]
+    K -->|4. Receive Push| B
+    K -->|4. Receive Push| F
+
+    %% === 스타일 설정 ===
+    classDef node fill:#0b74ff,stroke:#036,stroke-width:1px,color:#fff,font-size:13px;
+    classDef db fill:#0b74ff,stroke:#036,stroke-width:1px,color:#fff,stroke-dasharray:3 3,font-size:13px;
+    classDef light fill:#3f8cff,stroke:#036,stroke-width:1px,color:#fff,font-size:13px;
+
+    class A,B,C,D,F,G,H,I,J,K node;
+    class H db;
+
+```
+
+```mermaid
+flowchart LR
+
+  %% Client (PWA)
+  subgraph C["Client (PWA)"]
+    A1["Install App / manifest"]
+    A2["Cache Storage (App Shell)"]
+    A3["SSR HTML"]
+    A4["offline.html (fallback)"]
+  end
+
+  %% Service Worker
+  subgraph SW["Service Worker"]
+    B1["install / activate"]
+    B2["fetch strategies"]
+    B3["Subscribe (auto upsert)"]
+    B4["push -> showNotification"]
+    B5["notificationclick -> openWindow"]
+  end
+
+  %% Backend
+  subgraph BE["Spring Boot WAS"]
+    D1["Controller -> Service -> MyBatis"]
+    D2["DB (users, subscriptions)"]
+  end
+
+  %% Push Infra
+  subgraph PI["Push Infrastructure"]
+    E1["Push Server (VAPID broadcast)"]
+    E2["Web Push Service (FCM / APNS)"]
+  end
+
+  %% Flows (numbered labels)
+  A1 -->|1 Install & register| B1
+  B1 -->|2 Cache setup| A2
+  B2 ---|3 SSR / offline handling| A3
+  B2 --- A4
+
+  A1 -->|4 Subscribe request| B3
+  B3 -->|5 POST /api/push upsert| D1
+  D1 -->|6 Save subscription| D2
+
+  D1 -->|7 Broadcast trigger| E1
+  E1 -->|8 Send to WPS| E2
+  E2 -->|9 Deliver push| B4
+  B4 -->|10 User click| B5
+
+  D1 -->|11 SSR render| A3
+
+```
