@@ -62,3 +62,395 @@
 
 ---
 
+
+```mermaid
+graph TB
+    subgraph "Client Layer"
+        WEB[Web Browser]
+        API_CLIENT[API Client]
+    end
+    
+    subgraph "Presentation Layer"
+        REST[REST Controllers]
+        VIEW[View Controllers]
+        SWAGGER[Swagger UI]
+    end
+    
+    subgraph "Business Layer"
+        MEMBER_SVC[Member Service]
+        ITEM_SVC[Item Service]
+        ORDER_SVC[Order Service]
+    end
+    
+    subgraph "Data Access Layer"
+        JPA_REPO[JPA Repositories]
+        MYBATIS_REPO[MyBatis Repositories]
+        MAPPER[MapStruct Mappers]
+    end
+    
+    subgraph "Database Layer"
+        H2[(H2 Database)]
+    end
+    
+    subgraph "Infrastructure Layer"
+        SPRING_BOOT[Spring Boot]
+        VALIDATION[Jakarta Validation]
+        LOMBOK[Lombok]
+    end
+    
+    WEB --> REST
+    API_CLIENT --> REST
+    REST --> MEMBER_SVC
+    REST --> ITEM_SVC
+    REST --> ORDER_SVC
+    
+    MEMBER_SVC --> JPA_REPO
+    MEMBER_SVC --> MYBATIS_REPO
+    MEMBER_SVC --> MAPPER
+    
+    ITEM_SVC --> JPA_REPO
+    ITEM_SVC --> MYBATIS_REPO
+    ITEM_SVC --> MAPPER
+    
+    ORDER_SVC --> JPA_REPO
+    ORDER_SVC --> MYBATIS_REPO
+    ORDER_SVC --> MAPPER
+    
+    JPA_REPO --> H2
+    MYBATIS_REPO --> H2
+    
+    SPRING_BOOT --> REST
+    SPRING_BOOT --> MEMBER_SVC
+    SPRING_BOOT --> ITEM_SVC
+    SPRING_BOOT --> ORDER_SVC
+```
+
+``` mermaid
+classDiagram
+    %% Entity Layer
+    class Member {
+        -Long id
+        -String name
+        -String phoneNumber
+        -Address address
+        +Member(name, phoneNumber, address)
+    }
+    
+    class Item {
+        -Long id
+        -String name
+        -int price
+        -int stockQuantity
+        +Item(name, price, stockQuantity)
+        +addStock(quantity)
+        +removeStock(quantity)
+        +updateByRequest(request)
+    }
+    
+    class Order {
+        -Long id
+        -Member member
+        -List~OrderItem~ orderItems
+        -Delivery delivery
+        -LocalDateTime orderDate
+        -OrderStatus status
+        +assignMember(member)
+        +addOrderItem(orderItem)
+        +assignDelivery(delivery)
+        +changeStatus(status)
+        +createOrder(member, delivery, orderItems)
+    }
+    
+    class OrderItem {
+        -Long id
+        -Item item
+        -Order order
+        -int orderPrice
+        -int count
+        +createOrderItem(item, orderPrice, count)
+        +assignItem(item)
+        +assignOrder(order)
+        +assignOrderPrice(orderPrice)
+        +assignCount(count)
+    }
+    
+    class Delivery {
+        -Long id
+        -Address address
+        -DeliveryStatus status
+        +Delivery(address, deliveryStatus)
+    }
+    
+    class Address {
+        -String city
+        -String street
+        -String zipcode
+        +Address(city, street, zipcode)
+    }
+    
+    %% Enum Classes
+    class OrderStatus {
+        <<enumeration>>
+        ORDER
+        CANCEL
+    }
+    
+    class DeliveryStatus {
+        <<enumeration>>
+        READY
+        COMPLETE
+    }
+    
+    %% Service Layer
+    class MemberService {
+        -MemberJpaRepository memberJpaRepository
+        -MemberMyBatisRepository memberMyBatisRepository
+        -MemberMapper memberMapper
+        +createMemberByJpa(request)
+        +createMemberByMyBatis(request)
+        +getMemberListByJpa()
+        +getMemberListByMyBatis()
+    }
+    
+    class ItemService {
+        -ItemMapper itemMapper
+        -ItemJpaRepository itemJpaRepository
+        -ItemMyBatisRepository itemMyBatisRepository
+        +createItemByJpa(request)
+        +createItemByMyBatis(request)
+        +getItemListByJpa()
+        +getItemListByMyBatis()
+        +updateItemByJpa(request, id)
+        +updateItemByMyBaits(request, id)
+    }
+    
+    class OrderService {
+        -OrderMapper orderMapper
+        -OrderJpaRepository orderJpaRepository
+        -OrderMyBatisRepository orderMyBatisRepository
+        -ItemService itemService
+        -MemberService memberService
+        +createOrderByJpa(request)
+        +createOrderByMyBatis(request)
+        +getOrderListByJpa()
+        +getOrderListByMyBatis()
+        +cancelOrderByMyBatis(orderId)
+    }
+    
+    %% Controller Layer
+    class MemberRestController {
+        -MemberService memberService
+        -MemberMapper memberMapper
+        +createMember(request)
+        +getMemberList()
+    }
+    
+    class ItemRestController {
+        -ItemService itemService
+        -ItemMapper itemMapper
+        +createItem(request)
+        +getItemList()
+        +updateItem(itemId, request)
+    }
+    
+    class OrderRestController {
+        -OrderService orderService
+        +createOrder(request)
+        +getOrderList()
+        +deleteOrder(orderId)
+    }
+    
+    %% Repository Layer
+    class MemberJpaRepository {
+        <<interface>>
+        +save(entity)
+        +findAll()
+        +existsByName(name)
+    }
+    
+    class ItemJpaRepository {
+        <<interface>>
+        +save(entity)
+        +findAll()
+        +existsByName(name)
+    }
+    
+    class OrderJpaRepository {
+        <<interface>>
+        +save(entity)
+        +findAll()
+    }
+    
+    class MemberMyBatisRepository {
+        <<interface>>
+        +createMember(create)
+        +selectMemberById(id)
+        +isExistMember(name)
+    }
+    
+    class ItemMyBatisRepository {
+        <<interface>>
+        +createItem(create)
+        +selectItemById(id)
+        +isExistItem(name)
+    }
+    
+    class OrderMyBatisRepository {
+        <<interface>>
+        +createOrder(create)
+        +selectOrderList()
+        +cancelOrder(orderId)
+    }
+    
+    %% Mapper Layer
+    class MemberMapper {
+        <<interface>>
+        +memberRequestDtoToMember(request)
+        +memberRequestDtoToMemberCreate(request)
+        +memberToMemberResponseDto(member)
+        +memberQueryResponseToMemberResponse(response)
+    }
+    
+    class ItemMapper {
+        <<interface>>
+        +itemRequestDtoToItem(request)
+        +itemRequestDtoToItemCreate(request)
+        +itemToItemResponseDto(item)
+        +itemQueryResponseToItemResponse(response)
+    }
+    
+    class OrderMapper {
+        <<interface>>
+        +orderRequestDtoToOrder(request)
+        +orderRequestDtoToOrderCreate(request)
+        +orderToOrderResponseDto(order)
+        +orderQueryResponseToOrderResponse(response)
+    }
+    
+    %% DTO Classes
+    class MemberRequestDto {
+        +String name
+        +String phoneNumber
+        +Address address
+    }
+    
+    class MemberResponseDto {
+        +Long memberId
+        +String name
+        +String phoneNumber
+        +Address address
+    }
+    
+    class ItemRequestDto {
+        +String name
+        +int price
+        +int stockQuantity
+    }
+    
+    class ItemResponseDto {
+        +Long itemId
+        +String name
+        +int price
+        +int stockQuantity
+    }
+    
+    class OrderRequestDto {
+        +Long memberId
+        +List~OrderItemRequest~ orderItems
+        +DeliveryRequest delivery
+    }
+    
+    class OrderResponseDto {
+        +Long orderId
+        +Long memberId
+        +LocalDateTime orderDate
+        +OrderStatus status
+        +List~OrderItemResponse~ orderItems
+        +DeliveryResponse delivery
+    }
+    
+    %% Relationships (use multiplicities with quotes, not braces)
+    Member "1" -- "many" Order : 주문
+    Order "1" -- "1" Delivery : 배송
+    Order "1" -- "many" OrderItem : 주문상품
+    Item "1" -- "many" OrderItem : 상품
+    Member "1" -- "1" Address : 주소
+    Delivery "1" -- "1" Address : 배송주소
+    
+    %% Service Dependencies
+    MemberService --> MemberJpaRepository
+    MemberService --> MemberMyBatisRepository
+    MemberService --> MemberMapper
+    
+    ItemService --> ItemJpaRepository
+    ItemService --> ItemMyBatisRepository
+    ItemService --> ItemMapper
+    
+    OrderService --> OrderJpaRepository
+    OrderService --> OrderMyBatisRepository
+    OrderService --> OrderMapper
+    OrderService --> ItemService
+    OrderService --> MemberService
+    
+    %% Controller Dependencies
+    MemberRestController --> MemberService
+    ItemRestController --> ItemService
+    OrderRestController --> OrderService
+    
+    %% Mapper Dependencies
+    MemberMapper --> MemberRequestDto
+    MemberMapper --> MemberResponseDto
+    ItemMapper --> ItemRequestDto
+    ItemMapper --> ItemResponseDto
+    OrderMapper --> OrderRequestDto
+    OrderMapper --> OrderResponseDto
+```
+
+
+```mermaid
+erDiagram
+    MEMBER {
+        bigint member_id PK
+        varchar name UK "회원명 (최대 10자)"
+        varchar phone_number UK "전화번호 (11자리)"
+        varchar city "도시"
+        varchar street "도로명"
+        varchar zipcode "우편번호"
+    }
+    
+    ITEM {
+        bigint item_id PK
+        varchar name UK "상품명 (최대 10자)"
+        int price "가격"
+        int stock_quantity "재고수량"
+    }
+    
+    ORDERS {
+        bigint order_id PK
+        bigint member_id FK "주문 회원"
+        bigint delivery_id FK "배송 정보"
+        datetime order_date "주문일시"
+        varchar status "주문상태 (ORDER, CANCEL)"
+    }
+    
+    ORDER_ITEM {
+        bigint order_item_id PK
+        bigint item_id FK "주문 상품"
+        bigint order_id FK "주문"
+        int order_price "주문가격 (스냅샷)"
+        int count "주문수량"
+    }
+    
+    DELIVERY {
+        bigint delivery_id PK
+        varchar city "배송 도시"
+        varchar street "배송 도로명"
+        varchar zipcode "배송 우편번호"
+        varchar status "배송상태 (READY, COMPLETE)"
+    }
+
+    MEMBER ||--o{ ORDERS : "주문"
+    ORDERS ||--|| DELIVERY : "배송"
+    ORDERS ||--o{ ORDER_ITEM : "주문상품"
+    ITEM ||--o{ ORDER_ITEM : "상품"
+```
