@@ -38,6 +38,45 @@
     - [memberinfo 패키지](#memberinfo-패키지)
   - [Util 패키지](#util-패키지)
   - [appication.yml](#appicationyml)
+- [PUSH 알림 및 CSRF 필터 상세 설명서](#push-알림-및-csrf-필터-상세-설명서)
+  - [목차](#목차-1)
+  - [1. mobile\_main 접속 시 PUSH 알림 동작 방식](#1-mobile_main-접속-시-push-알림-동작-방식)
+    - [1.1 전체 플로우 다이어그램](#11-전체-플로우-다이어그램)
+    - [1.2 Phase 1: 페이지 접속 및 초기화](#12-phase-1-페이지-접속-및-초기화)
+      - [1.2.1 페이지 로드 시작](#121-페이지-로드-시작)
+      - [1.2.2 push\_init.js 실행](#122-push_initjs-실행)
+      - [1.2.3 requestPermissionAndGetToken() 실행](#123-requestpermissionandgettoken-실행)
+    - [1.3 Phase 2: PUSH 테스트 버튼 클릭](#13-phase-2-push-테스트-버튼-클릭)
+      - [1.3.1 버튼 클릭 이벤트](#131-버튼-클릭-이벤트)
+      - [1.3.2 AJAX 요청 처리 (ajax.json)](#132-ajax-요청-처리-ajaxjson)
+      - [1.3.3 CSRF 토큰 자동 추가](#133-csrf-토큰-자동-추가)
+      - [1.3.4 서버: CSRF 필터 검증](#134-서버-csrf-필터-검증)
+      - [1.3.5 서버: API 컨트롤러 처리](#135-서버-api-컨트롤러-처리)
+      - [1.3.6 서버: PushService 처리](#136-서버-pushservice-처리)
+      - [1.3.7 클라이언트: 메시지 수신](#137-클라이언트-메시지-수신)
+  - [2. CSRF 필터 동작 방식](#2-csrf-필터-동작-방식)
+    - [2.1 CSRF 공격이란?](#21-csrf-공격이란)
+    - [2.2 CSRF 방어 메커니즘](#22-csrf-방어-메커니즘)
+      - [2.2.1 토큰 기반 방어](#221-토큰-기반-방어)
+    - [2.3 필터 등록 및 적용 범위](#23-필터-등록-및-적용-범위)
+      - [2.3.1 필터 등록](#231-필터-등록)
+      - [2.3.2 적용 범위](#232-적용-범위)
+    - [2.4 필터 동작 흐름 상세](#24-필터-동작-흐름-상세)
+      - [2.4.1 전체 흐름도](#241-전체-흐름도)
+      - [2.4.2 단계별 상세 설명](#242-단계별-상세-설명)
+    - [2.5 CSRF 토큰 생성](#25-csrf-토큰-생성)
+      - [2.5.1 생성 시점](#251-생성-시점)
+      - [2.5.2 토큰 저장](#252-토큰-저장)
+    - [2.6 클라이언트에서 토큰 전송](#26-클라이언트에서-토큰-전송)
+      - [2.6.1 AJAX 요청 (자동)](#261-ajax-요청-자동)
+      - [2.6.2 폼 제출 (수동)](#262-폼-제출-수동)
+    - [2.7 CSRF 필터 동작 예시](#27-csrf-필터-동작-예시)
+      - [2.7.1 정상 요청 (AJAX)](#271-정상-요청-ajax)
+      - [2.7.2 공격 요청 (CSRF)](#272-공격-요청-csrf)
+      - [2.7.3 GET 요청 (검증 생략)](#273-get-요청-검증-생략)
+  - [요약](#요약)
+    - [PUSH 알림 동작 요약](#push-알림-동작-요약)
+    - [CSRF 필터 동작 요약](#csrf-필터-동작-요약)
 # web 패키지
 - web 패키지를 제외하고는 패키지 이름 순서대로 설명 기술
 ## 카카오 로그인(회원가입)
@@ -302,8 +341,1000 @@ jasypt:
 #  vmoption에 지정됨
 ```
 
-  
 
 
 
+
+
+# PUSH 알림 및 CSRF 필터 상세 설명서
+
+## 목차
+1. [mobile_main 접속 시 PUSH 알림 동작 방식](#1-mobile_main-접속-시-push-알림-동작-방식)
+2. [CSRF 필터 동작 방식](#2-csrf-필터-동작-방식)
+
+---
+
+## 1. mobile_main 접속 시 PUSH 알림 동작 방식
+
+### 1.1 전체 플로우 다이어그램
+
+```
+[사용자가 mobile_main 페이지 접속]
+    ↓
+[페이지 로드 시작]
+    ├─ Firebase SDK 로드 (firebase-app-compat.js, firebase-messaging-compat.js)
+    ├─ push_init.js 스크립트 로드
+    └─ mobile_main.jsp HTML 렌더링
+    ↓
+[$(document).ready() 실행]
+    ├─ push_init.js 내부 코드 실행
+    └─ window.requestPermissionAndGetToken() 자동 호출
+    ↓
+[PUSH 알림 초기화 프로세스]
+    ├─ Service Worker 지원 확인
+    ├─ Push API 지원 확인
+    ├─ 알림 권한 요청 (Notification.requestPermission())
+    ├─ Service Worker 등록 (/firebase-messaging-sw.js)
+    ├─ FCM 토큰 발급 (VAPID 키 사용)
+    └─ 서버에 토큰 전송 (/api/push/registerToken)
+    ↓
+[페이지 완전 로드 완료]
+    └─ 사용자가 "PUSH 테스트" 버튼 클릭 대기
+    ↓
+[사용자가 "PUSH 테스트" 버튼 클릭]
+    ↓
+[클라이언트: AJAX 요청 생성]
+    ├─ CSRF 토큰 자동 추가 (X-CSRF-TOKEN 헤더)
+    └─ POST /api/push/test 요청 전송
+    ↓
+[서버: CSRF 필터 검증]
+    ├─ 세션 확인
+    ├─ HTTP 메서드 확인 (POST)
+    └─ CSRF 토큰 검증
+    ↓
+[서버: API 컨트롤러 처리]
+    └─ PushRestController.triggerApprovalNotification()
+    ↓
+[서버: PushService 처리]
+    ├─ DB에서 FCM 토큰 조회 (targetId 기준)
+    ├─ FCM 메시지 구성
+    └─ Firebase Admin SDK로 메시지 전송
+    ↓
+[FCM 서버: 메시지 라우팅]
+    └─ 클라이언트 디바이스로 메시지 전달
+    ↓
+[클라이언트: 메시지 수신]
+    ├─ 포그라운드 (앱 열려있을 때): onMessage 이벤트 → 토스트 표시
+    └─ 백그라운드 (앱 닫혀있을 때): Service Worker → 브라우저 알림 표시
+```
+
+---
+
+### 1.2 Phase 1: 페이지 접속 및 초기화
+
+#### 1.2.1 페이지 로드 시작
+
+**파일 위치**: `src/main/webapp/WEB-INF/views/mobile/mobile_main.jsp` (7-11줄)
+
+**코드**:
+```jsp
+<!-- Firebase SDK 우선 -->
+<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.1/firebase-messaging-compat.js"></script>
+
+<script type="text/javascript" src="/push_init.js"></script>
+```
+
+**동작 내용**:
+1. **Firebase SDK 로드**:
+   - `firebase-app-compat.js`: Firebase 핵심 라이브러리
+   - `firebase-messaging-compat.js`: Firebase Cloud Messaging (FCM) 라이브러리
+   - Compat 버전 사용 (v9+ 모듈식 API를 v8 스타일로 사용)
+
+2. **push_init.js 로드**:
+   - 푸시 알림 초기화 스크립트
+   - Firebase 설정 및 토큰 발급 로직 포함
+
+#### 1.2.2 push_init.js 실행
+
+**파일 위치**: `src/main/webapp/static-global/push_init.js`
+
+**1단계: Firebase 초기화** (6-24줄)
+
+```javascript
+const firebaseConfig = {
+    apiKey: "AIzaSyAjZkzvIfunxSwZocYTgkpLNNvIHMec-cg",
+    authDomain: "mobilepwa-b4c16.firebaseapp.com",
+    projectId: "mobilepwa-b4c16",
+    storageBucket: "mobilepwa-b4c16.firebasestorage.app",
+    messagingSenderId: "985969643759",
+    appId: "1:985969643759:web:acd44c09122176edd34b1a",
+    measurementId: "G-C4KJ5YX5F8"
+};
+
+// Firebase SDK 확인
+if (typeof firebase === 'undefined') {
+    console.error('Firebase SDK not loaded!');
+    return;
+}
+
+// Firebase 초기화
+firebase.initializeApp(firebaseConfig);
+const messaging = firebase.messaging();
+```
+
+**동작 내용**:
+- Firebase 프로젝트 설정 정보로 Firebase 앱 초기화
+- `firebase.messaging()` 객체 생성 (FCM 메시징 기능 사용)
+
+**2단계: 포그라운드 메시지 리스너 등록** (102-109줄)
+
+```javascript
+messaging.onMessage((payload) => {
+    console.log('[FCM] Foreground message:', payload);
+    
+    const title = payload.data?.title || '새 알림';
+    const body = payload.data?.body || '내용 없음';
+    
+    showToast(title, body);
+});
+```
+
+**동작 내용**:
+- 앱이 열려있을 때(포그라운드) 메시지 수신 시 실행
+- `payload.data`에서 제목과 본문 추출
+- `showToast()` 함수로 토스트 메시지 표시
+
+**3단계: 페이지 로드 시 자동 실행** (131-135줄)
+
+```javascript
+$(document).ready(function() {
+    if (typeof window.requestPermissionAndGetToken === 'function') {
+        window.requestPermissionAndGetToken();
+    }
+});
+```
+
+**동작 내용**:
+- DOM이 완전히 로드되면 자동으로 `requestPermissionAndGetToken()` 호출
+- 푸시 알림 권한 요청 및 토큰 발급 프로세스 시작
+
+#### 1.2.3 requestPermissionAndGetToken() 실행
+
+**파일 위치**: `src/main/webapp/static-global/push_init.js` (30-72줄)
+
+**전체 프로세스**:
+
+```javascript
+window.requestPermissionAndGetToken = function() {
+    // 1. Service Worker 지원 확인
+    if (!('serviceWorker' in navigator)) {
+        console.warn('Service Worker not supported');
+        return;
+    }
+
+    // 2. Push API 지원 확인
+    if (!('PushManager' in window)) {
+        console.warn('Push API not supported');
+        return;
+    }
+
+    // 3. 알림 권한 요청
+    Notification.requestPermission()
+        .then(permission => {
+            if (permission !== 'granted') {
+                console.warn('Notification permission denied');
+                return;
+            }
+            console.log('Notification permission granted');
+
+            // 4. Service Worker 등록
+            return navigator.serviceWorker.register('/firebase-messaging-sw.js');
+        })
+        .then(registration => {
+            if (!registration) return;
+            console.log('Service Worker registered:', registration.scope);
+
+            // 5. FCM 토큰 발급
+            return messaging.getToken({
+                serviceWorkerRegistration: registration,
+                vapidKey: 'BEcW_Ep6uWwbA64qsiU64TLQ_wj6AXgJbcjszjLdVOIG1gZ8rVM2XCSHNG8A8M4l5v6CZVfLdu_EBqKxjMlyj7c'
+            });
+        })
+        .then(token => {
+            if (token) {
+                console.log('FCM Token:', token);
+                // 6. 서버에 토큰 전송
+                sendTokenToServer(token);
+            } else {
+                console.warn('No token received');
+            }
+        })
+        .catch(err => {
+            console.error('Token error:', err);
+        });
+};
+```
+
+**단계별 상세 설명**:
+
+**1단계: Service Worker 지원 확인**
+- 브라우저가 Service Worker를 지원하는지 확인
+- 지원하지 않으면 프로세스 종료
+
+**2단계: Push API 지원 확인**
+- 브라우저가 Push API를 지원하는지 확인
+- 지원하지 않으면 프로세스 종료
+
+**3단계: 알림 권한 요청**
+- `Notification.requestPermission()` 호출
+- 사용자에게 알림 권한 요청 팝업 표시
+- 결과:
+  - `granted`: 허용 → 다음 단계 진행
+  - `denied`: 거부 → 프로세스 종료
+  - `default`: 아직 결정하지 않음 → 프로세스 종료
+
+**4단계: Service Worker 등록**
+- `navigator.serviceWorker.register('/firebase-messaging-sw.js')` 호출
+- 백그라운드 메시지 수신을 위해 Service Worker 등록
+- 등록 성공 시 `registration` 객체 반환
+
+**5단계: FCM 토큰 발급**
+- `messaging.getToken()` 호출
+- VAPID 키를 사용하여 FCM 토큰 발급
+- 이 토큰은 해당 브라우저/디바이스를 고유하게 식별
+- 예시 토큰: `dK3xYz9...` (긴 문자열)
+
+**6단계: 서버에 토큰 전송**
+
+**파일 위치**: `src/main/webapp/static-global/push_init.js` (111-127줄)
+
+```javascript
+window.sendTokenToServer = function(fcmToken) {
+    $.ajax({
+        url: '/api/push/registerToken',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            memberId: MEMBER_ID,  // 'jhchoi@dbinc.co.kr'
+            fcmToken: fcmToken
+        }),
+        success: function(response) {
+            console.log('Token sent to server:', response);
+        },
+        error: function(xhr, status, error) {
+            console.error('Send token failed:', error, xhr.responseText);
+        }
+    });
+};
+```
+
+**동작 내용**:
+- AJAX POST 요청으로 `/api/push/registerToken` 호출
+- `memberId`와 `fcmToken`을 JSON으로 전송
+- 서버에서 DB에 저장 (나중에 푸시 알림 전송 시 사용)
+
+**서버 처리** (`PushRestController.registerToken()`):
+```java
+@PostMapping("/registerToken")
+public @ResponseBody ResponseEntity<String> registerToken(@RequestBody PushTokenDto requestDto) {
+    pushService.saveOrUpdateToken(requestDto.getMemberId(), requestDto.getFcmToken());
+    return ResponseEntity.ok("Token registered successfully.");
+}
+```
+
+---
+
+### 1.3 Phase 2: PUSH 테스트 버튼 클릭
+
+#### 1.3.1 버튼 클릭 이벤트
+
+**파일 위치**: `src/main/webapp/WEB-INF/views/mobile/mobile_main.jsp` (133-157줄)
+
+**코드**:
+```javascript
+$('#btnPushTest').on('click', function() {
+    setTimeout(function() {
+        let param = new Object();
+        param["targetId"] = 'jhchoi@dbinc.co.kr';
+        let params = JSON.stringify(param);
+        try {
+            ajax.json(
+                "/api/push/test",
+                params,
+                function(res) {
+                    console.log("" + res); 
+                    hideLoading();
+                },
+                false  // 동기 방식
+            );               
+        } catch(e) {
+            let param = new Object();
+            param.err_yn = "Y";
+            param.err_msg = e.toString();
+            hideLoading();
+        }
+    }, 200);
+});
+```
+
+**동작 내용**:
+1. `#btnPushTest` 버튼 클릭 시 이벤트 발생
+2. 200ms 지연 후 실행 (UI 반응성 향상)
+3. `targetId`를 `'jhchoi@dbinc.co.kr'`로 하드코딩하여 설정
+4. JSON 객체를 문자열로 변환
+5. `ajax.json()` 함수를 통해 `/api/push/test` 엔드포인트로 POST 요청
+6. 동기 방식(`false`)으로 실행하여 응답을 기다림
+7. 성공 시 콜백에서 응답 로그 출력 및 로딩 숨김
+8. 실패 시 에러 정보를 객체로 만들어 처리
+
+#### 1.3.2 AJAX 요청 처리 (ajax.json)
+
+**파일 위치**: `src/main/webapp/resources/js/common/ajaxCommon.js` (25-73줄)
+
+**코드**:
+```javascript
+json : function(url, param, fnCallback, doAsync) {
+    try {
+        // 파라미터에 currentMenuId 추가
+        if( $.type(param) == 'object' ){
+            param["currentMenuId"] = _CURRENT_MENU_ID;
+            param = JSON.stringify(param);
+        } else {
+            param = JSON.parse(param);
+            param["currentMenuId"] = _CURRENT_MENU_ID;
+            param = JSON.stringify(param);
+        }
+
+        if (doAsync) {
+            setAsync = doAsync;
+        } else {
+            setAsync = false;
+        }
+
+        return $.ajax({
+            url : url,
+            data : param,
+            type : 'post',
+            dataType : 'json',
+            async : setAsync,
+            contentType : "application/json; charset=UTF-8",
+            success : function(data) {
+                if( data && data.exceptionMsg){
+                    location.href = _CONTEXT_PATH + _CURRENT_MAIN_PAGE;
+                } else {
+                    try {
+                        fnCallback(data);
+                    } catch(e) {
+                        location.href = _CONTEXT_PATH + _CURRENT_MAIN_PAGE;
+                    }
+                }
+            },
+            error : function(e) {
+                e.responseJSON.successYN = 'N';
+                fnCallback(e.responseJSON);
+            } 
+        });
+    } catch (err) {}
+}
+```
+
+**동작 내용**:
+1. 파라미터에 `currentMenuId` 자동 추가
+2. JSON 문자열로 변환
+3. jQuery `$.ajax()` 호출
+4. **CSRF 토큰 자동 추가** (아래 참조)
+
+#### 1.3.3 CSRF 토큰 자동 추가
+
+**파일 위치**: `src/main/webapp/WEB-INF/views/include/mobileHeader.jsp` (40-51줄)
+
+**코드**:
+```javascript
+$(function() {
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function(e, xhr, options) {
+        if (options.type && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(options.type.toUpperCase())) {
+            xhr.setRequestHeader(header, token);
+        }
+    });
+});
+```
+
+**동작 내용**:
+- 모든 AJAX 요청 전에 `ajaxSend` 이벤트 발생
+- POST, PUT, DELETE, PATCH 메서드인 경우
+- 메타 태그에서 CSRF 토큰 읽기
+- `X-CSRF-TOKEN` 헤더에 자동 추가
+
+**메타 태그 설정** (16-17줄):
+```jsp
+<meta name="_csrf" content="${sessionScope.sessionVO.csrfToken}">
+<meta name="_csrf_header" content="X-CSRF-TOKEN">
+```
+
+#### 1.3.4 서버: CSRF 필터 검증
+
+**파일 위치**: `src/main/java/kr/co/dbinc/smartofficepwa/config/CsrfFilter.java`
+
+**검증 프로세스**:
+1. 세션 확인
+2. HTTP 메서드 확인 (POST)
+3. CSRF 토큰 추출 (`X-CSRF-TOKEN` 헤더 또는 `csrfToken` 파라미터)
+4. 세션의 토큰과 비교
+5. 일치하면 통과, 불일치하면 403 Forbidden
+
+(자세한 내용은 2장 참조)
+
+#### 1.3.5 서버: API 컨트롤러 처리
+
+**파일 위치**: `src/main/java/kr/co/dbinc/smartofficepwa/web/controller/push/PushRestController.java` (37-51줄)
+
+**코드**:
+```java
+@PostMapping("/test")
+public @ResponseBody ResponseEntity<String> triggerApprovalNotification(@RequestBody PushTokenDto pushToken) {
+    
+    // 실제 결재 로직 처리...
+    
+    // 결재 건수 발생 후 알림 전송
+    pushService.triggerApprovalPushNotification(
+        pushToken.getTargetId(),  // 'jhchoi@dbinc.co.kr'
+        "새로운 회의실 예약!", 
+        "4-B 회의실 예약시간이 30분 남았습니다. 회의실 예약을 확인해 주세요.", 
+        "/reserve_main" // 클릭 시 이동할 URL
+    );
+    
+    return ResponseEntity.ok("Approval processed and push notification sent.");
+}
+```
+
+**동작 내용**:
+- `@PostMapping("/test")`로 `/api/push/test` 엔드포인트 매핑
+- `@RequestBody`로 JSON을 `PushTokenDto` 객체로 자동 변환
+- `targetId`를 추출하여 `PushService.triggerApprovalPushNotification()` 호출
+- 하드코딩된 제목, 본문, 링크로 알림 전송
+- 성공 시 문자열 응답 반환
+
+#### 1.3.6 서버: PushService 처리
+
+**파일 위치**: `src/main/java/kr/co/dbinc/smartofficepwa/web/service/push/PushService.java` (39-72줄)
+
+**코드**:
+```java
+public void triggerApprovalPushNotification(String approvalTargetId, String title, String body, String link) {
+    // 1. 알림 대상자의 FCM 토큰 조회
+    List<String> tokens = pushTokenRepository.selectTokensForApprovalTarget(approvalTargetId);
+
+    if (tokens.isEmpty()) {
+        System.out.println("No token found for member: " + approvalTargetId);
+        return;
+    }
+
+    // 2. FCM 메시지 구성 (Data Payload에 이동할 URL 포함)
+    Message message = Message.builder()
+            .putData("title", title)
+            .putData("body", body)
+            .putData("link", link)
+            .setToken(tokens.get(0)) // 단일 토큰 예시
+            .setWebpushConfig(WebpushConfig.builder()
+                .setNotification(WebpushNotification.builder()
+                    .setTitle(title)
+                    .setBody(body)
+                    .setIcon("/resources/icons/icon-192x192.png")
+                    .build())
+                .putHeader("Urgency", "high")
+                .build())
+            .build();
+
+    // 3. FCM 전송
+    try {
+        String response = FirebaseMessaging.getInstance().send(message);
+        System.out.println("Successfully sent message: " + response);
+    } catch (FirebaseMessagingException e) {
+        System.err.println("Sending FCM message failed: " + e.getMessage());
+        // 토큰이 유효하지 않은 경우 DB에서 삭제하는 로직 추가 필요
+    }
+}
+```
+
+**동작 내용**:
+
+**1단계: FCM 토큰 조회**
+- `PushTokenRepository.selectTokensForApprovalTarget()` 호출
+- 대상 사용자 ID(`targetId`)로 DB에서 FCM 토큰 조회
+- 토큰이 없으면 로그 출력 후 종료
+
+**2단계: FCM 메시지 구성**
+- **Data Payload**: 
+  - `title`: 알림 제목
+  - `body`: 알림 본문
+  - `link`: 클릭 시 이동할 URL
+- **WebpushConfig**: 웹 푸시 알림 설정
+  - `Notification`: 브라우저 알림 표시용 설정
+    - `title`, `body`: 알림에 표시될 텍스트
+    - `icon`: 알림 아이콘 경로
+  - `Urgency`: "high"로 설정하여 우선순위 높임
+
+**3단계: Firebase Admin SDK로 전송**
+- `FirebaseMessaging.getInstance().send(message)` 호출
+- FCM 서버로 메시지 전송
+- 성공 시 응답 ID 반환
+- 실패 시 예외 발생 (토큰 무효, 네트워크 오류 등)
+
+#### 1.3.7 클라이언트: 메시지 수신
+
+**A. 포그라운드 수신 (앱이 열려있을 때)**
+
+**파일 위치**: `src/main/webapp/static-global/push_init.js` (102-109줄)
+
+**코드**:
+```javascript
+messaging.onMessage((payload) => {
+    console.log('[FCM] Foreground message:', payload);
+    
+    const title = payload.data?.title || '새 알림';
+    const body = payload.data?.body || '내용 없음';
+    
+    showToast(title, body);
+});
+```
+
+**동작 내용**:
+- 앱이 열려있을 때 메시지 수신
+- `payload.data`에서 알림 정보 추출
+- `showToast()` 함수로 토스트 메시지 표시
+
+**토스트 메시지 함수** (75-99줄):
+```javascript
+function showToast(title, message) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+        background: #333; color: white; padding: 16px; border-radius: 8px;
+        margin-top: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        max-width: 300px; animation: slideIn 0.3s ease;
+        pointer-events: auto; font-size: 14px;
+    `;
+
+    toast.innerHTML = `
+        <strong style="display: block; margin-bottom: 4px;">${title}</strong>
+        <span>${message}</span>
+    `;
+
+    container.appendChild(toast);
+    
+    // 3초 후 사라짐
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+```
+
+**B. 백그라운드 수신 (앱이 닫혀있을 때)**
+
+**파일 위치**: `src/main/webapp/static-global/firebase-messaging-sw.js` (22-39줄)
+
+**코드**:
+```javascript
+messaging.onBackgroundMessage((payload) => {
+    console.log('[firebase-messaging-sw.js] Received background message:', payload);
+
+    // payload.data 기반 알림 (FCM 권장 방식)
+    const notificationTitle = payload.data?.title || '알림';
+    const notificationOptions = {
+        body: payload.data?.body || '새로운 알림이 도착했습니다.',
+        icon: '/images/icon-192x192.png',
+        badge: '/images/badge-72x72.png',
+        tag: payload.data?.tag || 'default-tag',
+        data: {
+            link: payload.data?.link || '/'
+        }
+    };
+
+    // 알림 표시
+    self.registration.showNotification(notificationTitle, notificationOptions);
+});
+```
+
+**동작 내용**:
+- Service Worker 내에서 실행 (브라우저 백그라운드)
+- 앱이 닫혀있거나 다른 탭에 있을 때 메시지 수신
+- `payload.data`에서 알림 정보 추출
+- `self.registration.showNotification()`으로 브라우저 네이티브 알림 표시
+- 알림 옵션:
+  - `title`: 알림 제목
+  - `body`: 알림 본문
+  - `icon`: 알림 아이콘
+  - `badge`: 배지 아이콘
+  - `tag`: 알림 그룹핑용 태그
+  - `data.link`: 클릭 시 이동할 URL
+
+**C. 알림 클릭 이벤트**
+
+**파일 위치**: `src/main/webapp/static-global/firebase-messaging-sw.js` (56-79줄)
+
+**코드**:
+```javascript
+self.addEventListener('notificationclick', (event) => {
+    console.log('[Service Worker] Notification click:', event);
+
+    event.notification.close();
+
+    const link = event.notification.data?.link || '/';
+
+    event.waitUntil(
+        clients.matchAll({ type: 'window', includeUncontrolled: true })
+            .then((clientList) => {
+                // 이미 열린 탭 중 동일한 URL 있으면 포커스
+                for (const client of clientList) {
+                    if (client.url.includes(link) && 'focus' in client) {
+                        return client.focus();
+                    }
+                }
+                // 없으면 새 탭 열기
+                if (clients.openWindow) {
+                    return clients.openWindow(link);
+                }
+            })
+            .catch(err => console.error('Notification click error:', err))
+    );
+});
+```
+
+**동작 내용**:
+- 사용자가 알림을 클릭하면 실행
+- 알림 닫기
+- `data.link`에서 URL 추출
+- 이미 열린 탭 중 동일한 URL이 있으면 포커스
+- 없으면 새 탭으로 URL 열기
+
+---
+
+## 2. CSRF 필터 동작 방식
+
+### 2.1 CSRF 공격이란?
+
+**CSRF (Cross-Site Request Forgery)**: 사용자가 의도하지 않은 요청을 강제로 실행시키는 공격
+
+**공격 시나리오**:
+1. 사용자가 `example.com`에 로그인 (세션 쿠키 저장)
+2. 사용자가 `evil.com` 방문
+3. `evil.com`이 `example.com`에 POST 요청 전송 (세션 쿠키 자동 포함)
+4. 사용자 모르게 `example.com`에서 악의적인 작업 실행
+
+### 2.2 CSRF 방어 메커니즘
+
+#### 2.2.1 토큰 기반 방어
+
+**원리**:
+- 사용자 세션마다 고유한 CSRF 토큰 생성
+- 모든 상태 변경 요청(POST, PUT, DELETE 등)에 토큰 포함 필수
+- 서버에서 토큰 검증 후 요청 처리
+
+**왜 효과적인가?**:
+- 악성 사이트는 사용자의 CSRF 토큰을 알 수 없음
+- Same-Origin Policy로 인해 다른 도메인에서 토큰 읽기 불가
+- 토큰이 없거나 잘못된 토큰이면 요청 거부
+
+### 2.3 필터 등록 및 적용 범위
+
+#### 2.3.1 필터 등록
+
+**파일 위치**: `src/main/java/kr/co/dbinc/smartofficepwa/config/CsrfFilter.java`
+
+**등록 방식**:
+```java
+@Slf4j
+@Component
+public class CsrfFilter implements Filter {
+    // ...
+}
+```
+
+- `@Component` 어노테이션으로 Spring Bean으로 등록
+- Spring Boot가 자동으로 필터 체인에 등록
+- 모든 요청에 대해 실행
+
+#### 2.3.2 적용 범위
+
+**모든 HTTP 요청에 적용**:
+- 정적 리소스 요청 포함
+- API 요청 포함
+- 페이지 요청 포함
+
+**예외 처리**:
+- 세션이 없는 경우 검증 생략
+- 특정 HTTP 메서드는 검증 생략 (아래 참조)
+
+### 2.4 필터 동작 흐름 상세
+
+#### 2.4.1 전체 흐름도
+
+```
+[HTTP 요청 도착]
+    ↓
+[CsrfFilter.doFilter() 실행]
+    ↓
+[세션 확인]
+    ├─ 세션 없음 → 통과 (검증 생략)
+    └─ 세션 있음 → 다음 단계
+        ↓
+[HTTP 메서드 확인]
+    ├─ OPTIONS → 통과 (CORS Preflight)
+    ├─ GET, HEAD → 통과 (안전한 메서드)
+    └─ POST, PUT, DELETE, PATCH → 토큰 검증
+        ↓
+[CSRF 토큰 추출]
+    ├─ X-CSRF-TOKEN 헤더에서 추출
+    └─ csrfToken 파라미터에서 추출
+        ↓
+[토큰 검증]
+    ├─ 일치 → 통과
+    └─ 불일치 → 403 Forbidden
+```
+
+#### 2.4.2 단계별 상세 설명
+
+**1단계: 요청 수신 및 세션 확인**
+
+**파일 위치**: `src/main/java/kr/co/dbinc/smartofficepwa/config/CsrfFilter.java` (30-39줄)
+
+```java
+HttpServletRequest request = (HttpServletRequest) req;
+HttpServletResponse response = (HttpServletResponse) res;
+HttpSession session = request.getSession(true);
+
+SessionVO vo = (SessionVO) session.getAttribute("sessionVO");
+if (vo == null || vo.getUserId() == null || "".equals(vo.getUserId())) {
+    // 세션이 없는경우 Check 제외  
+    chain.doFilter(request, response);
+    return;
+}
+```
+
+**동작**:
+- `request.getSession(true)`: 세션이 없으면 생성
+- `sessionVO`가 없거나 `userId`가 없으면 검증 생략
+- **이유**: 로그인하지 않은 사용자는 CSRF 공격 대상이 아님
+
+**2단계: HTTP 메서드 확인**
+
+**파일 위치**: `src/main/java/kr/co/dbinc/smartofficepwa/config/CsrfFilter.java` (42-55줄)
+
+```java
+String method = request.getMethod().toUpperCase();
+
+// OPTIONS 요청은 CSRF 검증 생략 (Preflight)
+if ("OPTIONS".equals(method)) {
+    response.setStatus(HttpServletResponse.SC_OK);
+    chain.doFilter(request, response);
+    return;
+}
+
+// GET, HEAD → 통과
+if ("GET".equals(method) || "HEAD".equals(method)) {
+    chain.doFilter(request, response);
+    return;
+}
+```
+
+**OPTIONS 요청**:
+- CORS Preflight 요청
+- 브라우저가 실제 요청 전에 보내는 사전 요청
+- 상태 변경을 일으키지 않으므로 검증 생략
+
+**GET, HEAD 요청**:
+- **안전한 메서드 (Safe Methods)**: 서버 상태를 변경하지 않음
+- RFC 7231에 따라 GET, HEAD는 멱등성과 안전성 보장
+- CSRF 공격의 목적은 상태 변경이므로 안전한 메서드는 검증 생략
+
+**3단계: CSRF 토큰 추출**
+
+**파일 위치**: `src/main/java/kr/co/dbinc/smartofficepwa/config/CsrfFilter.java` (57-59줄)
+
+```java
+String headerToken = request.getHeader(CSRF_HEADER);  // "X-CSRF-TOKEN"
+String paramToken = request.getParameter(CSRF_PARAM); // "csrfToken"
+```
+
+**헤더에서 추출**:
+- AJAX 요청에서 주로 사용
+- `X-CSRF-TOKEN` 헤더에 토큰 포함
+
+**파라미터에서 추출**:
+- 폼 제출에서 주로 사용
+- `csrfToken` 파라미터에 토큰 포함
+
+**4단계: 토큰 검증**
+
+**파일 위치**: `src/main/java/kr/co/dbinc/smartofficepwa/config/CsrfFilter.java` (61-67줄)
+
+```java
+boolean isValid = vo.getCsrfToken().equals(headerToken) || 
+                  vo.getCsrfToken().equals(paramToken);
+if (isValid) {
+    chain.doFilter(request, response);
+} else {
+    log.error("@@@@@@@@@@@@@@@@@@@@@@@@@@@ ERROR @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ {}---{}---{}",
+              request.getRequestURI(), headerToken, paramToken);
+    response.sendError(HttpServletResponse.SC_FORBIDDEN, "Invalid CSRF Token");
+}
+```
+
+**검증 로직**:
+- 세션의 `csrfToken`과 요청의 토큰 비교
+- 헤더 또는 파라미터 중 하나라도 일치하면 통과
+- 둘 다 일치하지 않으면 403 Forbidden 반환
+
+**에러 처리**:
+- 에러 로그에 URI, 헤더 토큰, 파라미터 토큰 기록
+- 클라이언트에는 "Invalid CSRF Token" 메시지 반환
+
+### 2.5 CSRF 토큰 생성
+
+#### 2.5.1 생성 시점
+
+**파일 위치**: `src/main/java/kr/co/dbinc/smartofficepwa/web/controller/login/LoginViewController.java` (141줄)
+
+**코드**:
+```java
+SessionVO sessionVO = (SessionVO) SessionUtil.getAttribute("sessionVO");
+sessionVO.setCsrfToken(UUID.randomUUID().toString());
+```
+
+**동작**:
+- 로그인 성공 시 실행
+- `UUID.randomUUID().toString()`으로 고유한 토큰 생성
+- 세션의 `SessionVO` 객체에 저장
+
+**예시 토큰**: `550e8400-e29b-41d4-a716-446655440000`
+
+#### 2.5.2 토큰 저장
+
+**저장 위치**:
+- 서버: `HttpSession`의 `SessionVO.csrfToken`
+- 클라이언트: 메타 태그 또는 폼 hidden input
+
+### 2.6 클라이언트에서 토큰 전송
+
+#### 2.6.1 AJAX 요청 (자동)
+
+**파일 위치**: `src/main/webapp/WEB-INF/views/include/mobileHeader.jsp` (40-51줄)
+
+**메타 태그 설정** (16-17줄):
+```jsp
+<meta name="_csrf" content="${sessionScope.sessionVO.csrfToken}">
+<meta name="_csrf_header" content="X-CSRF-TOKEN">
+```
+
+**자동 헤더 추가 스크립트**:
+```javascript
+$(function() {
+    var token = $("meta[name='_csrf']").attr("content");
+    var header = $("meta[name='_csrf_header']").attr("content");
+    $(document).ajaxSend(function(e, xhr, options) {
+        if (options.type && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(options.type.toUpperCase())) {
+            xhr.setRequestHeader(header, token);
+        }
+    });
+});
+```
+
+**동작**:
+- 모든 AJAX 요청 전에 `ajaxSend` 이벤트 발생
+- POST, PUT, DELETE, PATCH 메서드인 경우
+- 메타 태그에서 토큰 읽기
+- `X-CSRF-TOKEN` 헤더에 자동 추가
+
+#### 2.6.2 폼 제출 (수동)
+
+**파일 위치**: `src/main/webapp/WEB-INF/views/mobile/mobile_main.jsp` (985-987줄)
+
+**코드**:
+```jsp
+<form id="frm" name="frm">
+    <!-- CSRF 토큰 추가 -->
+    <input type="hidden" id="csrfToken" name="csrfToken" value="${sessionScope.sessionVO.csrfToken}" />
+</form>
+```
+
+**동작**:
+- 폼에 hidden input으로 토큰 포함
+- 폼 제출 시 `csrfToken` 파라미터로 전송
+- 서버에서 파라미터로 토큰 검증
+
+### 2.7 CSRF 필터 동작 예시
+
+#### 2.7.1 정상 요청 (AJAX)
+
+**요청**:
+```
+POST /api/push/test HTTP/1.1
+Host: example.com
+Cookie: JSESSIONID=ABC123
+X-CSRF-TOKEN: 550e8400-e29b-41d4-a716-446655440000
+Content-Type: application/json
+
+{"targetId": "user@example.com"}
+```
+
+**필터 처리**:
+1. 세션 확인: ✅ 세션 존재
+2. HTTP 메서드: POST → 토큰 검증 필요
+3. 토큰 추출: `X-CSRF-TOKEN: 550e8400-e29b-41d4-a716-446655440000`
+4. 토큰 검증: 세션 토큰과 일치 ✅
+5. 결과: 통과 → 컨트롤러로 전달
+
+#### 2.7.2 공격 요청 (CSRF)
+
+**요청** (악성 사이트에서):
+```
+POST /api/push/test HTTP/1.1
+Host: example.com
+Cookie: JSESSIONID=ABC123  (자동 포함)
+Content-Type: application/json
+
+{"targetId": "attacker@example.com"}
+```
+
+**필터 처리**:
+1. 세션 확인: ✅ 세션 존재
+2. HTTP 메서드: POST → 토큰 검증 필요
+3. 토큰 추출: `X-CSRF-TOKEN` 헤더 없음, `csrfToken` 파라미터 없음
+4. 토큰 검증: 토큰 없음 ❌
+5. 결과: 403 Forbidden 반환
+
+#### 2.7.3 GET 요청 (검증 생략)
+
+**요청**:
+```
+GET /api/mobile/getFloorList?towerCd=001 HTTP/1.1
+Host: example.com
+Cookie: JSESSIONID=ABC123
+```
+
+**필터 처리**:
+1. 세션 확인: ✅ 세션 존재
+2. HTTP 메서드: GET → 검증 생략
+3. 결과: 통과 → 컨트롤러로 전달
+
+---
+
+## 요약
+
+### PUSH 알림 동작 요약
+
+1. **페이지 접속 시**:
+   - Firebase SDK 로드
+   - push_init.js 실행
+   - 알림 권한 요청
+   - Service Worker 등록
+   - FCM 토큰 발급 및 서버 전송
+
+2. **PUSH 테스트 버튼 클릭 시**:
+   - AJAX 요청 생성 (CSRF 토큰 자동 포함)
+   - 서버에서 CSRF 검증
+   - API 컨트롤러 처리
+   - PushService에서 FCM 토큰 조회
+   - Firebase Admin SDK로 메시지 전송
+   - 클라이언트에서 메시지 수신 (포그라운드/백그라운드)
+
+### CSRF 필터 동작 요약
+
+1. **모든 요청에 적용**
+2. **검증 생략 조건**:
+   - 세션이 없는 경우
+   - OPTIONS 메서드 (CORS Preflight)
+   - GET, HEAD 메서드 (안전한 메서드)
+3. **검증 대상**:
+   - POST, PUT, DELETE, PATCH 메서드
+4. **검증 방법**:
+   - `X-CSRF-TOKEN` 헤더 또는 `csrfToken` 파라미터에서 토큰 추출
+   - 세션의 토큰과 비교
+   - 일치하면 통과, 불일치하면 403 Forbidden
 

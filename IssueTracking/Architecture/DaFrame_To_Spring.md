@@ -15,9 +15,10 @@
     - [DTO vs Map 비교 요약](#dto-vs-map-비교-요약)
     - [Mapper 계층 컨셉](#mapper-계층-컨셉)
         - [예시 코드](#예시-코드)
+- [요약](#요약)
 - [이슈 정리](#이슈-정리)
     - [Mapper 사용 시 이슈](#mapper-사용-시-이슈)
-    - [세팅 이슈](#세팅-이슈)
+    - [세팅 이슈(In Intellij)](#세팅-이슈in-intellij)
     - [MyBatis 이슈](#mybatis-이슈)
     - [기능 이슈](#기능-이슈)
 
@@ -25,12 +26,16 @@
 ### Client 기본 컨셉
 #### 브라우저 탐색 이벤트 처리
 - 결국 JSP + SpringBoot를 사용한 SSR 방식이고, SPA를 구현할 수는 없음
+    - [왜 SPA를 구현할 수 없는가?](https://github.com/googoo9918/TIL/blob/main/IssueTracking/ETC/SPA%20VS%20PPR.md)
     - 기존에는 PPR(Partial Page Rendering) 방식 사용
         - **ITMS에는 PPR은 구현되어 있으나, 새로고침 시 main.jsp 부터 다시 시작 하는 불편함 존재**
     - 현재는 PPR방식에 `window.onpopstate`를 활용, 앞으로 가기/뒤로가기 요청 처리
         - ![Image](https://github.com/user-attachments/assets/164db518-3aa2-4f59-ba2e-892510a21449)
 #### HTTP Method 분리
 - 기존에는 모든 api 요청은, POST로 처리 / jsp 파일 요청 ajax는 GET으로 처리
+    - RESTful API 원칙 위배
+    - GET 요청 캐싱 불가능
+    - 메서드별 정책 적용 어려움
 - 방문관리 시스템은 동작하고자 하는 Http Method에 따라 Restful Api 규약에 맞춰 다음과 같이 구분 
     - getHtml(페이지 요청), getRequest, postRequest, putRequest, deleteRequest로 구분(Patch 미사용)
     - `getHtml`
@@ -50,6 +55,13 @@
 
 ### Controller 기본 컨셉
 - 도메인 별로, jsp를 반환하는 ViewController와 Rest api 요청을 처리하는 RestController로 분리
+    - `@Controller`와 `@RestController` 분리
+        - 뷰 렌더링 / 데이터 응답 책임 분리
+        - 예외처리 목적에 맞게 분리 가능
+            - `@ControllerAdvice(assignableTypes = {})` 등 사용
+        - 별도 인증 처리 전략을 가져갈 수 있음
+        - Swagger 문서 생성 시 REST API만 스캔하도록 구분 가능
+        - 테스트 용이성 증대
     - ![Image](https://github.com/user-attachments/assets/f8edd7f2-3089-46ac-ab3b-facdf866fd28), ![Image](https://github.com/user-attachments/assets/6f314bdd-0acb-4b33-bf23-3babf4c4bf01)
 
 #### ViewController(Jsp 페이지 반환)
@@ -73,12 +85,25 @@
     - RestController는 리소스 기반 URL 작성, 예를 들어 ADMIN 도메인인 admin_m01_s02 페이지에서 사용하는 API라고 하더라도, 엔드포인트는 VisitController에 존재(리소스 기반)
         - URL 예시
             - `VisitRestController`
-                - ![Image](https://github.com/user-attachments/assets/b69e7cd0-da09-41d6-81b4-d01ad31c16dc)
-                - ![Image](https://github.com/user-attachments/assets/3bc72207-7b82-4ac3-9c51-5ae803564bb0)
-                - ![Image](https://github.com/user-attachments/assets/0ae954aa-2045-4036-9c8b-e912a1267582)
-                - ![Image](https://github.com/user-attachments/assets/bd206765-a348-492c-aa53-0d04e62846a8)
-                - ![Image](https://github.com/user-attachments/assets/1bc2cef4-17cf-44b1-b308-5bb1f8ae1595)
-                - ![Image](https://github.com/user-attachments/assets/be589b27-408f-4467-a9b7-1abe98bfeea6)
+                - `GET api/visits/managers`
+                    - 방문 담당자 정보 조회
+                - `POST api/visits`
+                    - 방문 생성(방문 신청)
+                - `GET api/visits`
+                    - 방문정보 리스트 조회
+                - `PUT api/visits/{vstNo}`
+                    - 방문정보(단건) 수정
+                - `DELETE api/visits/{vstNo}`
+                    - 방문정보(단건) 삭제
+            - `AdminRestController`
+                - `POST api/admins/login`
+                    - 관리자 로그인
+                - `POST api/admins/logout`
+                    - 관리자 로그아웃
+                - `GET api/admins/locker-rooms`
+                    - 락커룸 조회
+                - `GET api/admins/password`
+                    - 관리자 비밀번호 변경
             - [RESTful API 네이밍 래퍼런스](https://restfulapi.net/resource-naming/)
 
 #### 예외 처리 with HTTP 상태 코드
@@ -102,7 +127,7 @@
 
 ### Data Transfer 기본 컨셉
 #### ORM(JPA) 사용 시
-- ![Image](https://github.com/user-attachments/assets/2c476c1f-a20c-4c32-99c7-41916fd4d4cc)
+- ![Image](https://github.com/user-attachments/assets/a772bd5d-6b8a-4f49-b396-fe5cd2e5c74e)
     - Service 계층 및 Repository 계층에서 Entity를 사용하고, **영속성 컨텍스트** 관리를 통한 용이성 제공
         - 캐시, 지연 로딩, 변경 감지 등
     - Controller 계층과의 명확한 분리를 통해 여러 장점 제공
@@ -249,20 +274,20 @@ public interface VisitMapper {
 
     List<VisitResponseDto.ManagerResponse> managerQueryResponseListToManagerResponseList(List<VisitQueryResponseDto.ManagerQueryResponse> managerQueryResponseList);
 
-    @Mapping(target = "visitStartYmd", expression = "java(visitRequest.getVisitDateStart().substring(0, 8))")
-    @Mapping(target = "visitStartHour", expression = "java(visitRequest.getVisitDateStart().substring(8, 10))")
-    @Mapping(target = "visitStartMinute", expression = "java(visitRequest.getVisitDateStart().substring(10, 12))")
-    @Mapping(target = "visitEndYmd", expression = "java(visitRequest.getVisitDateEnd().substring(0, 8))")
-    @Mapping(target = "visitEndHour", expression = "java(visitRequest.getVisitDateEnd().substring(8, 10))")
-    @Mapping(target = "visitEndMinute", expression = "java(visitRequest.getVisitDateEnd().substring(10, 12))")
+//    @Mapping(target = "visitStartYmd", expression = "java(visitRequest.getVisitDateStart().substring(0, 8))")
+//    @Mapping(target = "visitStartHour", expression = "java(visitRequest.getVisitDateStart().substring(8, 10))")
+//    @Mapping(target = "visitStartMinute", expression = "java(visitRequest.getVisitDateStart().substring(10, 12))")
+//    @Mapping(target = "visitEndYmd", expression = "java(visitRequest.getVisitDateEnd().substring(0, 8))")
+//    @Mapping(target = "visitEndHour", expression = "java(visitRequest.getVisitDateEnd().substring(8, 10))")
+//    @Mapping(target = "visitEndMinute", expression = "java(visitRequest.getVisitDateEnd().substring(10, 12))")
     VisitWriteRequestDto.VisitHistoryCreate visitRequestToVisitHistoryCreate(VisitRequestDto.VisitRequest visitRequest);
 
-//    @InheritConfiguration(name = "visitRequestToVisitMasterCreate")
+
     VisitWriteRequestDto.VisitMasterCreate visitRequestToVisitMasterCreate(VisitRequestDto.VisitRequest visitRequest);
 
-    @Mapping(target = "cDiskImportSize", source = "cDiskImportSize")
-    @Mapping(target = "dDiskImportSize", source = "dDiskImportSize")
-    @Mapping(target = "eDiskImportSize", source = "eDiskImportSize")
+//    @Mapping(target = "cDiskImportSize", source = "cDiskImportSize")
+//    @Mapping(target = "dDiskImportSize", source = "dDiskImportSize")
+//    @Mapping(target = "eDiskImportSize", source = "eDiskImportSize")
     VisitWriteRequestDto.VisitItemCreate visitRequestToVisitItemCreate(VisitRequestDto.VisitRequest visitRequest);
 
     @Mapping(target = "rowNumber", source = "rownum")
@@ -285,22 +310,22 @@ public interface VisitMapper {
 
     VisitWriteRequestDto.VisitMasterUpdate visitUpdateRequestToVisitMasterUpdate(VisitRequestDto.VisitUpdateRequest visitUpdateRequest);
 
-    @Mapping(target = "visitStartYmd", expression = "java(visitUpdateRequest.getVisitDateStart().substring(0, 8))")
-    @Mapping(target = "visitStartHour", expression = "java(visitUpdateRequest.getVisitDateStart().substring(8, 10))")
-    @Mapping(target = "visitStartMinute", expression = "java(visitUpdateRequest.getVisitDateStart().substring(10, 12))")
-    @Mapping(target = "visitEndYmd", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(0, 8))")
-    @Mapping(target = "visitEndHour", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(8, 10))")
-    @Mapping(target = "visitEndMinute", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(10, 12))")
+//    @Mapping(target = "visitStartYmd", expression = "java(visitUpdateRequest.getVisitDateStart().substring(0, 8))")
+//    @Mapping(target = "visitStartHour", expression = "java(visitUpdateRequest.getVisitDateStart().substring(8, 10))")
+//    @Mapping(target = "visitStartMinute", expression = "java(visitUpdateRequest.getVisitDateStart().substring(10, 12))")
+//    @Mapping(target = "visitEndYmd", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(0, 8))")
+//    @Mapping(target = "visitEndHour", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(8, 10))")
+//    @Mapping(target = "visitEndMinute", expression = "java(visitUpdateRequest.getVisitDateEnd().substring(10, 12))")
     VisitWriteRequestDto.VisitHistoryUpdate visitUpdateRequestToVisitHistoryUpdate(VisitRequestDto.VisitUpdateRequest visitUpdateRequest);
 
     VisitWriteRequestDto.VisitItemDetailCreate visitUpdateRequestToItemCreate(VisitRequestDto.VisitUpdateRequest visitUpdateRequest);
 
-    @Mapping(target = "cDiskImportSize", source = "cDiskImportSize")
-    @Mapping(target = "cDiskExportSize", source = "cDiskExportSize")
-    @Mapping(target = "dDiskImportSize", source = "dDiskImportSize")
-    @Mapping(target = "dDiskExportSize", source = "dDiskExportSize")
-    @Mapping(target = "eDiskImportSize", source = "eDiskImportSize")
-    @Mapping(target = "eDiskExportSize", source = "eDiskExportSize")
+//    @Mapping(target = "cDiskImportSize", source = "cDiskImportSize")
+//    @Mapping(target = "cDiskExportSize", source = "cDiskExportSize")
+//    @Mapping(target = "dDiskImportSize", source = "dDiskImportSize")
+//    @Mapping(target = "dDiskExportSize", source = "dDiskExportSize")
+//    @Mapping(target = "eDiskImportSize", source = "eDiskImportSize")
+//    @Mapping(target = "eDiskExportSize", source = "eDiskExportSize")
     VisitWriteRequestDto.VisitItemUpdate visitUpdateRequestToItemUpdate(VisitRequestDto.VisitUpdateRequest visitUpdateRequest);
 
     @Mapping(target = "vstId", source = "vstId")
@@ -317,8 +342,14 @@ public interface VisitMapper {
     @Mapping(target = "otherClient", source = "companyName")
     @Mapping(target = "vehicleModel", source = "vstCarType")
     @Mapping(target = "vehicleNumber", source = "vstCarNo")
-    @Mapping(target = "visitDateStart", expression = "java(formatDate(visitHistoryDetailQueryResponse.getVstStaYmd(), visitHistoryDetailQueryResponse.getVstStaHh(), visitHistoryDetailQueryResponse.getVstStaMm()))")
-    @Mapping(target = "visitDateEnd", expression = "java(formatDate(visitHistoryDetailQueryResponse.getVstEndYmd(), visitHistoryDetailQueryResponse.getVstEndHh(), visitHistoryDetailQueryResponse.getVstEndMm()))")
+    @Mapping(target = "visitStartYmd", source = "vstStaYmd")
+    @Mapping(target = "visitStartHour", source = "vstStaHh")
+    @Mapping(target = "visitStartMinute", source = "vstStaMm")
+    @Mapping(target = "visitEndYmd", source = "vstEndYmd")
+    @Mapping(target = "visitEndHour", source = "vstEndHh")
+    @Mapping(target = "visitEndMinute", source = "vstEndMm")
+//    @Mapping(target = "visitDateStart", expression = "java(formatDate(visitHistoryDetailQueryResponse.getVstStaYmd(), visitHistoryDetailQueryResponse.getVstStaHh(), visitHistoryDetailQueryResponse.getVstStaMm()))")
+//    @Mapping(target = "visitDateEnd", expression = "java(formatDate(visitHistoryDetailQueryResponse.getVstEndYmd(), visitHistoryDetailQueryResponse.getVstEndHh(), visitHistoryDetailQueryResponse.getVstEndMm()))")
     @Mapping(target = "accessCardNumber", source = "passNo")
     @Mapping(target = "idCardCheckYn", source = "identityYn")
     @Mapping(target = "systemCheckYn", source = "systemCk")
@@ -397,19 +428,29 @@ mapstruct Mapper를 사용하여 @Mapping을 사용하여 필드명을 변환해
 
 완전 간단한 변환 로직을 제외하고는 다 static 메서드 등을 사용하여 변환을 하는게 맞는 것 같은데..
 ```
+## 요약
+
+| 항목 | 🔴 문제점 | ✅ 개선 방향 |
+|------|----------|---------------|
+| **1. 프론트엔드 구조(PPR)의 구조적 한계** | - JSP 기반 SSR + PPR 구조에서 SPA UX 불가<br>- 새로고침 시 항상 `main.jsp`부터 시작 → 사용자 경험 단절<br>- `window.history` 기반 앞/뒤 이동은 불완전함 | - 브라우저 히스토리, Ajax 요청의 상태 동기화를 명확히 처리<br>- 클라이언트 요청과 서버 응답을 철저히 분리<br>- SPA 전환이 불가하다면, PPR의 한계 내에서 UX 개선 전략 수립 |
+| **2. HTTP Method 및 API 설계 관점의 문제** | - 모든 API 요청을 POST로 처리 → RESTful 아님<br>- HTTP 상태 코드 무시 (에러도 200 OK)<br>- URL이 동작 중심으로 구성되어 있음| - HTTP Method 별 책임 분리 (`GET`, `POST`, `PUT`, `DELETE`)<br>- HTTP 상태 코드 기반 예외 처리 체계 확립<br>- 리소스 기반 RESTful URL로 전환 (`/api/visits/{id}` 등) |
+| **3. Exception 처리 구조의 문제** | - 모든 컨트롤러에 try-catch → `@RestControllerAdvice` 무력화<br>- 에러가 발생해도 항상 200 OK 응답 → 클라이언트는 SuccessYN 확인 | - `@RestControllerAdvice` 기반 전역 예외 처리 체계 확립<br>- Ajax 요청은 HTTP 상태코드 기반 분기(`success`, `error`)로 일원화<br>- 세션 인증 오류는 `401` 상태 코드로 처리 |
+| **4. DTO 미사용 및 Map 기반 개발의 한계** | - 모든 요청/응답이 `Map<String, Object>` 기반<br>- 타입 불안정, 가독성 저하<br>- Swagger, 자동 문서화 불가<br>- 유효성 검증 불가능 | - 요청/응답/DB 구조별 DTO 분리 (`RequestDto`, `ResponseDto`, `QueryDto` 등)<br>- `@Valid` 기반 유효성 검증 적용<br>- Swagger/OpenAPI 연동 가능한 구조 확립 |
+| **5. 쿼리와 객체 구조의 결합 문제** | - MyBatis에서 DTO 없이 SQL ↔ 화면 직접 매핑<br>- 쿼리 변경 시 화면 영향 발생<br>- 마스킹, 포맷팅 등의 표현 로직이 뷰에 혼재 | - DTO 변환 전용 Mapper 계층 명확화 (`MapStruct` 활용)<br>- `QueryResponseDto → ResponseDto` 변환 분리<br>- Mapper는 순수 변환 책임만 가지도록 설계 |
+| **6. 세션 인증 및 상태 관리** | - 세션 확인을 클라이언트가 선제적으로 Ajax로 수행<br>- 세션 만료 시에도 200 OK → UX 혼란 | - 서버 측에서 세션 예외 시 `401` 반환 + `redirectUrl` 전달<br>- 클라이언트는 error 콜백에서 로그인 이동<br>- 브라우저 직접 접근은 서버에서 리다이렉션 처리 |
 
 ## 이슈 정리
 ### Mapper 사용 시 이슈
-- [상속 구조 사용 시 Mapper 에러](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/Mapstruct_mapper_extends.md)
-- [Mapstruct 매핑 관련 에러(자바빈 프로퍼티)](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/MapStruct_Unmapped%20target%20property.md)
+- [상속 구조 사용 시 Mapper 에러(@SuperBuilder)](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/Mapstruct_mapper_extends.md)
+- [Mapstruct 매핑 관련 에러(자바빈 프로퍼티 명명 규약)](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/MapStruct_Unmapped%20target%20property.md)
 
-### 세팅 이슈
+### 세팅 이슈(In Intellij)
 - [DaFrame 내부 톰캣 세팅](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Setting/DaFrameIntellijSetting.md)
 - [폐쇄망 gradle 세팅](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Setting/Intellij_gradle_setting_error.md)
 - [폐쇄망 Dependency 추가 세팅](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Setting/Intellij_oracle_setting_error.md)
 
 ### MyBatis 이슈
-- [MyBatis-Dto 이슈](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/MyBatis-Dto%20Mapping%20Error.md)
+- [MyBatis-Dto 이슈(자바 리플렉션)](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/MyBatis-Dto%20Mapping%20Error.md)
 - [MyBatis/RequestDto Enum 사용](https://github.com/googoo9918/TIL/blob/main/IssueTracking/Framework/MyBatis-Dto%20Mapping%20Error.md)
 
 ### 기능 이슈
